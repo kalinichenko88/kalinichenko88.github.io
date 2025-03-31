@@ -8,7 +8,19 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  image: {
+    experimentalLayout: 'responsive',
+  },
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
   experimental: {
-    svg: true,
+    svg: {
+      mode: 'sprite',
+    },
+    responsiveImages: true,
+    clientPrerender: true,
+    headingIdCompat: true,
   },
 });
