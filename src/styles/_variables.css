@@ -1,0 +1,15 @@
+:root {
+  --text-color: #eaedf3;
+  --accent-color: #ff6b00;
+  --border-color: #ab4b09;
+
+  --primary-color: #3498db;
+
+  --link-transition: color 0.3s ease;
+
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}

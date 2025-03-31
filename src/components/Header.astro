@@ -1,0 +1,61 @@
+---
+import { SITE_TITLE } from '../consts';
+
+import MenuIcon from '../assets/menu.svg';
+---
+
+<header>
+  <a href="/">
+    <h1>{SITE_TITLE}</h1>
+  </a>
+  <nav>
+    <ul>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/projects">Projects</a></li>
+    </ul>
+  </nav>
+  <a href="#" role="button" class="menu">
+    <MenuIcon />
+  </a>
+</header>
+
+<style>
+  header {
+    border-bottom: 3px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+
+    & h1 {
+      font-size: 1.3rem;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  nav {
+    & > ul {
+      display: flex;
+      font-size: 1.2rem;
+      gap: 1.5rem;
+      list-style: none;
+    }
+  }
+
+  .menu {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    nav {
+      display: none;
+    }
+
+    .menu {
+      display: block;
+    }
+  }
+</style>
