@@ -1,0 +1,29 @@
+---
+import '../styles/global.css';
+
+import { ClientRouter } from 'astro:transitions';
+
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
