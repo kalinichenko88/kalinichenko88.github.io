@@ -59,7 +59,7 @@ header,
 main,
 footer {
   width: var(--breakpoint-lg);
-  margin: 0 auto;
+  margin: 0 auto 3rem auto;
 }
 
 main {
