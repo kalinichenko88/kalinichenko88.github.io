@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import { Image, Picture } from 'astro:assets';
+
+import Layout from '../components/Layout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import PostBlock from '../components/PostBlock.astro';
+
+import meImage from '../assets/me.png';
+import rssIcon from '../assets/rss.svg';
+
+const posts = (await getCollection('blog')).slice(0, 5);
+---
+
+<Layout>
+  <section class="welcome">
+    <div>
+      <h1>
+        Welcome to My Website
+        <a href="/rss.xml" aria-label="RSS Feed">
+          <Image src={rssIcon} alt="RSS Feed" />
+        </a>
+      </h1>
+      <p>
+        👋 Hi! I’m Ivan Kalinichenko, a skilled frontend developer specializing in JavaScript,
+        TypeScript, React, and modern web technologies.
+      </p>
+      <p>
+        🚀 I create fast, user-friendly, and visually appealing interfaces, responsive websites, and
+        complex web applications. I stay up to date with industry trends and follow best practices
+        in UI/UX.
+      </p>
+    </div>
+    <Picture
+      src={meImage}
+      alt="Kalinichenko"
+      class="person-image"
+      width="400"
+      height="400"
+      decoding="auto"
+    />
+    <SocialLinks />
+  </section>
+
+  <section>
+    <h2>Recent Posts</h2>
+
+    {posts.map((post) => <PostBlock post={post} />)}
+  </section>
+</Layout>
+
+<style is:global>
+  .welcome {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'info image'
+      'social social';
+    gap: 2rem;
+    border-bottom: 3px solid var(--border-color);
+    padding-bottom: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .welcome > div:first-child {
+    grid-area: info;
+  }
+
+  .welcome .person-image {
+    grid-area: image;
+    justify-self: end;
+    clip-path: circle(50%);
+  }
+
+  .welcome > :last-child {
+    grid-area: social;
+    justify-self: center;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 992px) {
+    .welcome {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'info'
+        'image'
+        'social';
+    }
+
+    .welcome .person-image {
+      justify-self: center;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .welcome > div:first-child {
+      text-align: center;
+    }
+  }
+</style>
