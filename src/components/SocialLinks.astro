@@ -1,10 +1,16 @@
 ---
 import GithubIcon from '../assets/github.svg';
 import LinkedinIcon from '../assets/linkedin.svg';
+
+type Props = {
+  showTitle?: boolean;
+};
+
+const { showTitle = true } = Astro.props;
 ---
 
 <div class="social-links">
-  <h3>Social Links:</h3>
+  {showTitle && <h3>Social Links:</h3>}
   <a href="https://github.com/kalinichenko88" target="_blank" rel="noopener noreferrer">
     <GithubIcon />
   </a>
