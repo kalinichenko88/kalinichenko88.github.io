@@ -1,0 +1,43 @@
+---
+import GithubIcon from '../assets/github.svg';
+import LinkedinIcon from '../assets/linkedin.svg';
+---
+
+<div class="social-links">
+  <h3>Social Links:</h3>
+  <a href="https://github.com/kalinichenko88" target="_blank" rel="noopener noreferrer">
+    <GithubIcon />
+  </a>
+  <a
+    href="https://www.linkedin.com/in/ivan-kalinichenko/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <LinkedinIcon />
+  </a>
+</div>
+
+<style>
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .social-links h3 {
+    margin: 0;
+  }
+
+  .social-links a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .social-links a > svg {
+    transition: var(--link-transition);
+  }
+
+  .social-links a:hover > svg {
+    color: var(--accent-color);
+  }
+</style>
