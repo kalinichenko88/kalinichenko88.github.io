@@ -15,29 +15,29 @@ import LinkedinIcon from '../assets/linkedin.svg';
   >
     <LinkedinIcon />
   </a>
+
+  <style>
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .social-links h3 {
+      margin: 0;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .social-links a > svg {
+      transition: var(--link-transition);
+    }
+
+    .social-links a:hover > svg {
+      color: var(--accent-color);
+    }
+  </style>
 </div>
-
-<style>
-  .social-links {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .social-links h3 {
-    margin: 0;
-  }
-
-  .social-links a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .social-links a > svg {
-    transition: var(--link-transition);
-  }
-
-  .social-links a:hover > svg {
-    color: var(--accent-color);
-  }
-</style>
