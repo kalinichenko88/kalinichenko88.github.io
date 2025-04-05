@@ -16,9 +16,7 @@ export default defineConfig({
     defaultStrategy: 'viewport',
   },
   experimental: {
-    svg: {
-      mode: 'sprite',
-    },
+    svg: true,
     responsiveImages: true,
     clientPrerender: true,
     headingIdCompat: true,
