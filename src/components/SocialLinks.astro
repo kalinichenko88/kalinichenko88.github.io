@@ -1,6 +1,7 @@
 ---
-import GithubIcon from '../assets/github.svg';
-import LinkedinIcon from '../assets/linkedin.svg';
+import GithubIcon from '../assets/icons/github.svg';
+import LinkedinIcon from '../assets/icons/linkedin.svg';
+import MailIcon from '../assets/icons/mail.svg';
 
 type Props = {
   showTitle?: boolean;
@@ -20,6 +21,9 @@ const { showTitle = true } = Astro.props;
     rel="noopener noreferrer"
   >
     <LinkedinIcon />
+  </a>
+  <a href="mailto:ivan@kalinichenko.dev">
+    <MailIcon />
   </a>
 
   <style>
