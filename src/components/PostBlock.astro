@@ -23,7 +23,7 @@ const formatDate = (date: Date): string => {
   <h3>
     <a href={`/blog/${post.id}`}>{post.data.title}</a>
   </h3>
-  <div>
+  <div class="date">
     <Image src={dateIcon} alt="Date" width={16} height={16} />
     {formatDate(post.data.pubDate)}
   </div>
@@ -41,5 +41,10 @@ const formatDate = (date: Date): string => {
 
   article h3 > a {
     color: var(--accent-color);
+  }
+
+  article .date {
+    font-style: italic;
+    font-size: 0.9rem;
   }
 </style>
