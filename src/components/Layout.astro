@@ -7,6 +7,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 
+import personImage from '../assets/images/me.png';
+
 type Props = {
   title?: string;
   description?: string;
@@ -20,8 +22,26 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+
+    <!-- Primary Meta Tags -->
     <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(personImage.src, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(personImage.src, Astro.url)} />
+
     <ClientRouter />
   </head>
   <body>
