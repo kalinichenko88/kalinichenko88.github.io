@@ -13,9 +13,10 @@ import personImage from '../assets/images/me.png';
 type Props = {
   title?: string;
   description?: string;
+  classes?: string;
 };
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, classes } = Astro.props;
 ---
 
 <!doctype html>
@@ -48,9 +49,11 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
   </head>
   <body>
     <Header />
-    <main>
+
+    <main class={classes}>
       <slot />
     </main>
+
     <Footer />
   </body>
 </html>

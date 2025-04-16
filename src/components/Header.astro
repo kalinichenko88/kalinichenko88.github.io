@@ -1,25 +1,9 @@
 ---
 import { SITE_TITLE } from '../consts';
-
-import MenuIcon from '../assets/icons/menu.svg';
-
-const { pathname } = Astro.url;
-
-const isActive = (path: string): boolean => pathname.startsWith(path);
 ---
 
 <header>
-  <a href="/">
-    <h1>{SITE_TITLE}</h1>
-  </a>
-  <nav>
-    <ul>
-      <li><a href="/about" class={isActive('/about') ? 'active' : ''}>About</a></li>
-    </ul>
-  </nav>
-  <a href="#" role="button" class="menu">
-    <MenuIcon />
-  </a>
+  <h1>{SITE_TITLE}</h1>
 </header>
 
 <style>

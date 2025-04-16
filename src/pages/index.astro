@@ -7,7 +7,7 @@ import SocialLinks from '../components/SocialLinks.astro';
 import meImage from '../assets/images/me.png';
 ---
 
-<Layout>
+<Layout classes="home">
   <h1>Welcome to My Website</h1>
 
   <section class="welcome">
@@ -18,8 +18,9 @@ import meImage from '../assets/images/me.png';
     </p>
 
     <p>
-      This site is where I share thoughts on frontend development, architecture, productivity, and
-      remote work.
+      With over a decade of experience building scalable, maintainable web applications, I focus on
+      clean architecture, smooth UI/UX, and modern frontend practices. I enjoy working in
+      distributed teams and turning complex ideas into elegant interfaces.
     </p>
 
     <p>Feel free to get in touch if anything here resonates with you.</p>
@@ -29,21 +30,17 @@ import meImage from '../assets/images/me.png';
 </Layout>
 
 <style is:global>
-  main {
+  .home {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: repeat(3, min-content);
     grid-template-areas:
       'welcome welcome'
       'info info'
-      'social social'
-      'posts projects';
-    gap: 2rem;
-    border-bottom: 3px solid var(--border-color);
+      'social social';
+    gap: 1rem;
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 3rem;
-    margin-bottom: 2rem;
-    justify-items: stretch;
-    align-items: start;
   }
 
   .welcome {
@@ -71,17 +68,5 @@ import meImage from '../assets/images/me.png';
     grid-area: social;
     justify-self: center;
     width: 100%;
-  }
-
-  .posts-section {
-    grid-area: posts;
-    width: 100%;
-    justify-self: start;
-  }
-
-  .projects-section {
-    grid-area: projects;
-    width: 100%;
-    justify-self: start;
   }
 </style>
