@@ -2,6 +2,16 @@
 import GithubIcon from '../assets/icons/github.svg';
 import LinkedinIcon from '../assets/icons/linkedin.svg';
 import MailIcon from '../assets/icons/mail.svg';
+import TelegramIcon from '../assets/icons/telegram.svg';
+import TwitterIcon from '../assets/icons/twitter.svg';
+
+import {
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+  TELEGRAM_PROFILE_LINK,
+  TWITTER_PROFILE_LINK,
+} from '../consts';
 
 type Props = {
   showTitle?: boolean;
@@ -12,17 +22,19 @@ const { showTitle = true } = Astro.props;
 
 <div class="social-links">
   {showTitle && <h3>Social Links:</h3>}
-  <a href="https://github.com/kalinichenko88" target="_blank" rel="noopener noreferrer">
+  <a href={GITHUB_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
     <GithubIcon />
   </a>
-  <a
-    href="https://www.linkedin.com/in/ivan-kalinichenko/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <a href={LINKEDIN_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
     <LinkedinIcon />
   </a>
-  <a href="mailto:ivan@kalinichenko.dev">
+  <a href={TELEGRAM_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
+    <TelegramIcon />
+  </a>
+  <a href={TWITTER_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
+    <TwitterIcon />
+  </a>
+  <a href={`mailto:${MAIL_PROFILE_LINK}`} target="_blank" rel="noopener noreferrer">
     <MailIcon />
   </a>
 
