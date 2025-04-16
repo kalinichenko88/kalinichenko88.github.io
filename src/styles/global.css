@@ -15,10 +15,12 @@ body {
   min-height: 100dvh;
   margin: 0;
 
-  background-color: #202738;
+  /* background-color: #202738; */
+  background: linear-gradient(180deg, #202738 0%, #2a3042 100%);
   color: var(--text-color);
   font-size: 1rem;
-  font-family: 'SF Mono', monospace;
+  /* font-family: 'SF Mono', monospace; */
+  font-family: 'IBM Plex Mono', monospace;
   line-height: 1.6;
 }
 
@@ -85,4 +87,15 @@ footer {
     width: 100%;
     margin: 0;
   }
+}
+
+.block {
+  --border: #ab4b08;
+  --accent: #ff6b01;
+  --muted: #343f60bf;
+
+  outline-color: color-mix(in oklab, var(--accent) 75%, transparent);
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-muted) transparent;
+  border-color: var(--border);
 }
