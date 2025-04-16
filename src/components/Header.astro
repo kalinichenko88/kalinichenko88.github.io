@@ -15,10 +15,6 @@ const isActive = (path: string): boolean => pathname.startsWith(path);
   <nav>
     <ul>
       <li><a href="/about" class={isActive('/about') ? 'active' : ''}>About</a></li>
-      <li><a href="/blog" class={isActive('/blog') ? 'active' : ''}>Blog</a></li>
-      <li>
-        <a href="/projects" class={isActive('/projects') ? 'active' : ''}>Projects</a>
-      </li>
     </ul>
   </nav>
   <a href="#" role="button" class="menu">
