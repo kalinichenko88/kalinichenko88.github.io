@@ -1,26 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import Layout from '../components/Layout.astro';
 import SocialLinks from '../components/SocialLinks.astro';
-import PostBlock from '../components/PostBlock.astro';
-import ProjectBlock from '../components/ProjectBlock.astro';
 
 import meImage from '../assets/images/me.png';
-import rssIcon from '../assets/icons/rss.svg';
-
-const posts = (await getCollection('blog')).slice(0, 5);
-const projects = (await getCollection('projects')).slice(0, 5);
 ---
 
 <Layout>
-  <h1>
-    Welcome to My Website
-    <a href="/rss.xml" aria-label="RSS Feed">
-      <Image src={rssIcon} alt="RSS Feed" />
-    </a>
-  </h1>
+  <h1>Welcome to My Website</h1>
 
   <section class="welcome">
     <Image src={meImage} alt="Kalinichenko" class="person-image" width="250" />
@@ -38,18 +26,6 @@ const projects = (await getCollection('projects')).slice(0, 5);
   </section>
 
   <SocialLinks />
-
-  <section class="posts-section">
-    <h2>Recent Posts</h2>
-
-    {posts.map((post) => <PostBlock post={post} />)}
-  </section>
-
-  <section class="projects-section">
-    <h2>Recent Projects</h2>
-
-    {projects.map((post) => <ProjectBlock post={post} />)}
-  </section>
 </Layout>
 
 <style is:global>
