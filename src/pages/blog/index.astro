@@ -1,0 +1,29 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+import Layout from '../../components/Layout.astro';
+import PostBlock from '../../components/PostBlock.astro';
+
+const posts = await getCollection('blog');
+---
+
+<Layout title="Blog" description="My blog posts">
+  <section class="intro">
+    <h2>Recent Posts</h2>
+    <p>Welcome to my blog! Here you can find my latest posts.</p>
+    <p>
+      I write about web development, JavaScript, TypeScript, React, and other topics related to
+      frontend development.
+    </p>
+  </section>
+
+  <section>
+    {posts.map((post) => <PostBlock post={post} />)}
+  </section>
+</Layout>
+
+<style is:global>
+  .intro {
+    margin-bottom: 3rem;
+  }
+</style>
