@@ -14,13 +14,10 @@ body {
   flex-direction: column;
   min-height: 100dvh;
   margin: 0;
-
-  /* background-color: #202738; */
   background: linear-gradient(180deg, #202738 0%, #2a3042 100%);
   color: var(--text-color);
   font-size: 1rem;
-  /* font-family: 'SF Mono', monospace; */
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono, monospace);
   line-height: 1.6;
 }
 

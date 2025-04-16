@@ -1,9 +1,9 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://kalinichenko88.github.io',
+  site: 'https://kalinichenko.dev',
   integrations: [mdx(), sitemap()],
   devToolbar: {
     enabled: false,
@@ -19,5 +19,12 @@ export default defineConfig({
     responsiveImages: true,
     clientPrerender: true,
     contentIntellisense: true,
+    fonts: [
+      {
+        provider: fontProviders.google(),
+        name: 'IBM Plex Mono',
+        cssVariable: '--font-mono',
+      },
+    ],
   },
 });
