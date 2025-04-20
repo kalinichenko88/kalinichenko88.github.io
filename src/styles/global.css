@@ -1,0 +1,101 @@
+@import './_variables.css';
+
+:root {
+  interpolate-size: allow-keywords;
+}
+
+* {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--background-gradient);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-family: var(--font-mono, monospace);
+  line-height: 1.6;
+  transition: var(--theme-transition);
+}
+
+a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: var(--link-transition);
+}
+
+a:hover,
+a:focus,
+a:active,
+a:focus-visible {
+  color: var(--accent-color);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+h1,
+h2 {
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+header,
+main,
+footer {
+  width: var(--breakpoint-lg);
+  margin: 0 auto 2rem auto;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 992px) {
+  body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  header,
+  main,
+  footer {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.block {
+  --border: var(--border-color);
+  --accent: var(--accent-color);
+  --muted: var(--card-background);
+
+  outline-color: color-mix(in oklab, var(--accent) 75%, transparent);
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-muted) transparent;
+  border-color: var(--border);
+  transition: var(--theme-transition);
+}

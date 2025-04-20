@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+
+import Layout from '../components/Layout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+
+import meImage from '../assets/images/me.png';
+import meImageDark from '../assets/images/me-dark.png';
+---
+
+<Layout classes="home">
+  <h1>Welcome to My Website</h1>
+
+  <section class="welcome">
+    <Image src={meImage} alt="Kalinichenko" class="person-image light-theme" width="250" />
+    <Image src={meImageDark} alt="Kalinichenko" class="person-image dark-theme" width="250" />
+
+    <p>
+      👋 Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
+      applications. I specialize in modern web technologies, with a strong emphasis on clean
+      architecture and contemporary development practices.
+    </p>
+
+    <p>
+      My passion lies in transforming complex ideas into elegant interfaces, crafting intuitive
+      UI/UX experiences that delight users. I pride myself on creating responsive, accessible, and
+      performant digital solutions that meet both user needs and business objectives.
+    </p>
+
+    <p>Feel free to get in touch if anything here resonates with you.</p>
+  </section>
+
+  <SocialLinks />
+</Layout>
+
+<style is:global>
+  .home {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, min-content);
+    grid-template-areas:
+      'welcome welcome'
+      'info info'
+      'social social';
+    gap: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 3rem;
+  }
+
+  .welcome {
+    grid-area: info;
+
+    & > h1 {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    & .person-image {
+      float: right;
+      margin: 2rem 1rem;
+      clip-path: circle(50%);
+      shape-outside: circle(50%);
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    & .light-theme {
+      display: block;
+    }
+
+    & .dark-theme {
+      display: none;
+    }
+
+    [data-theme='dark'] & .light-theme {
+      display: none;
+    }
+
+    [data-theme='dark'] & .dark-theme {
+      display: block;
+    }
+  }
+
+  .social-links {
+    grid-area: social;
+    justify-self: center;
+    width: 100%;
+  }
+</style>

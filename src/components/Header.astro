@@ -1,0 +1,30 @@
+---
+import ThemeSwitcher from './ThemeSwitcher.astro';
+
+import { SITE_TITLE } from '../consts';
+---
+
+<header>
+  <h1>{SITE_TITLE}</h1>
+  <ThemeSwitcher />
+</header>
+
+<style>
+  header {
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+
+    & h1 {
+      font-size: 1.3rem;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+</style>

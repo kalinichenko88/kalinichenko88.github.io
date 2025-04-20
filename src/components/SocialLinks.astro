@@ -1,0 +1,56 @@
+---
+import GithubIcon from '../assets/icons/github.svg';
+import LinkedinIcon from '../assets/icons/linkedin.svg';
+import MailIcon from '../assets/icons/mail.svg';
+import TelegramIcon from '../assets/icons/telegram.svg';
+
+import {
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+  TELEGRAM_PROFILE_LINK,
+} from '../consts';
+
+type Props = {
+  showTitle?: boolean;
+};
+
+const { showTitle = true } = Astro.props;
+---
+
+<div class="social-links">
+  {showTitle && <h3>Social Links:</h3>}
+  <a href={GITHUB_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
+    <GithubIcon />
+  </a>
+  <a href={LINKEDIN_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
+    <LinkedinIcon />
+  </a>
+  <a href={TELEGRAM_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
+    <TelegramIcon />
+  </a>
+  <a href={`mailto:${MAIL_PROFILE_LINK}`} target="_blank" rel="noopener noreferrer">
+    <MailIcon />
+  </a>
+
+  <style>
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .social-links h3 {
+      margin: 0;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .social-links a:hover > svg {
+      color: var(--accent-color);
+    }
+  </style>
+</div>
