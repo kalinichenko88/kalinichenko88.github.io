@@ -11,42 +11,52 @@ import meImageDark from '../assets/images/me-dark.png';
 </div>
 
 <style is:global>
-  /* @keyframes slideaway {
-    from {
-      display: block;
-    }
-    to {
-      transform: translateY(550px);
-      opacity: 0;
-    }
-  } */
-
   .wrapper {
     width: 250px;
+    height: 250px;
     float: right;
     margin: 2rem 1rem;
+    position: relative;
+    shape-outside: circle(50%);
+    overflow: hidden;
 
     & > img {
       clip-path: circle(50%);
-      shape-outside: circle(50%);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition:
+        transform 0.5s ease-in-out,
+        opacity 0.5s ease-in-out;
     }
 
     & > .light {
-      display: block;
+      transform: translateY(0);
+      opacity: 1;
+      z-index: 1;
     }
 
     & > .dark {
-      display: none;
-      /* animation: slideaway 400ms; */
+      transform: translateY(-100%);
+      opacity: 0;
+      z-index: 0;
+      pointer-events: none;
     }
   }
 
   [data-theme='dark'] .wrapper > .light {
-    display: none;
-    /* animation: slideaway 400ms; */
+    transform: translateY(100%);
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
   }
 
   [data-theme='dark'] .wrapper > .dark {
-    display: block;
+    transform: translateY(0);
+    opacity: 1;
+    z-index: 1;
+    pointer-events: auto;
   }
 </style>
