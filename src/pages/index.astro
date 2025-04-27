@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 
 import Layout from '../components/Layout.astro';
 import SocialLinks from '../components/SocialLinks.astro';
+import PersonImage from '../components/PersonImage.astro';
 
 import meImage from '../assets/images/me.png';
 import meImageDark from '../assets/images/me-dark.png';
@@ -12,8 +13,7 @@ import meImageDark from '../assets/images/me-dark.png';
   <h1>Welcome to My Website</h1>
 
   <section class="welcome">
-    <Image src={meImage} alt="Kalinichenko" class="person-image light-theme" width="250" />
-    <Image src={meImageDark} alt="Kalinichenko" class="person-image dark-theme" width="250" />
+    <PersonImage />
 
     <p>
       👋 Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
@@ -34,6 +34,16 @@ import meImageDark from '../assets/images/me-dark.png';
 </Layout>
 
 <style is:global>
+  @keyframes slideaway {
+    from {
+      display: block;
+    }
+    to {
+      transform: translateY(250px);
+      opacity: 0;
+    }
+  }
+
   .home {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -53,30 +63,6 @@ import meImageDark from '../assets/images/me-dark.png';
     & > h1 {
       width: 100%;
       margin-bottom: 1rem;
-    }
-
-    & .person-image {
-      float: right;
-      margin: 2rem 1rem;
-      clip-path: circle(50%);
-      shape-outside: circle(50%);
-      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    & .light-theme {
-      display: block;
-    }
-
-    & .dark-theme {
-      display: none;
-    }
-
-    [data-theme='dark'] & .light-theme {
-      display: none;
-    }
-
-    [data-theme='dark'] & .dark-theme {
-      display: block;
     }
   }
 

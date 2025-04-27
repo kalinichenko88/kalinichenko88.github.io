@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+
+import meImage from '../assets/images/me.png';
+import meImageDark from '../assets/images/me-dark.png';
+---
+
+<div class="wrapper">
+  <Image src={meImage} alt="Kalinichenko" class="person-image light" width="250" />
+  <Image src={meImageDark} alt="Kalinichenko" class="person-image dark" width="250" />
+</div>
+
+<style is:global>
+  /* @keyframes slideaway {
+    from {
+      display: block;
+    }
+    to {
+      transform: translateY(550px);
+      opacity: 0;
+    }
+  } */
+
+  .wrapper {
+    width: 250px;
+    float: right;
+    margin: 2rem 1rem;
+
+    & > img {
+      clip-path: circle(50%);
+      shape-outside: circle(50%);
+    }
+
+    & > .light {
+      display: block;
+    }
+
+    & > .dark {
+      display: none;
+      /* animation: slideaway 400ms; */
+    }
+  }
+
+  [data-theme='dark'] .wrapper > .light {
+    display: none;
+    /* animation: slideaway 400ms; */
+  }
+
+  [data-theme='dark'] .wrapper > .dark {
+    display: block;
+  }
+</style>
