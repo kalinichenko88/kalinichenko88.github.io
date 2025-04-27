@@ -37,23 +37,23 @@ import MoonIcon from '../assets/icons/moon.svg';
   }
 
   html:not([data-theme='dark']) .sun-icon {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
-
-  html:not([data-theme='dark']) .moon-icon {
-    opacity: 0;
-    transform: rotate(-90deg) scale(0);
-  }
-
-  html[data-theme='dark'] .sun-icon {
     opacity: 0;
     transform: rotate(90deg) scale(0);
   }
 
-  html[data-theme='dark'] .moon-icon {
+  html:not([data-theme='dark']) .moon-icon {
     opacity: 1;
     transform: rotate(0deg) scale(1);
+  }
+
+  html[data-theme='dark'] .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  html[data-theme='dark'] .moon-icon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0);
   }
 </style>
 

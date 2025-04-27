@@ -1,14 +1,14 @@
 :root {
   --text-color: #2a3042;
+
+  --background-gradient-light: linear-gradient(180deg, #f5f7fa 0%, #e4e7eb 100%);
+  --background-gradient-dark: linear-gradient(180deg, #202738, #2a3042);
+
   --accent-color: #ff6b00;
   --border-color: #ab4b09;
   --primary-color: #3498db;
-  --background-gradient: linear-gradient(180deg, #f5f7fa 0%, #e4e7eb 100%);
   --card-background: #ffffff;
   --card-border: #e1e4e8;
-
-  --link-transition: color 0.3s ease;
-  --theme-transition: background-color 0.3s ease, color 0.3s ease;
 
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
@@ -19,10 +19,5 @@
 
 [data-theme='dark'] {
   --text-color: #eaedf3;
-  --accent-color: #ff6b00;
-  --border-color: #ab4b09;
-  --primary-color: #3498db;
-  --background-gradient: linear-gradient(180deg, #202738 0%, #2a3042 100%);
-  --card-background: #2a3042;
-  --card-border: #3a4156;
+  --background-gradient: linear-gradient(180deg, #202738, #2a3042);
 }
