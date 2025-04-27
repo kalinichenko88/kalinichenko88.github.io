@@ -19,13 +19,11 @@ body {
   font-size: 1rem;
   font-family: var(--font-mono, monospace);
   line-height: 1.6;
-  transition: var(--theme-transition);
 }
 
 a {
   color: var(--text-color);
   text-decoration: none;
-  transition: var(--link-transition);
 }
 
 a:hover,
@@ -33,6 +31,14 @@ a:focus,
 a:active,
 a:focus-visible {
   color: var(--accent-color);
+}
+
+a,
+p,
+h1,
+h2,
+h3 {
+  transition: var(--color-transition);
 }
 
 h1,
