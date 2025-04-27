@@ -1,17 +1,14 @@
 :root {
   --text-color: #2a3042;
 
-  --background-gradient: linear-gradient(180deg, #f5f7fa 0%, #e4e7eb 100%);
+  --background-gradient-light: linear-gradient(180deg, #f5f7fa 0%, #e4e7eb 100%);
+  --background-gradient-dark: linear-gradient(180deg, #202738, #2a3042);
 
   --accent-color: #ff6b00;
   --border-color: #ab4b09;
   --primary-color: #3498db;
   --card-background: #ffffff;
   --card-border: #e1e4e8;
-
-  --color-transition: color 0.6s ease;
-  --background-transition: background-color 1s ease-out;
-  --border-transition: border-color 1s ease-out;
 
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
