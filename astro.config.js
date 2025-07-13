@@ -8,15 +8,11 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  image: {
-    experimentalLayout: 'responsive',
-  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
   experimental: {
-    responsiveImages: true,
     clientPrerender: true,
     contentIntellisense: true,
     fonts: [
