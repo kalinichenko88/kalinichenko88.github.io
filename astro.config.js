@@ -1,6 +1,7 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://kalinichenko.dev',
@@ -22,5 +23,8 @@ export default defineConfig({
         cssVariable: '--font-mono',
       },
     ],
+  },
+  vite: {
+    plugins: [tailwindcss()],
   },
 });

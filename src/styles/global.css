@@ -1,5 +1,7 @@
 @import './_variables.css';
 
+@import 'tailwindcss';
+
 :root {
   interpolate-size: allow-keywords;
 }
