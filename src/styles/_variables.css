@@ -17,7 +17,7 @@
   --breakpoint-xl: 1200px;
 }
 
-[data-theme='dark'] {
+/* [data-theme='dark'] {
   --text-color: #eaedf3;
   --background-gradient: linear-gradient(180deg, #202738, #2a3042);
-}
+} */

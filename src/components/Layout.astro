@@ -22,10 +22,10 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, classes } = Astro.pr
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Head title={title} description={description} />
   </head>
-  <body>
+  <body class="min-h-screen bg-bg flex flex-col">
     <Header />
 
-    <main class={classes}>
+    <main class={`container flex-auto ${classes}`}>
       <slot />
     </main>
 

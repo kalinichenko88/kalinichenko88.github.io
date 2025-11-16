@@ -1,120 +1,76 @@
-@import './_variables.css';
+/* @import './_variables.css'; */
 
 @import 'tailwindcss';
 
+@config "../../tailwind.config.js";
+
 :root {
-  interpolate-size: allow-keywords;
+  --bg: 250 250 252; /* нейтральный светлый */
+  --fg: 15 23 42; /* slate-900 */
+  --muted: 100 116 139; /* slate-500 */
+  --border: 226 232 240; /* slate-200 */
+  --accent: 56 189 248; /* sky-400 */
+  --accent-soft: 8 47 73; /* sky-950 */
 }
 
-* {
-  box-sizing: border-box;
-  min-width: 0;
+.dark {
+  --bg: 10 10 12;
+  --fg: 226 232 240;
+  --muted: 148 163 184;
+  --border: 30 41 59;
+  --accent: 56 189 248;
+  --accent-soft: 15 23 42;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
-  margin: 0;
-  background: var(--background-gradient-light);
-  color: var(--text-color);
-  font-size: 1rem;
-  font-family: var(--font-mono, monospace);
-  line-height: 1.6;
-  position: relative;
-  z-index: 0;
+.container {
+  @apply mx-auto max-w-container px-4 py-8 md:px-6 md:py-12;
 }
 
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: var(--background-gradient-dark);
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
-  z-index: -1;
+.navigation-link {
+  @apply flex items-center px-2 py-1.5 lg:px-3 lg:py-2 text-lg md:text-base font-medium rounded-md transition-colors no-underline;
 }
 
-html[data-theme='dark'] body::before {
-  opacity: 1;
+.navigation-link:hover {
+  @apply text-fg bg-border;
 }
 
-a {
-  color: var(--text-color);
-  text-decoration: none;
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-a:hover,
-a:focus,
-a:active,
-a:focus-visible {
-  color: var(--accent-color);
-}
-
-h1,
-h2,
-h3,
-h4 {
-  text-wrap: balance;
-}
-
-h1,
-h2 {
-  color: var(--text-color);
-}
-
-h1 {
-  font-size: 2rem;
-  margin: 0 0 1rem 0;
-}
-
-p {
-  text-wrap: pretty;
-}
-
-header,
-main,
-footer {
-  width: var(--breakpoint-lg);
-  margin: 0 auto 2rem auto;
-}
-
-main {
-  flex: 1;
-}
-
-footer {
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media screen and (max-width: 992px) {
   body {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    @apply bg-bg text-fg antialiased font-sans;
   }
 
-  header,
-  main,
-  footer {
-    width: 100%;
-    margin: 0;
+  a {
+    @apply text-accent underline-offset-2;
   }
-}
 
-.block {
-  --border: var(--border-color);
-  --accent: var(--accent-color);
-  --muted: var(--card-background);
+  a:hover {
+    @apply underline;
+  }
 
-  outline-color: color-mix(in oklab, var(--accent) 75%, transparent);
-  scrollbar-width: auto;
-  scrollbar-color: var(--color-muted) transparent;
-  border-color: var(--border);
-  transition: var(--theme-transition);
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-tight text-fg;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  p {
+    @apply text-base md:text-lg leading-relaxed text-fg;
+  }
 }
