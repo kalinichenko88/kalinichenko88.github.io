@@ -4,6 +4,21 @@
 
 @config "../../tailwind.config.js";
 
+/* View Transitions API - Radial Reveal Animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
 :root {
   --bg: 250 250 252; /* нейтральный светлый */
   --fg: 15 23 42; /* slate-900 */
