@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../components/Layout.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+  return (await getCollection('posts')).map((post) => ({
+    params: { id: post.id },
+  }));
+}
+
+const post = (await getCollection('posts')).find((post) => post.id === Astro.params.id);
+---
+
+<Layout title={`${post?.data.title} – ${SITE_TITLE}`} description={post?.data.description}>
+  <h1>{post?.data.title}</h1>
+  <p>{post?.data.description}</p>
+  <div class="prose">asd</div>
+</Layout>

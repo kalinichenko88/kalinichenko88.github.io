@@ -1,91 +1,24 @@
-/* @import './_variables.css'; */
-
 @import 'tailwindcss';
 
-@config "../../tailwind.config.js";
+@source './**/*.{astro,html,js,ts,md,mdx}';
 
-/* View Transitions API - Radial Reveal Animation */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-::view-transition-old(root) {
-  z-index: 1;
-}
-
-::view-transition-new(root) {
-  z-index: 2;
-}
-
-:root {
-  --bg: 250 250 252; /* нейтральный светлый */
-  --fg: 15 23 42; /* slate-900 */
-  --muted: 100 116 139; /* slate-500 */
-  --border: 226 232 240; /* slate-200 */
-  --accent: 56 189 248; /* sky-400 */
-  --accent-soft: 8 47 73; /* sky-950 */
-}
-
-.dark {
-  --bg: 10 10 12;
-  --fg: 226 232 240;
-  --muted: 148 163 184;
-  --border: 30 41 59;
-  --accent: 56 189 248;
-  --accent-soft: 15 23 42;
+@plugin '@tailwindcss/typography';
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark;
 }
 
 .container {
-  @apply mx-auto max-w-container px-4 py-8 md:px-6 md:py-12;
-}
-
-.navigation-link {
-  @apply flex items-center px-2 py-1.5 lg:px-3 lg:py-2 text-lg md:text-base font-medium rounded-md transition-colors no-underline;
-}
-
-.navigation-link:hover {
-  @apply text-fg bg-border;
+  @apply min-w-full max-w-full;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  /* html {
+    scroll-behavior: smooth;
+  } */
 
   body {
-    @apply bg-bg text-fg antialiased font-sans;
-  }
-
-  a {
-    @apply text-accent underline-offset-2;
-  }
-
-  a:hover {
-    @apply underline;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-semibold tracking-tight text-fg;
-  }
-
-  h1 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
-  }
-
-  h2 {
-    @apply text-2xl md:text-3xl;
-  }
-
-  h3 {
-    @apply text-xl md:text-2xl;
-  }
-
-  p {
-    @apply text-base md:text-lg leading-relaxed text-fg;
+    @apply transition-colors duration-300;
   }
 }

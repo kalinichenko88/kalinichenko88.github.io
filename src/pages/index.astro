@@ -7,12 +7,464 @@ import PersonImage from '../components/PersonImage.astro';
 
 import meImage from '../assets/images/me.png';
 import meImageDark from '../assets/images/me-dark.png';
+import LastPosts from '../components/LastPosts.astro';
 ---
 
 <Layout classes="home">
-  <h2>Product-Focused Frontend Engineer</h2>
+  <section id="hero" class="hero py-20 md:py-32 bg-linear-to-br from-base-100 to-base-200">
+    <div class="hero-content text-center">
+      <div class="max-w-3xl">
+        <div class="avatar mb-8">
+          <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ivan" alt="Avatar" />
+          </div>
+        </div>
+        <h1
+          class="text-5xl md:text-7xl font-bold mb-6 bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
+        >
+          Привет, я Иван
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-base-content/80">
+          Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
+          applications.
+        </p>
+        <p class="text-lg mb-8 max-w-2xl mx-auto">
+          I specialize in modern web technologies, with a strong emphasis on clean architecture and
+          contemporary development practices.
+        </p>
+        <p class="text-md mb-8 max-w-2xl mx-auto">
+          My passion lies in transforming complex ideas into elegant interfaces, crafting intuitive
+          UI/UX experiences that delight users. I pride myself on creating responsive, accessible,
+          and performant digital solutions that meet both user needs and business objectives.
+        </p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <a href="#blog" class="btn btn-primary btn-lg"> Читать блог </a>
+          <a href="#projects" class="btn btn-outline btn-lg"> Мои проекты </a>
+        </div>
+        <div class="flex gap-4 justify-center mt-8">
+          <a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              ></path>
+            </svg>
+          </a>
+          <a href="https://twitter.com" target="_blank" class="btn btn-circle btn-ghost">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
+              ></path>
+            </svg>
+          </a>
+          <a href="https://linkedin.com" target="_blank" class="btn btn-circle btn-ghost">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section class="welcome typography">
+  <LastPosts />
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 bg-base-200">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">Open Source проекты</h2>
+        <p class="text-lg text-base-content/70">Мои вклады в открытое ПО</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <!-- Project 1 -->
+        <div
+          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
+        >
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  ></path>
+                </svg>
+                <h3 class="card-title text-2xl">react-form-wizard</h3>
+              </div>
+              <div class="badge badge-success">Active</div>
+            </div>
+            <p class="text-base-content/70 mt-4">
+              Гибкая библиотека для создания многошаговых форм с валидацией и управлением
+              состоянием.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <div class="badge badge-outline">React</div>
+              <div class="badge badge-outline">TypeScript</div>
+              <div class="badge badge-outline">Formik</div>
+            </div>
+            <div class="flex items-center gap-6 mt-6 text-sm">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                  ></path>
+                </svg>
+                <span>1.2k</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                  ></path>
+                </svg>
+                <span>234</span>
+              </div>
+            </div>
+            <div class="card-actions justify-end mt-6">
+              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
+              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div
+          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
+        >
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  ></path>
+                </svg>
+                <h3 class="card-title text-2xl">css-layout-helper</h3>
+              </div>
+              <div class="badge badge-success">Active</div>
+            </div>
+            <p class="text-base-content/70 mt-4">
+              Утилиты и сниппеты для быстрого создания адаптивных макетов с Flexbox и Grid.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <div class="badge badge-outline">CSS</div>
+              <div class="badge badge-outline">SASS</div>
+              <div class="badge badge-outline">PostCSS</div>
+            </div>
+            <div class="flex items-center gap-6 mt-6 text-sm">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                  ></path>
+                </svg>
+                <span>856</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                  ></path>
+                </svg>
+                <span>142</span>
+              </div>
+            </div>
+            <div class="card-actions justify-end mt-6">
+              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
+              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div
+          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
+        >
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  ></path>
+                </svg>
+                <h3 class="card-title text-2xl">fastify-zod-api</h3>
+              </div>
+              <div class="badge badge-warning">In Progress</div>
+            </div>
+            <p class="text-base-content/70 mt-4">
+              Инструмент для автоматической генерации API клиентов на основе Zod схем валидации.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <div class="badge badge-outline">Fastify</div>
+              <div class="badge badge-outline">Zod</div>
+              <div class="badge badge-outline">OpenAPI</div>
+            </div>
+            <div class="flex items-center gap-6 mt-6 text-sm">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                  ></path>
+                </svg>
+                <span>423</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                  ></path>
+                </svg>
+                <span>67</span>
+              </div>
+            </div>
+            <div class="card-actions justify-end mt-6">
+              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
+              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div
+          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
+        >
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-info" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  ></path>
+                </svg>
+                <h3 class="card-title text-2xl">obsidian-dev-notes</h3>
+              </div>
+              <div class="badge badge-success">Active</div>
+            </div>
+            <p class="text-base-content/70 mt-4">
+              Плагин для Obsidian с инструментами для разработчиков: сниппеты кода, диаграммы и
+              многое другое.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <div class="badge badge-outline">Obsidian</div>
+              <div class="badge badge-outline">TypeScript</div>
+              <div class="badge badge-outline">Plugin</div>
+            </div>
+            <div class="flex items-center gap-6 mt-6 text-sm">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                  ></path>
+                </svg>
+                <span>612</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                  ></path>
+                </svg>
+                <span>98</span>
+              </div>
+            </div>
+            <div class="card-actions justify-end mt-6">
+              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
+              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-12">
+        <a href="https://github.com" target="_blank" class="btn btn-outline btn-lg">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            ></path>
+          </svg>
+          Больше на GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacts Section -->
+  <section id="contacts" class="py-20 bg-base-100">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">Свяжитесь со мной</h2>
+        <p class="text-lg text-base-content/70">Открыт для новых проектов и возможностей</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <!-- Contact Info Cards -->
+          <a
+            href="mailto:ivan@example.com"
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="card-body flex-row items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0"
+              >
+                <svg
+                  class="w-7 h-7 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">Email</h3>
+                <p class="text-base-content/70">ivan@example.com</p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="https://t.me/ivan"
+            target="_blank"
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="card-body flex-row items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0"
+              >
+                <svg class="w-7 h-7 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">Telegram</h3>
+                <p class="text-base-content/70">@ivan</p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="https://github.com/ivan"
+            target="_blank"
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="card-body flex-row items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0"
+              >
+                <svg class="w-7 h-7 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">GitHub</h3>
+                <p class="text-base-content/70">github.com/ivan</p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="https://linkedin.com/in/ivan"
+            target="_blank"
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="card-body flex-row items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-full bg-info/20 flex items-center justify-center flex-shrink-0"
+              >
+                <svg class="w-7 h-7 text-info" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">LinkedIn</h3>
+                <p class="text-base-content/70">linkedin.com/in/ivan</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="card bg-base-200 shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-2xl mb-6">Напишите мне</h3>
+            <form class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Ваше имя</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Иван Иванов"
+                    class="input input-bordered w-full"
+                    required
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Email</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="ivan@example.com"
+                    class="input input-bordered w-full"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Тема</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Сотрудничество"
+                  class="input input-bordered w-full"
+                  required
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Сообщение</span>
+                </label>
+                <textarea
+                  class="textarea textarea-bordered h-32"
+                  placeholder="Расскажите о вашем проекте..."
+                  required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Отправить сообщение
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="typography prose">
     <PersonImage />
 
     <p>
@@ -34,7 +486,7 @@ import meImageDark from '../assets/images/me-dark.png';
 </Layout>
 
 <style is:global>
-  @keyframes slideaway {
+  /* @keyframes slideaway {
     from {
       display: block;
     }
@@ -42,9 +494,9 @@ import meImageDark from '../assets/images/me-dark.png';
       transform: translateY(250px);
       opacity: 0;
     }
-  }
+  } */
 
-  .home {
+  /* .home {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(3, min-content);
@@ -70,5 +522,5 @@ import meImageDark from '../assets/images/me-dark.png';
     grid-area: social;
     justify-self: center;
     width: 100%;
-  }
+  } */
 </style>

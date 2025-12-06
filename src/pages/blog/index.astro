@@ -1,0 +1,581 @@
+---
+import Layout from '../../components/Layout.astro';
+---
+
+<Layout title="Blog" description="Learn more about my blog and my work.">
+  <section class="py-16 md:py-20 bg-gradient-to-br from-base-100 to-base-200">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1
+          class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+        >
+          Blog
+        </h1>
+        <p class="text-lg md:text-xl text-base-content/70 mb-8">
+          Thoughts on frontend development, architecture, and modern web technologies
+        </p>
+
+        <!-- Search and Filter -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div class="form-control w-full sm:w-auto">
+            <div class="input-group">
+              <input
+                type="text"
+                placeholder="Search articles..."
+                class="input input-bordered w-full sm:w-80"
+              />
+              <button class="btn btn-square btn-primary">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-outline">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                ></path>
+              </svg>
+              Filter by Tag
+            </label>
+            <ul
+              tabindex="0"
+              class="dropdown-content z-1 menu p-2 shadow bg-base-200 rounded-box w-52 mt-2"
+            >
+              <li><a>All Posts</a></li>
+              <li><a>React</a></li>
+              <li><a>TypeScript</a></li>
+              <li><a>Performance</a></li>
+              <li><a>Architecture</a></li>
+              <li><a>CSS</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-base-100">
+    <div class="container mx-auto px-4">
+      <div class="max-w-7xl mx-auto">
+        <!-- Featured Post -->
+        <div
+          class="card lg:card-side bg-base-200 shadow-xl mb-12 hover:shadow-2xl transition-all duration-300"
+        >
+          <figure class="lg:w-1/2">
+            <div
+              class="w-full h-64 lg:h-full bg-linear-to-br from-primary to-secondary flex items-center justify-center"
+            >
+              <svg
+                class="w-24 h-24 text-base-100"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                ></path>
+              </svg>
+            </div>
+          </figure>
+          <div class="card-body lg:w-1/2">
+            <div class="flex gap-2 mb-2">
+              <div class="badge badge-primary">Featured</div>
+              <div class="badge badge-outline">React</div>
+            </div>
+            <h2 class="card-title text-3xl">
+              Building Scalable React Applications: A Complete Guide
+            </h2>
+            <p class="text-base-content/70">
+              An in-depth exploration of architectural patterns, state management strategies, and
+              best practices for building large-scale React applications that are maintainable and
+              performant.
+            </p>
+            <div class="flex items-center gap-4 text-sm text-base-content/60 mt-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>November 20, 2024</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>12 min read</span>
+              </div>
+            </div>
+            <div class="card-actions justify-end mt-4">
+              <a href="#" class="btn btn-primary">Read Article</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Blog Post 1 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-primary badge-sm mb-2">React</div>
+              <h3 class="card-title text-xl">Modern React Hooks Patterns</h3>
+              <p class="text-base-content/70">
+                Exploring best practices for using hooks in React 18 and how they simplify state
+                management.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>November 15, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 2 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-secondary to-accent rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-secondary badge-sm mb-2">Performance</div>
+              <h3 class="card-title text-xl">Web Application Optimization</h3>
+              <p class="text-base-content/70">
+                Practical tips for improving performance: from code splitting to lazy loading.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>November 8, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 3 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-accent to-info rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-accent badge-sm mb-2">TypeScript</div>
+              <h3 class="card-title text-xl">TypeScript in 2024: What's New?</h3>
+              <p class="text-base-content/70">
+                Overview of new TypeScript features and how they help write safer code.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>November 1, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 4 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-info to-success rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-info badge-sm mb-2">CSS</div>
+              <h3 class="card-title text-xl">Mastering Flexbox and Grid</h3>
+              <p class="text-base-content/70">
+                Deep dive into CSS layout systems and when to use Flexbox vs Grid for responsive
+                designs.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>October 28, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 5 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-success to-warning rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-success badge-sm mb-2">Architecture</div>
+              <h3 class="card-title text-xl">Component Design Patterns</h3>
+              <p class="text-base-content/70">
+                Learn how to design reusable, composable components using proven design patterns.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>October 22, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 6 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-warning to-error rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-warning badge-sm mb-2">Security</div>
+              <h3 class="card-title text-xl">Frontend Security Best Practices</h3>
+              <p class="text-base-content/70">
+                Essential security considerations for modern web applications and how to implement
+                them.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>October 15, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 7 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-error to-primary rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-error badge-sm mb-2">Testing</div>
+              <h3 class="card-title text-xl">Testing React Components</h3>
+              <p class="text-base-content/70">
+                Comprehensive guide to testing React components with Jest and React Testing Library.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>October 10, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 8 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-primary via-secondary to-accent rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-primary badge-sm mb-2">Tools</div>
+              <h3 class="card-title text-xl">Essential Developer Tools 2024</h3>
+              <p class="text-base-content/70">
+                Must-have tools and extensions that boost productivity for modern web developers.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>October 5, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Blog Post 9 -->
+          <article
+            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <figure class="px-6 pt-6">
+              <div
+                class="w-full h-48 bg-gradient-to-br from-info via-success to-warning rounded-xl flex items-center justify-center"
+              >
+                <svg
+                  class="w-20 h-20 text-base-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+            </figure>
+            <div class="card-body">
+              <div class="badge badge-info badge-sm mb-2">DevOps</div>
+              <h3 class="card-title text-xl">CI/CD for Frontend Projects</h3>
+              <p class="text-base-content/70">
+                Setting up automated deployment pipelines for React applications with GitHub
+                Actions.
+              </p>
+              <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>September 28, 2024</span>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <a href="#" class="btn btn-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-12">
+          <div class="join">
+            <button class="join-item btn btn-disabled">«</button>
+            <button class="join-item btn btn-active">1</button>
+            <button class="join-item btn">2</button>
+            <button class="join-item btn">3</button>
+            <button class="join-item btn">4</button>
+            <button class="join-item btn">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
