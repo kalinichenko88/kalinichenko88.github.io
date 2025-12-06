@@ -1,11 +1,13 @@
 ---
-import '../styles/global.css';
 import { Font } from 'astro:assets';
 
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Head from './Head.astro';
+
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+import '../styles/global.css';
 
 type Props = {
   title?: string;
@@ -30,11 +32,13 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } =
 
     <!-- Prevent flash of unstyled content -->
     <script is:inline>
-      (function() {
+      (function () {
         const validThemes = ['cloud', 'cloud-dark', 'terminal'];
         let theme = localStorage.getItem('theme');
         if (!theme || !validThemes.includes(theme)) {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'cloud-dark'
+            : 'cloud';
         }
         document.documentElement.setAttribute('data-theme', theme);
       })();
@@ -43,7 +47,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } =
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
     <Header />
 
-    <main class:list={["flex-1", className]}>
+    <main class:list={['flex-1', className]}>
       <slot />
     </main>
 

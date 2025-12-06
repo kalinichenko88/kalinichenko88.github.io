@@ -1,16 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
+
 import Layout from '../components/Layout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import AboutSection from '../components/home/AboutSection.astro';
 import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
-import {
-  GITHUB_PROFILE_LINK,
-  LINKEDIN_PROFILE_LINK,
-  MAIL_PROFILE_LINK,
-} from '../consts';
+
+import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
 
 // Get latest blog posts
 const allPosts = await getCollection('posts');
@@ -42,19 +40,22 @@ const expertise = [
 const projects = [
   {
     title: 'SaaS Platform Frontend',
-    description: 'Leading frontend development for a complex, long-living SaaS platform at Apliteni. Focus on performance optimization, clean architecture, and developer experience improvements.',
+    description:
+      'Leading frontend development for a complex, long-living SaaS platform at Apliteni. Focus on performance optimization, clean architecture, and developer experience improvements.',
     tags: ['React', 'TypeScript', 'Performance', 'Architecture'],
     metrics: '4+ years of continuous development',
   },
   {
     title: 'GraphQL Backend & Client Apps',
-    description: 'Led the development of an Apollo GraphQL server and created multiple client applications using Nuxt.js framework at ConstLab.',
+    description:
+      'Led the development of an Apollo GraphQL server and created multiple client applications using Nuxt.js framework at ConstLab.',
     tags: ['GraphQL', 'Apollo', 'Nuxt.js', 'Node.js'],
     metrics: 'Full-stack architecture ownership',
   },
   {
     title: 'Legacy Frontend Migration',
-    description: 'Migrated legacy frontends to modern React/TypeScript stack, introduced CI/CD automation to speed up development cycles.',
+    description:
+      'Migrated legacy frontends to modern React/TypeScript stack, introduced CI/CD automation to speed up development cycles.',
     tags: ['React', 'TypeScript', 'CI/CD', 'Migration'],
     metrics: 'Streamlined dev workflows',
   },
