@@ -21,6 +21,30 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } =
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Theme initialization - must be first to prevent flash -->
+    <script is:inline>
+      (function () {
+        const validThemes = ['cloud', 'cloud-dark', 'terminal'];
+
+        function getTheme() {
+          let theme = localStorage.getItem('theme');
+          if (!theme || !validThemes.includes(theme)) {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'cloud-dark'
+              : 'cloud';
+          }
+          return theme;
+        }
+
+        // Apply theme immediately on initial load
+        document.documentElement.setAttribute('data-theme', getTheme());
+
+        // Handle View Transitions - apply theme BEFORE swap to prevent flash
+        document.addEventListener('astro:before-swap', (e) => {
+          e.newDocument.documentElement.setAttribute('data-theme', getTheme());
+        });
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Head title={title} description={description} />
@@ -29,20 +53,6 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } =
     <Font cssVariable="--font-general-sans" preload />
     <Font cssVariable="--font-dm-sans" preload />
     <Font cssVariable="--font-jetbrains-mono" preload />
-
-    <!-- Prevent flash of unstyled content -->
-    <script is:inline>
-      (function () {
-        const validThemes = ['cloud', 'cloud-dark', 'terminal'];
-        let theme = localStorage.getItem('theme');
-        if (!theme || !validThemes.includes(theme)) {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'cloud-dark'
-            : 'cloud';
-        }
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
   </head>
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
     <Header />
