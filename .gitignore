@@ -1,5 +1,8 @@
 .vscode/
 .astro/
+.cursor/
 
 node_modules/
 dist/
+
+CLAUDE.md
