@@ -50,53 +50,53 @@
   --container-prose: 720px;
 }
 
-/* Light Theme (default) */
+/* Light Theme (default) - Warm, earthy palette */
 :root, [data-theme="light"] {
-  --color-bg: #FFFFFF;
-  --color-bg-subtle: #F4F4F5;
-  --color-bg-muted: #E4E4E7;
+  --color-bg: #FDFBF7;
+  --color-bg-subtle: #F7F3ED;
+  --color-bg-muted: #EDE8E0;
   --color-surface: #FFFFFF;
-  --color-surface-elevated: #FAFAFA;
+  --color-surface-elevated: #FDFBF7;
 
-  --color-text: #18181B;
-  --color-text-secondary: #52525B;
-  --color-text-tertiary: #A1A1AA;
+  --color-text: #2C2416;
+  --color-text-secondary: #5C5347;
+  --color-text-tertiary: #9A8F82;
 
-  --color-border: #E4E4E7;
-  --color-border-subtle: #F4F4F5;
+  --color-border: #E5DFD5;
+  --color-border-subtle: #F0EBE3;
 
-  --color-accent: #0D9488;
-  --color-accent-hover: #0F766E;
-  --color-accent-subtle: #CCFBF1;
+  --color-accent: #C45D35;
+  --color-accent-hover: #A84E2C;
+  --color-accent-subtle: #FDF0EB;
 
-  --color-code-bg: #F4F4F5;
+  --color-code-bg: #F7F3ED;
 
   /* Grid overlay for subtle structure */
-  --grid-color: rgba(0, 0, 0, 0.03);
+  --grid-color: rgba(44, 36, 22, 0.03);
 }
 
-/* Dark Theme */
+/* Dark Theme - Warm, cozy dark palette */
 [data-theme="dark"] {
-  --color-bg: #09090B;
-  --color-bg-subtle: #18181B;
-  --color-bg-muted: #27272A;
-  --color-surface: #18181B;
-  --color-surface-elevated: #1F1F23;
+  --color-bg: #1A1714;
+  --color-bg-subtle: #231F1B;
+  --color-bg-muted: #2E2924;
+  --color-surface: #231F1B;
+  --color-surface-elevated: #2A2521;
 
-  --color-text: #FAFAFA;
-  --color-text-secondary: #A1A1AA;
-  --color-text-tertiary: #71717A;
+  --color-text: #F5F0E8;
+  --color-text-secondary: #B8AFA3;
+  --color-text-tertiary: #7D756A;
 
-  --color-border: #27272A;
-  --color-border-subtle: #1F1F23;
+  --color-border: #3A342E;
+  --color-border-subtle: #2E2924;
 
-  --color-accent: #14B8A6;
-  --color-accent-hover: #2DD4BF;
-  --color-accent-subtle: #042F2E;
+  --color-accent: #E07A52;
+  --color-accent-hover: #F09070;
+  --color-accent-subtle: #2E2117;
 
-  --color-code-bg: #1F1F23;
+  --color-code-bg: #2A2521;
 
-  --grid-color: rgba(255, 255, 255, 0.02);
+  --grid-color: rgba(245, 240, 232, 0.02);
 }
 
 /* ============================================

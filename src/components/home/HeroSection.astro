@@ -6,10 +6,10 @@ type Props = {
 const { yearsExperience } = Astro.props;
 ---
 
-<section class="relative min-h-[90vh] flex items-center grid-pattern">
-  <div class="container py-24 md:py-32">
-    <div class="max-w-4xl">
-      <div class="animate-in mb-8">
+<section class="relative min-h-[80vh] flex items-center grid-pattern">
+  <div class="container py-16 md:py-20">
+    <div class="max-w-3xl">
+      <div class="animate-in mb-5">
         <span
           class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line bg-surface text-xs font-mono text-foreground-secondary"
         >
@@ -18,13 +18,13 @@ const { yearsExperience } = Astro.props;
         </span>
       </div>
 
-      <h1 class="animate-in animate-in-delay-1 text-foreground mb-6">
+      <h1 class="animate-in animate-in-delay-1 text-foreground mb-4">
         Senior Frontend Engineer
         <span class="block text-foreground-tertiary">React, TypeScript, Full-Stack Background</span>
       </h1>
 
       <p
-        class="animate-in animate-in-delay-2 text-lg md:text-xl text-foreground-secondary leading-relaxed max-w-2xl mb-8"
+        class="animate-in animate-in-delay-2 text-lg md:text-xl text-foreground-secondary leading-relaxed max-w-2xl mb-6"
       >
         I build scalable, high-performance web applications with a focus on
         <span class="text-foreground font-medium">clean architecture</span>,
@@ -33,7 +33,7 @@ const { yearsExperience } = Astro.props;
         design better frontend solutions.
       </p>
 
-      <div class="animate-in animate-in-delay-3 flex flex-wrap gap-8 mb-10 font-mono text-sm">
+      <div class="animate-in animate-in-delay-3 flex flex-wrap gap-6 mb-8 font-mono text-sm">
         <div>
           <span class="text-accent text-2xl font-semibold">{yearsExperience}+</span>
           <span class="block text-foreground-tertiary mt-1">Years Experience</span>
