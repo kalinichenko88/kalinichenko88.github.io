@@ -1,0 +1,71 @@
+---
+type Props = {
+  yearsExperience: number;
+};
+
+const { yearsExperience } = Astro.props;
+---
+
+<section class="relative min-h-[90vh] flex items-center grid-pattern">
+  <div class="container py-24 md:py-32">
+    <div class="max-w-4xl">
+      <div class="animate-in mb-8">
+        <span
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line bg-surface text-xs font-mono text-foreground-secondary"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-accent status-available"></span>
+          Available for new opportunities
+        </span>
+      </div>
+
+      <h1 class="animate-in animate-in-delay-1 text-foreground mb-6">
+        Senior Frontend Engineer
+        <span class="block text-foreground-tertiary">React, TypeScript, Full-Stack Background</span>
+      </h1>
+
+      <p
+        class="animate-in animate-in-delay-2 text-lg md:text-xl text-foreground-secondary leading-relaxed max-w-2xl mb-8"
+      >
+        I build scalable, high-performance web applications with a focus on
+        <span class="text-foreground font-medium">clean architecture</span>,
+        <span class="text-foreground font-medium">developer experience</span>, and
+        <span class="text-foreground font-medium">product impact</span>. Full-stack background helps me
+        design better frontend solutions.
+      </p>
+
+      <div class="animate-in animate-in-delay-3 flex flex-wrap gap-8 mb-10 font-mono text-sm">
+        <div>
+          <span class="text-accent text-2xl font-semibold">{yearsExperience}+</span>
+          <span class="block text-foreground-tertiary mt-1">Years Experience</span>
+        </div>
+        <div>
+          <span class="text-accent text-2xl font-semibold">SaaS</span>
+          <span class="block text-foreground-tertiary mt-1">Platform Focus</span>
+        </div>
+        <div>
+          <span class="text-accent text-2xl font-semibold">Remote</span>
+          <span class="block text-foreground-tertiary mt-1">International Teams</span>
+        </div>
+      </div>
+
+      <div class="animate-in animate-in-delay-4 flex flex-wrap gap-4">
+        <a href="#contact" class="btn-primary">
+          Get in touch
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <a href="#projects" class="btn-secondary"> View experience </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in animate-in-delay-5">
+    <div class="flex flex-col items-center gap-2 text-foreground-tertiary">
+      <span class="text-xs font-mono uppercase tracking-wider">Scroll</span>
+      <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </div>
+</section>
