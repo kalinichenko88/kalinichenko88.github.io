@@ -1,7 +1,3 @@
-/* Font imports must come first */
-@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 @import 'tailwindcss';
 
 /* ============================================
@@ -76,9 +72,9 @@
   --color-code-bg: #f0eff8;
   --grid-color: rgba(124, 92, 255, 0.03);
 
-  --font-display: 'General Sans', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: var(--font-general-sans);
+  --font-body: var(--font-dm-sans);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /* ============================================
@@ -105,9 +101,9 @@
   --color-code-bg: #1a1922;
   --grid-color: rgba(155, 127, 255, 0.03);
 
-  --font-display: 'General Sans', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: var(--font-general-sans);
+  --font-body: var(--font-dm-sans);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /* ============================================
@@ -134,9 +130,9 @@
   --color-code-bg: #0f0f0f;
   --grid-color: rgba(51, 255, 51, 0.03);
 
-  --font-display: 'JetBrains Mono', ui-monospace, monospace;
-  --font-body: 'JetBrains Mono', ui-monospace, monospace;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: var(--font-jetbrains-mono);
+  --font-body: var(--font-jetbrains-mono);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /* ============================================
