@@ -1,5 +1,6 @@
 /* Font imports must come first */
-@import url('https://api.fontshare.com/v2/css?f[]=instrument-sans@400,500,600,700&f[]=satoshi@400,500,700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @import 'tailwindcss';
 
@@ -50,53 +51,91 @@
   --container-prose: 720px;
 }
 
-/* Light Theme (default) - Warm, earthy palette */
-:root, [data-theme="light"] {
-  --color-bg: #FDFBF7;
-  --color-bg-subtle: #F7F3ED;
-  --color-bg-muted: #EDE8E0;
+/* ============================================
+   THEME 1: Cloud Light (Default) - Soft, airy, approachable
+   ============================================ */
+:root, [data-theme="cloud"] {
+  --color-bg: #F8F7FC;
+  --color-bg-subtle: #F0EFF8;
+  --color-bg-muted: #E8E6F2;
   --color-surface: #FFFFFF;
-  --color-surface-elevated: #FDFBF7;
+  --color-surface-elevated: #FFFFFF;
 
-  --color-text: #2C2416;
-  --color-text-secondary: #5C5347;
-  --color-text-tertiary: #9A8F82;
+  --color-text: #2D2D3A;
+  --color-text-secondary: #5C5C6E;
+  --color-text-tertiary: #8E8E9F;
 
-  --color-border: #E5DFD5;
-  --color-border-subtle: #F0EBE3;
+  --color-border: #E0DFE8;
+  --color-border-subtle: #ECEAF4;
 
-  --color-accent: #C45D35;
-  --color-accent-hover: #A84E2C;
-  --color-accent-subtle: #FDF0EB;
+  --color-accent: #7C5CFF;
+  --color-accent-hover: #6344E5;
+  --color-accent-subtle: #F0ECFF;
 
-  --color-code-bg: #F7F3ED;
+  --color-code-bg: #F0EFF8;
+  --grid-color: rgba(124, 92, 255, 0.03);
 
-  /* Grid overlay for subtle structure */
-  --grid-color: rgba(44, 36, 22, 0.03);
+  --font-display: 'General Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Dark Theme - Warm, cozy dark palette */
-[data-theme="dark"] {
-  --color-bg: #1A1714;
-  --color-bg-subtle: #231F1B;
-  --color-bg-muted: #2E2924;
-  --color-surface: #231F1B;
-  --color-surface-elevated: #2A2521;
+/* ============================================
+   THEME 2: Cloud Dark - Deep, calm, refined
+   ============================================ */
+[data-theme="cloud-dark"] {
+  --color-bg: #13121A;
+  --color-bg-subtle: #1A1922;
+  --color-bg-muted: #22212B;
+  --color-surface: #1A1922;
+  --color-surface-elevated: #22212B;
 
-  --color-text: #F5F0E8;
-  --color-text-secondary: #B8AFA3;
-  --color-text-tertiary: #7D756A;
+  --color-text: #EEEEF4;
+  --color-text-secondary: #A5A5B8;
+  --color-text-tertiary: #6E6E82;
 
-  --color-border: #3A342E;
-  --color-border-subtle: #2E2924;
+  --color-border: #2E2D3A;
+  --color-border-subtle: #22212B;
 
-  --color-accent: #E07A52;
-  --color-accent-hover: #F09070;
-  --color-accent-subtle: #2E2117;
+  --color-accent: #9B7FFF;
+  --color-accent-hover: #B49FFF;
+  --color-accent-subtle: #1E1A2E;
 
-  --color-code-bg: #2A2521;
+  --color-code-bg: #1A1922;
+  --grid-color: rgba(155, 127, 255, 0.03);
 
-  --grid-color: rgba(245, 240, 232, 0.02);
+  --font-display: 'General Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ============================================
+   THEME 3: Terminal - Retro-tech, hacker aesthetic
+   ============================================ */
+[data-theme="terminal"] {
+  --color-bg: #0A0A0A;
+  --color-bg-subtle: #0F0F0F;
+  --color-bg-muted: #151515;
+  --color-surface: #0F0F0F;
+  --color-surface-elevated: #151515;
+
+  --color-text: #33FF33;
+  --color-text-secondary: #22CC22;
+  --color-text-tertiary: #1A8C1A;
+
+  --color-border: #1A8C1A;
+  --color-border-subtle: #143314;
+
+  --color-accent: #00FFFF;
+  --color-accent-hover: #33FFFF;
+  --color-accent-subtle: #0A1A1A;
+
+  --color-code-bg: #0F0F0F;
+  --grid-color: rgba(51, 255, 51, 0.03);
+
+  --font-display: 'JetBrains Mono', ui-monospace, monospace;
+  --font-body: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /* ============================================
@@ -412,4 +451,116 @@
 /* Status indicator pulse */
 .status-available {
   animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Theme-Specific Overrides
+   ============================================ */
+
+/* Cloud themes - soft shadows, rounded */
+[data-theme="cloud"] .card,
+[data-theme="cloud-dark"] .card {
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px rgba(124, 92, 255, 0.06);
+  border-color: transparent;
+}
+
+[data-theme="cloud"] .card:hover,
+[data-theme="cloud-dark"] .card:hover {
+  box-shadow: 0 8px 30px rgba(124, 92, 255, 0.12);
+  border-color: transparent;
+}
+
+[data-theme="cloud-dark"] .card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="cloud-dark"] .card:hover {
+  box-shadow: 0 8px 30px rgba(155, 127, 255, 0.15);
+}
+
+[data-theme="cloud"] .btn-primary,
+[data-theme="cloud-dark"] .btn-primary {
+  border-radius: 9999px;
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}
+
+[data-theme="cloud"] .btn-secondary,
+[data-theme="cloud-dark"] .btn-secondary {
+  border-radius: 9999px;
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}
+
+[data-theme="cloud"] .tag,
+[data-theme="cloud-dark"] .tag {
+  border-radius: 9999px;
+}
+
+/* Terminal theme - CRT effects, glow */
+[data-theme="terminal"] {
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+}
+
+[data-theme="terminal"] .card {
+  border-radius: 0;
+  border-style: dashed;
+  background: linear-gradient(180deg, rgba(51, 255, 51, 0.02) 0%, transparent 100%);
+}
+
+[data-theme="terminal"] .btn-primary {
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--color-accent);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+[data-theme="terminal"] .btn-secondary {
+  border-radius: 0;
+  border-style: dashed;
+}
+
+[data-theme="terminal"] .tag {
+  border-radius: 0;
+  border: 1px dashed var(--color-border);
+}
+
+[data-theme="terminal"] h1::before,
+[data-theme="terminal"] h2::before {
+  content: '> ';
+  color: var(--color-accent);
+}
+
+[data-theme="terminal"] .section-label::before {
+  content: '// ';
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--color-text-tertiary);
+}
+
+[data-theme="terminal"] a:hover {
+  text-shadow: 0 0 8px var(--color-accent);
+}
+
+/* Scanline overlay for terminal theme */
+[data-theme="terminal"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 9999;
+  opacity: 0.3;
 }

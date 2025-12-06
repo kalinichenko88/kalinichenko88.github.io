@@ -8,6 +8,12 @@ const navLinks = [
   { href: '/#contact', label: 'Contact' },
 ];
 
+const themes = [
+  { id: 'cloud', label: 'Light', icon: '☀️' },
+  { id: 'cloud-dark', label: 'Dark', icon: '🌙' },
+  { id: 'terminal', label: 'Terminal', icon: '💻' },
+];
+
 const currentPath = Astro.url.pathname;
 ---
 
@@ -42,7 +48,7 @@ const currentPath = Astro.url.pathname;
         ))}
       </div>
 
-      <!-- Right Side: Theme Toggle + GitHub -->
+      <!-- Right Side: Theme Switcher + GitHub -->
       <div class="flex items-center gap-2">
         <!-- GitHub Link -->
         <a
@@ -57,34 +63,44 @@ const currentPath = Astro.url.pathname;
           </svg>
         </a>
 
-        <!-- Theme Toggle -->
-        <button
-          id="theme-toggle"
-          type="button"
-          class="relative p-2 text-foreground-tertiary hover:text-foreground transition-colors duration-150 cursor-pointer"
-          aria-label="Toggle theme"
-        >
-          <!-- Sun Icon (shown in dark mode) -->
-          <svg
-            class="w-5 h-5 sun-icon hidden"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+        <!-- Theme Switcher -->
+        <div class="relative">
+          <button
+            id="theme-toggle"
+            type="button"
+            class="flex items-center gap-1.5 px-2.5 py-1.5 text-sm text-foreground-tertiary hover:text-foreground border border-line rounded-md transition-colors duration-150 cursor-pointer hover:bg-background-subtle"
+            aria-label="Change theme"
+            aria-expanded="false"
+            aria-haspopup="true"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-          </svg>
-          <!-- Moon Icon (shown in light mode) -->
-          <svg
-            class="w-5 h-5 moon-icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+            <span id="theme-icon" class="text-base">☀️</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          <!-- Theme Dropdown -->
+          <div
+            id="theme-dropdown"
+            class="absolute right-0 top-full mt-2 w-44 py-1.5 bg-surface border border-line rounded-lg shadow-lg opacity-0 invisible translate-y-1 transition-all duration-150 z-50"
+            role="menu"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-          </svg>
-        </button>
+            {themes.map((theme) => (
+              <button
+                type="button"
+                class="theme-option w-full flex items-center gap-3 px-3 py-2 text-sm text-foreground-secondary hover:text-foreground hover:bg-background-subtle transition-colors cursor-pointer"
+                data-theme={theme.id}
+                role="menuitem"
+              >
+                <span class="text-base">{theme.icon}</span>
+                <span>{theme.label}</span>
+                <svg class="theme-check w-4 h-4 ml-auto text-accent opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </button>
+            ))}
+          </div>
+        </div>
 
         <!-- Mobile Menu Button -->
         <button
@@ -135,37 +151,89 @@ const currentPath = Astro.url.pathname;
     if (window.__headerInitialized) return;
     window.__headerInitialized = true;
 
+    // Theme configuration
+    const THEMES = {
+      'cloud': { icon: '☀️', label: 'Light' },
+      'cloud-dark': { icon: '🌙', label: 'Dark' },
+      'terminal': { icon: '💻', label: 'Terminal' }
+    };
+
+    const DEFAULT_THEME = 'cloud';
+
     function getStoredTheme() {
       return localStorage.getItem('theme');
     }
 
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    function getSystemPreference() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
     }
 
-    function updateThemeIcons() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const sunIcon = document.querySelector('.sun-icon');
-      const moonIcon = document.querySelector('.moon-icon');
-      if (sunIcon && moonIcon) {
-        sunIcon.classList.toggle('hidden', !isDark);
-        moonIcon.classList.toggle('hidden', isDark);
+    function updateThemeUI(theme) {
+      // Update button icon
+      const themeIcon = document.getElementById('theme-icon');
+      if (themeIcon && THEMES[theme]) {
+        themeIcon.textContent = THEMES[theme].icon;
       }
+
+      // Update checkmarks in dropdown
+      document.querySelectorAll('.theme-option').forEach(option => {
+        const check = option.querySelector('.theme-check');
+        if (check) {
+          check.style.opacity = option.dataset.theme === theme ? '1' : '0';
+        }
+      });
     }
 
     function applyTheme(theme) {
+      if (!THEMES[theme]) theme = DEFAULT_THEME;
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
-      updateThemeIcons();
+      updateThemeUI(theme);
     }
 
-    // Theme toggle handler - use event delegation on document
+    function toggleDropdown(show) {
+      const dropdown = document.getElementById('theme-dropdown');
+      const toggle = document.getElementById('theme-toggle');
+      if (!dropdown || !toggle) return;
+
+      if (show) {
+        dropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1');
+        dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
+        toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
+        dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    // Event delegation for all clicks
     document.addEventListener('click', (e) => {
       const themeToggle = e.target.closest('#theme-toggle');
+      const themeDropdown = document.getElementById('theme-dropdown');
+      const themeOption = e.target.closest('.theme-option');
+
+      // Theme dropdown toggle
       if (themeToggle) {
-        const current = document.documentElement.getAttribute('data-theme') || getStoredTheme() || getSystemTheme();
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        applyTheme(newTheme);
+        e.preventDefault();
+        const isOpen = themeToggle.getAttribute('aria-expanded') === 'true';
+        toggleDropdown(!isOpen);
+        return;
+      }
+
+      // Theme option selection
+      if (themeOption) {
+        const newTheme = themeOption.dataset.theme;
+        if (newTheme) {
+          applyTheme(newTheme);
+          toggleDropdown(false);
+        }
+        return;
+      }
+
+      // Close dropdown when clicking outside
+      if (themeDropdown && !themeDropdown.contains(e.target)) {
+        toggleDropdown(false);
       }
 
       // Mobile menu toggle
@@ -189,22 +257,28 @@ const currentPath = Astro.url.pathname;
       }
     });
 
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!getStoredTheme()) {
-        applyTheme(e.matches ? 'dark' : 'light');
+    // Close dropdown on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleDropdown(false);
       }
     });
 
-    // Update icons on page load and after View Transitions
-    function syncThemeIcons() {
-      updateThemeIcons();
+    // Initialize theme on page load
+    function initTheme() {
+      const storedTheme = getStoredTheme();
+      const theme = storedTheme || getSystemPreference();
+      applyTheme(theme);
+
       // Close mobile menu on navigation
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
+
+      // Close theme dropdown
+      toggleDropdown(false);
     }
 
-    syncThemeIcons();
-    document.addEventListener('astro:after-swap', syncThemeIcons);
+    initTheme();
+    document.addEventListener('astro:after-swap', initTheme);
   })();
 </script>
