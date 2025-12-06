@@ -47,32 +47,33 @@
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Container */
-  --container-max: 1200px;
-  --container-prose: 720px;
+  --container-max: 1440px;
+  --container-prose: 920px;
 }
 
 /* ============================================
    THEME 1: Cloud Light (Default) - Soft, airy, approachable
    ============================================ */
-:root, [data-theme="cloud"] {
-  --color-bg: #F8F7FC;
-  --color-bg-subtle: #F0EFF8;
-  --color-bg-muted: #E8E6F2;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #FFFFFF;
+:root,
+[data-theme='cloud'] {
+  --color-bg: #f8f7fc;
+  --color-bg-subtle: #f0eff8;
+  --color-bg-muted: #e8e6f2;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
 
-  --color-text: #2D2D3A;
-  --color-text-secondary: #5C5C6E;
-  --color-text-tertiary: #8E8E9F;
+  --color-text: #2d2d3a;
+  --color-text-secondary: #5c5c6e;
+  --color-text-tertiary: #8e8e9f;
 
-  --color-border: #E0DFE8;
-  --color-border-subtle: #ECEAF4;
+  --color-border: #e0dfe8;
+  --color-border-subtle: #eceaf4;
 
-  --color-accent: #7C5CFF;
-  --color-accent-hover: #6344E5;
-  --color-accent-subtle: #F0ECFF;
+  --color-accent: #7c5cff;
+  --color-accent-hover: #6344e5;
+  --color-accent-subtle: #f0ecff;
 
-  --color-code-bg: #F0EFF8;
+  --color-code-bg: #f0eff8;
   --grid-color: rgba(124, 92, 255, 0.03);
 
   --font-display: 'General Sans', system-ui, sans-serif;
@@ -83,25 +84,25 @@
 /* ============================================
    THEME 2: Cloud Dark - Deep, calm, refined
    ============================================ */
-[data-theme="cloud-dark"] {
-  --color-bg: #13121A;
-  --color-bg-subtle: #1A1922;
-  --color-bg-muted: #22212B;
-  --color-surface: #1A1922;
-  --color-surface-elevated: #22212B;
+[data-theme='cloud-dark'] {
+  --color-bg: #13121a;
+  --color-bg-subtle: #1a1922;
+  --color-bg-muted: #22212b;
+  --color-surface: #1a1922;
+  --color-surface-elevated: #22212b;
 
-  --color-text: #EEEEF4;
-  --color-text-secondary: #A5A5B8;
-  --color-text-tertiary: #6E6E82;
+  --color-text: #eeeef4;
+  --color-text-secondary: #a5a5b8;
+  --color-text-tertiary: #6e6e82;
 
-  --color-border: #2E2D3A;
-  --color-border-subtle: #22212B;
+  --color-border: #2e2d3a;
+  --color-border-subtle: #22212b;
 
-  --color-accent: #9B7FFF;
-  --color-accent-hover: #B49FFF;
-  --color-accent-subtle: #1E1A2E;
+  --color-accent: #9b7fff;
+  --color-accent-hover: #b49fff;
+  --color-accent-subtle: #1e1a2e;
 
-  --color-code-bg: #1A1922;
+  --color-code-bg: #1a1922;
   --grid-color: rgba(155, 127, 255, 0.03);
 
   --font-display: 'General Sans', system-ui, sans-serif;
@@ -112,25 +113,25 @@
 /* ============================================
    THEME 3: Terminal - Retro-tech, hacker aesthetic
    ============================================ */
-[data-theme="terminal"] {
-  --color-bg: #0A0A0A;
-  --color-bg-subtle: #0F0F0F;
+[data-theme='terminal'] {
+  --color-bg: #0a0a0a;
+  --color-bg-subtle: #0f0f0f;
   --color-bg-muted: #151515;
-  --color-surface: #0F0F0F;
+  --color-surface: #0f0f0f;
   --color-surface-elevated: #151515;
 
-  --color-text: #33FF33;
-  --color-text-secondary: #22CC22;
-  --color-text-tertiary: #1A8C1A;
+  --color-text: #33ff33;
+  --color-text-secondary: #22cc22;
+  --color-text-tertiary: #1a8c1a;
 
-  --color-border: #1A8C1A;
+  --color-border: #1a8c1a;
   --color-border-subtle: #143314;
 
-  --color-accent: #00FFFF;
-  --color-accent-hover: #33FFFF;
-  --color-accent-subtle: #0A1A1A;
+  --color-accent: #00ffff;
+  --color-accent-hover: #33ffff;
+  --color-accent-subtle: #0a1a1a;
 
-  --color-code-bg: #0F0F0F;
+  --color-code-bg: #0f0f0f;
   --grid-color: rgba(51, 255, 51, 0.03);
 
   --font-display: 'JetBrains Mono', ui-monospace, monospace;
@@ -183,11 +184,18 @@
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
-    transition: background-color var(--transition-slow), color var(--transition-slow);
+    transition:
+      background-color var(--transition-slow),
+      color var(--transition-slow);
   }
 
   /* Typography defaults */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -195,9 +203,15 @@
     color: var(--color-text);
   }
 
-  h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
-  h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
-  h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+  h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+  }
+  h3 {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+  }
 
   p {
     color: var(--color-text-secondary);
@@ -209,7 +223,8 @@
     transition: color var(--transition-fast);
   }
 
-  code, pre {
+  code,
+  pre {
     font-family: var(--font-mono);
   }
 
@@ -223,7 +238,7 @@
    Component Classes
    ============================================ */
 
-@layer components {
+@layer utilities {
   /* Container */
   .container {
     width: 100%;
@@ -266,7 +281,9 @@
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
 
   .card:hover {
@@ -286,7 +303,9 @@
     color: white;
     background-color: var(--color-accent);
     border-radius: var(--radius-md);
-    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
   }
 
   .btn-primary:hover {
@@ -311,7 +330,9 @@
     background-color: transparent;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
   }
 
   .btn-secondary:hover {
@@ -411,9 +432,15 @@
    ============================================ */
 
 @layer utilities {
-  .font-display { font-family: var(--font-display); }
-  .font-body { font-family: var(--font-body); }
-  .font-mono { font-family: var(--font-mono); }
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
 
   /* Animate in */
   .animate-in {
@@ -421,11 +448,21 @@
     opacity: 0;
   }
 
-  .animate-in-delay-1 { animation-delay: 0.1s; }
-  .animate-in-delay-2 { animation-delay: 0.2s; }
-  .animate-in-delay-3 { animation-delay: 0.3s; }
-  .animate-in-delay-4 { animation-delay: 0.4s; }
-  .animate-in-delay-5 { animation-delay: 0.5s; }
+  .animate-in-delay-1 {
+    animation-delay: 0.1s;
+  }
+  .animate-in-delay-2 {
+    animation-delay: 0.2s;
+  }
+  .animate-in-delay-3 {
+    animation-delay: 0.3s;
+  }
+  .animate-in-delay-4 {
+    animation-delay: 0.4s;
+  }
+  .animate-in-delay-5 {
+    animation-delay: 0.5s;
+  }
 }
 
 /* ============================================
@@ -444,8 +481,13 @@
 }
 
 @keyframes pulse-subtle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 /* Status indicator pulse */
@@ -458,58 +500,58 @@
    ============================================ */
 
 /* Cloud themes - soft shadows, rounded */
-[data-theme="cloud"] .card,
-[data-theme="cloud-dark"] .card {
+[data-theme='cloud'] .card,
+[data-theme='cloud-dark'] .card {
   border-radius: var(--radius-xl);
   box-shadow: 0 4px 20px rgba(124, 92, 255, 0.06);
   border-color: transparent;
 }
 
-[data-theme="cloud"] .card:hover,
-[data-theme="cloud-dark"] .card:hover {
+[data-theme='cloud'] .card:hover,
+[data-theme='cloud-dark'] .card:hover {
   box-shadow: 0 8px 30px rgba(124, 92, 255, 0.12);
   border-color: transparent;
 }
 
-[data-theme="cloud-dark"] .card {
+[data-theme='cloud-dark'] .card {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="cloud-dark"] .card:hover {
+[data-theme='cloud-dark'] .card:hover {
   box-shadow: 0 8px 30px rgba(155, 127, 255, 0.15);
 }
 
-[data-theme="cloud"] .btn-primary,
-[data-theme="cloud-dark"] .btn-primary {
+[data-theme='cloud'] .btn-primary,
+[data-theme='cloud-dark'] .btn-primary {
   border-radius: 9999px;
   padding-left: var(--space-8);
   padding-right: var(--space-8);
 }
 
-[data-theme="cloud"] .btn-secondary,
-[data-theme="cloud-dark"] .btn-secondary {
+[data-theme='cloud'] .btn-secondary,
+[data-theme='cloud-dark'] .btn-secondary {
   border-radius: 9999px;
   padding-left: var(--space-8);
   padding-right: var(--space-8);
 }
 
-[data-theme="cloud"] .tag,
-[data-theme="cloud-dark"] .tag {
+[data-theme='cloud'] .tag,
+[data-theme='cloud-dark'] .tag {
   border-radius: 9999px;
 }
 
 /* Terminal theme - CRT effects, glow */
-[data-theme="terminal"] {
+[data-theme='terminal'] {
   text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
 }
 
-[data-theme="terminal"] .card {
+[data-theme='terminal'] .card {
   border-radius: 0;
   border-style: dashed;
   background: linear-gradient(180deg, rgba(51, 255, 51, 0.02) 0%, transparent 100%);
 }
 
-[data-theme="terminal"] .btn-primary {
+[data-theme='terminal'] .btn-primary {
   border-radius: 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -517,23 +559,23 @@
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-[data-theme="terminal"] .btn-secondary {
+[data-theme='terminal'] .btn-secondary {
   border-radius: 0;
   border-style: dashed;
 }
 
-[data-theme="terminal"] .tag {
+[data-theme='terminal'] .tag {
   border-radius: 0;
   border: 1px dashed var(--color-border);
 }
 
-[data-theme="terminal"] h1::before,
-[data-theme="terminal"] h2::before {
+[data-theme='terminal'] h1::before,
+[data-theme='terminal'] h2::before {
   content: '> ';
   color: var(--color-accent);
 }
 
-[data-theme="terminal"] .section-label::before {
+[data-theme='terminal'] .section-label::before {
   content: '// ';
   width: auto;
   height: auto;
@@ -541,12 +583,12 @@
   color: var(--color-text-tertiary);
 }
 
-[data-theme="terminal"] a:hover {
+[data-theme='terminal'] a:hover {
   text-shadow: 0 0 8px var(--color-accent);
 }
 
 /* Scanline overlay for terminal theme */
-[data-theme="terminal"] body::after {
+[data-theme='terminal'] body::after {
   content: '';
   position: fixed;
   top: 0;
