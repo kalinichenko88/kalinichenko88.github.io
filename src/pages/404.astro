@@ -2,9 +2,38 @@
 import Layout from '../components/Layout.astro';
 ---
 
-<Layout title="404" description="Page not found">
-  <section>
-    <h1>404 - Page Not Found</h1>
-    <p>Sorry, the page you are looking for does not exist.</p>
+<Layout title="Page Not Found" description="The page you're looking for doesn't exist.">
+  <section class="min-h-[60vh] flex items-center justify-center">
+    <div class="container">
+      <div class="max-w-xl mx-auto text-center">
+        <!-- 404 Number -->
+        <div class="mb-8">
+          <span class="font-mono text-8xl md:text-9xl font-bold text-foreground-tertiary/30">
+            404
+          </span>
+        </div>
+
+        <!-- Message -->
+        <h1 class="text-foreground mb-4">
+          Page not found
+        </h1>
+        <p class="text-lg text-foreground-secondary mb-8">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="/" class="btn-primary">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to home
+          </a>
+          <a href="/blog" class="btn-secondary">
+            Browse articles
+          </a>
+        </div>
+      </div>
+    </div>
   </section>
 </Layout>

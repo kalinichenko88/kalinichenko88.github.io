@@ -9,10 +9,10 @@ import Head from './Head.astro';
 type Props = {
   title?: string;
   description?: string;
-  classes?: string;
+  class?: string;
 };
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, classes } = Astro.props;
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,11 +21,20 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, classes } = Astro.pr
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Head title={title} description={description} />
+
+    <!-- Prevent flash of unstyled content -->
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
   </head>
-  <body class="bg-base-100 text-base-content">
+  <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
     <Header />
 
-    <main class={`container flex-auto ${classes}`}>
+    <main class:list={["flex-1", className]}>
       <slot />
     </main>
 

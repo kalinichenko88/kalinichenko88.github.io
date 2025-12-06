@@ -1,27 +1,221 @@
 ---
 import Layout from '../components/Layout.astro';
+import {
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+} from '../consts';
+
+const yearsExperience = new Date().getFullYear() - 2014;
+
+const timeline = [
+  {
+    period: '2020 — Present',
+    role: 'Senior Frontend Engineer',
+    description: 'Leading frontend architecture and design system development for enterprise products. Focus on performance optimization and developer experience.',
+  },
+  {
+    period: '2017 — 2020',
+    role: 'Frontend Engineer',
+    description: 'Built scalable React applications, established coding standards, and mentored junior developers. Shipped products used by millions.',
+  },
+  {
+    period: '2014 — 2017',
+    role: 'Full Stack Developer',
+    description: 'Started my journey in web development. Worked on various projects from e-commerce platforms to content management systems.',
+  },
+];
+
+const values = [
+  {
+    title: 'Systems Thinking',
+    description: 'I approach problems holistically, understanding how individual decisions affect the entire system.',
+  },
+  {
+    title: 'Clarity Over Cleverness',
+    description: 'I write code for humans first. Clear, readable code is more valuable than clever tricks.',
+  },
+  {
+    title: 'Continuous Learning',
+    description: 'Technology evolves rapidly. I invest time in learning new tools and techniques that genuinely improve outcomes.',
+  },
+  {
+    title: 'Impact Focus',
+    description: 'I measure success by business outcomes, not lines of code. Every decision should move the needle.',
+  },
+];
 ---
 
 <Layout
-  title="About Me"
-  description="Learn more about me, my skills, and my passion for frontend development."
+  title="About"
+  description="Learn about my background, approach to engineering, and what drives me."
 >
-  <h1>About Me</h1>
-  <p>
-    👋 Hi, I’m Ivan Kalinichenko — a Senior Frontend Developer specializing in JavaScript,
-    TypeScript, and React.
-  </p>
-  <p>
-    With over a decade of experience building scalable, maintainable web applications, I focus on
-    clean architecture, smooth UI/UX, and modern frontend practices. I enjoy working in distributed
-    teams and turning complex ideas into elegant interfaces.
-  </p>
-  <p>
-    While frontend is my core focus, I’m also passionate about backend development with Node.js and
-    enjoy experimenting with AI using Python.
-  </p>
-  <p>
-    This site is where I share thoughts on frontend development, architecture, productivity, and
-    remote work. Feel free to get in touch if anything here resonates with you.
-  </p>
+  <!-- Header Section -->
+  <section class="py-16 md:py-24 border-b border-line">
+    <div class="container">
+      <div class="max-w-3xl">
+        <span class="section-label mb-6">About</span>
+        <h1 class="text-foreground mb-6">
+          Building with intent
+        </h1>
+        <p class="text-lg text-foreground-secondary leading-relaxed">
+          I'm a frontend engineer who believes great software is built at the intersection
+          of technical excellence and user empathy. With {yearsExperience}+ years of experience,
+          I've learned that the best solutions come from deeply understanding both the problem
+          and the people affected by it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bio Section -->
+  <section class="py-16 md:py-24 bg-background-subtle">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <div class="lg:col-span-7 space-y-6 text-foreground-secondary">
+          <p>
+            My journey in software development started over a decade ago, driven by curiosity
+            about how things work on the web. What began as tinkering with HTML and CSS evolved
+            into a deep appreciation for frontend architecture and the craft of building
+            interfaces that people love to use.
+          </p>
+          <p>
+            Today, I specialize in building complex web applications with React and TypeScript.
+            I've led the development of design systems serving dozens of engineers, optimized
+            applications to handle millions of users, and established engineering practices
+            that have stood the test of time.
+          </p>
+          <p>
+            Beyond the technical aspects, I'm passionate about developer experience. I believe
+            that happy developers build better products, and I invest significant effort into
+            creating tools, documentation, and processes that make my teams more effective.
+          </p>
+          <p>
+            When I'm not coding, you'll find me exploring new technologies, contributing to
+            open source, or writing about lessons learned from building production systems.
+          </p>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="card p-8 sticky top-24">
+            <h3 class="font-display font-semibold text-foreground mb-6">
+              Quick Facts
+            </h3>
+            <dl class="space-y-4 text-sm">
+              <div class="flex justify-between">
+                <dt class="text-foreground-tertiary">Location</dt>
+                <dd class="text-foreground font-medium">Europe (Remote)</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-foreground-tertiary">Experience</dt>
+                <dd class="text-foreground font-medium">{yearsExperience}+ years</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-foreground-tertiary">Focus</dt>
+                <dd class="text-foreground font-medium">Frontend Architecture</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-foreground-tertiary">Languages</dt>
+                <dd class="text-foreground font-medium">English, Russian</dd>
+              </div>
+            </dl>
+
+            <div class="border-t border-line mt-6 pt-6">
+              <a
+                href={`mailto:${MAIL_PROFILE_LINK}`}
+                class="btn-primary w-full justify-center"
+              >
+                Get in touch
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="py-16 md:py-24">
+    <div class="container">
+      <div class="max-w-3xl mb-12">
+        <span class="section-label mb-6">Values</span>
+        <h2 class="text-foreground">
+          How I work
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {values.map((value) => (
+          <div class="card p-6">
+            <h3 class="font-display font-semibold text-foreground mb-3">
+              {value.title}
+            </h3>
+            <p class="text-foreground-secondary">
+              {value.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="py-16 md:py-24 bg-background-subtle">
+    <div class="container">
+      <div class="max-w-3xl mb-12">
+        <span class="section-label mb-6">Experience</span>
+        <h2 class="text-foreground">
+          Career journey
+        </h2>
+      </div>
+
+      <div class="max-w-3xl space-y-8">
+        {timeline.map((item, index) => (
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+            <div class="md:col-span-3">
+              <span class="font-mono text-sm text-foreground-tertiary">
+                {item.period}
+              </span>
+            </div>
+            <div class="md:col-span-9">
+              <h3 class="font-display font-semibold text-foreground mb-2">
+                {item.role}
+              </h3>
+              <p class="text-foreground-secondary">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 md:py-24">
+    <div class="container">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-foreground mb-6">
+          Let's connect
+        </h2>
+        <p class="text-lg text-foreground-secondary mb-8">
+          I'm always interested in hearing about new opportunities and connecting
+          with fellow engineers.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
+            Send me an email
+          </a>
+          <a
+            href={LINKEDIN_PROFILE_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary"
+          >
+            Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>

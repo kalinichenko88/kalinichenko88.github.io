@@ -1,76 +1,122 @@
 ---
+import {
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  TWITTER_PROFILE_LINK,
+  TELEGRAM_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+} from '../consts';
 
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  { href: GITHUB_PROFILE_LINK, label: 'GitHub', icon: 'github' },
+  { href: LINKEDIN_PROFILE_LINK, label: 'LinkedIn', icon: 'linkedin' },
+  { href: TWITTER_PROFILE_LINK, label: 'Twitter', icon: 'twitter' },
+  { href: TELEGRAM_PROFILE_LINK, label: 'Telegram', icon: 'telegram' },
+  { href: `mailto:${MAIL_PROFILE_LINK}`, label: 'Email', icon: 'email' },
+];
+
+const footerLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/#projects', label: 'Projects' },
+  { href: '/#contact', label: 'Contact' },
+];
 ---
 
-<footer class="footer footer-center p-10 bg-base-200 text-base-content">
-  <div>
-    <div class="grid grid-flow-col gap-4 mb-4">
-      <a href="https://github.com" target="_blank" class="btn btn-ghost btn-circle">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-          ></path>
-        </svg>
-      </a>
-      <a href="https://twitter.com" target="_blank" class="btn btn-ghost btn-circle">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
-          ></path>
-        </svg>
-      </a>
-      <a href="https://linkedin.com" target="_blank" class="btn btn-ghost btn-circle">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-          ></path>
-        </svg>
-      </a>
-      <a href="https://t.me/ivan" target="_blank" class="btn btn-ghost btn-circle">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"
-          ></path>
-        </svg>
-      </a>
+<footer class="border-t border-line bg-background">
+  <div class="container py-16">
+    <!-- Main Footer Content -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+      <!-- Brand Column -->
+      <div class="md:col-span-5 space-y-4">
+        <a href="/" class="inline-flex items-center gap-2 font-display font-semibold text-foreground">
+          <span class="text-accent font-mono text-sm">~/</span>
+          <span class="tracking-tight">kalinichenko</span>
+          <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
+        </a>
+        <p class="text-foreground-secondary text-sm leading-relaxed max-w-sm">
+          Senior Frontend Engineer with 10+ years of experience building scalable web applications.
+          Focused on architecture, performance, and developer experience.
+        </p>
+      </div>
+
+      <!-- Navigation Column -->
+      <div class="md:col-span-3">
+        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
+          Navigation
+        </h4>
+        <ul class="space-y-3">
+          {footerLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Connect Column -->
+      <div class="md:col-span-4">
+        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
+          Connect
+        </h4>
+        <div class="flex flex-wrap gap-3">
+          {socialLinks.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
+              aria-label={link.label}
+            >
+              {link.icon === 'github' && (
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              )}
+              {link.icon === 'linkedin' && (
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              )}
+              {link.icon === 'twitter' && (
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              )}
+              {link.icon === 'telegram' && (
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                </svg>
+              )}
+              {link.icon === 'email' && (
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
-    <p class="text-sm text-base-content/60">
-      Copyright &copy; {new Date().getFullYear()} Ivan Kalinichenko.
-    </p>
+
+    <!-- Bottom Bar -->
+    <div class="mt-12 pt-8 border-t border-line flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-xs text-foreground-tertiary font-mono">
+        &copy; {currentYear} Ivan Kalinichenko. Built with Astro.
+      </p>
+      <p class="text-xs text-foreground-tertiary font-mono">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent status-available"></span>
+          Available for opportunities
+        </span>
+      </p>
+    </div>
   </div>
 </footer>
-
-<script>
-  // Theme toggle functionality
-  const themeToggle = document.getElementById('theme-toggle');
-  const htmlElement = document.documentElement;
-
-  // Check for saved theme preference or default to 'dark'
-  const currentTheme = localStorage.getItem('theme') || 'dark';
-  htmlElement.setAttribute('data-theme', currentTheme);
-  themeToggle.checked = currentTheme === 'light';
-
-  themeToggle.addEventListener('change', function () {
-    if (this.checked) {
-      htmlElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      htmlElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    }
-  });
-
-  // Smooth scroll for navigation links
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    });
-  });
-</script>

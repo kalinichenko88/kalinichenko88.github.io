@@ -1,7 +1,5 @@
 ---
-import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
-
 import personImage from '../assets/images/me.png';
 
 type Props = {
@@ -13,31 +11,8 @@ const { title, description } = Astro.props;
 ---
 
 <!-- Theme color -->
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f7fa" />
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#202738" />
-
-<!-- Theme initialization script -->
-<script is:inline>
-  function applyThemeFromStorage() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    if (!savedTheme) {
-      localStorage.setItem('theme', theme);
-    }
-  }
-
-  applyThemeFromStorage();
-
-  document.addEventListener('astro:after-swap', applyThemeFromStorage);
-</script>
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#09090B" />
 
 <!-- Favicons -->
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -65,5 +40,4 @@ const { title, description } = Astro.props;
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(personImage.src, Astro.url)} />
 
-<Font cssVariable="--font-mono" preload />
 <ClientRouter />

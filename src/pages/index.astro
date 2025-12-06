@@ -1,526 +1,406 @@
 ---
-import { Image } from 'astro:assets';
-
+import { getCollection } from 'astro:content';
 import Layout from '../components/Layout.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import PersonImage from '../components/PersonImage.astro';
+import {
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+} from '../consts';
 
-import meImage from '../assets/images/me.png';
-import meImageDark from '../assets/images/me-dark.png';
-import LastPosts from '../components/LastPosts.astro';
+// Get latest blog posts
+const allPosts = await getCollection('posts');
+const latestPosts = allPosts
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+// Skills/expertise areas based on real experience
+const expertise = [
+  {
+    category: 'Frontend Core',
+    skills: ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Vue.js'],
+  },
+  {
+    category: 'Architecture & DX',
+    skills: ['Frontend Architecture', 'Performance', 'CI/CD', 'Testing', 'Webpack'],
+  },
+  {
+    category: 'Full-Stack',
+    skills: ['Node.js', 'GraphQL', 'REST APIs', 'PHP', 'SQL'],
+  },
+  {
+    category: 'Tools & Practices',
+    skills: ['Git', 'Docker', 'Agile', 'Code Review', 'Remote Teams'],
+  },
+];
+
+// Real projects/achievements based on experience
+const projects = [
+  {
+    title: 'SaaS Platform Frontend',
+    description: 'Leading frontend development for a complex, long-living SaaS platform at Apliteni. Focus on performance optimization, clean architecture, and developer experience improvements.',
+    tags: ['React', 'TypeScript', 'Performance', 'Architecture'],
+    metrics: '4+ years of continuous development',
+  },
+  {
+    title: 'GraphQL Backend & Client Apps',
+    description: 'Led the development of an Apollo GraphQL server and created multiple client applications using Nuxt.js framework at ConstLab.',
+    tags: ['GraphQL', 'Apollo', 'Nuxt.js', 'Node.js'],
+    metrics: 'Full-stack architecture ownership',
+  },
+  {
+    title: 'Legacy Frontend Migration',
+    description: 'Migrated legacy frontends to modern React/TypeScript stack, introduced CI/CD automation to speed up development cycles.',
+    tags: ['React', 'TypeScript', 'CI/CD', 'Migration'],
+    metrics: 'Streamlined dev workflows',
+  },
+];
+
+// Calculate years of experience (started May 2010)
+const startYear = 2010;
+const yearsExperience = new Date().getFullYear() - startYear;
 ---
 
-<Layout classes="home">
-  <section id="hero" class="hero py-20 md:py-32 bg-linear-to-br from-base-100 to-base-200">
-    <div class="hero-content text-center">
-      <div class="max-w-3xl">
-        <div class="avatar mb-8">
-          <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ivan" alt="Avatar" />
+<Layout>
+  <!-- Hero Section -->
+  <section class="relative min-h-[90vh] flex items-center grid-pattern">
+    <div class="container py-24 md:py-32">
+      <div class="max-w-4xl">
+        <!-- Status Badge -->
+        <div class="animate-in mb-8">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line bg-surface text-xs font-mono text-foreground-secondary">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent status-available"></span>
+            Available for new opportunities
+          </span>
+        </div>
+
+        <!-- Main Headline -->
+        <h1 class="animate-in animate-in-delay-1 text-foreground mb-6">
+          Senior Frontend Engineer
+          <span class="block text-foreground-tertiary">React, TypeScript, Full-Stack Background</span>
+        </h1>
+
+        <!-- Value Proposition -->
+        <p class="animate-in animate-in-delay-2 text-lg md:text-xl text-foreground-secondary leading-relaxed max-w-2xl mb-8">
+          I build scalable, high-performance web applications with a focus on
+          <span class="text-foreground font-medium">clean architecture</span>,
+          <span class="text-foreground font-medium">developer experience</span>, and
+          <span class="text-foreground font-medium">product impact</span>.
+          Full-stack background helps me design better frontend solutions.
+        </p>
+
+        <!-- Quick Stats -->
+        <div class="animate-in animate-in-delay-3 flex flex-wrap gap-8 mb-10 font-mono text-sm">
+          <div>
+            <span class="text-accent text-2xl font-semibold">{yearsExperience}+</span>
+            <span class="block text-foreground-tertiary mt-1">Years Experience</span>
+          </div>
+          <div>
+            <span class="text-accent text-2xl font-semibold">SaaS</span>
+            <span class="block text-foreground-tertiary mt-1">Platform Focus</span>
+          </div>
+          <div>
+            <span class="text-accent text-2xl font-semibold">Remote</span>
+            <span class="block text-foreground-tertiary mt-1">International Teams</span>
           </div>
         </div>
-        <h1
-          class="text-5xl md:text-7xl font-bold mb-6 bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
-        >
-          Привет, я Иван
-        </h1>
-        <p class="text-xl md:text-2xl mb-8 text-base-content/80">
-          Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
-          applications.
-        </p>
-        <p class="text-lg mb-8 max-w-2xl mx-auto">
-          I specialize in modern web technologies, with a strong emphasis on clean architecture and
-          contemporary development practices.
-        </p>
-        <p class="text-md mb-8 max-w-2xl mx-auto">
-          My passion lies in transforming complex ideas into elegant interfaces, crafting intuitive
-          UI/UX experiences that delight users. I pride myself on creating responsive, accessible,
-          and performant digital solutions that meet both user needs and business objectives.
-        </p>
-        <div class="flex gap-4 justify-center flex-wrap">
-          <a href="#blog" class="btn btn-primary btn-lg"> Читать блог </a>
-          <a href="#projects" class="btn btn-outline btn-lg"> Мои проекты </a>
+
+        <!-- CTAs -->
+        <div class="animate-in animate-in-delay-4 flex flex-wrap gap-4">
+          <a href="#contact" class="btn-primary">
+            Get in touch
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          <a href="#projects" class="btn-secondary">
+            View experience
+          </a>
         </div>
-        <div class="flex gap-4 justify-center mt-8">
-          <a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              ></path>
-            </svg>
-          </a>
-          <a href="https://twitter.com" target="_blank" class="btn btn-circle btn-ghost">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
-              ></path>
-            </svg>
-          </a>
-          <a href="https://linkedin.com" target="_blank" class="btn btn-circle btn-ghost">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-              ></path>
-            </svg>
-          </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in animate-in-delay-5">
+      <div class="flex flex-col items-center gap-2 text-foreground-tertiary">
+        <span class="text-xs font-mono uppercase tracking-wider">Scroll</span>
+        <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- About / Expertise Section -->
+  <section id="about" class="py-24 md:py-32 bg-background-subtle">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <!-- Left Column: About -->
+        <div class="lg:col-span-5">
+          <span class="section-label mb-6">01 — About</span>
+          <h2 class="text-foreground mb-6">
+            Engineering with purpose
+          </h2>
+          <div class="space-y-4 text-foreground-secondary">
+            <p>
+              I'm a Senior Frontend Engineer with {yearsExperience}+ years of experience
+              building scalable, high-performance web applications using React,
+              TypeScript, and modern frontend tooling.
+            </p>
+            <p>
+              I combine strong UI engineering skills with a solid full-stack
+              background (Node.js, PHP, SQL), which helps me design clean
+              architectures, improve developer experience, and collaborate
+              effectively with backend teams.
+            </p>
+            <p>
+              I've worked on complex, long-living SaaS platforms, improved
+              performance, built internal tools, migrated legacy frontends, and
+              introduced CI/CD automation to speed up development cycles.
+            </p>
+            <p>
+              Based in <span class="text-foreground">Batumi, Georgia</span>. Working with
+              international remote teams.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column: Expertise Grid -->
+        <div class="lg:col-span-7">
+          <span class="section-label mb-6">02 — Expertise</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {expertise.map((area) => (
+              <div class="card p-6">
+                <h3 class="font-display font-semibold text-foreground mb-4">
+                  {area.category}
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                  {area.skills.map((skill) => (
+                    <span class="tag">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <LastPosts />
-
-  <!-- Projects Section -->
-  <section id="projects" class="py-20 bg-base-200">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4">Open Source проекты</h2>
-        <p class="text-lg text-base-content/70">Мои вклады в открытое ПО</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-        <!-- Project 1 -->
-        <div
-          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
-        >
-          <div class="card-body">
-            <div class="flex items-start justify-between">
-              <div class="flex items-center gap-3">
-                <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                  ></path>
-                </svg>
-                <h3 class="card-title text-2xl">react-form-wizard</h3>
-              </div>
-              <div class="badge badge-success">Active</div>
-            </div>
-            <p class="text-base-content/70 mt-4">
-              Гибкая библиотека для создания многошаговых форм с валидацией и управлением
-              состоянием.
-            </p>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <div class="badge badge-outline">React</div>
-              <div class="badge badge-outline">TypeScript</div>
-              <div class="badge badge-outline">Formik</div>
-            </div>
-            <div class="flex items-center gap-6 mt-6 text-sm">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
-                  ></path>
-                </svg>
-                <span>1.2k</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                  ></path>
-                </svg>
-                <span>234</span>
-              </div>
-            </div>
-            <div class="card-actions justify-end mt-6">
-              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
-              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
-            </div>
-          </div>
+  <!-- Experience/Projects Section -->
+  <section id="projects" class="py-24 md:py-32">
+    <div class="container">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div>
+          <span class="section-label mb-6">03 — Experience</span>
+          <h2 class="text-foreground">
+            Selected work
+          </h2>
         </div>
-
-        <!-- Project 2 -->
-        <div
-          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
+        <a
+          href={GITHUB_PROFILE_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-underline text-sm inline-flex items-center gap-2"
         >
-          <div class="card-body">
-            <div class="flex items-start justify-between">
-              <div class="flex items-center gap-3">
-                <svg class="w-8 h-8 text-secondary" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                  ></path>
-                </svg>
-                <h3 class="card-title text-2xl">css-layout-helper</h3>
-              </div>
-              <div class="badge badge-success">Active</div>
-            </div>
-            <p class="text-base-content/70 mt-4">
-              Утилиты и сниппеты для быстрого создания адаптивных макетов с Flexbox и Grid.
-            </p>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <div class="badge badge-outline">CSS</div>
-              <div class="badge badge-outline">SASS</div>
-              <div class="badge badge-outline">PostCSS</div>
-            </div>
-            <div class="flex items-center gap-6 mt-6 text-sm">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
-                  ></path>
-                </svg>
-                <span>856</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                  ></path>
-                </svg>
-                <span>142</span>
-              </div>
-            </div>
-            <div class="card-actions justify-end mt-6">
-              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
-              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Project 3 -->
-        <div
-          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
-        >
-          <div class="card-body">
-            <div class="flex items-start justify-between">
-              <div class="flex items-center gap-3">
-                <svg class="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                  ></path>
-                </svg>
-                <h3 class="card-title text-2xl">fastify-zod-api</h3>
-              </div>
-              <div class="badge badge-warning">In Progress</div>
-            </div>
-            <p class="text-base-content/70 mt-4">
-              Инструмент для автоматической генерации API клиентов на основе Zod схем валидации.
-            </p>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <div class="badge badge-outline">Fastify</div>
-              <div class="badge badge-outline">Zod</div>
-              <div class="badge badge-outline">OpenAPI</div>
-            </div>
-            <div class="flex items-center gap-6 mt-6 text-sm">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
-                  ></path>
-                </svg>
-                <span>423</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                  ></path>
-                </svg>
-                <span>67</span>
-              </div>
-            </div>
-            <div class="card-actions justify-end mt-6">
-              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
-              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Project 4 -->
-        <div
-          class="card bg-base-100 shadow-xl border border-base-300 hover:border-primary transition-all duration-300"
-        >
-          <div class="card-body">
-            <div class="flex items-start justify-between">
-              <div class="flex items-center gap-3">
-                <svg class="w-8 h-8 text-info" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                  ></path>
-                </svg>
-                <h3 class="card-title text-2xl">obsidian-dev-notes</h3>
-              </div>
-              <div class="badge badge-success">Active</div>
-            </div>
-            <p class="text-base-content/70 mt-4">
-              Плагин для Obsidian с инструментами для разработчиков: сниппеты кода, диаграммы и
-              многое другое.
-            </p>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <div class="badge badge-outline">Obsidian</div>
-              <div class="badge badge-outline">TypeScript</div>
-              <div class="badge badge-outline">Plugin</div>
-            </div>
-            <div class="flex items-center gap-6 mt-6 text-sm">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
-                  ></path>
-                </svg>
-                <span>612</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                  ></path>
-                </svg>
-                <span>98</span>
-              </div>
-            </div>
-            <div class="card-actions justify-end mt-6">
-              <a href="#" class="btn btn-primary btn-sm">GitHub</a>
-              <a href="#" class="btn btn-ghost btn-sm">Документация</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-12">
-        <a href="https://github.com" target="_blank" class="btn btn-outline btn-lg">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-            <path
-              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-            ></path>
+          View GitHub profile
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
           </svg>
-          Больше на GitHub
         </a>
       </div>
-    </div>
-  </section>
 
-  <!-- Contacts Section -->
-  <section id="contacts" class="py-20 bg-base-100">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4">Свяжитесь со мной</h2>
-        <p class="text-lg text-base-content/70">Открыт для новых проектов и возможностей</p>
+      <div class="space-y-6">
+        {projects.map((project, index) => (
+          <article class="card group">
+            <div class="p-6 md:p-8">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                <!-- Project Number -->
+                <div class="lg:col-span-1">
+                  <span class="font-mono text-sm text-foreground-tertiary">
+                    0{index + 1}
+                  </span>
+                </div>
+
+                <!-- Project Content -->
+                <div class="lg:col-span-7">
+                  <h3 class="font-display font-semibold text-xl text-foreground mb-3 group-hover:text-accent transition-colors">
+                    {project.title}
+                  </h3>
+                  <p class="text-foreground-secondary mb-4">
+                    {project.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Project Metrics -->
+                <div class="lg:col-span-4 lg:text-right">
+                  <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                    {project.metrics}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
 
-      <div class="max-w-4xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <!-- Contact Info Cards -->
-          <a
-            href="mailto:ivan@example.com"
-            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-          >
-            <div class="card-body flex-row items-center gap-4">
-              <div
-                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0"
-              >
-                <svg
-                  class="w-7 h-7 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  ></path>
-                </svg>
+      <!-- Work History Summary -->
+      <div class="mt-16 pt-12 border-t border-line">
+        <h3 class="font-display font-semibold text-lg text-foreground mb-8">Work History</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-medium text-foreground">Apliteni OÜ</span>
+                <span class="font-mono text-xs text-foreground-tertiary">2020 — Present</span>
               </div>
-              <div>
-                <h3 class="font-bold text-lg">Email</h3>
-                <p class="text-base-content/70">ivan@example.com</p>
-              </div>
+              <p class="text-sm text-foreground-secondary">Senior Frontend Developer</p>
             </div>
-          </a>
-
-          <a
-            href="https://t.me/ivan"
-            target="_blank"
-            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-          >
-            <div class="card-body flex-row items-center gap-4">
-              <div
-                class="w-14 h-14 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0"
-              >
-                <svg class="w-7 h-7 text-secondary" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"
-                  ></path>
-                </svg>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-medium text-foreground">AG.digital</span>
+                <span class="font-mono text-xs text-foreground-tertiary">2020</span>
               </div>
-              <div>
-                <h3 class="font-bold text-lg">Telegram</h3>
-                <p class="text-base-content/70">@ivan</p>
-              </div>
+              <p class="text-sm text-foreground-secondary">Senior Software Engineer</p>
             </div>
-          </a>
-
-          <a
-            href="https://github.com/ivan"
-            target="_blank"
-            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-          >
-            <div class="card-body flex-row items-center gap-4">
-              <div
-                class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0"
-              >
-                <svg class="w-7 h-7 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                  ></path>
-                </svg>
+          </div>
+          <div class="space-y-6">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-medium text-foreground">ConstLab, LLC</span>
+                <span class="font-mono text-xs text-foreground-tertiary">2014 — 2020</span>
               </div>
-              <div>
-                <h3 class="font-bold text-lg">GitHub</h3>
-                <p class="text-base-content/70">github.com/ivan</p>
-              </div>
+              <p class="text-sm text-foreground-secondary">Full-stack Developer</p>
             </div>
-          </a>
-
-          <a
-            href="https://linkedin.com/in/ivan"
-            target="_blank"
-            class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-          >
-            <div class="card-body flex-row items-center gap-4">
-              <div
-                class="w-14 h-14 rounded-full bg-info/20 flex items-center justify-center flex-shrink-0"
-              >
-                <svg class="w-7 h-7 text-info" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                  ></path>
-                </svg>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-medium text-foreground">BSGroup</span>
+                <span class="font-mono text-xs text-foreground-tertiary">2010 — 2014</span>
               </div>
-              <div>
-                <h3 class="font-bold text-lg">LinkedIn</h3>
-                <p class="text-base-content/70">linkedin.com/in/ivan</p>
-              </div>
+              <p class="text-sm text-foreground-secondary">Full-stack Developer</p>
             </div>
-          </a>
-        </div>
-
-        <!-- Contact Form -->
-        <div class="card bg-base-200 shadow-xl">
-          <div class="card-body">
-            <h3 class="card-title text-2xl mb-6">Напишите мне</h3>
-            <form class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Ваше имя</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Иван Иванов"
-                    class="input input-bordered w-full"
-                    required
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Email</span>
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="ivan@example.com"
-                    class="input input-bordered w-full"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Тема</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Сотрудничество"
-                  class="input input-bordered w-full"
-                  required
-                />
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Сообщение</span>
-                </label>
-                <textarea
-                  class="textarea textarea-bordered h-32"
-                  placeholder="Расскажите о вашем проекте..."
-                  required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary btn-block">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                </svg>
-                Отправить сообщение
-              </button>
-            </form>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="typography prose">
-    <PersonImage />
+  <!-- Blog Section -->
+  <section id="blog" class="py-24 md:py-32 bg-background-subtle">
+    <div class="container">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div>
+          <span class="section-label mb-6">04 — Writing</span>
+          <h2 class="text-foreground">
+            Latest articles
+          </h2>
+        </div>
+        <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
+          View all posts
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
 
-    <p>
-      Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
-      applications. I specialize in modern web technologies, with a strong emphasis on clean
-      architecture and contemporary development practices.
-    </p>
-
-    <p>
-      My passion lies in transforming complex ideas into elegant interfaces, crafting intuitive
-      UI/UX experiences that delight users. I pride myself on creating responsive, accessible, and
-      performant digital solutions that meet both user needs and business objectives.
-    </p>
-
-    <p>Feel free to get in touch if anything here resonates with you.</p>
+      {latestPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {latestPosts.map((post) => (
+            <article class="card group">
+              <a href={`/blog/${post.id}`} class="block p-6">
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {post.data.tags.slice(0, 2).map((tag: string) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+                <h3 class="font-display font-semibold text-lg text-foreground mb-3 group-hover:text-accent transition-colors">
+                  {post.data.title}
+                </h3>
+                <p class="text-sm text-foreground-secondary line-clamp-2 mb-4">
+                  {post.data.description}
+                </p>
+                <time class="text-xs font-mono text-foreground-tertiary">
+                  {post.data.pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </time>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="card p-12 text-center">
+          <p class="text-foreground-secondary">
+            Articles coming soon. In the meantime, check out my{' '}
+            <a href={GITHUB_PROFILE_LINK} class="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>{' '}
+            for open source contributions.
+          </p>
+        </div>
+      )}
+    </div>
   </section>
 
-  <SocialLinks />
+  <!-- Contact Section -->
+  <section id="contact" class="py-24 md:py-32">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <span class="section-label justify-center mb-6">05 — Contact</span>
+        <h2 class="text-foreground mb-6">
+          Let's work together
+        </h2>
+        <p class="text-lg text-foreground-secondary mb-10 max-w-xl mx-auto">
+          I enjoy working in international remote teams and delivering reliable UI.
+          Open to new opportunities and interesting projects.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Send me an email
+          </a>
+          <a
+            href={LINKEDIN_PROFILE_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            Connect on LinkedIn
+          </a>
+        </div>
+
+        <!-- Email directly displayed -->
+        <p class="font-mono text-sm text-foreground-tertiary">
+          Or reach out directly at{' '}
+          <a href={`mailto:${MAIL_PROFILE_LINK}`} class="text-accent hover:underline">
+            {MAIL_PROFILE_LINK}
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
 </Layout>
 
-<style is:global>
-  /* @keyframes slideaway {
-    from {
-      display: block;
-    }
-    to {
-      transform: translateY(250px);
-      opacity: 0;
-    }
-  } */
-
-  /* .home {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, min-content);
-    grid-template-areas:
-      'welcome welcome'
-      'info info'
-      'social social';
-    gap: 1rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 3rem;
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-
-  .welcome {
-    grid-area: info;
-
-    & > h1 {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-  }
-
-  .social-links {
-    grid-area: social;
-    justify-self: center;
-    width: 100%;
-  } */
 </style>
