@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 
-import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
+import { LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
 
 const yearsExperience = new Date().getFullYear() - 2014;
 
@@ -160,7 +160,7 @@ const values = [
 
       <div class="space-y-8">
         {
-          timeline.map((item, index) => (
+          timeline.map((item) => (
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
               <div class="md:col-span-3">
                 <span class="font-mono text-sm text-foreground-tertiary">{item.period}</span>

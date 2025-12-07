@@ -8,7 +8,7 @@ const allPosts = await getCollection('posts');
 const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
 // Get unique tags from all posts
-const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
+// const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
 ---
 
 <Layout title="Blog" description="Thoughts on frontend development, architecture, and modern web technologies.">
@@ -41,7 +41,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
     <div class="container">
       {posts.length > 0 ? (
         <div class="grid grid-cols-1 gap-1">
-          {posts.map((post, index) => (
+          {posts.map((post) => (
             <article class="group">
               <a
                 href={`/blog/${post.id}`}
