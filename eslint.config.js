@@ -31,6 +31,12 @@ export default [
     },
   },
   {
+    files: ['**/*.astro'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  {
     files: ['**/*.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
