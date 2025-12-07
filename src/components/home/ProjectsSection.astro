@@ -68,10 +68,12 @@ const { projects, githubProfileLink } = Astro.props;
               </div>
 
               <div class="lg:col-span-4 lg:text-right">
-                <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
-                  <ChartIcon class="w-4 h-4" />
-                  {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-                </span>
+                {project.stars > 0 && (
+                  <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
+                    <ChartIcon class="w-4 h-4" />
+                    {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+                  </span>
+                )}
               </div>
             </div>
           </a>
