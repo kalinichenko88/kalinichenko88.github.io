@@ -1,4 +1,7 @@
 ---
+import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import ChartIcon from '../../assets/icons/chart.svg';
+
 type Project = {
   title: string;
   description: string;
@@ -28,9 +31,7 @@ const { projects, githubProfileLink } = Astro.props;
         class="link-underline text-sm inline-flex items-center gap-2"
       >
         View GitHub profile
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-        </svg>
+        <ExternalLinkIcon class="w-4 h-4" />
       </a>
     </div>
 
@@ -57,9 +58,7 @@ const { projects, githubProfileLink } = Astro.props;
 
               <div class="lg:col-span-4 lg:text-right">
                 <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
+                  <ChartIcon class="w-4 h-4" />
                   {project.metrics}
                 </span>
               </div>

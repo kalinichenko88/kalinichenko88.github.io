@@ -1,6 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
+import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
+import RssIcon from '../../assets/icons/rss.svg';
+
 type Props = {
   latestPosts: CollectionEntry<'posts'>[];
   githubProfileLink: string;
@@ -14,13 +17,21 @@ const { latestPosts, githubProfileLink } = Astro.props;
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
       <div>
         <span class="section-label mb-4">04 — Writing</span>
-        <h2 class="text-foreground">Latest articles</h2>
+        <div class="flex items-center gap-3">
+          <h2 class="text-foreground">Latest articles</h2>
+          <a
+            href="/rss.xml"
+            class="p-2 text-foreground-tertiary hover:text-accent transition-colors duration-150"
+            aria-label="RSS Feed"
+            title="Subscribe via RSS"
+          >
+            <RssIcon class="w-5 h-5" />
+          </a>
+        </div>
       </div>
       <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
         View all posts
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-        </svg>
+        <ArrowRightIcon class="w-4 h-4" />
       </a>
     </div>
 

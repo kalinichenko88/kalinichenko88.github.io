@@ -19,6 +19,7 @@ export default defineConfig({
   experimental: {
     clientPrerender: true,
     contentIntellisense: true,
+    svgo: true,
     fonts: [
       {
         provider: fontProviders.fontshare(),
