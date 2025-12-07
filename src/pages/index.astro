@@ -74,6 +74,8 @@ const yearsExperience = new Date().getFullYear() - startYear;
   <HeroSection yearsExperience={yearsExperience} />
   <AboutSection yearsExperience={yearsExperience} expertise={expertise} />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
-  <BlogSection latestPosts={latestPosts} githubProfileLink={GITHUB_PROFILE_LINK} />
+  {allPosts.length > 0 && (
+    <BlogSection latestPosts={latestPosts} githubProfileLink={GITHUB_PROFILE_LINK} />
+  )}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
 </Layout>
