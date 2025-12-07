@@ -10,13 +10,42 @@ import ContactSection from '../components/home/ContactSection.astro';
 
 import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
 
-// Get latest blog posts
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
 
-// Skills/expertise areas based on real experience
+const featuredProjects = await getCollection('projects');
+const githubRepos = await getCollection('githubRepos');
+const repoMap = new Map(githubRepos.map((repo) => [repo.data.name, repo]));
+
+const projects = featuredProjects
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((project) => {
+    const githubRepo = repoMap.get(project.data.slug);
+
+    if (!githubRepo) {
+      throw new Error(
+        `GitHub repository "${project.data.slug}" not found for project "${project.data.name}". ` +
+          `Make sure the slug matches the GitHub repository name exactly.`
+      );
+    }
+
+    return {
+      name: project.data.name,
+      slug: project.data.slug,
+      order: project.data.order,
+      description: githubRepo.data.description,
+      url: githubRepo.data.html_url,
+      homepage: githubRepo.data.homepage,
+      stars: githubRepo.data.stargazers_count,
+      forks: githubRepo.data.forks_count,
+      language: githubRepo.data.language,
+      topics: githubRepo.data.topics,
+    };
+  });
+
+
 const expertise = [
   {
     category: 'Frontend Core',
@@ -33,31 +62,6 @@ const expertise = [
   {
     category: 'Tools & Practices',
     skills: ['Git', 'Docker', 'Agile', 'Code Review', 'Remote Teams'],
-  },
-];
-
-// Real projects/achievements based on experience
-const projects = [
-  {
-    title: 'SaaS Platform Frontend',
-    description:
-      'Leading frontend development for a complex, long-living SaaS platform at Apliteni. Focus on performance optimization, clean architecture, and developer experience improvements.',
-    tags: ['React', 'TypeScript', 'Performance', 'Architecture'],
-    metrics: '4+ years of continuous development',
-  },
-  {
-    title: 'GraphQL Backend & Client Apps',
-    description:
-      'Led the development of an Apollo GraphQL server and created multiple client applications using Nuxt.js framework at ConstLab.',
-    tags: ['GraphQL', 'Apollo', 'Nuxt.js', 'Node.js'],
-    metrics: 'Full-stack architecture ownership',
-  },
-  {
-    title: 'Legacy Frontend Migration',
-    description:
-      'Migrated legacy frontends to modern React/TypeScript stack, introduced CI/CD automation to speed up development cycles.',
-    tags: ['React', 'TypeScript', 'CI/CD', 'Migration'],
-    metrics: 'Streamlined dev workflows',
   },
 ];
 
