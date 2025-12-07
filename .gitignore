@@ -1,8 +1,10 @@
 .vscode/
 .astro/
 .cursor/
+.claude/
 
 node_modules/
 dist/
 
 CLAUDE.md
+AGENTS.md
