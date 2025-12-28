@@ -8,7 +8,7 @@ import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 
-import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
+import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
 
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
@@ -65,9 +65,7 @@ const expertise = [
   },
 ];
 
-// Calculate years of experience (started May 2010)
-const startYear = 2010;
-const yearsExperience = new Date().getFullYear() - startYear;
+const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
 ---
 
 <Layout>

@@ -14,10 +14,10 @@
    ============================================ */
 
 :root {
-  /* Typography Scale */
-  --font-display: 'Instrument Sans', system-ui, sans-serif;
-  --font-body: 'Satoshi', system-ui, sans-serif;
-  --font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+  /* Typography Scale - uses CSS variables from Astro font provider */
+  --font-display: var(--font-general-sans), system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* Spacing Scale (4px base) */
   --space-1: 0.25rem;
@@ -526,13 +526,8 @@
     font-weight: 600;
     color: var(--color-text);
   }
-}
 
-/* ============================================
-   Utility Classes
-   ============================================ */
-
-@layer utilities {
+  /* Font utilities */
   .font-display {
     font-family: var(--font-display);
   }

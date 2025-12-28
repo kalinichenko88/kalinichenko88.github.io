@@ -6,6 +6,7 @@ import Footer from './Footer.astro';
 import Head from './Head.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { THEME_IDS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
 
 import '../styles/global.css';
 
@@ -16,22 +17,28 @@ type Props = {
 };
 
 const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } = Astro.props;
+
+const themeConfig = JSON.stringify({
+  ids: THEME_IDS,
+  lightDefault: DEFAULT_LIGHT_THEME,
+  darkDefault: DEFAULT_DARK_THEME,
+});
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <!-- Theme initialization - must be first to prevent flash -->
-    <script is:inline>
+    <script is:inline data-theme-config={themeConfig}>
       (function () {
-        const validThemes = ['cloud', 'cloud-dark', 'terminal'];
+        const config = JSON.parse(document.currentScript.dataset.themeConfig);
 
         function getTheme() {
           let theme = localStorage.getItem('theme');
-          if (!theme || !validThemes.includes(theme)) {
+          if (!theme || !config.ids.includes(theme)) {
             theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'cloud-dark'
-              : 'cloud';
+              ? config.darkDefault
+              : config.lightDefault;
           }
           return theme;
         }

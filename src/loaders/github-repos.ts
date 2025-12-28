@@ -1,11 +1,12 @@
 import type { Loader } from 'astro/loaders';
 import { Octokit } from 'octokit';
+import { RequestError } from '@octokit/request-error';
 
-interface GitHubReposLoaderOptions {
+type GitHubReposLoaderOptions = {
   auth: string;
   username: string;
   includeForks?: boolean;
-}
+};
 
 export function githubReposLoader(options: GitHubReposLoaderOptions): Loader {
   return {
@@ -18,7 +19,7 @@ export function githubReposLoader(options: GitHubReposLoaderOptions): Loader {
       });
 
       try {
-        const { data: repos } = await octokit.rest.repos.listForUser({
+        const repos = await octokit.paginate(octokit.rest.repos.listForUser, {
           username: options.username,
           type: 'owner',
           per_page: 100,
@@ -58,6 +59,31 @@ export function githubReposLoader(options: GitHubReposLoaderOptions): Loader {
 
         logger.info(`Successfully loaded ${filteredRepos.length} repositories`);
       } catch (error) {
+        if (error instanceof RequestError) {
+          if (error.status === 403 && error.response?.headers['x-ratelimit-remaining'] === '0') {
+            const resetTime = error.response?.headers['x-ratelimit-reset'];
+            const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
+            logger.error(
+              `GitHub API rate limit exceeded. Resets at: ${resetDate?.toISOString() ?? 'unknown'}`
+            );
+            throw new Error(
+              `GitHub API rate limit exceeded. Please try again after ${resetDate?.toLocaleTimeString() ?? 'some time'}.`
+            );
+          }
+
+          if (error.status === 401) {
+            logger.error('GitHub authentication failed. Check your GITHUB_TOKEN.');
+            throw new Error(
+              'GitHub authentication failed. Please verify your GITHUB_TOKEN is valid.'
+            );
+          }
+
+          if (error.status === 404) {
+            logger.error(`GitHub user "${options.username}" not found.`);
+            throw new Error(`GitHub user "${options.username}" not found.`);
+          }
+        }
+
         logger.error(`Failed to load GitHub repositories: ${error}`);
         throw error;
       }

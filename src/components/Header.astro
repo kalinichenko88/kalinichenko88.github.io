@@ -1,25 +1,26 @@
 ---
 import { GITHUB_PROFILE_LINK } from '../consts';
+import { THEMES, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
+import { NAV_LINKS } from '../config/navigation';
 
 import GithubIcon from '../assets/icons/github.svg';
-import ChevronDownIcon from '../assets/icons/chevron-down.svg';
 import CheckIcon from '../assets/icons/check.svg';
 import MenuIcon from '../assets/icons/menu.svg';
+import SunIcon from '../assets/icons/sun.svg';
+import MoonIcon from '../assets/icons/moon.svg';
+import TerminalIcon from '../assets/icons/terminal.svg';
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/#projects', label: 'Projects' },
-  { href: '/#contact', label: 'Contact' },
-];
-
-const themes = [
-  { id: 'cloud', label: 'Light', icon: '☀️' },
-  { id: 'cloud-dark', label: 'Dark', icon: '🌙' },
-  { id: 'terminal', label: 'Terminal', icon: '💻' },
-];
+const themeIcons: Record<string, typeof SunIcon> = {
+  sun: SunIcon,
+  moon: MoonIcon,
+  terminal: TerminalIcon,
+};
 
 const currentPath = Astro.url.pathname;
+
+const themeMapForScript = JSON.stringify(
+  Object.fromEntries(THEMES.map((t) => [t.id, { iconId: t.iconId, label: t.label }]))
+);
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 border-b border-line bg-background/80 backdrop-blur-xl">
@@ -38,7 +39,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center gap-1">
-        {navLinks.map((link) => (
+        {NAV_LINKS.map((link) => (
           <a
             href={link.href}
             class:list={[
@@ -71,13 +72,14 @@ const currentPath = Astro.url.pathname;
           <button
             id="theme-toggle"
             type="button"
-            class="flex items-center gap-1.5 px-2.5 py-1.5 text-sm text-foreground-tertiary hover:text-foreground border border-line rounded-md transition-colors duration-150 cursor-pointer hover:bg-background-subtle"
+            class="p-2 text-foreground-tertiary hover:text-foreground rounded-md transition-colors duration-150 cursor-pointer hover:bg-background-subtle"
             aria-label="Change theme"
             aria-expanded="false"
             aria-haspopup="true"
           >
-            <span id="theme-icon" class="text-base">☀️</span>
-            <ChevronDownIcon class="w-3.5 h-3.5" />
+            <SunIcon class="w-5 h-5 theme-icon" data-icon="sun" />
+            <MoonIcon class="w-5 h-5 theme-icon hidden" data-icon="moon" />
+            <TerminalIcon class="w-5 h-5 theme-icon hidden" data-icon="terminal" />
           </button>
 
           <!-- Theme Dropdown -->
@@ -86,18 +88,21 @@ const currentPath = Astro.url.pathname;
             class="absolute right-0 top-full mt-2 w-44 py-1.5 bg-surface border border-line rounded-lg shadow-lg opacity-0 invisible translate-y-1 transition-all duration-150 z-50"
             role="menu"
           >
-            {themes.map((theme) => (
-              <button
-                type="button"
-                class="theme-option w-full flex items-center gap-3 px-3 py-2 text-sm text-foreground-secondary hover:text-foreground hover:bg-background-subtle transition-colors cursor-pointer"
-                data-theme={theme.id}
-                role="menuitem"
-              >
-                <span class="text-base">{theme.icon}</span>
-                <span>{theme.label}</span>
-                <CheckIcon class="theme-check w-4 h-4 ml-auto text-accent opacity-0" />
-              </button>
-            ))}
+            {THEMES.map((theme) => {
+              const IconComponent = themeIcons[theme.iconId];
+              return (
+                <button
+                  type="button"
+                  class="theme-option w-full flex items-center gap-3 px-3 py-2 text-sm text-foreground-secondary hover:text-foreground hover:bg-background-subtle transition-colors cursor-pointer"
+                  data-theme={theme.id}
+                  role="menuitem"
+                >
+                  <IconComponent class="w-4 h-4" />
+                  <span>{theme.label}</span>
+                  <CheckIcon class="theme-check w-4 h-4 ml-auto text-accent opacity-0" />
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -108,6 +113,7 @@ const currentPath = Astro.url.pathname;
           class="md:hidden p-2 text-foreground-tertiary hover:text-foreground transition-colors duration-150 cursor-pointer"
           aria-label="Open menu"
           aria-expanded="false"
+          aria-controls="mobile-menu"
         >
           <MenuIcon class="w-5 h-5" />
         </button>
@@ -122,7 +128,7 @@ const currentPath = Astro.url.pathname;
     aria-label="Mobile navigation"
   >
     <div class="container py-4 space-y-1">
-      {navLinks.map((link) => (
+      {NAV_LINKS.map((link) => (
         <a
           href={link.href}
           class:list={[
@@ -142,34 +148,37 @@ const currentPath = Astro.url.pathname;
 <!-- Spacer for fixed header -->
 <div class="h-16" aria-hidden="true"></div>
 
-<script is:inline>
+<script is:inline data-themes={themeMapForScript} data-default-light={DEFAULT_LIGHT_THEME} data-default-dark={DEFAULT_DARK_THEME}>
   (function() {
     // Prevent multiple initializations
     if (window.__headerInitialized) return;
     window.__headerInitialized = true;
 
-    // Theme configuration
-    const THEMES = {
-      'cloud': { icon: '☀️', label: 'Light' },
-      'cloud-dark': { icon: '🌙', label: 'Dark' },
-      'terminal': { icon: '💻', label: 'Terminal' }
-    };
-
-    const DEFAULT_THEME = 'cloud';
+    // Theme configuration from shared config
+    const scriptEl = document.querySelector('script[data-themes]');
+    const THEMES = JSON.parse(scriptEl.dataset.themes);
+    const DEFAULT_LIGHT = scriptEl.dataset.defaultLight;
+    const DEFAULT_DARK = scriptEl.dataset.defaultDark;
 
     function getStoredTheme() {
       return localStorage.getItem('theme');
     }
 
     function getSystemPreference() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? DEFAULT_DARK : DEFAULT_LIGHT;
     }
 
     function updateThemeUI(theme) {
-      // Update button icon
-      const themeIcon = document.getElementById('theme-icon');
-      if (themeIcon && THEMES[theme]) {
-        themeIcon.textContent = THEMES[theme].icon;
+      // Update button icon - show/hide the correct SVG
+      const themeConfig = THEMES[theme];
+      if (themeConfig) {
+        document.querySelectorAll('.theme-icon').forEach(icon => {
+          if (icon.dataset.icon === themeConfig.iconId) {
+            icon.classList.remove('hidden');
+          } else {
+            icon.classList.add('hidden');
+          }
+        });
       }
 
       // Update checkmarks in dropdown
@@ -182,7 +191,7 @@ const currentPath = Astro.url.pathname;
     }
 
     function applyTheme(theme) {
-      if (!THEMES[theme]) theme = DEFAULT_THEME;
+      if (!THEMES[theme]) theme = DEFAULT_LIGHT;
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
       updateThemeUI(theme);
@@ -236,28 +245,91 @@ const currentPath = Astro.url.pathname;
       // Mobile menu toggle
       const menuToggle = e.target.closest('#mobile-menu-toggle');
       if (menuToggle) {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-          const isOpen = !mobileMenu.classList.contains('hidden');
-          mobileMenu.classList.toggle('hidden');
-          menuToggle.setAttribute('aria-expanded', String(!isOpen));
-        }
+        toggleMobileMenu();
       }
 
       // Close mobile menu on link click
       const mobileMenuLink = e.target.closest('#mobile-menu a');
       if (mobileMenuLink) {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuToggle = document.getElementById('mobile-menu-toggle');
-        if (mobileMenu) mobileMenu.classList.add('hidden');
-        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        closeMobileMenu();
       }
     });
 
-    // Close dropdown on escape
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuToggle = document.getElementById('mobile-menu-toggle');
+      if (!mobileMenu || !menuToggle) return;
+
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    }
+
+    function openMobileMenu() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuToggle = document.getElementById('mobile-menu-toggle');
+      if (!mobileMenu || !menuToggle) return;
+
+      mobileMenu.classList.remove('hidden');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      menuToggle.setAttribute('aria-label', 'Close menu');
+
+      // Focus first link in menu
+      const firstLink = mobileMenu.querySelector('a');
+      if (firstLink) firstLink.focus();
+    }
+
+    function closeMobileMenu(returnFocus = true) {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuToggle = document.getElementById('mobile-menu-toggle');
+      if (!mobileMenu || !menuToggle) return;
+
+      mobileMenu.classList.add('hidden');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Open menu');
+
+      // Return focus to toggle button
+      if (returnFocus) menuToggle.focus();
+    }
+
+    function isMobileMenuOpen() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      return mobileMenu && !mobileMenu.classList.contains('hidden');
+    }
+
+    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
+      // Close dropdowns/menus on escape
       if (e.key === 'Escape') {
         toggleDropdown(false);
+        if (isMobileMenuOpen()) {
+          closeMobileMenu();
+        }
+      }
+
+      // Focus trap for mobile menu
+      if (e.key === 'Tab' && isMobileMenuOpen()) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        if (!mobileMenu || !menuToggle) return;
+
+        const focusableElements = [
+          menuToggle,
+          ...mobileMenu.querySelectorAll('a, button')
+        ];
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
       }
     });
 
@@ -267,9 +339,8 @@ const currentPath = Astro.url.pathname;
       const theme = storedTheme || getSystemPreference();
       applyTheme(theme);
 
-      // Close mobile menu on navigation
-      const mobileMenu = document.getElementById('mobile-menu');
-      if (mobileMenu) mobileMenu.classList.add('hidden');
+      // Close mobile menu on navigation (without returning focus)
+      closeMobileMenu(false);
 
       // Close theme dropdown
       toggleDropdown(false);

@@ -1,9 +1,9 @@
 ---
 import Layout from '../components/Layout.astro';
 
-import { LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
+import { LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
 
-const yearsExperience = new Date().getFullYear() - 2014;
+const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
 
 const timeline = [
   {
