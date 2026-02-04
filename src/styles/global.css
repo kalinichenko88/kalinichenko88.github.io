@@ -43,7 +43,7 @@
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Container */
-  --container-max: 1440px;
+  --container-max: 1280px;
   --container-prose: 920px;
 }
 
@@ -200,13 +200,13 @@
   }
 
   h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 4vw, 2.75rem);
   }
   h2 {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
   }
   h3 {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
   }
 
   p {
@@ -292,7 +292,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-2) var(--space-5);
     font-family: var(--font-body);
     font-size: 0.875rem;
     font-weight: 500;
@@ -318,7 +318,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-2) var(--space-5);
     font-family: var(--font-body);
     font-size: 0.875rem;
     font-weight: 500;
@@ -586,9 +586,167 @@
   }
 }
 
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-rss {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
 /* Status indicator pulse */
 .status-available {
   animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Geeky Interactive Effects
+   ============================================ */
+
+/* Icon tilt + scale on hover */
+.icon-hover {
+  transition:
+    transform var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.icon-hover:hover {
+  transform: rotate(6deg) scale(1.15);
+}
+
+/* Card lift with glow on hover */
+.card-lift {
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+}
+
+[data-theme='cloud'] .card-lift:hover,
+[data-theme='cloud-dark'] .card-lift:hover {
+  box-shadow: 0 12px 40px rgba(124, 92, 255, 0.15);
+}
+
+[data-theme='terminal'] .card-lift:hover {
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.2);
+}
+
+/* RSS pulse animation */
+.rss-pulse {
+  transition: transform var(--transition-fast);
+}
+
+.rss-pulse:hover {
+  animation: pulse-rss 0.6s ease-in-out infinite;
+  color: var(--color-accent);
+}
+
+/* Blinking cursor effect */
+.cursor-blink::after {
+  content: '|';
+  color: var(--color-accent);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-accent);
+  z-index: 100;
+  transform-origin: left;
+  transition: transform 0.1s linear;
+}
+
+/* Keyboard shortcut badge */
+.kbd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.02em;
+}
+
+[data-theme='terminal'] .kbd-badge {
+  border-style: dashed;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Code Syntax Colors for Hero
+   ============================================ */
+
+:root,
+[data-theme='cloud'] {
+  --color-code-keyword: #d73a49;
+  --color-code-string: #22863a;
+  --color-code-property: #005cc5;
+  --color-code-boolean: #d73a49;
+  --color-code-bracket: #6e7781;
+  --color-code-punctuation: #24292f;
+}
+
+[data-theme='cloud-dark'] {
+  --color-code-keyword: #ff7b72;
+  --color-code-string: #a5d6ff;
+  --color-code-property: #79c0ff;
+  --color-code-boolean: #ff7b72;
+  --color-code-bracket: #8b949e;
+  --color-code-punctuation: #c9d1d9;
+}
+
+[data-theme='terminal'] {
+  --color-code-keyword: #00ffff;
+  --color-code-string: #33ff33;
+  --color-code-property: #ffff00;
+  --color-code-boolean: #00ffff;
+  --color-code-bracket: #22cc22;
+  --color-code-punctuation: #33ff33;
+}
+
+.code-keyword {
+  color: var(--color-code-keyword);
+}
+.code-string {
+  color: var(--color-code-string);
+}
+.code-property {
+  color: var(--color-code-property);
+}
+.code-boolean {
+  color: var(--color-code-boolean);
+}
+.code-bracket {
+  color: var(--color-code-bracket);
+}
+.code-punctuation {
+  color: var(--color-code-punctuation);
 }
 
 /* ============================================
@@ -620,15 +778,15 @@
 [data-theme='cloud'] .btn-primary,
 [data-theme='cloud-dark'] .btn-primary {
   border-radius: 9999px;
-  padding-left: var(--space-8);
-  padding-right: var(--space-8);
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
 }
 
 [data-theme='cloud'] .btn-secondary,
 [data-theme='cloud-dark'] .btn-secondary {
   border-radius: 9999px;
-  padding-left: var(--space-8);
-  padding-right: var(--space-8);
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
 }
 
 [data-theme='cloud'] .tag,

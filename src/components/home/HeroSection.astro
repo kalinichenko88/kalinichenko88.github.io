@@ -9,54 +9,67 @@ type Props = {
 const { yearsExperience } = Astro.props;
 ---
 
-<section class="relative min-h-[80vh] flex items-center grid-pattern">
-  <div class="container py-16 md:py-20">
-    <div class="max-w-3xl">
-      <div class="animate-in mb-5">
-        <span
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line bg-surface text-xs font-mono text-foreground-secondary"
-        >
-          <span class="w-1.5 h-1.5 rounded-full bg-accent status-available"></span>
-          Available for new opportunities
+<section class="relative grid-pattern">
+  <div class="container py-14 md:py-20">
+    <div class="max-w-4xl">
+      <!-- Code Comment -->
+      <div class="animate-in mb-4">
+        <span class="font-mono text-sm text-foreground-tertiary">
+          <span class="code-comment">// Available for new opportunities</span>
+          <span class="inline-flex items-center ml-2">
+            <span class="w-2 h-2 rounded-full bg-accent status-available"></span>
+          </span>
         </span>
       </div>
 
-      <h1 class="animate-in animate-in-delay-1 text-foreground mb-4">
-        Senior Frontend Engineer
-        <span class="block text-foreground-tertiary">React, TypeScript, Full-Stack Background</span>
-      </h1>
+      <!-- Code-style Developer Object -->
+      <div class="animate-in animate-in-delay-1 code-block-hero mb-6" set:html={`
+        <div class="font-mono text-sm md:text-base leading-relaxed whitespace-pre"><span class="code-keyword">const</span> <span class="code-property">developer</span> <span class="code-punctuation">=</span> <span class="code-bracket">{</span>
+  <span class="code-property">name</span><span class="code-punctuation">:</span> <span class="code-string">"Ivan Kalinichenko"</span><span class="code-punctuation">,</span>
+  <span class="code-property">role</span><span class="code-punctuation">:</span> <span class="code-string">"Senior Frontend Engineer"</span><span class="code-punctuation">,</span>
+  <span class="code-property">focus</span><span class="code-punctuation">:</span> <span class="code-bracket">[</span><span class="code-string">"architecture"</span><span class="code-punctuation">,</span> <span class="code-string">"performance"</span><span class="code-punctuation">,</span> <span class="code-string">"DX"</span><span class="code-bracket">]</span><span class="code-punctuation">,</span>
+  <span class="code-property">experience</span><span class="code-punctuation">:</span> <span class="code-boolean">${yearsExperience}</span><span class="code-punctuation">,</span>
+  <span class="code-property">stack</span><span class="code-punctuation">:</span> <span class="code-bracket">[</span><span class="code-string">"React"</span><span class="code-punctuation">,</span> <span class="code-string">"TypeScript"</span><span class="code-punctuation">,</span> <span class="code-string">"Node.js"</span><span class="code-bracket">]</span><span class="code-punctuation">,</span>
+  <span class="code-property">available</span><span class="code-punctuation">:</span> <span class="code-boolean">true</span>
+<span class="code-bracket">}</span><span class="code-punctuation">;</span></div>
+      `} />
 
-      <p
-        class="animate-in animate-in-delay-2 text-lg md:text-xl text-foreground-secondary leading-relaxed max-w-2xl mb-6"
-      >
+      <!-- Description with keywords -->
+      <p class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6">
         I build scalable, high-performance web applications with a focus on
-        <span class="text-foreground font-medium">clean architecture</span>,
-        <span class="text-foreground font-medium">developer experience</span>, and
-        <span class="text-foreground font-medium">product impact</span>. Full-stack background helps me
+        <code class="code-inline">cleanArchitecture</code>,
+        <code class="code-inline">developerExperience</code>, and
+        <code class="code-inline">productImpact</code>. Full-stack background helps me
         design better frontend solutions.
       </p>
 
+      <!-- Stats as code comments -->
       <div class="animate-in animate-in-delay-3 flex flex-wrap gap-6 mb-8 font-mono text-sm">
-        <div>
-          <span class="text-accent text-2xl font-semibold">{yearsExperience}+</span>
-          <span class="block text-foreground-tertiary mt-1">Years Experience</span>
+        <div class="stat-item">
+          <span class="text-accent text-xl font-semibold">{yearsExperience}+</span>
+          <span class="block text-foreground-tertiary mt-1">// years.experience</span>
         </div>
-        <div>
-          <span class="text-accent text-2xl font-semibold">SaaS</span>
-          <span class="block text-foreground-tertiary mt-1">Platform Focus</span>
+        <div class="stat-item">
+          <span class="text-accent text-xl font-semibold">SaaS</span>
+          <span class="block text-foreground-tertiary mt-1">// platform.focus</span>
         </div>
-        <div>
-          <span class="text-accent text-2xl font-semibold">Remote</span>
-          <span class="block text-foreground-tertiary mt-1">International Teams</span>
+        <div class="stat-item">
+          <span class="text-accent text-xl font-semibold">Remote</span>
+          <span class="block text-foreground-tertiary mt-1">// teams.international</span>
         </div>
       </div>
 
-      <div class="animate-in animate-in-delay-4 flex flex-wrap gap-4">
+      <!-- CTAs -->
+      <div class="animate-in animate-in-delay-4 flex flex-wrap gap-3">
         <a href="#contact" class="btn-primary">
-          Get in touch
+          <span class="font-mono text-xs mr-1 opacity-70">await</span>
+          getInTouch()
           <ArrowRightIcon class="w-4 h-4" />
         </a>
-        <a href="#projects" class="btn-secondary"> View experience </a>
+        <a href="#projects" class="btn-secondary">
+          <span class="font-mono text-xs mr-1 opacity-70">view</span>
+          experience
+        </a>
       </div>
     </div>
   </div>
@@ -68,3 +81,41 @@ const { yearsExperience } = Astro.props;
     </div>
   </div>
 </section>
+
+<style>
+  .code-comment {
+    color: var(--color-text-tertiary);
+  }
+
+  .code-block-hero {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    overflow-x: auto;
+  }
+
+  [data-theme='terminal'] .code-block-hero {
+    border-radius: 0;
+    border-style: dashed;
+    background: linear-gradient(180deg, rgba(51, 255, 51, 0.03) 0%, transparent 100%);
+  }
+
+  .code-inline {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-bg-subtle);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    color: var(--color-accent);
+  }
+
+  [data-theme='terminal'] .code-inline {
+    border-radius: 0;
+    border: 1px dashed var(--color-border);
+  }
+
+  .stat-item {
+    position: relative;
+  }
+</style>

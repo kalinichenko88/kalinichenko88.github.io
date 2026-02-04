@@ -26,7 +26,7 @@ const socialLinks = [
 ---
 
 <footer class="border-t border-line bg-background">
-  <div class="container py-10">
+  <div class="container py-8">
     <!-- Main Footer Content -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6">
       <!-- Brand Column -->
@@ -66,7 +66,7 @@ const socialLinks = [
         <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
           Connect
         </h4>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2">
           {socialLinks.map((link) => (
             <a
               href={link.href}
@@ -75,11 +75,11 @@ const socialLinks = [
               class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
               aria-label={link.label}
             >
-              {link.icon === 'github' && <GithubIcon class="w-4 h-4" />}
-              {link.icon === 'linkedin' && <LinkedinIcon class="w-4 h-4" />}
-              {link.icon === 'twitter' && <TwitterIcon class="w-4 h-4" />}
-              {link.icon === 'telegram' && <TelegramIcon class="w-4 h-4" />}
-              {link.icon === 'email' && <EmailIcon class="w-4 h-4" />}
+              {link.icon === 'github' && <GithubIcon class="w-4 h-4 icon-hover" />}
+              {link.icon === 'linkedin' && <LinkedinIcon class="w-4 h-4 icon-hover" />}
+              {link.icon === 'twitter' && <TwitterIcon class="w-4 h-4 icon-hover" />}
+              {link.icon === 'telegram' && <TelegramIcon class="w-4 h-4 icon-hover" />}
+              {link.icon === 'email' && <EmailIcon class="w-4 h-4 icon-hover" />}
             </a>
           ))}
         </div>
