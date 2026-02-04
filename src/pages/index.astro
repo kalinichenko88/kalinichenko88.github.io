@@ -8,7 +8,21 @@ import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 
-import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
+import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, TWITTER_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ivan Kalinichenko",
+  "jobTitle": "Senior Frontend Engineer",
+  "url": "https://kalinichenko.dev",
+  "sameAs": [
+    GITHUB_PROFILE_LINK,
+    LINKEDIN_PROFILE_LINK,
+    TWITTER_PROFILE_LINK
+  ],
+  "knowsAbout": ["React", "TypeScript", "JavaScript", "Frontend Architecture", "Web Performance"]
+};
 
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
@@ -69,6 +83,7 @@ const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
 ---
 
 <Layout>
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   <HeroSection yearsExperience={yearsExperience} />
   <AboutSection yearsExperience={yearsExperience} expertise={expertise} />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />

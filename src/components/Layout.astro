@@ -14,9 +14,12 @@ type Props = {
   title?: string;
   description?: string;
   class?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  tags?: string[];
 };
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className } = Astro.props;
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className, type, publishedTime, tags } = Astro.props;
 
 const themeConfig = JSON.stringify({
   ids: THEME_IDS,
@@ -54,7 +57,7 @@ const themeConfig = JSON.stringify({
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <Head title={title} description={description} />
+    <Head title={title} description={description} type={type} publishedTime={publishedTime} tags={tags} />
 
     <!-- Fonts -->
     <Font cssVariable="--font-general-sans" preload />
