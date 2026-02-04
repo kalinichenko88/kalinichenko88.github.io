@@ -292,7 +292,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-5);
+    padding: var(--space-3) var(--space-6);
     font-family: var(--font-body);
     font-size: 0.875rem;
     font-weight: 500;
@@ -318,7 +318,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-5);
+    padding: var(--space-3) var(--space-6);
     font-family: var(--font-body);
     font-size: 0.875rem;
     font-weight: 500;
@@ -778,15 +778,15 @@
 [data-theme='cloud'] .btn-primary,
 [data-theme='cloud-dark'] .btn-primary {
   border-radius: 9999px;
-  padding-left: var(--space-6);
-  padding-right: var(--space-6);
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
 }
 
 [data-theme='cloud'] .btn-secondary,
 [data-theme='cloud-dark'] .btn-secondary {
   border-radius: 9999px;
-  padding-left: var(--space-6);
-  padding-right: var(--space-6);
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
 }
 
 [data-theme='cloud'] .tag,
