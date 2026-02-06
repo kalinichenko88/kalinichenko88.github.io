@@ -1,6 +1,9 @@
-export const SITE_TITLE = 'Ivan Kalinichenko – Senior Frontend Developer';
+export const AUTHOR_NAME = 'Ivan Kalinichenko';
+export const ROLE = 'Senior Frontend Developer';
+
+export const SITE_TITLE = `${AUTHOR_NAME} – ${ROLE}`;
 export const SITE_DESCRIPTION =
-  'Senior Frontend Developer with 10+ years of experience building scalable, high-performance web applications using React, TypeScript, and modern frontend tooling.';
+  `${ROLE} with 10+ years of experience building scalable, high-performance web applications using React, TypeScript, and modern frontend tooling.`;
 
 export const GITHUB_PROFILE_LINK = 'https://github.com/kalinichenko88';
 export const LINKEDIN_PROFILE_LINK = 'https://www.linkedin.com/in/ivan-kalinichenko/';

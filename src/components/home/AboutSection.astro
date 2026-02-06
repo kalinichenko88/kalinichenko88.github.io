@@ -1,4 +1,5 @@
 ---
+import { ROLE } from '../../consts';
 import ExpertiseGrid from './ExpertiseGrid.astro';
 
 type ExpertiseArea = {
@@ -22,7 +23,7 @@ const { yearsExperience, expertise } = Astro.props;
         <h2 class="text-foreground mb-4">Engineering with purpose</h2>
         <div class="space-y-4 text-foreground-secondary">
           <p>
-            I'm a Senior Frontend Developer with {yearsExperience}+ years of experience building scalable,
+            I'm a {ROLE} with {yearsExperience}+ years of experience building scalable,
             high-performance web applications using React, TypeScript, and modern frontend tooling.
           </p>
           <p>

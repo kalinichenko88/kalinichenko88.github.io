@@ -1,5 +1,7 @@
 ---
 import {
+  AUTHOR_NAME,
+  ROLE,
   GITHUB_PROFILE_LINK,
   LINKEDIN_PROFILE_LINK,
   TWITTER_PROFILE_LINK,
@@ -37,7 +39,7 @@ const socialLinks = [
           <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
         </a>
         <p class="text-foreground-secondary text-sm leading-relaxed max-w-sm">
-          Senior Frontend Developer with 10+ years of experience building scalable web applications.
+          {ROLE} with 10+ years of experience building scalable web applications.
           Focused on architecture, performance, and developer experience.
         </p>
       </div>
@@ -89,7 +91,7 @@ const socialLinks = [
     <!-- Bottom Bar -->
     <div class="mt-8 pt-6 border-t border-line flex flex-col md:flex-row justify-between items-center gap-3">
       <p class="text-xs text-foreground-tertiary font-mono">
-        &copy; {currentYear} Ivan Kalinichenko. Built with Astro.
+        &copy; {currentYear} {AUTHOR_NAME}. Built with Astro.
       </p>
       <p class="text-xs text-foreground-tertiary font-mono">
         <span class="inline-flex items-center gap-1.5">

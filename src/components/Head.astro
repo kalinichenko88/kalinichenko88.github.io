@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
+import { AUTHOR_NAME, ROLE } from '../consts';
 import personImage from '../assets/images/me.png';
 
 type Props = {
@@ -45,11 +46,11 @@ const { title, description, type = 'website', publishedTime, tags } = Astro.prop
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(personImage.src, Astro.url)} />
-<meta property="og:image:alt" content="Ivan Kalinichenko - Senior Frontend Developer" />
+<meta property="og:image:alt" content={`${AUTHOR_NAME} - ${ROLE}`} />
 {type === 'article' && publishedTime && (
   <>
     <meta property="article:published_time" content={publishedTime} />
-    <meta property="article:author" content="Ivan Kalinichenko" />
+    <meta property="article:author" content={AUTHOR_NAME} />
     {tags?.map(tag => <meta property="article:tag" content={tag} />)}
   </>
 )}

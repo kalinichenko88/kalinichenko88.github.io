@@ -1,4 +1,5 @@
 ---
+import { ROLE } from '../../consts';
 import ExternalLinkIcon from '../../assets/icons/external-link.svg';
 import ChartIcon from '../../assets/icons/chart.svg';
 
@@ -90,7 +91,7 @@ const { projects, githubProfileLink } = Astro.props;
               <span class="font-medium text-foreground">Apliteni OÜ</span>
               <span class="font-mono text-xs text-foreground-tertiary">2020 — Present</span>
             </div>
-            <p class="text-sm text-foreground-secondary">Senior Frontend Developer</p>
+            <p class="text-sm text-foreground-secondary">{ROLE}</p>
           </div>
           <div>
             <div class="flex items-center justify-between mb-1">

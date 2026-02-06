@@ -8,13 +8,13 @@ import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 
-import { GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, TWITTER_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
+import { AUTHOR_NAME, ROLE, GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, TWITTER_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
 
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Ivan Kalinichenko",
-  "jobTitle": "Senior Frontend Developer",
+  "name": AUTHOR_NAME,
+  "jobTitle": ROLE,
   "url": "https://kalinichenko.dev",
   "sameAs": [
     GITHUB_PROFILE_LINK,

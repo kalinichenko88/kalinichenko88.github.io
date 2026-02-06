@@ -1,5 +1,5 @@
 ---
-import { GITHUB_PROFILE_LINK } from '../consts';
+import { AUTHOR_NAME, GITHUB_PROFILE_LINK } from '../consts';
 import { THEMES, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
 import { NAV_LINKS } from '../config/navigation';
 
@@ -30,7 +30,7 @@ const themeMapForScript = JSON.stringify(
       <a
         href="/"
         class="group flex items-center gap-2 font-display font-semibold text-foreground"
-        aria-label="Ivan Kalinichenko - Home"
+        aria-label={`${AUTHOR_NAME} - Home`}
       >
         <span class="text-accent font-mono text-sm">~/</span>
         <span class="tracking-tight">kalinichenko</span>
