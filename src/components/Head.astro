@@ -45,7 +45,7 @@ const { title, description, type = 'website', publishedTime, tags } = Astro.prop
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(personImage.src, Astro.url)} />
-<meta property="og:image:alt" content="Ivan Kalinichenko - Senior Frontend Engineer" />
+<meta property="og:image:alt" content="Ivan Kalinichenko - Senior Frontend Developer" />
 {type === 'article' && publishedTime && (
   <>
     <meta property="article:published_time" content={publishedTime} />
