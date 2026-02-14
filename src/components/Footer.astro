@@ -28,11 +28,11 @@ const socialLinks = [
 ---
 
 <footer class="border-t border-line bg-background-subtle">
-  <div class="container py-8">
+  <div class="container py-12 md:py-16">
     <!-- Main Footer Content -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6">
       <!-- Brand Column -->
-      <div class="md:col-span-4">
+      <div class="md:col-span-4 space-y-3">
         <a
           href="/"
           class="inline-flex items-center gap-2 font-display font-semibold text-foreground"
@@ -41,6 +41,10 @@ const socialLinks = [
           <span class="tracking-tight">kalinichenko</span>
           <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
         </a>
+        <p class="text-xs text-foreground-tertiary font-mono">
+          &copy; {currentYear}
+          {AUTHOR_NAME}. Built with Astro.
+        </p>
       </div>
 
       <!-- Navigation Column -->
@@ -93,22 +97,6 @@ const socialLinks = [
           }
         </div>
       </div>
-    </div>
-
-    <!-- Bottom Bar -->
-    <div
-      class="mt-8 pt-6 border-t border-line flex flex-col md:flex-row justify-between items-center gap-3"
-    >
-      <p class="text-xs text-foreground-tertiary font-mono">
-        &copy; {currentYear}
-        {AUTHOR_NAME}. Built with Astro.
-      </p>
-      <p class="text-xs text-foreground-tertiary font-mono">
-        <span class="inline-flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-accent status-available"></span>
-          Available for opportunities
-        </span>
-      </p>
     </div>
   </div>
 </footer>

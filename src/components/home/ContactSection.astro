@@ -16,11 +16,10 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
       <span class="section-label justify-center mb-3">05 — Contact</span>
       <h2 class="text-foreground mb-4">Let's work together</h2>
       <p class="text-foreground-secondary mb-6 max-w-lg mx-auto">
-        I enjoy working in international remote teams and delivering reliable UI. Open to new
-        opportunities and interesting projects.
+        Interested in collaboration? Get in touch.
       </p>
 
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <a href={`mailto:${mailProfileLink}`} class="btn-primary">
           <EmailIcon class="w-4 h-4" />
           Send me an email
@@ -35,13 +34,6 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
           Connect on LinkedIn
         </a>
       </div>
-
-      <p class="font-mono text-sm text-foreground-tertiary">
-        Or reach out directly at{' '}
-        <a href={`mailto:${mailProfileLink}`} class="text-accent hover:underline">
-          {mailProfileLink}
-        </a>
-      </p>
     </div>
   </div>
 </section>
