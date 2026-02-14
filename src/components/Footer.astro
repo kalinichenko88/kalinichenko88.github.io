@@ -1,7 +1,6 @@
 ---
 import {
   AUTHOR_NAME,
-  ROLE,
   GITHUB_PROFILE_LINK,
   LINKEDIN_PROFILE_LINK,
   TWITTER_PROFILE_LINK,
@@ -19,11 +18,11 @@ import EmailIcon from '../assets/icons/email.svg';
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
-  { href: GITHUB_PROFILE_LINK, label: 'GitHub', icon: 'github' },
-  { href: LINKEDIN_PROFILE_LINK, label: 'LinkedIn', icon: 'linkedin' },
-  { href: TWITTER_PROFILE_LINK, label: 'Twitter', icon: 'twitter' },
-  { href: TELEGRAM_PROFILE_LINK, label: 'Telegram', icon: 'telegram' },
-  { href: `mailto:${MAIL_PROFILE_LINK}`, label: 'Email', icon: 'email' },
+  { href: GITHUB_PROFILE_LINK, label: 'GitHub', Icon: GithubIcon },
+  { href: LINKEDIN_PROFILE_LINK, label: 'LinkedIn', Icon: LinkedinIcon },
+  { href: TWITTER_PROFILE_LINK, label: 'Twitter', Icon: TwitterIcon },
+  { href: TELEGRAM_PROFILE_LINK, label: 'Telegram', Icon: TelegramIcon },
+  { href: `mailto:${MAIL_PROFILE_LINK}`, label: 'Email', Icon: EmailIcon },
 ];
 ---
 
@@ -87,11 +86,7 @@ const socialLinks = [
                 class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
                 aria-label={link.label}
               >
-                {link.icon === 'github' && <GithubIcon class="w-4 h-4 icon-hover" />}
-                {link.icon === 'linkedin' && <LinkedinIcon class="w-4 h-4 icon-hover" />}
-                {link.icon === 'twitter' && <TwitterIcon class="w-4 h-4 icon-hover" />}
-                {link.icon === 'telegram' && <TelegramIcon class="w-4 h-4 icon-hover" />}
-                {link.icon === 'email' && <EmailIcon class="w-4 h-4 icon-hover" />}
+                <link.Icon class="w-4 h-4 icon-hover" />
               </a>
             ))
           }
