@@ -1,6 +1,5 @@
 ---
-import { AUTHOR_NAME, ROLE } from '../../consts';
-import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
+import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK } from '../../consts';
 import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
 ---
 
@@ -22,20 +21,17 @@ import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
       `}
       />
 
-      <!-- Description with keywords -->
+      <!-- Description -->
       <p
         class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6"
       >
-        Here I share side projects, AI experiments, and things I'm figuring out along the way.
+        Here I share side projects, AI experiments, and things I'm figuring out along the way. Want
+        to chat? Drop me a line at:
       </p>
 
-      <!-- CTAs -->
-      <div class="animate-in animate-in-delay-4 flex flex-wrap gap-3">
-        <a href="#projects" class="btn-primary">
-          explore()
-          <ArrowRightIcon class="w-4 h-4" />
-        </a>
-        <a href="#contact" class="btn-secondary"> sayHello() </a>
+      <!-- CTA -->
+      <div class="animate-in animate-in-delay-4">
+        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">{MAIL_PROFILE_LINK}</a>
       </div>
     </div>
   </div>
