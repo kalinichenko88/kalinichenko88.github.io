@@ -1,7 +1,7 @@
 ---
 title: Hello World
 description: First post on the new blog. A quick intro and what to expect.
-pubDate: 2026-02-14
+pubDate: 2026-02-13
 tags: [meta]
 ---
 
