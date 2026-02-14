@@ -35,47 +35,51 @@ const { latestPosts, githubProfileLink } = Astro.props;
       </a>
     </div>
 
-    {latestPosts.length > 0 ? (
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {latestPosts.map((post) => (
-          <article class="card card-lift group">
-            <a href={`/blog/${post.id}`} class="block p-5">
-              <div class="flex flex-wrap gap-2 mb-4">
-                {post.data.tags.slice(0, 2).map((tag: string) => (
-                  <span class="tag">{tag}</span>
-                ))}
-              </div>
-              <h3 class="font-display font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
-                {post.data.title}
-              </h3>
-              <p class="text-sm text-foreground-secondary line-clamp-2 mb-4">{post.data.description}</p>
-              <time class="text-xs font-mono text-foreground-tertiary">
-                {post.data.pubDate.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </time>
-            </a>
-          </article>
-        ))}
-      </div>
-    ) : (
-      <div class="card p-10 text-center">
-        <p class="text-foreground-secondary">
-          Articles coming soon. In the meantime, check out my{' '}
-          <a
-            href={githubProfileLink}
-            class="text-accent hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>{' '}
-          for open source contributions.
-        </p>
-      </div>
-    )}
+    {
+      latestPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {latestPosts.map((post) => (
+            <article class="card card-lift group">
+              <a href={`/blog/${post.id}`} class="block p-5">
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {post.data.tags.slice(0, 2).map((tag: string) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+                <h3 class="font-display font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
+                  {post.data.title}
+                </h3>
+                <p class="text-sm text-foreground-secondary line-clamp-2 mb-4">
+                  {post.data.description}
+                </p>
+                <time class="text-xs font-mono text-foreground-tertiary">
+                  {post.data.pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </time>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="card p-10 text-center">
+          <p class="text-foreground-secondary">
+            Articles coming soon. In the meantime, check out my{' '}
+            <a
+              href={githubProfileLink}
+              class="text-accent hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>{' '}
+            for open source contributions.
+          </p>
+        </div>
+      )
+    }
   </div>
 </section>
 

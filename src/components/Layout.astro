@@ -19,7 +19,14 @@ type Props = {
   tags?: string[];
 };
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, class: className, type, publishedTime, tags } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  class: className,
+  type,
+  publishedTime,
+  tags,
+} = Astro.props;
 
 const themeConfig = JSON.stringify({
   ids: THEME_IDS,
@@ -57,7 +64,13 @@ const themeConfig = JSON.stringify({
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <Head title={title} description={description} type={type} publishedTime={publishedTime} tags={tags} />
+    <Head
+      title={title}
+      description={description}
+      type={type}
+      publishedTime={publishedTime}
+      tags={tags}
+    />
 
     <!-- Fonts -->
     <Font cssVariable="--font-general-sans" preload />
@@ -78,7 +91,7 @@ const themeConfig = JSON.stringify({
 
     <!-- Keyboard Shortcuts & Interactive Features -->
     <script is:inline data-theme-config={themeConfig}>
-      (function() {
+      (function () {
         // Prevent multiple initializations
         if (window.__layoutFeaturesInitialized) return;
         window.__layoutFeaturesInitialized = true;
@@ -105,7 +118,8 @@ const themeConfig = JSON.stringify({
         // Keyboard Shortcuts
         // ========================================
         function cycleTheme() {
-          const current = document.documentElement.getAttribute('data-theme') || config.lightDefault;
+          const current =
+            document.documentElement.getAttribute('data-theme') || config.lightDefault;
           const currentIndex = config.ids.indexOf(current);
           const nextIndex = (currentIndex + 1) % config.ids.length;
           const nextTheme = config.ids[nextIndex];
@@ -187,14 +201,10 @@ const themeConfig = JSON.stringify({
           'color: #7c5cff',
           'font-size: 14px',
           'font-weight: bold',
-          'font-family: monospace'
+          'font-family: monospace',
         ].join(';');
 
-        const subStyles = [
-          'color: #888',
-          'font-size: 12px',
-          'font-family: monospace'
-        ].join(';');
+        const subStyles = ['color: #888', 'font-size: 12px', 'font-family: monospace'].join(';');
 
         console.log('%c⚡ Hey there, fellow developer!', styles);
         console.log('%cCurious about the code? Check it out:', subStyles);

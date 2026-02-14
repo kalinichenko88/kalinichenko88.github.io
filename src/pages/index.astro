@@ -8,20 +8,24 @@ import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 
-import { AUTHOR_NAME, ROLE, GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, TWITTER_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
+import {
+  AUTHOR_NAME,
+  ROLE,
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+  TWITTER_PROFILE_LINK,
+  CAREER_START_YEAR,
+} from '../consts';
 
 const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": AUTHOR_NAME,
-  "jobTitle": ROLE,
-  "url": "https://kalinichenko.dev",
-  "sameAs": [
-    GITHUB_PROFILE_LINK,
-    LINKEDIN_PROFILE_LINK,
-    TWITTER_PROFILE_LINK
-  ],
-  "knowsAbout": ["React", "TypeScript", "JavaScript", "Frontend Architecture", "Web Performance"]
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: AUTHOR_NAME,
+  jobTitle: ROLE,
+  url: 'https://kalinichenko.dev',
+  sameAs: [GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, TWITTER_PROFILE_LINK],
+  knowsAbout: ['React', 'TypeScript', 'JavaScript', 'Frontend Architecture', 'Web Performance'],
 };
 
 const allPosts = await getCollection('posts');
@@ -59,7 +63,6 @@ const projects = featuredProjects
     };
   });
 
-
 const expertise = [
   {
     category: 'Frontend Core',
@@ -87,8 +90,10 @@ const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
   <HeroSection yearsExperience={yearsExperience} />
   <AboutSection yearsExperience={yearsExperience} expertise={expertise} />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
-  {allPosts.length > 0 && (
-    <BlogSection latestPosts={latestPosts} githubProfileLink={GITHUB_PROFILE_LINK} />
-  )}
+  {
+    allPosts.length > 0 && (
+      <BlogSection latestPosts={latestPosts} githubProfileLink={GITHUB_PROFILE_LINK} />
+    )
+  }
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
 </Layout>

@@ -33,65 +33,79 @@ const socialLinks = [
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6">
       <!-- Brand Column -->
       <div class="md:col-span-5 space-y-4">
-        <a href="/" class="inline-flex items-center gap-2 font-display font-semibold text-foreground">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 font-display font-semibold text-foreground"
+        >
           <span class="text-accent font-mono text-sm">~/</span>
           <span class="tracking-tight">kalinichenko</span>
           <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
         </a>
         <p class="text-foreground-secondary text-sm leading-relaxed max-w-sm">
-          {ROLE} with 10+ years of experience building scalable web applications.
-          Focused on architecture, performance, and developer experience.
+          {ROLE} with 10+ years of experience building scalable web applications. Focused on architecture,
+          performance, and developer experience.
         </p>
       </div>
 
       <!-- Navigation Column -->
       <div class="md:col-span-3">
-        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
+        <h4
+          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
+        >
           Navigation
         </h4>
         <ul class="space-y-3">
-          {NAV_LINKS.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {
+            NAV_LINKS.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
 
       <!-- Connect Column -->
       <div class="md:col-span-4">
-        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
+        <h4
+          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
+        >
           Connect
         </h4>
         <div class="flex flex-wrap gap-2">
-          {socialLinks.map((link) => (
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
-              aria-label={link.label}
-            >
-              {link.icon === 'github' && <GithubIcon class="w-4 h-4 icon-hover" />}
-              {link.icon === 'linkedin' && <LinkedinIcon class="w-4 h-4 icon-hover" />}
-              {link.icon === 'twitter' && <TwitterIcon class="w-4 h-4 icon-hover" />}
-              {link.icon === 'telegram' && <TelegramIcon class="w-4 h-4 icon-hover" />}
-              {link.icon === 'email' && <EmailIcon class="w-4 h-4 icon-hover" />}
-            </a>
-          ))}
+          {
+            socialLinks.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
+                aria-label={link.label}
+              >
+                {link.icon === 'github' && <GithubIcon class="w-4 h-4 icon-hover" />}
+                {link.icon === 'linkedin' && <LinkedinIcon class="w-4 h-4 icon-hover" />}
+                {link.icon === 'twitter' && <TwitterIcon class="w-4 h-4 icon-hover" />}
+                {link.icon === 'telegram' && <TelegramIcon class="w-4 h-4 icon-hover" />}
+                {link.icon === 'email' && <EmailIcon class="w-4 h-4 icon-hover" />}
+              </a>
+            ))
+          }
         </div>
       </div>
     </div>
 
     <!-- Bottom Bar -->
-    <div class="mt-8 pt-6 border-t border-line flex flex-col md:flex-row justify-between items-center gap-3">
+    <div
+      class="mt-8 pt-6 border-t border-line flex flex-col md:flex-row justify-between items-center gap-3"
+    >
       <p class="text-xs text-foreground-tertiary font-mono">
-        &copy; {currentYear} {AUTHOR_NAME}. Built with Astro.
+        &copy; {currentYear}
+        {AUTHOR_NAME}. Built with Astro.
       </p>
       <p class="text-xs text-foreground-tertiary font-mono">
         <span class="inline-flex items-center gap-1.5">

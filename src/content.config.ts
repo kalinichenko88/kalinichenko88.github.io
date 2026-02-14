@@ -38,7 +38,12 @@ const githubRepos = defineCollection({
     full_name: z.string(),
     description: z.string().nullable(),
     html_url: z.string().url(),
-    homepage: z.string().url().nullish().or(z.literal('')).transform(val => val || null),
+    homepage: z
+      .string()
+      .url()
+      .nullish()
+      .or(z.literal(''))
+      .transform((val) => val || null),
     stargazers_count: z.number(),
     forks_count: z.number(),
     language: z.string().nullable(),

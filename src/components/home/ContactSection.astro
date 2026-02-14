@@ -16,8 +16,8 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
       <span class="section-label justify-center mb-3">05 — Contact</span>
       <h2 class="text-foreground mb-4">Let's work together</h2>
       <p class="text-foreground-secondary mb-6 max-w-lg mx-auto">
-        I enjoy working in international remote teams and delivering reliable UI. Open to new opportunities
-        and interesting projects.
+        I enjoy working in international remote teams and delivering reliable UI. Open to new
+        opportunities and interesting projects.
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
@@ -25,7 +25,12 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
           <EmailIcon class="w-4 h-4" />
           Send me an email
         </a>
-        <a href={linkedinProfileLink} target="_blank" rel="noopener noreferrer" class="btn-secondary">
+        <a
+          href={linkedinProfileLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary"
+        >
           <LinkedinIcon class="w-4 h-4" />
           Connect on LinkedIn
         </a>

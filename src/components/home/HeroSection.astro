@@ -14,7 +14,9 @@ const { yearsExperience } = Astro.props;
   <div class="container py-14 md:py-20">
     <div class="max-w-4xl">
       <!-- Code-style Developer Object -->
-      <div class="animate-in animate-in-delay-1 code-block-hero mb-6" set:html={`
+      <div
+        class="animate-in animate-in-delay-1 code-block-hero mb-6"
+        set:html={`
         <div class="font-mono text-sm md:text-base leading-relaxed whitespace-pre"><span class="code-keyword">const</span> <span class="code-property">developer</span> <span class="code-punctuation">=</span> <span class="code-bracket">{</span>
   <span class="code-property">name</span><span class="code-punctuation">:</span> <span class="code-string">"${AUTHOR_NAME}"</span><span class="code-punctuation">,</span>
   <span class="code-property">role</span><span class="code-punctuation">:</span> <span class="code-string">"${ROLE}"</span><span class="code-punctuation">,</span>
@@ -23,14 +25,17 @@ const { yearsExperience } = Astro.props;
   <span class="code-property">stack</span><span class="code-punctuation">:</span> <span class="code-bracket">[</span><span class="code-string">"React"</span><span class="code-punctuation">,</span> <span class="code-string">"TypeScript"</span><span class="code-punctuation">,</span> <span class="code-string">"Node.js"</span><span class="code-bracket">]</span><span class="code-punctuation">,</span>
   <span class="code-property">learning</span><span class="code-punctuation">:</span> <span class="code-string">"in public"</span>
 <span class="code-bracket">}</span><span class="code-punctuation">;</span></div>
-      `} />
+      `}
+      />
 
       <!-- Description with keywords -->
-      <p class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6">
+      <p
+        class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6"
+      >
         I specialize in <code class="code-inline">complexForms</code>,
         <code class="code-inline">dataHeavyUIs</code>, and
-        <code class="code-inline">performance</code>. Here I share side projects,
-        AI experiments, and things I'm figuring out along the way.
+        <code class="code-inline">performance</code>. Here I share side projects, AI experiments,
+        and things I'm figuring out along the way.
       </p>
 
       <!-- Stats as code comments -->
@@ -55,9 +60,7 @@ const { yearsExperience } = Astro.props;
           explore()
           <ArrowRightIcon class="w-4 h-4" />
         </a>
-        <a href="#contact" class="btn-secondary">
-          sayHello()
-        </a>
+        <a href="#contact" class="btn-secondary"> sayHello() </a>
       </div>
     </div>
   </div>
