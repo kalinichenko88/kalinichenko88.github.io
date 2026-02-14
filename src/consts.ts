@@ -1,5 +1,5 @@
 export const AUTHOR_NAME = 'Ivan Kalinichenko';
-export const ROLE = 'Senior Frontend Developer';
+export const ROLE = 'Senior Frontend Engineer';
 
 export const SITE_TITLE = `${AUTHOR_NAME} – ${ROLE}`;
 export const SITE_DESCRIPTION = `${ROLE} with 10+ years of experience building scalable, high-performance web applications using React, TypeScript, and modern frontend tooling.`;
@@ -9,5 +9,3 @@ export const LINKEDIN_PROFILE_LINK = 'https://www.linkedin.com/in/ivan-kaliniche
 export const MAIL_PROFILE_LINK = 'ivan@kalinichenko.dev';
 export const TWITTER_PROFILE_LINK = 'https://twitter.com/kalinichenko88';
 export const TELEGRAM_PROFILE_LINK = 'https://t.me/ivan_kalinichenko';
-
-export const CAREER_START_YEAR = 2010;

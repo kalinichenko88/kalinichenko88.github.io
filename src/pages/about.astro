@@ -1,9 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 
-import { ROLE, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK, CAREER_START_YEAR } from '../consts';
-
-const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
+import { ROLE, LINKEDIN_PROFILE_LINK, MAIL_PROFILE_LINK } from '../consts';
 
 const timeline = [
   {
@@ -61,9 +59,9 @@ const values = [
       <h1 class="text-foreground mb-4">Building with intent</h1>
       <p class="text-lg text-foreground-secondary leading-relaxed">
         I'm a frontend engineer who believes great software is built at the intersection of
-        technical excellence and user empathy. With {yearsExperience}+ years of experience, I've
-        learned that the best solutions come from deeply understanding both the problem and the
-        people affected by it.
+        technical excellence and user empathy. With 10+ years of experience, I've learned that the
+        best solutions come from deeply understanding both the problem and the people affected by
+        it.
       </p>
     </div>
   </section>
@@ -106,7 +104,7 @@ const values = [
               </div>
               <div class="flex justify-between">
                 <dt class="text-foreground-tertiary">Experience</dt>
-                <dd class="text-foreground font-medium">{yearsExperience}+ years</dd>
+                <dd class="text-foreground font-medium">10+ years</dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-foreground-tertiary">Focus</dt>

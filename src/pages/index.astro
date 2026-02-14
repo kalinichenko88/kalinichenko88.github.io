@@ -15,7 +15,6 @@ import {
   LINKEDIN_PROFILE_LINK,
   MAIL_PROFILE_LINK,
   TWITTER_PROFILE_LINK,
-  CAREER_START_YEAR,
 } from '../consts';
 
 const personSchema = {
@@ -81,14 +80,12 @@ const expertise = [
     skills: ['Git', 'Docker', 'Agile', 'Code Review', 'Remote Teams'],
   },
 ];
-
-const yearsExperience = new Date().getFullYear() - CAREER_START_YEAR;
 ---
 
 <Layout>
   <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-  <HeroSection yearsExperience={yearsExperience} />
-  <AboutSection yearsExperience={yearsExperience} expertise={expertise} />
+  <HeroSection />
+  <AboutSection expertise={expertise} />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {
     allPosts.length > 0 && (

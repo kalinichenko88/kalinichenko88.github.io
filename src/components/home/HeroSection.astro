@@ -2,12 +2,6 @@
 import { AUTHOR_NAME, ROLE } from '../../consts';
 import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
 import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
-
-type Props = {
-  yearsExperience: number;
-};
-
-const { yearsExperience } = Astro.props;
 ---
 
 <section class="relative grid-pattern">
@@ -32,27 +26,8 @@ const { yearsExperience } = Astro.props;
       <p
         class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6"
       >
-        I specialize in <code class="code-inline">complexForms</code>,
-        <code class="code-inline">dataHeavyUIs</code>, and
-        <code class="code-inline">performance</code>. Here I share side projects, AI experiments,
-        and things I'm figuring out along the way.
+        Here I share side projects, AI experiments, and things I'm figuring out along the way.
       </p>
-
-      <!-- Stats as code comments -->
-      <div class="animate-in animate-in-delay-3 flex flex-wrap gap-6 mb-8 font-mono text-sm">
-        <div class="stat-item">
-          <span class="text-accent text-xl font-semibold">10+</span>
-          <span class="block text-foreground-tertiary mt-1">// years.building</span>
-        </div>
-        <div class="stat-item">
-          <span class="text-accent text-xl font-semibold">Lead</span>
-          <span class="block text-foreground-tertiary mt-1">// architecture.mentorship</span>
-        </div>
-        <div class="stat-item">
-          <span class="text-accent text-xl font-semibold">Remote</span>
-          <span class="block text-foreground-tertiary mt-1">// contract.async</span>
-        </div>
-      </div>
 
       <!-- CTAs -->
       <div class="animate-in animate-in-delay-4 flex flex-wrap gap-3">

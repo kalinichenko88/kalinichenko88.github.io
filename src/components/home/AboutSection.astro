@@ -8,11 +8,10 @@ type ExpertiseArea = {
 };
 
 type Props = {
-  yearsExperience: number;
   expertise: ExpertiseArea[];
 };
 
-const { yearsExperience, expertise } = Astro.props;
+const { expertise } = Astro.props;
 ---
 
 <section id="about" class="py-12 md:py-16 bg-background-subtle">
@@ -23,18 +22,13 @@ const { yearsExperience, expertise } = Astro.props;
         <h2 class="text-foreground mb-4">Engineering with purpose</h2>
         <div class="space-y-4 text-foreground-secondary">
           <p>
-            I'm a {ROLE} with {yearsExperience}+ years of experience building scalable,
-            high-performance web applications using React, TypeScript, and modern frontend tooling.
+            {ROLE} with 10+ years shipping production web applications. Deep expertise in React and TypeScript
+            ecosystems, backed by full-stack experience with Node.js and NestJS.
           </p>
           <p>
-            I combine strong UI engineering skills with a solid full-stack background (Node.js, PHP,
-            SQL), which helps me design clean architectures, improve developer experience, and
-            collaborate effectively with backend teams.
-          </p>
-          <p>
-            I've worked on complex, long-living SaaS platforms, improved performance, built internal
-            tools, migrated legacy frontends, and introduced CI/CD automation to speed up
-            development cycles.
+            I've navigated the full evolution of frontend — from jQuery and Angular.js to modern
+            component architectures — and I bring that perspective to building performant,
+            maintainable systems.
           </p>
           <p>
             Based in <span class="text-foreground">Batumi, Georgia</span>. Working with
