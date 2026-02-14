@@ -1,5 +1,4 @@
 ---
-import { ROLE } from '../../consts';
 import ExternalLinkIcon from '../../assets/icons/external-link.svg';
 import ChartIcon from '../../assets/icons/chart.svg';
 
@@ -24,11 +23,11 @@ type Props = {
 const { projects, githubProfileLink } = Astro.props;
 ---
 
-<section id="projects" class="py-12 md:py-16">
+<section id="projects" class="py-12 md:py-16 bg-background-subtle">
   <div class="container">
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
       <div>
-        <span class="section-label mb-3">03 — Projects</span>
+        <span class="section-label mb-3">04 — Projects</span>
         <h2 class="text-foreground">Side projects & experiments</h2>
       </div>
       <a
@@ -85,44 +84,6 @@ const { projects, githubProfileLink } = Astro.props;
           </article>
         ))
       }
-    </div>
-
-    <div class="mt-10 pt-8 border-t border-line">
-      <h3 class="font-display font-semibold text-lg text-foreground mb-5">Work History</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="space-y-5">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-foreground">Apliteni OÜ</span>
-              <span class="font-mono text-xs text-foreground-tertiary">2020 — Present</span>
-            </div>
-            <p class="text-sm text-foreground-secondary">{ROLE}</p>
-          </div>
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-foreground">AG.digital</span>
-              <span class="font-mono text-xs text-foreground-tertiary">2020</span>
-            </div>
-            <p class="text-sm text-foreground-secondary">Senior Software Engineer</p>
-          </div>
-        </div>
-        <div class="space-y-5">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-foreground">ConstLab, LLC</span>
-              <span class="font-mono text-xs text-foreground-tertiary">2014 — 2020</span>
-            </div>
-            <p class="text-sm text-foreground-secondary">Full-stack Developer</p>
-          </div>
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-foreground">BSGroup</span>
-              <span class="font-mono text-xs text-foreground-tertiary">2010 — 2014</span>
-            </div>
-            <p class="text-sm text-foreground-secondary">Full-stack Developer</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>

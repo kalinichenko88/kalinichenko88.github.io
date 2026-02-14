@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../components/Layout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import AboutSection from '../components/home/AboutSection.astro';
+import WorkHistorySection from '../components/home/WorkHistorySection.astro';
 import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
@@ -86,6 +87,7 @@ const expertise = [
   <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   <HeroSection />
   <AboutSection expertise={expertise} />
+  <WorkHistorySection />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {
     allPosts.length > 0 && (
