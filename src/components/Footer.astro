@@ -27,12 +27,12 @@ const socialLinks = [
 ];
 ---
 
-<footer class="border-t border-line bg-background">
+<footer class="border-t border-line bg-background-subtle">
   <div class="container py-8">
     <!-- Main Footer Content -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6">
       <!-- Brand Column -->
-      <div class="md:col-span-5 space-y-4">
+      <div class="md:col-span-4">
         <a
           href="/"
           class="inline-flex items-center gap-2 font-display font-semibold text-foreground"
@@ -41,20 +41,16 @@ const socialLinks = [
           <span class="tracking-tight">kalinichenko</span>
           <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
         </a>
-        <p class="text-foreground-secondary text-sm leading-relaxed max-w-sm">
-          {ROLE} with 10+ years of experience building scalable web applications. Focused on architecture,
-          performance, and developer experience.
-        </p>
       </div>
 
       <!-- Navigation Column -->
-      <div class="md:col-span-3">
+      <div class="md:col-span-4">
         <h4
           class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
         >
           Navigation
         </h4>
-        <ul class="space-y-3">
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-3">
           {
             NAV_LINKS.map((link) => (
               <li>
