@@ -1,34 +1,223 @@
 ---
-import '../styles/global.css';
+import { Font } from 'astro:assets';
 
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Head from './Head.astro';
 
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { THEME_IDS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
+
+import '../styles/global.css';
+
 type Props = {
   title?: string;
   description?: string;
-  classes?: string;
+  class?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  tags?: string[];
 };
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, classes } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  class: className,
+  type,
+  publishedTime,
+  tags,
+} = Astro.props;
+
+const themeConfig = JSON.stringify({
+  ids: THEME_IDS,
+  lightDefault: DEFAULT_LIGHT_THEME,
+  darkDefault: DEFAULT_DARK_THEME,
+});
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Theme initialization - must be first to prevent flash -->
+    <script is:inline data-theme-config={themeConfig}>
+      (function () {
+        const config = JSON.parse(document.currentScript.dataset.themeConfig);
+
+        function getTheme() {
+          let theme = localStorage.getItem('theme');
+          if (!theme || !config.ids.includes(theme)) {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? config.darkDefault
+              : config.lightDefault;
+          }
+          return theme;
+        }
+
+        // Apply theme immediately on initial load
+        document.documentElement.setAttribute('data-theme', getTheme());
+
+        // Handle View Transitions - apply theme BEFORE swap to prevent flash
+        document.addEventListener('astro:before-swap', (e) => {
+          e.newDocument.documentElement.setAttribute('data-theme', getTheme());
+        });
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <Head title={title} description={description} />
+    <Head
+      title={title}
+      description={description}
+      type={type}
+      publishedTime={publishedTime}
+      tags={tags}
+    />
+
+    <!-- Fonts -->
+    <Font cssVariable="--font-general-sans" preload />
+    <Font cssVariable="--font-dm-sans" preload />
+    <Font cssVariable="--font-jetbrains-mono" preload />
   </head>
-  <body>
+  <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="scroll-progress" style="transform: scaleX(0);"></div>
+
     <Header />
 
-    <main class={classes}>
+    <main class:list={['flex-1', className]}>
       <slot />
     </main>
 
     <Footer />
+
+    <!-- Keyboard Shortcuts & Interactive Features -->
+    <script is:inline data-theme-config={themeConfig}>
+      (function () {
+        // Prevent multiple initializations
+        if (window.__layoutFeaturesInitialized) return;
+        window.__layoutFeaturesInitialized = true;
+
+        const config = JSON.parse(document.currentScript.dataset.themeConfig);
+
+        // ========================================
+        // Scroll Progress Indicator
+        // ========================================
+        function updateScrollProgress() {
+          const scrollProgress = document.getElementById('scroll-progress');
+          if (!scrollProgress) return;
+
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+          scrollProgress.style.transform = `scaleX(${progress})`;
+        }
+
+        window.addEventListener('scroll', updateScrollProgress, { passive: true });
+        updateScrollProgress();
+
+        // ========================================
+        // Keyboard Shortcuts
+        // ========================================
+        function cycleTheme() {
+          const current =
+            document.documentElement.getAttribute('data-theme') || config.lightDefault;
+          const currentIndex = config.ids.indexOf(current);
+          const nextIndex = (currentIndex + 1) % config.ids.length;
+          const nextTheme = config.ids[nextIndex];
+
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
+
+          // Dispatch event for header to update UI
+          window.dispatchEvent(new CustomEvent('theme-changed', { detail: nextTheme }));
+        }
+
+        function showShortcutsHint() {
+          // Create a temporary toast notification
+          const existing = document.getElementById('shortcuts-toast');
+          if (existing) existing.remove();
+
+          const toast = document.createElement('div');
+          toast.id = 'shortcuts-toast';
+          toast.style.cssText = `
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: fit-content;
+            padding: 0.75rem 1.5rem;
+            background: var(--color-surface-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--color-text);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+          `;
+          toast.innerHTML = `
+            <span style="color: var(--color-text-tertiary)">Shortcuts:</span>
+            <span style="color: var(--color-accent)">${navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+/</span> cycle themes
+          `;
+          document.body.appendChild(toast);
+
+          // Trigger animation
+          requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+          });
+
+          setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(10px)';
+            setTimeout(() => toast.remove(), 200);
+          }, 2500);
+        }
+
+        document.addEventListener('keydown', (e) => {
+          const isMac = navigator.platform.includes('Mac');
+          const modKey = isMac ? e.metaKey : e.ctrlKey;
+
+          // ⌘/Ctrl + / - Cycle themes
+          if (modKey && e.key === '/') {
+            e.preventDefault();
+            cycleTheme();
+          }
+
+          // ⌘/Ctrl + K - Show shortcuts hint
+          if (modKey && e.key === 'k') {
+            e.preventDefault();
+            showShortcutsHint();
+          }
+        });
+
+        // ========================================
+        // Console Easter Egg
+        // ========================================
+        const styles = [
+          'color: #7c5cff',
+          'font-size: 14px',
+          'font-weight: bold',
+          'font-family: monospace',
+        ].join(';');
+
+        const subStyles = ['color: #888', 'font-size: 12px', 'font-family: monospace'].join(';');
+
+        console.log('%c⚡ Hey there, fellow developer!', styles);
+        console.log('%cCurious about the code? Check it out:', subStyles);
+        console.log('%chttps://github.com/kalinichenko88/kalinichenko88.github.io', subStyles);
+        console.log('%c\nKeyboard shortcuts:', styles);
+        console.log('%c  ⌘/Ctrl + /  →  Cycle themes', subStyles);
+        console.log('%c  ⌘/Ctrl + K  →  Show shortcuts', subStyles);
+
+        // Re-initialize on Astro page transitions
+        document.addEventListener('astro:after-swap', () => {
+          updateScrollProgress();
+        });
+      })();
+    </script>
   </body>
 </html>

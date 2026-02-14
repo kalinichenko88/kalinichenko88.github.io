@@ -1,0 +1,102 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '../../components/Layout.astro';
+import RssIcon from '../../assets/icons/rss.svg';
+
+const allPosts = await getCollection('posts');
+const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+// Get unique tags from all posts
+// const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
+---
+
+<Layout title="Blog" description="AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way.">
+  <!-- Header Section -->
+  <section class="py-12 md:py-16 border-b border-line">
+    <div class="container">
+      <span class="section-label mb-4">Blog</span>
+      <div class="flex items-center gap-4 mb-4">
+        <h1 class="text-foreground">
+          Writing & Notes
+        </h1>
+        <a
+          href="/rss.xml"
+          class="p-2 text-foreground-tertiary hover:text-accent transition-colors duration-150"
+          aria-label="RSS Feed"
+          title="Subscribe via RSS"
+        >
+          <RssIcon class="w-5 h-5" />
+        </a>
+      </div>
+      <p class="text-lg text-foreground-secondary leading-relaxed">
+        AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way.
+      </p>
+    </div>
+  </section>
+
+  <!-- Posts Section -->
+  <section class="py-12 md:py-16">
+    <div class="container">
+      {posts.length > 0 ? (
+        <div class="grid grid-cols-1 gap-1">
+          {posts.map((post) => (
+            <article class="group">
+              <a
+                href={`/blog/${post.id}`}
+                class="block py-8 border-b border-line hover:bg-background-subtle transition-colors -mx-6 px-6"
+              >
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-start">
+                  <!-- Date Column -->
+                  <div class="lg:col-span-2">
+                    <time class="font-mono text-sm text-foreground-tertiary">
+                      {post.data.pubDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </time>
+                  </div>
+
+                  <!-- Content Column -->
+                  <div class="lg:col-span-7">
+                    <h2 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-foreground-secondary line-clamp-2">
+                      {post.data.description}
+                    </p>
+                  </div>
+
+                  <!-- Tags Column -->
+                  <div class="lg:col-span-3 lg:text-right">
+                    <div class="flex flex-wrap gap-2 lg:justify-end">
+                      {post.data.tags.slice(0, 3).map((tag: string) => (
+                        <span class="tag">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="card p-16 text-center max-w-2xl mx-auto">
+          <div class="mb-6">
+            <svg class="w-16 h-16 mx-auto text-foreground-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+          </div>
+          <h2 class="font-display font-semibold text-xl text-foreground mb-3">
+            Articles coming soon
+          </h2>
+          <p class="text-foreground-secondary">
+            I'm working on some new posts right now.
+            Check back soon for notes on AI tools, dev experiments, and frontend stuff.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

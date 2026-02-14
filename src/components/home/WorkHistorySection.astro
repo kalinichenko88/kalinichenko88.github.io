@@ -1,0 +1,40 @@
+---
+import { ROLE } from '../../consts';
+
+const jobs = [
+  { company: 'Apliteni OÜ', period: '2020 — Present', title: ROLE },
+  { company: 'AG.digital', period: '2020', title: 'Senior Full-stack Developer' },
+  { company: 'ConstLab, LLC', period: '2014 — 2020', title: 'Full-stack Developer' },
+  { company: 'BSGroup', period: '2010 — 2014', title: 'Full-stack Developer' },
+];
+
+const midpoint = Math.ceil(jobs.length / 2);
+const columns = [jobs.slice(0, midpoint), jobs.slice(midpoint)];
+---
+
+<section id="experience" class="py-12 md:py-16">
+  <div class="container">
+    <div class="mb-8">
+      <span class="section-label mb-3">03 — Experience</span>
+      <h2 class="text-foreground">Work history</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {
+        columns.map((column) => (
+          <div class="space-y-5">
+            {column.map((job) => (
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-foreground">{job.company}</span>
+                  <span class="font-mono text-xs text-foreground-tertiary">{job.period}</span>
+                </div>
+                <p class="text-sm text-foreground-secondary">{job.title}</p>
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,89 @@
+---
+import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import ChartIcon from '../../assets/icons/chart.svg';
+
+type Project = {
+  name: string;
+  slug: string;
+  order: number;
+  description: string | null;
+  url: string;
+  homepage: string | null;
+  stars: number;
+  forks: number;
+  language: string | null;
+  topics: string[];
+};
+
+type Props = {
+  projects: Project[];
+  githubProfileLink: string;
+};
+
+const { projects, githubProfileLink } = Astro.props;
+---
+
+<section id="projects" class="py-12 md:py-16 bg-background-subtle">
+  <div class="container">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div>
+        <span class="section-label mb-3">04 — Projects</span>
+        <h2 class="text-foreground">Side projects & experiments</h2>
+      </div>
+      <a
+        href={githubProfileLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link-underline text-sm inline-flex items-center gap-2"
+      >
+        View GitHub profile
+        <ExternalLinkIcon class="w-4 h-4" />
+      </a>
+    </div>
+
+    <div class="space-y-5">
+      {
+        projects.map((project, index) => (
+          <article class="card card-lift group">
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block p-5 md:p-6"
+            >
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+                <div class="lg:col-span-1">
+                  <span class="font-mono text-sm text-foreground-tertiary">0{index + 1}</span>
+                </div>
+
+                <div class="lg:col-span-7">
+                  <h3 class="font-display font-semibold text-lg text-foreground mb-2 group-hover:text-accent transition-colors">
+                    {project.name}
+                  </h3>
+                  {project.description && (
+                    <p class="text-foreground-secondary mb-3">{project.description}</p>
+                  )}
+                  <div class="flex flex-wrap gap-2">
+                    {project.language && <span class="tag">{project.language}</span>}
+                    {project.topics.slice(0, 3).map((topic) => (
+                      <span class="tag">{topic}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div class="lg:col-span-4 lg:text-right">
+                  {project.stars > 0 && (
+                    <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
+                      <ChartIcon class="w-4 h-4" />
+                      {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK } from '../../consts';
+import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
+---
+
+<section class="relative grid-pattern">
+  <div class="container py-14 md:py-20">
+    <div class="max-w-4xl">
+      <!-- Code-style Developer Object -->
+      <div
+        class="animate-in animate-in-delay-1 code-block-hero mb-6"
+        set:html={`
+        <div class="font-mono text-sm md:text-base leading-relaxed whitespace-pre"><span class="code-keyword">const</span> <span class="code-property">developer</span> <span class="code-punctuation">=</span> <span class="code-bracket">{</span>
+  <span class="code-property">name</span><span class="code-punctuation">:</span> <span class="code-string">"${AUTHOR_NAME}"</span><span class="code-punctuation">,</span>
+  <span class="code-property">role</span><span class="code-punctuation">:</span> <span class="code-string">"${ROLE}"</span><span class="code-punctuation">,</span>
+  <span class="code-property">focus</span><span class="code-punctuation">:</span> <span class="code-bracket">[</span><span class="code-string">"side projects"</span><span class="code-punctuation">,</span> <span class="code-string">"AI experiments"</span><span class="code-punctuation">,</span> <span class="code-string">"developer tools"</span><span class="code-bracket">]</span><span class="code-punctuation">,</span>
+  <span class="code-property">experience</span><span class="code-punctuation">:</span> <span class="code-string">"10+ years"</span><span class="code-punctuation">,</span>
+  <span class="code-property">stack</span><span class="code-punctuation">:</span> <span class="code-bracket">[</span><span class="code-string">"React"</span><span class="code-punctuation">,</span> <span class="code-string">"TypeScript"</span><span class="code-punctuation">,</span> <span class="code-string">"Node.js"</span><span class="code-bracket">]</span><span class="code-punctuation">,</span>
+  <span class="code-property">learning</span><span class="code-punctuation">:</span> <span class="code-string">"in public"</span>
+<span class="code-bracket">}</span><span class="code-punctuation">;</span></div>
+      `}
+      />
+
+      <!-- Description -->
+      <p
+        class="animate-in animate-in-delay-2 text-base md:text-lg text-foreground-secondary leading-relaxed mb-6"
+      >
+        Here I share side projects, AI experiments, and things I'm figuring out along the way. Want
+        to chat? Drop me a line at:
+      </p>
+
+      <!-- CTA -->
+      <div class="animate-in animate-in-delay-4">
+        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">{MAIL_PROFILE_LINK}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in animate-in-delay-5">
+    <div class="flex flex-col items-center gap-2 text-foreground-tertiary">
+      <span class="text-xs font-mono uppercase tracking-wider">Scroll</span>
+      <ArrowDownIcon class="w-4 h-4 animate-bounce" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .code-comment {
+    color: var(--color-text-tertiary);
+  }
+
+  .code-block-hero {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-8);
+    overflow-x: auto;
+  }
+
+  [data-theme='terminal'] .code-block-hero {
+    border-radius: 0;
+    border-style: dashed;
+    background: linear-gradient(180deg, rgba(51, 255, 51, 0.03) 0%, transparent 100%);
+  }
+</style>

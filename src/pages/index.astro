@@ -1,74 +1,94 @@
 ---
-import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 
 import Layout from '../components/Layout.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import PersonImage from '../components/PersonImage.astro';
+import HeroSection from '../components/home/HeroSection.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import WorkHistorySection from '../components/home/WorkHistorySection.astro';
+import BlogSection from '../components/home/BlogSection.astro';
+import ContactSection from '../components/home/ContactSection.astro';
 
-import meImage from '../assets/images/me.png';
-import meImageDark from '../assets/images/me-dark.png';
+import {
+  AUTHOR_NAME,
+  ROLE,
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+  TWITTER_PROFILE_LINK,
+} from '../consts';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: AUTHOR_NAME,
+  jobTitle: ROLE,
+  url: 'https://kalinichenko.dev',
+  sameAs: [GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, TWITTER_PROFILE_LINK],
+  knowsAbout: ['React', 'TypeScript', 'JavaScript', 'Frontend Architecture', 'Web Performance'],
+};
+
+const allPosts = await getCollection('posts');
+const latestPosts = allPosts
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+const featuredProjects = await getCollection('projects');
+const githubRepos = await getCollection('githubRepos');
+const repoMap = new Map(githubRepos.map((repo) => [repo.data.name, repo]));
+
+const projects = featuredProjects
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((project) => {
+    const githubRepo = repoMap.get(project.data.slug);
+
+    if (!githubRepo) {
+      throw new Error(
+        `GitHub repository "${project.data.slug}" not found for project "${project.data.name}". ` +
+          `Make sure the slug matches the GitHub repository name exactly.`
+      );
+    }
+
+    return {
+      name: project.data.name,
+      slug: project.data.slug,
+      order: project.data.order,
+      description: githubRepo.data.description,
+      url: githubRepo.data.html_url,
+      homepage: githubRepo.data.homepage,
+      stars: githubRepo.data.stargazers_count,
+      forks: githubRepo.data.forks_count,
+      language: githubRepo.data.language,
+      topics: githubRepo.data.topics,
+    };
+  });
+
+const expertise = [
+  {
+    category: 'Frontend',
+    skills: ['React', 'TypeScript', 'Next.js', 'Vue.js'],
+  },
+  {
+    category: 'Backend',
+    skills: ['Node.js', 'NestJS', 'GraphQL', 'REST APIs'],
+  },
+  {
+    category: 'Infrastructure',
+    skills: ['CI/CD', 'Docker', 'Testing', 'Performance'],
+  },
+  {
+    category: 'Leadership',
+    skills: ['Mentoring', 'Code Review', 'Hiring', 'Onboarding'],
+  },
+];
 ---
 
-<Layout classes="home">
-  <h2>Welcome to My Website</h2>
-
-  <section class="welcome">
-    <PersonImage />
-
-    <p>
-      👋 Hi, I'm a Senior Frontend Developer with over 10 years of experience building scalable web
-      applications. I specialize in modern web technologies, with a strong emphasis on clean
-      architecture and contemporary development practices.
-    </p>
-
-    <p>
-      My passion lies in transforming complex ideas into elegant interfaces, crafting intuitive
-      UI/UX experiences that delight users. I pride myself on creating responsive, accessible, and
-      performant digital solutions that meet both user needs and business objectives.
-    </p>
-
-    <p>Feel free to get in touch if anything here resonates with you.</p>
-  </section>
-
-  <SocialLinks />
+<Layout>
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  <HeroSection />
+  <AboutSection expertise={expertise} />
+  <WorkHistorySection />
+  {/* TODO: Re-enable Projects section when new projects are ready */}
+  {/* <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} /> */}
+  {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
+  <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
 </Layout>
-
-<style is:global>
-  @keyframes slideaway {
-    from {
-      display: block;
-    }
-    to {
-      transform: translateY(250px);
-      opacity: 0;
-    }
-  }
-
-  .home {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, min-content);
-    grid-template-areas:
-      'welcome welcome'
-      'info info'
-      'social social';
-    gap: 1rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 3rem;
-  }
-
-  .welcome {
-    grid-area: info;
-
-    & > h1 {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-  }
-
-  .social-links {
-    grid-area: social;
-    justify-self: center;
-    width: 100%;
-  }
-</style>

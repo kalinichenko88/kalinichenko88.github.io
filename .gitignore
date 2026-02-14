@@ -1,5 +1,15 @@
 .vscode/
 .astro/
+.cursor/
+.claude/
 
 node_modules/
 dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+CLAUDE.md
+AGENTS.md

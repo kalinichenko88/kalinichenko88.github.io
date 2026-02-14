@@ -1,7 +1,97 @@
 ---
+import {
+  AUTHOR_NAME,
+  GITHUB_PROFILE_LINK,
+  LINKEDIN_PROFILE_LINK,
+  TWITTER_PROFILE_LINK,
+  TELEGRAM_PROFILE_LINK,
+  MAIL_PROFILE_LINK,
+} from '../consts';
+import { NAV_LINKS } from '../config/navigation';
 
+import GithubIcon from '../assets/icons/github.svg';
+import LinkedinIcon from '../assets/icons/linkedin.svg';
+import TwitterIcon from '../assets/icons/twitter.svg';
+import TelegramIcon from '../assets/icons/telegram.svg';
+import EmailIcon from '../assets/icons/email.svg';
+
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  { href: GITHUB_PROFILE_LINK, label: 'GitHub', Icon: GithubIcon },
+  { href: LINKEDIN_PROFILE_LINK, label: 'LinkedIn', Icon: LinkedinIcon },
+  { href: TWITTER_PROFILE_LINK, label: 'Twitter', Icon: TwitterIcon },
+  { href: TELEGRAM_PROFILE_LINK, label: 'Telegram', Icon: TelegramIcon },
+  { href: `mailto:${MAIL_PROFILE_LINK}`, label: 'Email', Icon: EmailIcon },
+];
 ---
 
-<footer>
-  <small>Copyright &copy; {new Date().getFullYear()} Ivan Kalinichenko.</small>
+<footer class="border-t border-line bg-background-subtle">
+  <div class="container py-12 md:py-16">
+    <!-- Main Footer Content -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6">
+      <!-- Brand Column -->
+      <div class="md:col-span-4 space-y-3">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 font-display font-semibold text-foreground"
+        >
+          <span class="text-accent font-mono text-sm">~/</span>
+          <span class="tracking-tight">kalinichenko</span>
+          <span class="text-foreground-tertiary font-mono text-xs">.dev</span>
+        </a>
+        <p class="text-xs text-foreground-tertiary font-mono">
+          &copy; {currentYear}
+          {AUTHOR_NAME}. Built with Astro.
+        </p>
+      </div>
+
+      <!-- Navigation Column -->
+      <div class="md:col-span-4">
+        <h4
+          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
+        >
+          Navigation
+        </h4>
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-3">
+          {
+            NAV_LINKS.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Connect Column -->
+      <div class="md:col-span-4">
+        <h4
+          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
+        >
+          Connect
+        </h4>
+        <div class="flex flex-wrap gap-2">
+          {
+            socialLinks.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="p-2.5 rounded-lg border border-line text-foreground-tertiary hover:text-foreground hover:border-foreground-tertiary transition-all duration-150"
+                aria-label={link.label}
+              >
+                <link.Icon class="w-4 h-4 icon-hover" />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>

@@ -1,0 +1,27 @@
+---
+type ExpertiseArea = {
+  category: string;
+  skills: string[];
+};
+
+type Props = {
+  expertise: ExpertiseArea[];
+};
+
+const { expertise } = Astro.props;
+---
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  {
+    expertise.map((area) => (
+      <div class="card p-5">
+        <h3 class="font-display font-semibold text-foreground mb-4">{area.category}</h3>
+        <div class="flex flex-wrap gap-2">
+          {area.skills.map((skill) => (
+            <span class="tag">{skill}</span>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
