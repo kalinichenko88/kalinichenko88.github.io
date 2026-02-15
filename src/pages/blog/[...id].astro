@@ -72,7 +72,13 @@ const blogPostSchema = {
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-2 mb-4">
-          {post.data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+          {
+            post.data.tags.map((tag: string) => (
+              <a href={`/tags/${tag}`} class="tag hover:text-foreground transition-colors">
+                {tag}
+              </a>
+            ))
+          }
         </div>
 
         <!-- Title -->

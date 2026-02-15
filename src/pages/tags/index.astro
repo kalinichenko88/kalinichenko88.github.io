@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '../../components/Layout.astro';
+import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
+
+const posts = await getCollection('posts');
+const tagCounts = new Map<string, number>();
+
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  }
+}
+
+const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<Layout title="Tags" description="Browse all blog post tags.">
+  <!-- Header Section -->
+  <section class="py-12 md:py-16 bg-background-subtle">
+    <div class="container">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeftIcon class="w-4 h-4" />
+        Back to blog
+      </a>
+      <span class="section-label mb-4">Tags</span>
+      <h1 class="text-foreground mb-2">All Tags</h1>
+      <p class="text-lg text-foreground-secondary">
+        {tags.length}
+        {tags.length === 1 ? 'tag' : 'tags'}
+      </p>
+    </div>
+  </section>
+
+  <!-- Tags Grid -->
+  <section class="py-12 md:py-16">
+    <div class="container">
+      <div class="flex flex-wrap gap-3">
+        {
+          tags.map(([tag, count]) => (
+            <a href={`/tags/${tag}`} class="tag hover:text-foreground transition-colors">
+              {tag}
+              <span class="ml-1.5 text-foreground-tertiary">{count}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
