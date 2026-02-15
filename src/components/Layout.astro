@@ -111,7 +111,7 @@ const themeConfig = JSON.stringify({
         // ========================================
         // Scroll Progress Indicator
         // ========================================
-        var scrollListener = null;
+        let scrollListener = null;
 
         function updateScrollProgress() {
           const scrollProgress = document.getElementById('scroll-progress');
@@ -227,12 +227,16 @@ const themeConfig = JSON.stringify({
 
         const subStyles = ['color: #888', 'font-size: 12px', 'font-family: monospace'].join(';');
 
-        console.log('%c⚡ Hey there, fellow developer!', styles);
-        console.log('%cCurious about the code? Check it out:', subStyles);
-        console.log('%chttps://github.com/kalinichenko88/kalinichenko88.github.io', subStyles);
-        console.log('%c\nKeyboard shortcuts:', styles);
-        console.log('%c  ⌘/Ctrl + /  →  Cycle themes', subStyles);
-        console.log('%c  ⌘/Ctrl + K  →  Show shortcuts', subStyles);
+        // eslint-disable-next-line no-console
+        console.log(
+          '%c⚡ Hey there, fellow developer!\n%cCurious about the code? Check it out:\n%chttps://github.com/kalinichenko88/kalinichenko88.github.io\n%c\nKeyboard shortcuts:\n%c  ⌘/Ctrl + /  →  Cycle themes\n%c  ⌘/Ctrl + K  →  Show shortcuts',
+          styles,
+          subStyles,
+          subStyles,
+          styles,
+          subStyles,
+          subStyles
+        );
 
         // Re-initialize on Astro page transitions
         document.addEventListener('astro:after-swap', () => {
