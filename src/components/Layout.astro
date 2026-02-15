@@ -79,7 +79,17 @@ const themeConfig = JSON.stringify({
   </head>
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
     <!-- Scroll Progress Indicator -->
-    <div id="scroll-progress" class="scroll-progress" style="transform: scaleX(0);"></div>
+    <div
+      id="scroll-progress"
+      class="scroll-progress"
+      style="transform: scaleX(0);"
+      role="progressbar"
+      aria-label="Page scroll progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+    >
+    </div>
 
     <Header />
 
@@ -101,6 +111,8 @@ const themeConfig = JSON.stringify({
         // ========================================
         // Scroll Progress Indicator
         // ========================================
+        var scrollListener = null;
+
         function updateScrollProgress() {
           const scrollProgress = document.getElementById('scroll-progress');
           if (!scrollProgress) return;
@@ -109,10 +121,19 @@ const themeConfig = JSON.stringify({
           const docHeight = document.documentElement.scrollHeight - window.innerHeight;
           const progress = docHeight > 0 ? scrollTop / docHeight : 0;
           scrollProgress.style.transform = `scaleX(${progress})`;
+          scrollProgress.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
         }
 
-        window.addEventListener('scroll', updateScrollProgress, { passive: true });
-        updateScrollProgress();
+        function attachScrollListener() {
+          if (scrollListener) {
+            window.removeEventListener('scroll', scrollListener);
+          }
+          scrollListener = updateScrollProgress;
+          window.addEventListener('scroll', scrollListener, { passive: true });
+          updateScrollProgress();
+        }
+
+        attachScrollListener();
 
         // ========================================
         // Keyboard Shortcuts
@@ -215,7 +236,7 @@ const themeConfig = JSON.stringify({
 
         // Re-initialize on Astro page transitions
         document.addEventListener('astro:after-swap', () => {
-          updateScrollProgress();
+          attachScrollListener();
         });
       })();
     </script>

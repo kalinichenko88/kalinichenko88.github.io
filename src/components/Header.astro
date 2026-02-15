@@ -54,7 +54,9 @@ const themeMapForScript = JSON.stringify(
               class:list={[
                 'px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
                 currentPath === link.href ||
-                (link.href !== '/' && currentPath.startsWith(link.href.replace('/#', '/')))
+                (!link.href.startsWith('/#') &&
+                  link.href !== '/' &&
+                  (currentPath === link.href + '/' || currentPath.startsWith(link.href + '/')))
                   ? 'text-foreground bg-background-subtle'
                   : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
               ]}
