@@ -753,26 +753,28 @@
    Theme-Specific Overrides
    ============================================ */
 
-/* Cloud themes - soft shadows, rounded */
-[data-theme='cloud'] .card,
-[data-theme='cloud-dark'] .card {
+/* Cloud light - soft shadows, rounded, borderless */
+[data-theme='cloud'] .card {
   border-radius: var(--radius-xl);
   box-shadow: 0 4px 20px rgba(124, 92, 255, 0.06);
   border-color: transparent;
 }
 
-[data-theme='cloud'] .card:hover,
-[data-theme='cloud-dark'] .card:hover {
+[data-theme='cloud'] .card:hover {
   box-shadow: 0 8px 30px rgba(124, 92, 255, 0.12);
   border-color: transparent;
 }
 
+/* Cloud dark - visible borders for contrast */
 [data-theme='cloud-dark'] .card {
+  border-radius: var(--radius-xl);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-border);
 }
 
 [data-theme='cloud-dark'] .card:hover {
   box-shadow: 0 8px 30px rgba(155, 127, 255, 0.15);
+  border-color: var(--color-accent);
 }
 
 [data-theme='cloud'] .btn-primary,
