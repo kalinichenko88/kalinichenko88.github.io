@@ -267,7 +267,7 @@ const themeMapForScript = JSON.stringify(
       if (!THEMES[theme]) theme = DEFAULT_LIGHT;
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
-      updateThemeUI(theme);
+      window.dispatchEvent(new CustomEvent('theme-changed', { detail: theme }));
     }
 
     function toggleDropdown(show) {

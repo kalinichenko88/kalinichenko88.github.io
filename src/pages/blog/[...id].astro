@@ -8,7 +8,21 @@ import ClockIcon from '../../assets/icons/clock.svg';
 import TwitterIcon from '../../assets/icons/twitter.svg';
 import LinkedInIcon from '../../assets/icons/linkedin.svg';
 
-import { AUTHOR_NAME, SITE_TITLE } from '../../consts';
+import {
+  AUTHOR_NAME,
+  SITE_TITLE,
+  GISCUS_REPO,
+  GISCUS_REPO_ID,
+  GISCUS_CATEGORY,
+  GISCUS_CATEGORY_ID,
+} from '../../consts';
+
+const giscusConfig = JSON.stringify({
+  repo: GISCUS_REPO,
+  repoId: GISCUS_REPO_ID,
+  category: GISCUS_CATEGORY,
+  categoryId: GISCUS_CATEGORY_ID,
+});
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -108,6 +122,60 @@ const blogPostSchema = {
       <div class="prose prose-lg prose-custom max-w-none">
         <Content />
       </div>
+
+      <!-- Comments -->
+      <section class="mt-12 pt-8 border-t border-line">
+        <h2 class="text-xl font-display font-semibold text-foreground mb-6">Comments</h2>
+        <div class="giscus"></div>
+        <script is:inline data-giscus-config={giscusConfig}>
+          (function () {
+            var config = JSON.parse(document.currentScript.dataset.giscusConfig);
+            var giscusThemes = {
+              cloud: 'light',
+              'cloud-dark': 'transparent_dark',
+              terminal: 'dark',
+            };
+
+            function getGiscusTheme() {
+              var theme = document.documentElement.getAttribute('data-theme') || 'cloud';
+              return giscusThemes[theme] || 'light';
+            }
+
+            function loadGiscus() {
+              var container = document.querySelector('.giscus');
+              if (!container) return;
+              container.innerHTML = '';
+
+              var script = document.createElement('script');
+              script.src = 'https://giscus.app/client.js';
+              script.setAttribute('data-repo', config.repo);
+              script.setAttribute('data-repo-id', config.repoId);
+              script.setAttribute('data-category', config.category);
+              script.setAttribute('data-category-id', config.categoryId);
+              script.setAttribute('data-mapping', 'pathname');
+              script.setAttribute('data-strict', '0');
+              script.setAttribute('data-reactions-enabled', '1');
+              script.setAttribute('data-emit-metadata', '0');
+              script.setAttribute('data-input-position', 'top');
+              script.setAttribute('data-theme', getGiscusTheme());
+              script.setAttribute('data-lang', 'en');
+              script.setAttribute('data-loading', 'lazy');
+              script.crossOrigin = 'anonymous';
+              script.async = true;
+              container.appendChild(script);
+            }
+
+            // Prevent duplicate listeners across View Transitions
+            if (!window.__giscusInitialized) {
+              window.__giscusInitialized = true;
+              window.addEventListener('theme-changed', loadGiscus);
+              document.addEventListener('astro:after-swap', loadGiscus);
+            }
+
+            loadGiscus();
+          })();
+        </script>
+      </section>
 
       <!-- Article Footer -->
       <footer class="mt-10 pt-6 border-t border-line">
