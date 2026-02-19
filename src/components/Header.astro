@@ -17,10 +17,6 @@ const themeIcons: Record<string, typeof SunIcon> = {
 };
 
 const currentPath = Astro.url.pathname;
-
-const themeMapForScript = JSON.stringify(
-  Object.fromEntries(THEMES.map((t) => [t.id, { iconId: t.iconId, label: t.label }]))
-);
 ---
 
 <header
@@ -193,235 +189,225 @@ const themeMapForScript = JSON.stringify(
   }
 </style>
 
-<script
-  is:inline
-  data-themes={themeMapForScript}
-  data-default-light={DEFAULT_LIGHT_THEME}
-  data-default-dark={DEFAULT_DARK_THEME}
->
-  (function () {
-    // Prevent multiple initializations
-    if (window.__headerInitialized) return;
-    window.__headerInitialized = true;
+<script>
+  import { THEMES, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
 
-    // Theme configuration from shared config
-    const scriptEl = document.querySelector('script[data-themes]');
-    const THEMES = JSON.parse(scriptEl.dataset.themes);
-    const DEFAULT_LIGHT = scriptEl.dataset.defaultLight;
-    const DEFAULT_DARK = scriptEl.dataset.defaultDark;
+  const THEME_MAP = Object.fromEntries(
+    THEMES.map((t) => [t.id, { iconId: t.iconId, label: t.label }])
+  );
 
-    // Update modifier key display for Windows/Mac
-    const modKeyEl = document.getElementById('mod-key');
-    if (modKeyEl && !navigator.platform.includes('Mac')) {
-      modKeyEl.textContent = 'Ctrl+';
-    }
+  // Update modifier key display for Windows/Mac
+  const modKeyEl = document.getElementById('mod-key');
+  if (modKeyEl && !navigator.platform.includes('Mac')) {
+    modKeyEl.textContent = 'Ctrl+';
+  }
 
-    // Handle shortcuts badge click
-    const shortcutsBadge = document.getElementById('shortcuts-badge');
-    if (shortcutsBadge) {
-      shortcutsBadge.addEventListener('click', () => {
-        // Dispatch keyboard event to trigger shortcuts hint
-        const event = new KeyboardEvent('keydown', {
-          key: 'k',
-          metaKey: navigator.platform.includes('Mac'),
-          ctrlKey: !navigator.platform.includes('Mac'),
-          bubbles: true,
-        });
-        document.dispatchEvent(event);
+  // Handle shortcuts badge click
+  const shortcutsBadge = document.getElementById('shortcuts-badge');
+  if (shortcutsBadge) {
+    shortcutsBadge.addEventListener('click', () => {
+      // Dispatch keyboard event to trigger shortcuts hint
+      const event = new KeyboardEvent('keydown', {
+        key: 'k',
+        metaKey: navigator.platform.includes('Mac'),
+        ctrlKey: !navigator.platform.includes('Mac'),
+        bubbles: true,
       });
-    }
+      document.dispatchEvent(event);
+    });
+  }
 
-    function getStoredTheme() {
-      return localStorage.getItem('theme');
-    }
+  function getStoredTheme() {
+    return localStorage.getItem('theme');
+  }
 
-    function getSystemPreference() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? DEFAULT_DARK
-        : DEFAULT_LIGHT;
-    }
+  function getSystemPreference() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? DEFAULT_DARK_THEME
+      : DEFAULT_LIGHT_THEME;
+  }
 
-    function updateThemeUI(theme) {
-      // Update button icon - show/hide the correct SVG
-      const themeConfig = THEMES[theme];
-      if (themeConfig) {
-        document.querySelectorAll('.theme-icon').forEach((icon) => {
-          if (icon.dataset.icon === themeConfig.iconId) {
-            icon.classList.remove('hidden');
-          } else {
-            icon.classList.add('hidden');
-          }
-        });
-      }
-
-      // Update checkmarks in dropdown
-      document.querySelectorAll('.theme-option').forEach((option) => {
-        const check = option.querySelector('.theme-check');
-        if (check) {
-          check.style.opacity = option.dataset.theme === theme ? '1' : '0';
+  function updateThemeUI(theme: string) {
+    // Update button icon - show/hide the correct SVG
+    const themeConfig = THEME_MAP[theme];
+    if (themeConfig) {
+      document.querySelectorAll('.theme-icon').forEach((icon) => {
+        if ((icon as HTMLElement).dataset.icon === themeConfig.iconId) {
+          icon.classList.remove('hidden');
+        } else {
+          icon.classList.add('hidden');
         }
       });
     }
 
-    function applyTheme(theme) {
-      if (!THEMES[theme]) theme = DEFAULT_LIGHT;
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-      window.dispatchEvent(new CustomEvent('theme-changed', { detail: theme }));
-    }
-
-    function toggleDropdown(show) {
-      const dropdown = document.getElementById('theme-dropdown');
-      const toggle = document.getElementById('theme-toggle');
-      if (!dropdown || !toggle) return;
-
-      if (show) {
-        dropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1');
-        dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
-        toggle.setAttribute('aria-expanded', 'true');
-      } else {
-        dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
-        dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-    }
-
-    // Event delegation for all clicks
-    document.addEventListener('click', (e) => {
-      const themeToggle = e.target.closest('#theme-toggle');
-      const themeDropdown = document.getElementById('theme-dropdown');
-      const themeOption = e.target.closest('.theme-option');
-
-      // Theme dropdown toggle
-      if (themeToggle) {
-        e.preventDefault();
-        const isOpen = themeToggle.getAttribute('aria-expanded') === 'true';
-        toggleDropdown(!isOpen);
-        return;
-      }
-
-      // Theme option selection
-      if (themeOption) {
-        const newTheme = themeOption.dataset.theme;
-        if (newTheme) {
-          applyTheme(newTheme);
-          toggleDropdown(false);
-        }
-        return;
-      }
-
-      // Close dropdown when clicking outside
-      if (themeDropdown && !themeDropdown.contains(e.target)) {
-        toggleDropdown(false);
-      }
-
-      // Mobile menu toggle
-      const menuToggle = e.target.closest('#mobile-menu-toggle');
-      if (menuToggle) {
-        toggleMobileMenu();
-      }
-
-      // Close mobile menu on link click
-      const mobileMenuLink = e.target.closest('#mobile-menu a');
-      if (mobileMenuLink) {
-        closeMobileMenu();
+    // Update checkmarks in dropdown
+    document.querySelectorAll('.theme-option').forEach((option) => {
+      const check = option.querySelector('.theme-check') as HTMLElement | null;
+      if (check) {
+        check.style.opacity = (option as HTMLElement).dataset.theme === theme ? '1' : '0';
       }
     });
+  }
 
-    function toggleMobileMenu() {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const menuToggle = document.getElementById('mobile-menu-toggle');
-      if (!mobileMenu || !menuToggle) return;
+  function applyTheme(theme: string) {
+    if (!THEME_MAP[theme]) theme = DEFAULT_LIGHT_THEME;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    window.dispatchEvent(new CustomEvent('theme-changed', { detail: theme }));
+  }
 
-      const isOpen = !mobileMenu.classList.contains('hidden');
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
+  function toggleDropdown(show: boolean) {
+    const dropdown = document.getElementById('theme-dropdown');
+    const toggle = document.getElementById('theme-toggle');
+    if (!dropdown || !toggle) return;
+
+    if (show) {
+      dropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1');
+      dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
+      toggle.setAttribute('aria-expanded', 'true');
+    } else {
+      dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
+      dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Event delegation for all clicks
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const themeToggle = target.closest('#theme-toggle');
+    const themeDropdown = document.getElementById('theme-dropdown');
+    const themeOption = target.closest('.theme-option') as HTMLElement | null;
+
+    // Theme dropdown toggle
+    if (themeToggle) {
+      e.preventDefault();
+      const isOpen = themeToggle.getAttribute('aria-expanded') === 'true';
+      toggleDropdown(!isOpen);
+      return;
     }
 
-    function openMobileMenu() {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const menuToggle = document.getElementById('mobile-menu-toggle');
-      if (!mobileMenu || !menuToggle) return;
-
-      mobileMenu.classList.remove('hidden');
-      menuToggle.setAttribute('aria-expanded', 'true');
-      menuToggle.setAttribute('aria-label', 'Close menu');
-
-      // Focus first link in menu
-      const firstLink = mobileMenu.querySelector('a');
-      if (firstLink) firstLink.focus();
-    }
-
-    function closeMobileMenu(returnFocus = true) {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const menuToggle = document.getElementById('mobile-menu-toggle');
-      if (!mobileMenu || !menuToggle) return;
-
-      mobileMenu.classList.add('hidden');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.setAttribute('aria-label', 'Open menu');
-
-      // Return focus to toggle button
-      if (returnFocus) menuToggle.focus();
-    }
-
-    function isMobileMenuOpen() {
-      const mobileMenu = document.getElementById('mobile-menu');
-      return mobileMenu && !mobileMenu.classList.contains('hidden');
-    }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      // Close dropdowns/menus on escape
-      if (e.key === 'Escape') {
+    // Theme option selection
+    if (themeOption) {
+      const newTheme = themeOption.dataset.theme;
+      if (newTheme) {
+        applyTheme(newTheme);
         toggleDropdown(false);
-        if (isMobileMenuOpen()) {
-          closeMobileMenu();
-        }
       }
+      return;
+    }
 
-      // Focus trap for mobile menu
-      if (e.key === 'Tab' && isMobileMenuOpen()) {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuToggle = document.getElementById('mobile-menu-toggle');
-        if (!mobileMenu || !menuToggle) return;
-
-        const focusableElements = [menuToggle, ...mobileMenu.querySelectorAll('a, button')];
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    });
-
-    // Initialize theme on page load
-    function initTheme() {
-      const storedTheme = getStoredTheme();
-      const theme = storedTheme || getSystemPreference();
-      applyTheme(theme);
-
-      // Close mobile menu on navigation (without returning focus)
-      closeMobileMenu(false);
-
-      // Close theme dropdown
+    // Close dropdown when clicking outside
+    if (themeDropdown && !themeDropdown.contains(target)) {
       toggleDropdown(false);
     }
 
-    initTheme();
-    document.addEventListener('astro:after-swap', initTheme);
+    // Mobile menu toggle
+    const menuToggle = target.closest('#mobile-menu-toggle');
+    if (menuToggle) {
+      toggleMobileMenu();
+    }
 
-    // Listen for theme changes from keyboard shortcuts
-    window.addEventListener('theme-changed', (e) => {
-      updateThemeUI(e.detail);
-    });
-  })();
+    // Close mobile menu on link click
+    const mobileMenuLink = target.closest('#mobile-menu a');
+    if (mobileMenuLink) {
+      closeMobileMenu();
+    }
+  });
+
+  function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    if (!mobileMenu || !menuToggle) return;
+
+    const isOpen = !mobileMenu.classList.contains('hidden');
+    if (isOpen) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
+  function openMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    if (!mobileMenu || !menuToggle) return;
+
+    mobileMenu.classList.remove('hidden');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    menuToggle.setAttribute('aria-label', 'Close menu');
+
+    // Focus first link in menu
+    const firstLink = mobileMenu.querySelector('a');
+    if (firstLink) firstLink.focus();
+  }
+
+  function closeMobileMenu(returnFocus = true) {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    if (!mobileMenu || !menuToggle) return;
+
+    mobileMenu.classList.add('hidden');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Open menu');
+
+    // Return focus to toggle button
+    if (returnFocus) menuToggle.focus();
+  }
+
+  function isMobileMenuOpen() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    return mobileMenu && !mobileMenu.classList.contains('hidden');
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    // Close dropdowns/menus on escape
+    if (e.key === 'Escape') {
+      toggleDropdown(false);
+      if (isMobileMenuOpen()) {
+        closeMobileMenu();
+      }
+    }
+
+    // Focus trap for mobile menu
+    if (e.key === 'Tab' && isMobileMenuOpen()) {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuToggle = document.getElementById('mobile-menu-toggle');
+      if (!mobileMenu || !menuToggle) return;
+
+      const focusableElements = [menuToggle, ...mobileMenu.querySelectorAll('a, button')];
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        (lastElement as HTMLElement).focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        (firstElement as HTMLElement).focus();
+      }
+    }
+  });
+
+  // Initialize theme on page load
+  function initTheme() {
+    const storedTheme = getStoredTheme();
+    const theme = storedTheme || getSystemPreference();
+    applyTheme(theme);
+
+    // Close mobile menu on navigation (without returning focus)
+    closeMobileMenu(false);
+
+    // Close theme dropdown
+    toggleDropdown(false);
+  }
+
+  initTheme();
+  document.addEventListener('astro:after-swap', initTheme);
+
+  // Listen for theme changes from keyboard shortcuts
+  window.addEventListener('theme-changed', (e) => {
+    updateThemeUI((e as CustomEvent).detail);
+  });
 </script>
