@@ -3,12 +3,16 @@ import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK } from '../../consts';
 import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
 ---
 
-<section class="relative grid-pattern">
+<section class="hero-interactive relative grid-pattern" id="hero">
+  <!-- Floating particles (generated dynamically on hover) -->
+  <div class="hero-particles" id="hero-particles" aria-hidden="true"></div>
+
   <div class="container py-14 md:py-20">
     <div class="max-w-4xl">
       <!-- Code-style Developer Object -->
       <div
         class="animate-in animate-in-delay-1 code-block-hero mb-6"
+        id="hero-code-block"
         set:html={`
         <div class="font-mono text-sm md:text-base leading-relaxed whitespace-pre"><span class="code-keyword">const</span> <span class="code-property">developer</span> <span class="code-punctuation">=</span> <span class="code-bracket">{</span>
   <span class="code-property">name</span><span class="code-punctuation">:</span> <span class="code-string">"${AUTHOR_NAME}"</span><span class="code-punctuation">,</span>
@@ -55,6 +59,15 @@ import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
     border-radius: var(--radius-lg);
     padding: var(--space-6) var(--space-8);
     overflow-x: auto;
+    transition:
+      transform 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99),
+      box-shadow 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99),
+      border-color 0.3s ease;
+    transform-style: preserve-3d;
+  }
+
+  .code-block-hero:hover {
+    border-color: var(--color-accent);
   }
 
   [data-theme='terminal'] .code-block-hero {
@@ -62,4 +75,274 @@ import ArrowDownIcon from '../../assets/icons/arrow-down.svg';
     border-style: dashed;
     background: linear-gradient(180deg, rgba(51, 255, 51, 0.03) 0%, transparent 100%);
   }
+
+  /* Floating particles */
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 10;
+  }
+
+  /* Glow effect on code block from mouse proximity */
+  .code-block-hero.has-glow {
+    box-shadow:
+      0 0 0 1px var(--color-accent),
+      var(--glow-x, 0px) var(--glow-y, 0px) 60px var(--glow-color, rgba(124, 92, 255, 0.2));
+  }
+
+  [data-theme='cloud'] .code-block-hero.has-glow,
+  :root .code-block-hero.has-glow {
+    --glow-color: rgba(124, 92, 255, 0.25);
+  }
+
+  [data-theme='cloud-dark'] .code-block-hero.has-glow {
+    --glow-color: rgba(155, 127, 255, 0.3);
+  }
+
+  [data-theme='terminal'] .code-block-hero.has-glow {
+    --glow-color: rgba(51, 255, 51, 0.2);
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .code-block-hero {
+      transition: border-color 0.3s ease !important;
+      transform: none !important;
+    }
+
+    .hero-spotlight,
+    .hero-particles {
+      display: none;
+    }
+  }
 </style>
+
+<style is:global>
+  /* Global styles for dynamically created particles */
+  #hero-particles .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    box-shadow: 0 0 8px var(--color-accent);
+  }
+
+  #hero-particles .particle.visible {
+    opacity: 0.7;
+  }
+
+  [data-theme='terminal'] #hero-particles .particle {
+    width: 4px;
+    height: 4px;
+    border-radius: 0;
+    box-shadow: 0 0 10px var(--color-accent);
+  }
+</style>
+
+<script>
+  function initHeroInteraction() {
+    const heroRaw = document.getElementById('hero');
+    const codeBlockRaw = document.getElementById('hero-code-block');
+    const particlesRaw = document.getElementById('hero-particles');
+
+    if (!heroRaw || !codeBlockRaw || !particlesRaw) return;
+
+    // Safe to assert non-null after the guard above.
+    // Closures below can't narrow getElementById results, so we rebind.
+    const hero = heroRaw;
+    const codeBlock = codeBlockRaw;
+    const particlesContainer = particlesRaw;
+
+    // Fix #1: Clean up previous listeners before re-registering
+    type HeroElement = HTMLElement & { __heroCleanup?: () => void };
+    const heroEl = hero as HeroElement;
+    if (heroEl.__heroCleanup) heroEl.__heroCleanup();
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    heroEl.__heroCleanup = () => controller.abort();
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isHovering = false;
+    let animFrameId: number;
+    let activeParticles: { el: HTMLElement; depth: number }[] = [];
+    let cleanupTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    // Fix #3: Cache rects, invalidate on resize
+    let cachedHeroRect = hero.getBoundingClientRect();
+    let cachedCodeRect = codeBlock.getBoundingClientRect();
+
+    window.addEventListener(
+      'resize',
+      () => {
+        cachedHeroRect = hero.getBoundingClientRect();
+        cachedCodeRect = codeBlock.getBoundingClientRect();
+      },
+      { signal }
+    );
+
+    const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
+    const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    function spawnParticles() {
+      particlesContainer.innerHTML = '';
+      activeParticles = [];
+
+      // Get code block bounds relative to hero (use fresh rects for spawn accuracy)
+      const heroRect = hero.getBoundingClientRect();
+      const codeRect = codeBlock.getBoundingClientRect();
+      cachedHeroRect = heroRect;
+      cachedCodeRect = codeRect;
+
+      const exclude = {
+        top: ((codeRect.top - heroRect.top) / heroRect.height) * 100 - 2,
+        bottom: ((codeRect.bottom - heroRect.top) / heroRect.height) * 100 + 2,
+        left: ((codeRect.left - heroRect.left) / heroRect.width) * 100 - 2,
+        right: ((codeRect.right - heroRect.left) / heroRect.width) * 100 + 2,
+      };
+
+      const count = Math.floor(rand(5, 13));
+      let placed = 0;
+
+      for (let attempt = 0; attempt < count * 3 && placed < count; attempt++) {
+        const top = rand(5, 90);
+        const left = rand(5, 95);
+
+        if (
+          top > exclude.top &&
+          top < exclude.bottom &&
+          left > exclude.left &&
+          left < exclude.right
+        ) {
+          continue;
+        }
+
+        const dot = document.createElement('span');
+        dot.className = 'particle';
+        dot.style.top = `${top}%`;
+        dot.style.left = `${left}%`;
+        const size = rand(4, 9);
+        dot.style.width = `${size}px`;
+        dot.style.height = `${size}px`;
+
+        particlesContainer.appendChild(dot);
+        activeParticles.push({ el: dot, depth: rand(0.3, 1.5) });
+
+        const delay = placed * 40;
+        setTimeout(() => {
+          void dot.offsetHeight; // force reflow for CSS transition
+          dot.classList.add('visible');
+        }, delay + 20);
+
+        placed++;
+      }
+    }
+
+    hero.addEventListener(
+      'mouseenter',
+      () => {
+        // Fix #2: Cancel pending cleanup from previous mouseleave
+        if (cleanupTimeoutId !== null) {
+          clearTimeout(cleanupTimeoutId);
+          cleanupTimeoutId = null;
+        }
+
+        isHovering = true;
+        codeBlock.classList.add('has-glow');
+        // Fix #4: Enable will-change only during interaction
+        codeBlock.style.willChange = 'transform';
+        spawnParticles();
+        tick();
+      },
+      { signal }
+    );
+
+    hero.addEventListener(
+      'mouseleave',
+      () => {
+        isHovering = false;
+        codeBlock.classList.remove('has-glow');
+        codeBlock.style.transform = '';
+        cancelAnimationFrame(animFrameId);
+
+        // Fix #4: Remove will-change after transition completes
+        setTimeout(() => {
+          if (!isHovering) codeBlock.style.willChange = '';
+        }, 300);
+
+        // Fade out particles
+        activeParticles.forEach(({ el }) => el.classList.remove('visible'));
+
+        // Fix #2: Track cleanup timeout so it can be cancelled on re-enter
+        cleanupTimeoutId = setTimeout(() => {
+          particlesContainer.innerHTML = '';
+          activeParticles = [];
+          cleanupTimeoutId = null;
+        }, 600);
+      },
+      { signal }
+    );
+
+    hero.addEventListener(
+      'mousemove',
+      (e: MouseEvent) => {
+        mouseX = e.clientX - cachedHeroRect.left;
+        mouseY = e.clientY - cachedHeroRect.top;
+      },
+      { signal }
+    );
+
+    function tick() {
+      if (!isHovering) return;
+
+      currentX = lerp(currentX, mouseX, 0.08);
+      currentY = lerp(currentY, mouseY, 0.08);
+
+      // Fix #3: Use cached rects instead of calling getBoundingClientRect every frame
+      const w = cachedHeroRect.width;
+      const h = cachedHeroRect.height;
+
+      const nx = (currentX / w) * 2 - 1;
+      const ny = (currentY / h) * 2 - 1;
+
+      const codeCenterX = cachedCodeRect.left + cachedCodeRect.width / 2 - cachedHeroRect.left;
+      const codeCenterY = cachedCodeRect.top + cachedCodeRect.height / 2 - cachedHeroRect.top;
+
+      const dx = (currentX - codeCenterX) / (w / 2);
+      const dy = (currentY - codeCenterY) / (h / 2);
+
+      const tiltX = dy * -5;
+      const tiltY = dx * 5;
+
+      codeBlock.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(0)`;
+
+      codeBlock.style.setProperty('--glow-x', `${dx * 10}px`);
+      codeBlock.style.setProperty('--glow-y', `${dy * 10}px`);
+
+      activeParticles.forEach(({ el, depth }) => {
+        const px = nx * 25 * depth;
+        const py = ny * 25 * depth;
+        el.style.transform = `translate(${px}px, ${py}px)`;
+      });
+
+      animFrameId = requestAnimationFrame(tick);
+    }
+  }
+
+  // Run on initial load
+  initHeroInteraction();
+
+  // Fix #1: Register page-transition listener once at module scope
+  document.addEventListener('astro:after-swap', initHeroInteraction);
+</script>
