@@ -7,5 +7,5 @@ export const SITE_DESCRIPTION = `${ROLE} with 10+ years of experience building s
 export const GITHUB_PROFILE_LINK = 'https://github.com/kalinichenko88';
 export const LINKEDIN_PROFILE_LINK = 'https://www.linkedin.com/in/ivan-kalinichenko/';
 export const MAIL_PROFILE_LINK = 'ivan@kalinichenko.dev';
-export const TWITTER_PROFILE_LINK = 'https://twitter.com/kalinichenko88';
+export const TWITTER_PROFILE_LINK = 'https://x.com/joker_bsg';
 export const TELEGRAM_PROFILE_LINK = 'https://t.me/ivan_kalinichenko';
