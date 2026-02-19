@@ -129,24 +129,24 @@ const blogPostSchema = {
         <div class="giscus"></div>
         <script is:inline data-giscus-config={giscusConfig}>
           (function () {
-            var config = JSON.parse(document.currentScript.dataset.giscusConfig);
-            var giscusThemes = {
-              cloud: 'light',
-              'cloud-dark': 'transparent_dark',
-              terminal: 'dark',
-            };
+            const config = JSON.parse(document.currentScript.dataset.giscusConfig);
+            const giscusThemes = {
+    cloud: 'light',
+    'cloud-dark': 'transparent_dark',
+    terminal: 'dark',
+  };
 
             function getGiscusTheme() {
-              var theme = document.documentElement.getAttribute('data-theme') || 'cloud';
+              const theme = document.documentElement.getAttribute('data-theme') || 'cloud';
               return giscusThemes[theme] || 'light';
             }
 
             function loadGiscus() {
-              var container = document.querySelector('.giscus');
+              const container = document.querySelector('.giscus');
               if (!container) return;
               container.innerHTML = '';
 
-              var script = document.createElement('script');
+              const script = document.createElement('script');
               script.src = 'https://giscus.app/client.js';
               script.setAttribute('data-repo', config.repo);
               script.setAttribute('data-repo-id', config.repoId);
