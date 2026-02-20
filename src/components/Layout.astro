@@ -6,7 +6,12 @@ import Footer from './Footer.astro';
 import Head from './Head.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { THEME_IDS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
+import {
+  THEME_IDS,
+  ALL_OPTION_IDS,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_DARK_THEME,
+} from '../config/themes';
 
 import '../styles/global.css';
 
@@ -30,6 +35,7 @@ const {
 
 const themeConfig = JSON.stringify({
   ids: THEME_IDS,
+  allOptionIds: ALL_OPTION_IDS,
   lightDefault: DEFAULT_LIGHT_THEME,
   darkDefault: DEFAULT_DARK_THEME,
 });
@@ -42,15 +48,21 @@ const themeConfig = JSON.stringify({
     <script is:inline data-theme-config={themeConfig}>
       (function () {
         const config = JSON.parse(document.currentScript.dataset.themeConfig);
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        function resolveTheme(pref) {
+          if (pref === 'auto' || !config.ids.includes(pref)) {
+            return isDark ? config.darkDefault : config.lightDefault;
+          }
+          return pref;
+        }
 
         function getTheme() {
-          let theme = localStorage.getItem('theme');
-          if (!theme || !config.ids.includes(theme)) {
-            theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? config.darkDefault
-              : config.lightDefault;
+          let pref = localStorage.getItem('theme');
+          if (!pref || !config.allOptionIds.includes(pref)) {
+            pref = 'auto';
           }
-          return theme;
+          return resolveTheme(pref);
         }
 
         // Apply theme immediately on initial load
@@ -101,7 +113,7 @@ const themeConfig = JSON.stringify({
 
     <!-- Keyboard Shortcuts & Interactive Features -->
     <script>
-      import { THEME_IDS, DEFAULT_LIGHT_THEME } from '../config/themes';
+      import { ALL_OPTION_IDS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
 
       // ========================================
       // Scroll Progress Indicator
@@ -134,16 +146,26 @@ const themeConfig = JSON.stringify({
       // Keyboard Shortcuts
       // ========================================
       function cycleTheme() {
-        const current = document.documentElement.getAttribute('data-theme') || DEFAULT_LIGHT_THEME;
-        const currentIndex = THEME_IDS.indexOf(current);
-        const nextIndex = (currentIndex + 1) % THEME_IDS.length;
-        const nextTheme = THEME_IDS[nextIndex];
+        const rawPref = localStorage.getItem('theme') || 'auto';
+        const currentPref = ALL_OPTION_IDS.includes(rawPref) ? rawPref : 'auto';
+        const currentIndex = ALL_OPTION_IDS.indexOf(currentPref);
+        const nextIndex = (currentIndex + 1) % ALL_OPTION_IDS.length;
+        const nextPref = ALL_OPTION_IDS[nextIndex];
 
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('theme', nextTheme);
+        // Resolve the CSS theme to apply
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let cssTheme = nextPref;
+        if (nextPref === 'auto') {
+          cssTheme = isDark ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME;
+        }
 
-        // Dispatch event for header to update UI
-        window.dispatchEvent(new CustomEvent('theme-changed', { detail: nextTheme }));
+        document.documentElement.setAttribute('data-theme', cssTheme);
+        localStorage.setItem('theme', nextPref);
+
+        // Dispatch event for header to update UI (send preference, not just CSS theme)
+        window.dispatchEvent(
+          new CustomEvent('theme-changed', { detail: { preference: nextPref, cssTheme } })
+        );
       }
 
       function showShortcutsHint() {

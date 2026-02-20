@@ -1,6 +1,6 @@
 ---
 import { AUTHOR_NAME, GITHUB_PROFILE_LINK } from '../consts';
-import { THEMES, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
+import { ALL_THEME_OPTIONS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
 import { NAV_LINKS } from '../config/navigation';
 
 import GithubIcon from '../assets/icons/github.svg';
@@ -9,11 +9,13 @@ import MenuIcon from '../assets/icons/menu.svg';
 import SunIcon from '../assets/icons/sun.svg';
 import MoonIcon from '../assets/icons/moon.svg';
 import TerminalIcon from '../assets/icons/terminal.svg';
+import MonitorIcon from '../assets/icons/monitor.svg';
 
 const themeIcons: Record<string, typeof SunIcon> = {
   sun: SunIcon,
   moon: MoonIcon,
   terminal: TerminalIcon,
+  monitor: MonitorIcon,
 };
 
 const currentPath = Astro.url.pathname;
@@ -97,7 +99,8 @@ const currentPath = Astro.url.pathname;
             aria-expanded="false"
             aria-haspopup="true"
           >
-            <SunIcon class="w-5 h-5 theme-icon" data-icon="sun" />
+            <MonitorIcon class="w-5 h-5 theme-icon" data-icon="monitor" />
+            <SunIcon class="w-5 h-5 theme-icon hidden" data-icon="sun" />
             <MoonIcon class="w-5 h-5 theme-icon hidden" data-icon="moon" />
             <TerminalIcon class="w-5 h-5 theme-icon hidden" data-icon="terminal" />
           </button>
@@ -109,7 +112,7 @@ const currentPath = Astro.url.pathname;
             role="menu"
           >
             {
-              THEMES.map((theme) => {
+              ALL_THEME_OPTIONS.map((theme) => {
                 const IconComponent = themeIcons[theme.iconId];
                 return (
                   <button
@@ -190,10 +193,19 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-  import { THEMES, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
+  import {
+    ALL_THEME_OPTIONS,
+    THEMES,
+    DEFAULT_LIGHT_THEME,
+    DEFAULT_DARK_THEME,
+  } from '../config/themes';
 
   const THEME_MAP = Object.fromEntries(
     THEMES.map((t) => [t.id, { iconId: t.iconId, label: t.label }])
+  );
+
+  const ALL_OPTIONS_MAP = Object.fromEntries(
+    ALL_THEME_OPTIONS.map((t) => [t.id, { iconId: t.iconId, label: t.label }])
   );
 
   // Update modifier key display for Windows/Mac
@@ -217,22 +229,25 @@ const currentPath = Astro.url.pathname;
     });
   }
 
-  function getStoredTheme() {
-    return localStorage.getItem('theme');
+  function getStoredPreference(): string {
+    return localStorage.getItem('theme') || 'auto';
   }
 
-  function getSystemPreference() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? DEFAULT_DARK_THEME
-      : DEFAULT_LIGHT_THEME;
+  function resolvePreference(pref: string): string {
+    if (pref === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? DEFAULT_DARK_THEME
+        : DEFAULT_LIGHT_THEME;
+    }
+    return THEME_MAP[pref] ? pref : DEFAULT_LIGHT_THEME;
   }
 
-  function updateThemeUI(theme: string) {
-    // Update button icon - show/hide the correct SVG
-    const themeConfig = THEME_MAP[theme];
-    if (themeConfig) {
+  function updateThemeUI(preference: string) {
+    // Show the icon for the preference (auto shows monitor, not sun/moon)
+    const optionConfig = ALL_OPTIONS_MAP[preference];
+    if (optionConfig) {
       document.querySelectorAll('.theme-icon').forEach((icon) => {
-        if ((icon as HTMLElement).dataset.icon === themeConfig.iconId) {
+        if ((icon as HTMLElement).dataset.icon === optionConfig.iconId) {
           icon.classList.remove('hidden');
         } else {
           icon.classList.add('hidden');
@@ -244,17 +259,30 @@ const currentPath = Astro.url.pathname;
     document.querySelectorAll('.theme-option').forEach((option) => {
       const check = option.querySelector('.theme-check') as HTMLElement | null;
       if (check) {
-        check.style.opacity = (option as HTMLElement).dataset.theme === theme ? '1' : '0';
+        check.style.opacity = (option as HTMLElement).dataset.theme === preference ? '1' : '0';
       }
     });
   }
 
-  function applyTheme(theme: string) {
-    if (!THEME_MAP[theme]) theme = DEFAULT_LIGHT_THEME;
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    window.dispatchEvent(new CustomEvent('theme-changed', { detail: theme }));
+  function applyTheme(preference: string) {
+    if (!ALL_OPTIONS_MAP[preference]) preference = 'auto';
+    const cssTheme = resolvePreference(preference);
+    document.documentElement.setAttribute('data-theme', cssTheme);
+    localStorage.setItem('theme', preference);
+    window.dispatchEvent(new CustomEvent('theme-changed', { detail: { preference, cssTheme } }));
   }
+
+  // Listen for system preference changes to update auto theme in real-time
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const pref = getStoredPreference();
+    if (pref === 'auto') {
+      const cssTheme = resolvePreference('auto');
+      document.documentElement.setAttribute('data-theme', cssTheme);
+      window.dispatchEvent(
+        new CustomEvent('theme-changed', { detail: { preference: 'auto', cssTheme } })
+      );
+    }
+  });
 
   function toggleDropdown(show: boolean) {
     const dropdown = document.getElementById('theme-dropdown');
@@ -390,11 +418,15 @@ const currentPath = Astro.url.pathname;
     }
   });
 
+  // Listen for theme changes
+  window.addEventListener('theme-changed', (e) => {
+    updateThemeUI((e as CustomEvent).detail.preference);
+  });
+
   // Initialize theme on page load
   function initTheme() {
-    const storedTheme = getStoredTheme();
-    const theme = storedTheme || getSystemPreference();
-    applyTheme(theme);
+    const preference = getStoredPreference();
+    applyTheme(preference);
 
     // Close mobile menu on navigation (without returning focus)
     closeMobileMenu(false);
@@ -405,9 +437,4 @@ const currentPath = Astro.url.pathname;
 
   initTheme();
   document.addEventListener('astro:after-swap', initTheme);
-
-  // Listen for theme changes from keyboard shortcuts
-  window.addEventListener('theme-changed', (e) => {
-    updateThemeUI((e as CustomEvent).detail);
-  });
 </script>
