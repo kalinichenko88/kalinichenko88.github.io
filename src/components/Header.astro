@@ -50,13 +50,13 @@ const currentPath = Astro.url.pathname;
             <a
               href={link.href}
               class:list={[
-                'px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
+                'nav-link px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
                 currentPath === link.href ||
                 (!link.href.startsWith('/#') &&
                   link.href !== '/' &&
                   (currentPath === link.href + '/' || currentPath.startsWith(link.href + '/')))
-                  ? 'text-foreground bg-background-subtle'
-                  : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
+                  ? 'text-foreground active'
+                  : 'text-foreground-secondary hover:text-foreground',
               ]}
             >
               {link.label}

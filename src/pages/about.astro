@@ -138,7 +138,7 @@ const values = [
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {
           values.map((value) => (
-            <div class="card p-6">
+            <div class="card card-lift p-6">
               <h3 class="font-display font-semibold text-foreground mb-3">{value.title}</h3>
               <p class="text-foreground-secondary">{value.description}</p>
             </div>
@@ -159,7 +159,7 @@ const values = [
       <div class="space-y-8">
         {
           timeline.map((item) => (
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+            <div class="timeline-hover grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
               <div class="md:col-span-3">
                 <span class="font-mono text-sm text-foreground-tertiary">{item.period}</span>
               </div>

@@ -88,7 +88,7 @@ const blogPostSchema = {
         <div class="flex flex-wrap gap-2 mb-4">
           {
             post.data.tags.map((tag: string) => (
-              <a href={`/tags/${tag}`} class="tag hover:text-foreground transition-colors">
+              <a href={`/tags/${tag}`} class="tag">
                 {tag}
               </a>
             ))
@@ -131,10 +131,10 @@ const blogPostSchema = {
           (function () {
             const config = JSON.parse(document.currentScript.dataset.giscusConfig);
             const giscusThemes = {
-    cloud: 'light',
-    'cloud-dark': 'transparent_dark',
-    terminal: 'dark',
-  };
+              cloud: 'light',
+              'cloud-dark': 'transparent_dark',
+              terminal: 'dark',
+            };
 
             function getGiscusTheme() {
               const theme = document.documentElement.getAttribute('data-theme') || 'cloud';

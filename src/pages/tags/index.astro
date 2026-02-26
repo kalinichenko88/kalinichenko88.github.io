@@ -42,7 +42,7 @@ const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
       <div class="flex flex-wrap gap-3">
         {
           tags.map(([tag, count]) => (
-            <a href={`/tags/${tag}`} class="tag hover:text-foreground transition-colors">
+            <a href={`/tags/${tag}`} class="tag">
               {tag}
               <span class="ml-1.5 text-foreground-tertiary">{count}</span>
             </a>

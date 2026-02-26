@@ -349,6 +349,16 @@
     background-color: var(--color-bg-subtle);
     border-radius: var(--radius-sm);
     text-transform: uppercase;
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .tag:hover {
+    color: var(--color-accent);
+    background-color: var(--color-accent-subtle);
+    transform: translateY(-1px);
   }
 
   /* Link with underline animation */
@@ -536,6 +546,100 @@
   }
   .font-mono {
     font-family: var(--font-mono);
+  }
+
+  /* Nav link with animated underline indicator */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-accent);
+    border-radius: 1px;
+    transition: all var(--transition-base);
+  }
+
+  .nav-link:hover::after {
+    left: 25%;
+    width: 50%;
+  }
+
+  .nav-link.active::after {
+    left: 25%;
+    width: 50%;
+    opacity: 0.5;
+  }
+
+  /* Work history / timeline item hover */
+  .timeline-hover {
+    position: relative;
+    padding-left: var(--space-4);
+    border-left: 2px solid transparent;
+    transition: border-color var(--transition-base);
+  }
+
+  .timeline-hover::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    width: 2px;
+    height: 0;
+    background-color: var(--color-accent);
+    transition: height var(--transition-fast);
+  }
+
+  .timeline-hover:hover::before {
+    height: 100%;
+    transition: height var(--transition-slow);
+  }
+
+  .timeline-hover:hover {
+    border-color: var(--color-border-subtle);
+  }
+
+  /* Blog list row hover indicator */
+  .blog-row {
+    position: relative;
+  }
+
+  .blog-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background-color: var(--color-accent);
+    border-radius: 0 2px 2px 0;
+    transition: height var(--transition-base);
+  }
+
+  .blog-row:hover::before {
+    height: 60%;
+  }
+
+  /* Social icon button hover with lift + glow */
+  .social-btn {
+    transition:
+      transform var(--transition-fast),
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .social-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
 
   /* Animate in */
@@ -843,6 +947,38 @@
 [data-theme='terminal'] .tag {
   border-radius: 0;
   border: 1px dashed var(--color-border);
+}
+
+/* Terminal tag hover - green glow instead of purple */
+[data-theme='terminal'] .tag:hover {
+  background-color: rgba(51, 255, 51, 0.08);
+  color: var(--color-accent);
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+}
+
+/* Social button glow per theme */
+[data-theme='cloud'] .social-btn:hover,
+[data-theme='cloud-dark'] .social-btn:hover {
+  box-shadow: 0 6px 20px rgba(124, 92, 255, 0.2);
+}
+
+[data-theme='terminal'] .social-btn:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+}
+
+/* Terminal timeline hover - green accent line */
+[data-theme='terminal'] .timeline-hover:hover {
+  border-color: rgba(51, 255, 51, 0.15);
+}
+
+/* Terminal blog row accent */
+[data-theme='terminal'] .blog-row::before {
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+/* Terminal nav underline glow */
+[data-theme='terminal'] .nav-link::after {
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }
 
 [data-theme='terminal'] h1::before,
