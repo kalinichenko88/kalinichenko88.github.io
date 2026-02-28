@@ -1,0 +1,111 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  poster?: string;
+}
+
+const { src, alt, poster } = Astro.props;
+---
+
+<figure class="video-player">
+  <div class="video-player__wrapper">
+    <video
+      class="video-player__video"
+      src={src}
+      poster={poster}
+      loop
+      muted
+      playsinline
+      preload="metadata"
+      aria-label={alt}></video>
+    <button class="video-player__overlay" aria-label="Play video">
+      <svg
+        class="video-player__icon"
+        viewBox="0 0 48 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="24" cy="24" r="24" fill="rgba(0, 0, 0, 0.55)"></circle>
+        <path d="M19 15L35 24L19 33V15Z" fill="white"></path>
+      </svg>
+    </button>
+  </div>
+  <figcaption class="video-player__caption">{alt}</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll('.video-player__wrapper').forEach((wrapper) => {
+    const video = wrapper.querySelector('video');
+    const overlay = wrapper.querySelector('.video-player__overlay');
+    if (!video || !overlay) return;
+
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+        overlay.classList.add('video-player__overlay--hidden');
+      } else {
+        video.pause();
+        overlay.classList.remove('video-player__overlay--hidden');
+      }
+    }
+
+    overlay.addEventListener('click', togglePlay);
+    video.addEventListener('click', togglePlay);
+  });
+</script>
+
+<style>
+  .video-player {
+    margin: 2em 0;
+  }
+
+  .video-player__wrapper {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .video-player__video {
+    width: 100%;
+    display: block;
+  }
+
+  .video-player__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity var(--transition-base);
+    padding: 0;
+  }
+
+  .video-player__overlay--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .video-player__icon {
+    width: 64px;
+    height: 64px;
+    transition: transform var(--transition-fast);
+  }
+
+  .video-player__overlay:hover .video-player__icon {
+    transform: scale(1.1);
+  }
+
+  .video-player__caption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+    text-align: center;
+    font-family: var(--font-body);
+  }
+</style>
