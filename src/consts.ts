@@ -2,7 +2,7 @@ export const AUTHOR_NAME = 'Ivan Kalinichenko';
 export const ROLE = 'Senior Frontend Engineer';
 
 export const SITE_TITLE = `${AUTHOR_NAME} – ${ROLE}`;
-export const SITE_DESCRIPTION = `${ROLE} with 10+ years of experience building scalable, high-performance web applications using React, TypeScript, and AI-powered development workflows.`;
+export const SITE_DESCRIPTION = `${ROLE}. 10+ years with React, TypeScript, and Node.js. Building frontend for a self-hosted product, using AI tools as part of the daily workflow.`;
 
 export const GITHUB_PROFILE_LINK = 'https://github.com/kalinichenko88';
 export const LINKEDIN_PROFILE_LINK = 'https://www.linkedin.com/in/ivan-kalinichenko/';
