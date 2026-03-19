@@ -24,33 +24,33 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
+  fonts: [
+    {
+      provider: fontProviders.fontshare(),
+      name: 'General Sans',
+      cssVariable: '--font-general-sans',
+      weights: [400, 500, 600, 700],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'DM Sans',
+      cssVariable: '--font-dm-sans',
+      weights: [400, 500, 600, 700],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'JetBrains Mono',
+      cssVariable: '--font-jetbrains-mono',
+      weights: [400, 500, 600],
+      fallbacks: ['ui-monospace', 'monospace'],
+    },
+  ],
   experimental: {
     clientPrerender: true,
     contentIntellisense: true,
     svgo: true,
-    fonts: [
-      {
-        provider: fontProviders.fontshare(),
-        name: 'General Sans',
-        cssVariable: '--font-general-sans',
-        weights: [400, 500, 600, 700],
-        fallbacks: ['system-ui', 'sans-serif'],
-      },
-      {
-        provider: fontProviders.google(),
-        name: 'DM Sans',
-        cssVariable: '--font-dm-sans',
-        weights: [400, 500, 600, 700],
-        fallbacks: ['system-ui', 'sans-serif'],
-      },
-      {
-        provider: fontProviders.google(),
-        name: 'JetBrains Mono',
-        cssVariable: '--font-jetbrains-mono',
-        weights: [400, 500, 600],
-        fallbacks: ['ui-monospace', 'monospace'],
-      },
-    ],
   },
   vite: {
     plugins: [tailwindcss()],
