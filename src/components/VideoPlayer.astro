@@ -1,0 +1,88 @@
+---
+type Props = {
+  src: string;
+  caption: string;
+  poster?: string;
+};
+
+const { src, caption, poster } = Astro.props;
+---
+
+<video-player>
+  <figure class="my-8">
+    <div class="relative rounded-lg overflow-hidden cursor-pointer leading-none">
+      <video
+        class="w-full block"
+        src={src}
+        poster={poster}
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        aria-label={caption}></video>
+      <button
+        type="button"
+        class="group absolute inset-0 flex items-center justify-center border-none bg-transparent cursor-pointer p-0 transition-opacity"
+        style={`transition-duration: var(--transition-base)`}
+        aria-label="Play video"
+      >
+        <svg
+          class="size-16 transition-transform group-hover:scale-110"
+          style={`transition-duration: var(--transition-fast)`}
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="24" cy="24" r="24" fill="rgba(0, 0, 0, 0.55)"></circle>
+          <path d="M19 15L35 24L19 33V15Z" fill="white"></path>
+        </svg>
+      </button>
+    </div>
+    <figcaption class="mt-3 text-sm text-foreground-tertiary text-center">{caption}</figcaption>
+  </figure>
+</video-player>
+
+<script>
+  class VideoPlayerElement extends HTMLElement {
+    #video!: HTMLVideoElement;
+    #overlay!: HTMLButtonElement;
+
+    connectedCallback() {
+      const video = this.querySelector('video');
+      const overlay = this.querySelector<HTMLButtonElement>('button');
+      if (!video || !overlay) return;
+
+      this.#video = video;
+      this.#overlay = overlay;
+
+      this.#overlay.addEventListener('click', this.#toggle);
+      this.#video.addEventListener('click', this.#toggle);
+      this.#video.addEventListener('play', this.#syncOverlay);
+      this.#video.addEventListener('pause', this.#syncOverlay);
+    }
+
+    disconnectedCallback() {
+      this.#overlay?.removeEventListener('click', this.#toggle);
+      this.#video?.removeEventListener('click', this.#toggle);
+      this.#video?.removeEventListener('play', this.#syncOverlay);
+      this.#video?.removeEventListener('pause', this.#syncOverlay);
+    }
+
+    #toggle = () => {
+      if (this.#video.paused) {
+        this.#video.play().catch(() => {});
+      } else {
+        this.#video.pause();
+      }
+    };
+
+    #syncOverlay = () => {
+      const playing = !this.#video.paused;
+      this.#overlay.classList.toggle('opacity-0', playing);
+      this.#overlay.classList.toggle('pointer-events-none', playing);
+      this.#overlay.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+    };
+  }
+
+  customElements.define('video-player', VideoPlayerElement);
+</script>
