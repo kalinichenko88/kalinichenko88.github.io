@@ -2,6 +2,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import rehypeExternalLinks from 'rehype-external-links';
 
 export default defineConfig({
   site: 'https://kalinichenko.dev',
@@ -14,6 +15,9 @@ export default defineConfig({
       lastmod: new Date(),
     }),
   ],
+  markdown: {
+    rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noreferrer'] }]],
+  },
   devToolbar: {
     enabled: false,
   },
