@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ClockIcon from '../../assets/icons/clock.svg';
@@ -33,7 +34,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 // Calculate reading time (rough estimate)
 const wordsPerMinute = 200;
@@ -117,6 +118,9 @@ const blogPostSchema = {
           </span>
         </div>
       </header>
+
+      <!-- Table of Contents -->
+      <TableOfContents headings={headings} />
 
       <!-- Article Content -->
       <div class="prose prose-lg prose-custom max-w-none">
