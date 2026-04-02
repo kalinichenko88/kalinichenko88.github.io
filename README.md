@@ -1,25 +1,25 @@
 # kalinichenko.dev
 
-Personal blog built with [Astro 5](https://astro.build/), [Tailwind CSS 4](https://tailwindcss.com/), and TypeScript.
+Personal portfolio and blog built with [Astro 6](https://astro.build/), [Tailwind CSS 4](https://tailwindcss.com/), and TypeScript.
 
 Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 
 ## Tech Stack
 
-- **Framework** — Astro 5 with MDX support
+- **Framework** — Astro 6 with MDX support
 - **Styling** — Tailwind CSS 4 via Vite plugin + Typography plugin
 - **Themes** — Light, Dark, Terminal (+ Auto based on system preference)
 - **Content** — Astro Content Collections (Markdown blog posts, YAML projects)
-- **GitHub Repos** — Fetched at build time via Octokit
+- **GitHub Repos** — Fetched at build time via Octokit custom content loader
 - **Comments** — Giscus (GitHub Discussions)
-- **Fonts** — General Sans, DM Sans, JetBrains Mono
+- **Fonts** — General Sans, DM Sans, JetBrains Mono (via Astro's built-in font optimization)
 - **Linting** — ESLint + Prettier with Husky pre-commit hooks
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - A [GitHub personal access token](https://github.com/settings/tokens) for fetching repositories
 
 ### Setup
@@ -59,11 +59,11 @@ npm run format     # Format with Prettier
 │   ├── posts/          # Markdown blog posts
 │   └── projects/       # YAML project definitions
 ├── src/
-│   ├── components/     # Astro components
+│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer)
+│   │   └── home/       # Homepage sections (Hero, About, Expertise, Projects, Blog, Work History, Contact)
 │   ├── config/         # Theme configuration
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
-│   ├── layouts/        # Page layouts
 │   ├── loaders/        # Custom Astro content loaders (GitHub repos)
 │   ├── pages/          # Routes (index, blog, tags, about, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
