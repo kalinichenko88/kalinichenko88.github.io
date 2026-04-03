@@ -10,7 +10,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 {
   tocHeadings.length > 0 && (
     <nav class="toc" aria-label="Table of contents">
-      <h2 class="toc-title">On this page</h2>
+      <p class="toc-title">On this page</p>
       <ul class="toc-list">
         {tocHeadings.map((heading) => (
           <li class:list={['toc-item', { 'toc-item--nested': heading.depth === 3 }]}>
@@ -26,21 +26,18 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
 <style>
   .toc {
-    margin-bottom: 2.5rem;
-    padding: var(--space-6);
-    background-color: var(--color-bg-subtle);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--color-border);
   }
 
   .toc-title {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-text-tertiary);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
   }
 
   .toc-list {
@@ -49,7 +46,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 
   .toc-item--nested {
@@ -58,24 +55,24 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
   .toc-link {
     font-family: var(--font-body);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-text-secondary);
     transition: color var(--transition-fast);
     line-height: 1.5;
   }
 
-  .toc-link:hover {
+  .toc-link:hover,
+  .toc-link:global(.active) {
     color: var(--color-accent);
   }
 
   :global([data-theme='terminal']) .toc {
-    border-style: dashed;
-    border-radius: 0;
+    border-left-style: dashed;
+    border-left-color: var(--color-accent);
   }
 
-  :global([data-theme='cloud']) .toc {
-    border-color: transparent;
-    border-radius: var(--radius-xl);
-    box-shadow: 0 2px 12px rgba(124, 92, 255, 0.06);
+  :global([data-theme='cloud']) .toc,
+  :global([data-theme='cloud-dark']) .toc {
+    border-left-color: var(--color-accent);
   }
 </style>

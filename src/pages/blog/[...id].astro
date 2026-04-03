@@ -119,12 +119,24 @@ const blogPostSchema = {
         </div>
       </header>
 
-      <!-- Table of Contents -->
-      <TableOfContents headings={headings} />
+      <!-- Table of Contents (inline, scrolls away naturally) -->
+      <div id="toc-inline" class="mb-10">
+        <TableOfContents headings={headings} />
+      </div>
 
-      <!-- Article Content -->
-      <div class="prose prose-lg prose-custom max-w-none">
-        <Content />
+      <!-- Article body + sidebar TOC -->
+      <div class="article-with-toc">
+        <!-- Article Content -->
+        <div class="prose prose-lg prose-custom max-w-none">
+          <Content />
+        </div>
+
+        <!-- Sidebar TOC (desktop only, appears on scroll) -->
+        <aside class="toc-sidebar-col" aria-hidden="true">
+          <div class="toc-sidebar-sticky" id="toc-sidebar">
+            <TableOfContents headings={headings} />
+          </div>
+        </aside>
       </div>
 
       <!-- Comments -->
@@ -217,4 +229,87 @@ const blogPostSchema = {
       </footer>
     </div>
   </article>
+
+  <script>
+    function initTocObserver() {
+      const inlineToc = document.getElementById('toc-inline');
+      const sidebar = document.getElementById('toc-sidebar');
+      if (!inlineToc || !sidebar) return;
+
+      const sidebarObserver = new IntersectionObserver(
+        ([entry]) => {
+          sidebar.classList.toggle('visible', !entry.isIntersecting);
+        },
+        { threshold: 0 }
+      );
+      sidebarObserver.observe(inlineToc);
+
+      // Active heading tracking
+      const tocLinks = document.querySelectorAll('.toc-link');
+      const headings = Array.from(
+        document.querySelectorAll('.prose h2[id], .prose h3[id]')
+      ) as HTMLElement[];
+      if (!headings.length) return;
+
+      const headingObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              tocLinks.forEach((link) => {
+                link.classList.toggle(
+                  'active',
+                  link.getAttribute('href') === `#${entry.target.id}`
+                );
+              });
+            }
+          }
+        },
+        { rootMargin: '0px 0px -70% 0px', threshold: 0 }
+      );
+
+      headings.forEach((h) => headingObserver.observe(h));
+    }
+
+    initTocObserver();
+    document.addEventListener('astro:after-swap', initTocObserver);
+  </script>
+
+  <style>
+    .article-with-toc {
+      position: relative;
+    }
+
+    .toc-sidebar-col {
+      display: none;
+    }
+
+    @media (min-width: 1280px) {
+      .article-with-toc {
+        display: grid;
+        grid-template-columns: 1fr 220px;
+        gap: var(--space-12);
+      }
+
+      .toc-sidebar-col {
+        display: block;
+      }
+    }
+
+    .toc-sidebar-sticky {
+      position: sticky;
+      top: var(--space-24);
+      opacity: 0;
+      transform: translateX(1rem);
+      transition:
+        opacity var(--transition-slow),
+        transform var(--transition-slow);
+      pointer-events: none;
+    }
+
+    .toc-sidebar-sticky.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+  </style>
 </Layout>
