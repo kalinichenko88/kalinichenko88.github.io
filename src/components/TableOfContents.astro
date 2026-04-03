@@ -1,15 +1,16 @@
 ---
 type Props = {
   headings: { depth: number; slug: string; text: string }[];
+  label?: string;
 };
 
-const { headings } = Astro.props;
+const { headings, label = 'Table of contents' } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 ---
 
 {
   tocHeadings.length > 0 && (
-    <nav class="toc" aria-label="Table of contents">
+    <nav class="toc" aria-label={label}>
       <p class="toc-title">On this page</p>
       <ul class="toc-list">
         {tocHeadings.map((heading) => (

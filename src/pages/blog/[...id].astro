@@ -38,7 +38,7 @@ const { Content, headings } = await render(post);
 
 // Calculate reading time (rough estimate)
 const wordsPerMinute = 200;
-const wordCount = post.body?.split(/\s+/).length || 0;
+const wordCount = post.body?.split(/\s+/).filter(Boolean).length || 0;
 const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
 const blogPostSchema = {
@@ -134,7 +134,7 @@ const blogPostSchema = {
         <!-- Sidebar TOC (desktop only, appears on scroll) -->
         <aside class="toc-sidebar-col" aria-hidden="true">
           <div class="toc-sidebar-sticky" id="toc-sidebar">
-            <TableOfContents headings={headings} />
+            <TableOfContents headings={headings} label="Table of contents (sidebar)" />
           </div>
         </aside>
       </div>
