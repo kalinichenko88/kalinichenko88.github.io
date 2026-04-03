@@ -27,7 +27,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 <style>
   .toc {
     padding-left: var(--space-4);
-    border-left: 2px solid var(--color-border);
+    border-left: 2px solid var(--color-accent);
   }
 
   .toc-title {
@@ -68,11 +68,5 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
   :global([data-theme='terminal']) .toc {
     border-left-style: dashed;
-    border-left-color: var(--color-accent);
-  }
-
-  :global([data-theme='cloud']) .toc,
-  :global([data-theme='cloud-dark']) .toc {
-    border-left-color: var(--color-accent);
   }
 </style>

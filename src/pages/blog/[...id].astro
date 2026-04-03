@@ -231,18 +231,40 @@ const blogPostSchema = {
   </article>
 
   <script>
+    let sidebarObserverRef: IntersectionObserver | null = null;
+    let headingObserverRef: IntersectionObserver | null = null;
+
     function initTocObserver() {
+      // Disconnect previous observers to prevent leaks across View Transitions
+      sidebarObserverRef?.disconnect();
+      headingObserverRef?.disconnect();
+      sidebarObserverRef = null;
+      headingObserverRef = null;
+
       const inlineToc = document.getElementById('toc-inline');
       const sidebar = document.getElementById('toc-sidebar');
       if (!inlineToc || !sidebar) return;
 
-      const sidebarObserver = new IntersectionObserver(
+      const sidebarCol = sidebar.closest('.toc-sidebar-col');
+
+      sidebarObserverRef = new IntersectionObserver(
         ([entry]) => {
-          sidebar.classList.toggle('visible', !entry.isIntersecting);
+          const isVisible = !entry.isIntersecting;
+          sidebar.classList.toggle('visible', isVisible);
+          // Toggle focusability of sidebar links for keyboard accessibility
+          sidebar.querySelectorAll('a').forEach((a) => {
+            a.tabIndex = isVisible ? 0 : -1;
+          });
+          sidebarCol?.setAttribute('aria-hidden', String(!isVisible));
         },
         { threshold: 0 }
       );
-      sidebarObserver.observe(inlineToc);
+      sidebarObserverRef.observe(inlineToc);
+
+      // Ensure sidebar links start as unfocusable
+      sidebar.querySelectorAll('a').forEach((a) => {
+        a.tabIndex = -1;
+      });
 
       // Active heading tracking
       const tocLinks = document.querySelectorAll('.toc-link');
@@ -251,7 +273,7 @@ const blogPostSchema = {
       ) as HTMLElement[];
       if (!headings.length) return;
 
-      const headingObserver = new IntersectionObserver(
+      headingObserverRef = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
@@ -267,7 +289,7 @@ const blogPostSchema = {
         { rootMargin: '0px 0px -70% 0px', threshold: 0 }
       );
 
-      headings.forEach((h) => headingObserver.observe(h));
+      headings.forEach((h) => headingObserverRef!.observe(h));
     }
 
     initTocObserver();

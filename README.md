@@ -59,7 +59,7 @@ npm run format     # Format with Prettier
 │   ├── posts/          # Markdown blog posts
 │   └── projects/       # YAML project definitions
 ├── src/
-│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer)
+│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer, TableOfContents)
 │   │   └── home/       # Homepage sections (Hero, About, Expertise, Projects, Blog, Work History, Contact)
 │   ├── config/         # Theme configuration
 │   ├── content.config.ts

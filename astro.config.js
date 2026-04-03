@@ -16,7 +16,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noreferrer'] }]],
+    rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]],
   },
   devToolbar: {
     enabled: false,
