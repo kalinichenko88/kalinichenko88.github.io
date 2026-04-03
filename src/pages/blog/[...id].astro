@@ -35,6 +35,7 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
 // Calculate reading time (rough estimate)
 const wordsPerMinute = 200;
@@ -119,24 +120,28 @@ const blogPostSchema = {
         </div>
       </header>
 
-      <!-- Table of Contents (inline, scrolls away naturally) -->
-      <div id="toc-inline" class="mb-10">
-        <TableOfContents headings={headings} />
-      </div>
+      {
+        tocHeadings.length > 0 && (
+          <div id="toc-inline" class="mb-10">
+            <TableOfContents headings={headings} />
+          </div>
+        )
+      }
 
-      <!-- Article body + sidebar TOC -->
-      <div class="article-with-toc">
-        <!-- Article Content -->
+      <div class:list={[{ 'article-with-toc': tocHeadings.length > 0 }]}>
         <div class="prose prose-lg prose-custom max-w-none">
           <Content />
         </div>
 
-        <!-- Sidebar TOC (desktop only, appears on scroll) -->
-        <aside class="toc-sidebar-col" aria-hidden="true">
-          <div class="toc-sidebar-sticky" id="toc-sidebar">
-            <TableOfContents headings={headings} label="Table of contents (sidebar)" />
-          </div>
-        </aside>
+        {
+          tocHeadings.length > 0 && (
+            <aside class="toc-sidebar-col" aria-hidden="true">
+              <div class="toc-sidebar-sticky" id="toc-sidebar">
+                <TableOfContents headings={headings} label="Table of contents (sidebar)" />
+              </div>
+            </aside>
+          )
+        }
       </div>
 
       <!-- Comments -->
@@ -273,18 +278,17 @@ const blogPostSchema = {
       ) as HTMLElement[];
       if (!headings.length) return;
 
+      let currentActiveId = '';
       headingObserverRef = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
-              tocLinks.forEach((link) => {
-                link.classList.toggle(
-                  'active',
-                  link.getAttribute('href') === `#${entry.target.id}`
-                );
-              });
+              currentActiveId = entry.target.id;
             }
           }
+          tocLinks.forEach((link) => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${currentActiveId}`);
+          });
         },
         { rootMargin: '0px 0px -70% 0px', threshold: 0 }
       );
