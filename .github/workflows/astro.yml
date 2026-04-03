@@ -71,6 +71,9 @@ jobs:
         working-directory: ${{ env.BUILD_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Format check
+        run: ${{ steps.detect-package-manager.outputs.manager }} run format:check
+        working-directory: ${{ env.BUILD_PATH }}
       - name: Build with Astro
         run: |
           ${{ steps.detect-package-manager.outputs.runner }} astro build \
