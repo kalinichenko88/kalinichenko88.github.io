@@ -4,6 +4,7 @@
 .astro/
 .cursor/
 .claude/
+.playwright-mcp/
 
 node_modules/
 dist/
@@ -15,3 +16,5 @@ dist/
 
 CLAUDE.md
 AGENTS.md
+
+docs/superpowers/
