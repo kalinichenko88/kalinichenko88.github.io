@@ -5,6 +5,7 @@ import Layout from '../components/Layout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import AboutSection from '../components/home/AboutSection.astro';
 import WorkHistorySection from '../components/home/WorkHistorySection.astro';
+import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 
@@ -87,8 +88,7 @@ const expertise = [
   <HeroSection />
   <AboutSection expertise={expertise} />
   <WorkHistorySection />
-  {/* TODO: Re-enable Projects section when new projects are ready */}
-  {/* <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} /> */}
+  <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
 </Layout>
