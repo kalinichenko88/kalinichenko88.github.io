@@ -1,4 +1,5 @@
 import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -16,7 +17,9 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]],
+    processor: unified({
+      rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]],
+    }),
   },
   devToolbar: {
     enabled: false,
