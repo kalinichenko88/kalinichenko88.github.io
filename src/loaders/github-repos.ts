@@ -67,20 +67,22 @@ export function githubReposLoader(options: GitHubReposLoaderOptions): Loader {
               `GitHub API rate limit exceeded. Resets at: ${resetDate?.toISOString() ?? 'unknown'}`
             );
             throw new Error(
-              `GitHub API rate limit exceeded. Please try again after ${resetDate?.toLocaleTimeString() ?? 'some time'}.`
+              `GitHub API rate limit exceeded. Please try again after ${resetDate?.toLocaleTimeString() ?? 'some time'}.`,
+              { cause: error }
             );
           }
 
           if (error.status === 401) {
             logger.error('GitHub authentication failed. Check your GITHUB_TOKEN.');
             throw new Error(
-              'GitHub authentication failed. Please verify your GITHUB_TOKEN is valid.'
+              'GitHub authentication failed. Please verify your GITHUB_TOKEN is valid.',
+              { cause: error }
             );
           }
 
           if (error.status === 404) {
             logger.error(`GitHub user "${options.username}" not found.`);
-            throw new Error(`GitHub user "${options.username}" not found.`);
+            throw new Error(`GitHub user "${options.username}" not found.`, { cause: error });
           }
         }
 
