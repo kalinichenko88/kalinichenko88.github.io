@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
+import { readingTime } from '../../lib/reading-time';
+import { formatDate } from '../../lib/format-date';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -24,9 +26,8 @@ const { posts } = Astro.props;
 ---
 
 <Layout title={`Posts tagged: ${tag}`} description={`All blog posts tagged with "${tag}".`}>
-  <!-- Header Section -->
-  <section class="py-12 md:py-16 bg-background-subtle">
-    <div class="container">
+  <section class="py-14 md:py-20">
+    <div class="container-prose">
       <a
         href="/blog"
         class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
@@ -34,51 +35,26 @@ const { posts } = Astro.props;
         <ArrowLeftIcon class="w-4 h-4" />
         Back to blog
       </a>
-      <h1 class="text-foreground mb-2">
-        {tag}
-      </h1>
-      <p class="text-lg text-foreground-secondary">
-        {posts.length}
-        {posts.length === 1 ? 'post' : 'posts'}
-      </p>
-    </div>
-  </section>
+      <div class="flex items-center gap-3 mb-3">
+        <h1 class="text-foreground">{tag}</h1>
+        <span class="topic">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+      </div>
 
-  <!-- Posts Section -->
-  <section class="py-12 md:py-16">
-    <div class="container">
-      <div class="grid grid-cols-1 gap-1">
+      <div class="border-t border-line mt-8">
         {
           posts.map((post) => (
-            <article class="blog-row group relative py-8 border-b border-line -mx-6 px-6">
+            <article class="group relative py-6 border-b border-line">
               <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title} />
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-start">
-                <div class="lg:col-span-2">
-                  <time class="font-mono text-sm text-foreground-tertiary">
-                    {post.data.pubDate.toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </time>
-                </div>
-
-                <div class="lg:col-span-7">
-                  <h2 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
-                    {post.data.title}
-                  </h2>
-                  <p class="text-foreground-secondary line-clamp-2">{post.data.description}</p>
-                </div>
-
-                <div class="lg:col-span-3 lg:text-right relative z-10">
-                  <div class="flex flex-wrap gap-2 lg:justify-end">
-                    {post.data.tags.slice(0, 3).map((t: string) => (
-                      <a href={`/tags/${t}`} class="tag">
-                        {t}
-                      </a>
-                    ))}
-                  </div>
-                </div>
+              <h2 class="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-accent-text transition-colors">
+                {post.data.title}
+              </h2>
+              <p class="text-foreground-secondary text-sm mb-2 line-clamp-2">
+                {post.data.description}
+              </p>
+              <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
+                <span>
+                  {formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
+                </span>
               </div>
             </article>
           ))

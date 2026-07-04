@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { readingTime } from '../../lib/reading-time';
+import { formatDate } from '../../lib/format-date';
 
 import Layout from '../../components/Layout.astro';
 import RssIcon from '../../assets/icons/rss.svg';
@@ -8,17 +9,13 @@ import RssIcon from '../../assets/icons/rss.svg';
 const allPosts = await getCollection('posts');
 const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const [lead, ...rest] = posts;
-
-function fmt(date: Date) {
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
 ---
 
 <Layout
   title="Blog"
   description="AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way."
 >
-  <section class="py-12 md:py-16">
+  <section class="py-14 md:py-20">
     <div class="container-prose">
       <div class="flex items-center gap-3 mb-3">
         <h1 class="text-foreground">Writing</h1>
@@ -46,38 +43,38 @@ function fmt(date: Date) {
                 <p class="text-foreground-secondary mb-3">{lead.data.description}</p>
                 <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
                   <span>
-                    {fmt(lead.data.pubDate)} · {readingTime(lead.body ?? '')} min read
+                    {formatDate(lead.data.pubDate)} · {readingTime(lead.body ?? '')} min read
                   </span>
                   {lead.data.tags[0] && <span class="topic">{lead.data.tags[0]}</span>}
                 </div>
               </a>
             )}
 
-            <div class="border-t border-line">
-              {rest.map((post) => (
-                <article class="group relative py-6 border-b border-line">
-                  <a
-                    href={`/blog/${post.id}`}
-                    class="absolute inset-0"
-                    aria-label={post.data.title}
-                  />
-                  <h2 class="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-accent transition-colors">
-                    {post.data.title}
-                  </h2>
-                  <p class="text-foreground-secondary text-sm mb-2 line-clamp-2">
-                    {post.data.description}
-                  </p>
-                  <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
-                    <span>
-                      {fmt(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
-                    </span>
-                    {post.data.tags[0] && (
-                      <span class="topic relative z-10">{post.data.tags[0]}</span>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
+            {rest.length > 0 && (
+              <div class="border-t border-line">
+                {rest.map((post) => (
+                  <article class="group relative py-6 border-b border-line">
+                    <a
+                      href={`/blog/${post.id}`}
+                      class="absolute inset-0"
+                      aria-label={post.data.title}
+                    />
+                    <h2 class="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-accent-text transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-foreground-secondary text-sm mb-2 line-clamp-2">
+                      {post.data.description}
+                    </p>
+                    <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
+                      <span>
+                        {formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
+                      </span>
+                      {post.data.tags[0] && <span class="topic">{post.data.tags[0]}</span>}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <p class="text-foreground-secondary">Articles coming soon.</p>

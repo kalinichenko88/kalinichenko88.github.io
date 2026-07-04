@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import { readingTime } from '../../lib/reading-time';
+import { formatDate } from '../../lib/format-date';
 
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ClockIcon from '../../assets/icons/clock.svg';
@@ -103,13 +104,7 @@ const blogPostSchema = {
         <!-- Meta -->
         <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
           <time datetime={post.data.pubDate.toISOString()}>
-            {
-              post.data.pubDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            }
+            {formatDate(post.data.pubDate, { month: 'long' })}
           </time>
           <span class="flex items-center gap-2">
             <ClockIcon class="w-4 h-4" />
@@ -120,26 +115,14 @@ const blogPostSchema = {
 
       {
         tocHeadings.length > 0 && (
-          <div id="toc-inline" class="mb-10">
+          <div class="mb-10">
             <TableOfContents headings={headings} />
           </div>
         )
       }
 
-      <div class:list={[{ 'article-with-toc': tocHeadings.length > 0 }]}>
-        <div class="prose prose-custom max-w-none">
-          <Content />
-        </div>
-
-        {
-          tocHeadings.length > 0 && (
-            <aside class="toc-sidebar-col hidden" aria-hidden="true">
-              <div class="toc-sidebar-sticky" id="toc-sidebar">
-                <TableOfContents headings={headings} label="Table of contents (sidebar)" />
-              </div>
-            </aside>
-          )
-        }
+      <div class="prose prose-custom max-w-none">
+        <Content />
       </div>
 
       <!-- Comments -->
@@ -233,42 +216,14 @@ const blogPostSchema = {
   </article>
 
   <script>
-    let sidebarObserverRef: IntersectionObserver | null = null;
     let headingObserverRef: IntersectionObserver | null = null;
 
     function initTocObserver() {
-      // Disconnect previous observers to prevent leaks across View Transitions
-      sidebarObserverRef?.disconnect();
+      // Disconnect previous observer to prevent leaks across View Transitions
       headingObserverRef?.disconnect();
-      sidebarObserverRef = null;
       headingObserverRef = null;
 
-      const inlineToc = document.getElementById('toc-inline');
-      const sidebar = document.getElementById('toc-sidebar');
-      if (!inlineToc || !sidebar) return;
-
-      const sidebarCol = sidebar.closest('.toc-sidebar-col');
-
-      sidebarObserverRef = new IntersectionObserver(
-        ([entry]) => {
-          const isVisible = !entry.isIntersecting;
-          sidebar.classList.toggle('visible', isVisible);
-          // Toggle focusability of sidebar links for keyboard accessibility
-          sidebar.querySelectorAll('a').forEach((a) => {
-            a.tabIndex = isVisible ? 0 : -1;
-          });
-          sidebarCol?.setAttribute('aria-hidden', String(!isVisible));
-        },
-        { threshold: 0 }
-      );
-      sidebarObserverRef.observe(inlineToc);
-
-      // Ensure sidebar links start as unfocusable
-      sidebar.querySelectorAll('a').forEach((a) => {
-        a.tabIndex = -1;
-      });
-
-      // Active heading tracking
+      // Highlight the inline TOC link for the heading currently in view.
       const tocLinks = document.querySelectorAll('.toc-link');
       const headings = Array.from(
         document.querySelectorAll('.prose h2[id], .prose h3[id]')
@@ -296,39 +251,4 @@ const blogPostSchema = {
     initTocObserver();
     document.addEventListener('astro:after-swap', initTocObserver);
   </script>
-
-  <style>
-    /*
-      The sidebar TOC is disabled: on the .container-prose (680px) reading
-      track there's no room beside the text for a sticky sidebar without
-      overlapping it. The inline TOC above the article covers navigation
-      instead. `.toc-sidebar-col` stays `display: none` at all breakpoints
-      (the `hidden` class on the element enforces this too) and the layout
-      is left as a single flowing column rather than a grid.
-    */
-    .article-with-toc {
-      position: relative;
-    }
-
-    .toc-sidebar-col {
-      display: none;
-    }
-
-    .toc-sidebar-sticky {
-      position: sticky;
-      top: var(--space-24);
-      opacity: 0;
-      transform: translateX(1rem);
-      transition:
-        opacity var(--transition-slow),
-        transform var(--transition-slow);
-      pointer-events: none;
-    }
-
-    .toc-sidebar-sticky.visible {
-      opacity: 1;
-      transform: translateX(0);
-      pointer-events: auto;
-    }
-  </style>
 </Layout>
