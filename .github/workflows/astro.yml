@@ -9,6 +9,10 @@ on:
   push:
     branches: ['main']
 
+  # Runs quality + build checks on PRs into main (deploy is guarded to main only)
+  pull_request:
+    branches: ['main']
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -127,6 +131,8 @@ jobs:
           path: ${{ env.BUILD_PATH }}/dist
 
   deploy:
+    # Only deploy on pushes to main, never from pull requests
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

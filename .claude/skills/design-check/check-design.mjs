@@ -23,7 +23,13 @@ const THEMES = join(ROOT, 'src/config/themes.ts');
 // ---------- WCAG contrast ----------
 function toRgb(hex) {
   const h = hex.replace('#', '').trim();
-  const n = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n =
+    h.length === 3
+      ? h
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : h;
   return [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255);
 }
 function relLum(hex) {
@@ -81,7 +87,10 @@ if (process.argv.includes('--selftest')) {
     const pass = c >= thr;
     const ok = pass === shouldPass;
     if (!ok) bad++;
-    line(ok, `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`);
+    line(
+      ok,
+      `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`
+    );
   }
   console.log(bad ? `\nSELF-TEST FAILED (${bad})` : '\nSelf-test OK');
   process.exit(bad ? 1 : 0);
