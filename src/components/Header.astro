@@ -8,13 +8,11 @@ import CheckIcon from '../assets/icons/check.svg';
 import MenuIcon from '../assets/icons/menu.svg';
 import SunIcon from '../assets/icons/sun.svg';
 import MoonIcon from '../assets/icons/moon.svg';
-import TerminalIcon from '../assets/icons/terminal.svg';
 import MonitorIcon from '../assets/icons/monitor.svg';
 
 const themeIcons: Record<string, typeof SunIcon> = {
   sun: SunIcon,
   moon: MoonIcon,
-  terminal: TerminalIcon,
   monitor: MonitorIcon,
 };
 
@@ -26,21 +24,12 @@ const currentPath = Astro.url.pathname;
 >
   <div class="container">
     <nav class="flex items-center justify-between h-14" aria-label="Main navigation">
-      <!-- Logo with blinking cursor on hover -->
       <a
         href="/"
-        class="group flex items-center gap-2 font-display font-semibold text-foreground"
+        class="font-display font-semibold text-foreground text-lg tracking-tight"
         aria-label={`${AUTHOR_NAME} - Home`}
       >
-        <span class="text-accent font-mono text-sm">~/</span>
-        <span class="tracking-tight">kalinichenko</span>
-        <span
-          class="text-foreground-tertiary font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          >.dev</span
-        >
-        <span
-          class="font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-blink-inline"
-          aria-hidden="true"></span>
+        kalinichenko.dev
       </a>
 
       <!-- Desktop Navigation -->
@@ -102,7 +91,6 @@ const currentPath = Astro.url.pathname;
             <MonitorIcon class="w-5 h-5 theme-icon" data-icon="monitor" />
             <SunIcon class="w-5 h-5 theme-icon hidden" data-icon="sun" />
             <MoonIcon class="w-5 h-5 theme-icon hidden" data-icon="moon" />
-            <TerminalIcon class="w-5 h-5 theme-icon hidden" data-icon="terminal" />
           </button>
 
           <!-- Theme Dropdown -->
@@ -174,23 +162,6 @@ const currentPath = Astro.url.pathname;
 
 <!-- Spacer for fixed header -->
 <div class="h-14" aria-hidden="true"></div>
-
-<style>
-  .cursor-blink-inline::after {
-    content: '|';
-    animation: blink-cursor 1s step-end infinite;
-  }
-
-  @keyframes blink-cursor {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
-  }
-</style>
 
 <script>
   import {
