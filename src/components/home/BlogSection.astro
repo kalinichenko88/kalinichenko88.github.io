@@ -1,75 +1,66 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { readingTime } from '../../lib/reading-time';
 
 import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
-import RssIcon from '../../assets/icons/rss.svg';
 
 type Props = {
   latestPosts: CollectionEntry<'posts'>[];
 };
 
 const { latestPosts } = Astro.props;
+const [lead, ...rest] = latestPosts;
+
+function fmt(date: Date) {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
 ---
 
-<section id="blog" class="py-12 md:py-16">
+<section id="writing" class="py-14 md:py-20 bg-background-subtle">
   <div class="container">
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-      <div>
-        <span class="section-label mb-3">05 — Writing</span>
-        <div class="flex items-center gap-3">
-          <h2 class="text-foreground">Latest articles</h2>
-          <a
-            href="/rss.xml"
-            class="p-2 text-foreground-tertiary rss-pulse"
-            aria-label="RSS Feed"
-            title="Subscribe via RSS"
-          >
-            <RssIcon class="w-5 h-5" />
-          </a>
-        </div>
-      </div>
+    <div class="flex items-end justify-between gap-4 mb-8">
+      <h2 class="text-foreground">Writing</h2>
       <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
-        View all posts
+        Read all
         <ArrowRightIcon class="w-4 h-4" />
       </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      {
-        latestPosts.map((post) => (
-          <article class="card card-lift group">
-            <a href={`/blog/${post.id}`} class="block p-5">
-              <div class="flex flex-wrap gap-2 mb-4">
-                {post.data.tags.slice(0, 2).map((tag: string) => (
-                  <span class="tag">{tag}</span>
-                ))}
-              </div>
-              <h3 class="font-display font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
-                {post.data.title}
-              </h3>
-              <p class="text-sm text-foreground-secondary line-clamp-2 mb-4">
-                {post.data.description}
-              </p>
-              <time class="text-xs font-mono text-foreground-tertiary">
-                {post.data.pubDate.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
+    {
+      lead && (
+        <a href={`/blog/${lead.id}`} class="block group mb-8 max-w-prose">
+          <h3 class="font-display font-semibold text-2xl text-foreground mb-3 group-hover:text-accent transition-colors">
+            {lead.data.title}
+          </h3>
+          <p class="text-foreground-secondary mb-3">{lead.data.description}</p>
+          <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
+            <span>
+              {fmt(lead.data.pubDate)} · {readingTime(lead.body ?? '')} min read
+            </span>
+            {lead.data.tags[0] && <span class="topic">{lead.data.tags[0]}</span>}
+          </div>
+        </a>
+      )
+    }
+
+    {
+      rest.length > 0 && (
+        <div class="border-t border-line max-w-prose">
+          {rest.map((post) => (
+            <a
+              href={`/blog/${post.id}`}
+              class="flex items-baseline gap-4 py-4 border-b border-line group"
+            >
+              <time class="font-mono text-xs text-foreground-tertiary w-24 shrink-0">
+                {fmt(post.data.pubDate)}
               </time>
+              <span class="font-display font-semibold text-foreground group-hover:text-accent transition-colors">
+                {post.data.title}
+              </span>
             </a>
-          </article>
-        ))
-      }
-    </div>
+          ))}
+        </div>
+      )
+    }
   </div>
 </section>
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>
