@@ -72,7 +72,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 ## Containers & Fonts
 
-- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`, used for header/footer and most sections) and `.container-prose` (reading column, `--container-prose: 680px`, used for blog post content).
+- Three container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`, used for header/footer and most sections), `.container-content` (content track, `--container-content: 820px`, used for the blog reading experience — post articles, the blog index, and tag pages), and `.container-prose` (tight reading column, `--container-prose: 680px`, used for the homepage intro text and `/about` bio).
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): Gambetta (display/headings), DM Sans (body), JetBrains Mono (code/mono accents).
 
 ## Key Patterns

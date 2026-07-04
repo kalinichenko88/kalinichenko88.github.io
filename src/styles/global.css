@@ -44,6 +44,7 @@
 
   /* Container */
   --container-wide: 1100px;
+  --container-content: 820px;
   --container-prose: 680px;
 }
 
@@ -218,6 +219,16 @@
     padding-right: var(--space-6);
   }
 
+  /* Content track (wider reading column for blog posts and post lists) */
+  .container-content {
+    width: 100%;
+    max-width: var(--container-content);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
   /* Reading track */
   .container-prose {
     width: 100%;
@@ -230,6 +241,7 @@
 
   @media (min-width: 768px) {
     .container,
+    .container-content,
     .container-prose {
       padding-left: var(--space-8);
       padding-right: var(--space-8);
