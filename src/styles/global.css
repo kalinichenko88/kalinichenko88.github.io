@@ -646,6 +646,38 @@
   .animate-in-delay-5 {
     animation-delay: 0.5s;
   }
+
+  /* Ornamental section divider: hairline with a short terracotta mark */
+  .divider {
+    position: relative;
+    height: 1px;
+    background-color: var(--color-border);
+    border: 0;
+    margin: var(--space-16) 0;
+  }
+  .divider::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 34px;
+    height: 5px;
+    background-color: var(--color-accent);
+    border-radius: 2px;
+  }
+
+  /* Topic label (writing) - mono chip in accent */
+  .topic {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
 }
 
 /* ============================================
