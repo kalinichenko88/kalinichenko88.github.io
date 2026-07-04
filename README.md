@@ -1,12 +1,12 @@
 # kalinichenko.dev
 
-Personal portfolio and blog built with [Astro 6](https://astro.build/), [Tailwind CSS 4](https://tailwindcss.com/), and TypeScript.
+Personal portfolio and blog built with [Astro 7](https://astro.build/), [Tailwind CSS 4](https://tailwindcss.com/), and TypeScript.
 
 Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 
 ## Tech Stack
 
-- **Framework** — Astro 6 with MDX support
+- **Framework** — Astro 7 with MDX support
 - **Styling** — Tailwind CSS 4 via Vite plugin + Typography plugin
 - **Themes** — Light, Dark (+ Auto based on system preference)
 - **Content** — Astro Content Collections (Markdown blog posts, YAML projects)

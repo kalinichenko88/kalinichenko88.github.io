@@ -68,6 +68,7 @@ const projects = featuredProjects
 <Layout>
   <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   <HeroSection />
+  <div class="container"><hr class="divider" /></div>
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
