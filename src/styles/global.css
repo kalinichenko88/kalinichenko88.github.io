@@ -233,26 +233,6 @@
     }
   }
 
-  /* Section Label - Monospace numbered sections */
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .section-label::before {
-    content: '';
-    width: 2rem;
-    height: 1px;
-    background-color: var(--color-border);
-  }
-
   /* Card with precise borders */
   .card {
     background-color: var(--color-surface);
@@ -797,48 +777,6 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   letter-spacing: 0.02em;
-}
-
-/* ============================================
-   Code Syntax Colors for Hero
-   ============================================ */
-
-:root,
-[data-theme='cloud'] {
-  --color-code-keyword: #d73a49;
-  --color-code-string: #22863a;
-  --color-code-property: #005cc5;
-  --color-code-boolean: #d73a49;
-  --color-code-bracket: #6e7781;
-  --color-code-punctuation: #24292f;
-}
-
-[data-theme='cloud-dark'] {
-  --color-code-keyword: #ff7b72;
-  --color-code-string: #a5d6ff;
-  --color-code-property: #79c0ff;
-  --color-code-boolean: #ff7b72;
-  --color-code-bracket: #8b949e;
-  --color-code-punctuation: #c9d1d9;
-}
-
-.code-keyword {
-  color: var(--color-code-keyword);
-}
-.code-string {
-  color: var(--color-code-string);
-}
-.code-property {
-  color: var(--color-code-property);
-}
-.code-boolean {
-  color: var(--color-code-boolean);
-}
-.code-bracket {
-  color: var(--color-code-bracket);
-}
-.code-punctuation {
-  color: var(--color-code-punctuation);
 }
 
 /* ============================================

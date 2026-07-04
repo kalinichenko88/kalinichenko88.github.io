@@ -8,11 +8,11 @@ Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 
 - **Framework** — Astro 6 with MDX support
 - **Styling** — Tailwind CSS 4 via Vite plugin + Typography plugin
-- **Themes** — Light, Dark, Terminal (+ Auto based on system preference)
+- **Themes** — Light, Dark (+ Auto based on system preference)
 - **Content** — Astro Content Collections (Markdown blog posts, YAML projects)
 - **GitHub Repos** — Fetched at build time via Octokit custom content loader
 - **Comments** — Giscus (GitHub Discussions)
-- **Fonts** — General Sans, DM Sans, JetBrains Mono (via Astro's built-in font optimization)
+- **Fonts** — Gambetta, DM Sans, JetBrains Mono (via Astro's built-in font optimization)
 - **Linting** — ESLint + Prettier with Husky pre-commit hooks
 
 ## Getting Started
