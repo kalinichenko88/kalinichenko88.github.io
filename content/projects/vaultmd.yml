@@ -1,3 +1,6 @@
 name: VaultMD
 slug: vaultmd
 order: 3
+featured: true
+tagline: 'Turn an Obsidian vault into a fast, self-hosted docs site.'
+tech: ['TypeScript', 'Astro', 'Markdown']
