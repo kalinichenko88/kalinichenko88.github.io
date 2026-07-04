@@ -1,4 +1,5 @@
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { githubReposLoader } from './loaders/github-repos';
 
@@ -40,9 +41,8 @@ const githubRepos = defineCollection({
     name: z.string(),
     full_name: z.string(),
     description: z.string().nullable(),
-    html_url: z.string().url(),
+    html_url: z.url(),
     homepage: z
-      .string()
       .url()
       .nullish()
       .or(z.literal(''))

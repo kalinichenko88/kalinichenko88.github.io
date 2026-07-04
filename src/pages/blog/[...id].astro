@@ -71,7 +71,7 @@ const blogPostSchema = {
   publishedTime={post.data.pubDate.toISOString()}
   tags={post.data.tags}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(blogPostSchema)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(blogPostSchema)} />
   <article class="py-12 md:py-16">
     <div class="container-prose">
       <!-- Article Header -->

@@ -23,7 +23,7 @@ Requires `GITHUB_TOKEN` environment variable (create `.env` file). Used to fetch
 
 ## Architecture
 
-This is an Astro 6 personal portfolio site with:
+This is an Astro 7 personal portfolio site with:
 
 - **Content Collections** (`src/content.config.ts`): Three collections - `posts` (markdown blog), `projects` (YAML), and `githubRepos` (custom loader fetching from GitHub API)
 - **Custom Loader** (`src/loaders/github-repos.ts`): Astro content loader that fetches repos from GitHub API using Octokit
