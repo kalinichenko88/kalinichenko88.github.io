@@ -394,6 +394,8 @@
     --tw-prose-code: var(--color-text);
     --tw-prose-pre-bg: var(--color-code-bg);
     color: var(--color-text-secondary);
+    font-size: 1.1875rem;
+    line-height: 1.75;
   }
 
   .prose-custom h1,

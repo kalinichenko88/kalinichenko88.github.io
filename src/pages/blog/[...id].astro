@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import { readingTime } from '../../lib/reading-time';
 
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ClockIcon from '../../assets/icons/clock.svg';
@@ -37,10 +38,7 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
-// Calculate reading time (rough estimate)
-const wordsPerMinute = 200;
-const wordCount = post.body?.split(/\s+/).filter(Boolean).length || 0;
-const readingTime = Math.ceil(wordCount / wordsPerMinute);
+const minutesRead = readingTime(post.body ?? '');
 
 const blogPostSchema = {
   '@context': 'https://schema.org',
@@ -74,7 +72,7 @@ const blogPostSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(blogPostSchema)} />
   <article class="py-12 md:py-16">
-    <div class="container">
+    <div class="container-prose">
       <!-- Article Header -->
       <header class="mb-8">
         <!-- Back Link -->
@@ -115,7 +113,7 @@ const blogPostSchema = {
           </time>
           <span class="flex items-center gap-2">
             <ClockIcon class="w-4 h-4" />
-            {readingTime} min read
+            {minutesRead} min read
           </span>
         </div>
       </header>
@@ -129,13 +127,13 @@ const blogPostSchema = {
       }
 
       <div class:list={[{ 'article-with-toc': tocHeadings.length > 0 }]}>
-        <div class="prose prose-lg prose-custom max-w-none">
+        <div class="prose prose-custom max-w-none">
           <Content />
         </div>
 
         {
           tocHeadings.length > 0 && (
-            <aside class="toc-sidebar-col" aria-hidden="true">
+            <aside class="toc-sidebar-col hidden" aria-hidden="true">
               <div class="toc-sidebar-sticky" id="toc-sidebar">
                 <TableOfContents headings={headings} label="Table of contents (sidebar)" />
               </div>
@@ -300,24 +298,20 @@ const blogPostSchema = {
   </script>
 
   <style>
+    /*
+      The sidebar TOC is disabled: on the .container-prose (680px) reading
+      track there's no room beside the text for a sticky sidebar without
+      overlapping it. The inline TOC above the article covers navigation
+      instead. `.toc-sidebar-col` stays `display: none` at all breakpoints
+      (the `hidden` class on the element enforces this too) and the layout
+      is left as a single flowing column rather than a grid.
+    */
     .article-with-toc {
       position: relative;
     }
 
     .toc-sidebar-col {
       display: none;
-    }
-
-    @media (min-width: 1280px) {
-      .article-with-toc {
-        display: grid;
-        grid-template-columns: 1fr 220px;
-        gap: var(--space-12);
-      }
-
-      .toc-sidebar-col {
-        display: block;
-      }
     }
 
     .toc-sidebar-sticky {
