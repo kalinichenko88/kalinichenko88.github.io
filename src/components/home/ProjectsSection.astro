@@ -1,6 +1,5 @@
 ---
 import ExternalLinkIcon from '../../assets/icons/external-link.svg';
-import ChartIcon from '../../assets/icons/chart.svg';
 
 type Project = {
   name: string;
@@ -13,6 +12,9 @@ type Project = {
   forks: number;
   language: string | null;
   topics: string[];
+  featured: boolean;
+  tagline: string | null;
+  tech: string[];
 };
 
 type Props = {
@@ -21,15 +23,15 @@ type Props = {
 };
 
 const { projects, githubProfileLink } = Astro.props;
+
+const featured = projects.filter((p) => p.featured);
+const more = projects.filter((p) => !p.featured);
 ---
 
-<section id="projects" class="py-12 md:py-16 bg-background-subtle">
+<section id="projects" class="py-14 md:py-20">
   <div class="container">
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-      <div>
-        <span class="section-label mb-3">04 — Projects</span>
-        <h2 class="text-foreground">Side projects & experiments</h2>
-      </div>
+      <h2 class="text-foreground">Selected work</h2>
       <a
         href={githubProfileLink}
         target="_blank"
@@ -41,49 +43,61 @@ const { projects, githubProfileLink } = Astro.props;
       </a>
     </div>
 
-    <div class="space-y-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
-        projects.map((project, index) => (
+        featured.map((project) => (
           <article class="card card-lift group">
             <a
-              href={project.url}
+              href={project.homepage || project.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="block p-5 md:p-6"
+              class="block p-6"
             >
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
-                <div class="lg:col-span-1">
-                  <span class="font-mono text-sm text-foreground-tertiary">0{index + 1}</span>
-                </div>
-
-                <div class="lg:col-span-7">
-                  <h3 class="font-display font-semibold text-lg text-foreground mb-2 group-hover:text-accent transition-colors">
-                    {project.name}
-                  </h3>
-                  {project.description && (
-                    <p class="text-foreground-secondary mb-3">{project.description}</p>
-                  )}
-                  <div class="flex flex-wrap gap-2">
-                    {project.language && <span class="tag">{project.language}</span>}
-                    {project.topics.slice(0, 3).map((topic) => (
-                      <span class="tag">{topic}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div class="lg:col-span-4 lg:text-right">
-                  {project.stars > 0 && (
-                    <span class="inline-flex items-center gap-2 text-accent font-mono text-sm">
-                      <ChartIcon class="w-4 h-4" />
-                      {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-                    </span>
-                  )}
-                </div>
+              <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+                {project.name}
+              </h3>
+              <p class="text-foreground-secondary mb-4">{project.tagline || project.description}</p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                {(project.tech.length ? project.tech : project.topics.slice(0, 3)).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
               </div>
+              {project.stars > 0 && (
+                <span class="font-mono text-xs text-foreground-tertiary">
+                  {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+                </span>
+              )}
             </a>
           </article>
         ))
       }
     </div>
+
+    {
+      more.length > 0 && (
+        <div class="mt-6 border-t border-line">
+          {more.map((project) => (
+            <a
+              href={project.homepage || project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"
+            >
+              <span class="font-medium text-foreground group-hover:text-accent transition-colors">
+                {project.name}
+              </span>
+              <span class="hidden sm:block flex-1 text-sm text-foreground-tertiary truncate">
+                {project.tagline || project.description}
+              </span>
+              {project.stars > 0 && (
+                <span class="font-mono text-xs text-foreground-tertiary shrink-0">
+                  {project.stars} ★
+                </span>
+              )}
+            </a>
+          ))}
+        </div>
+      )
+    }
   </div>
 </section>

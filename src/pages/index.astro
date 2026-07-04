@@ -3,8 +3,6 @@ import { getCollection } from 'astro:content';
 
 import Layout from '../components/Layout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
-import AboutSection from '../components/home/AboutSection.astro';
-import WorkHistorySection from '../components/home/WorkHistorySection.astro';
 import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
@@ -31,7 +29,7 @@ const personSchema = {
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 3);
+  .slice(0, 4);
 
 const featuredProjects = await getCollection('projects');
 const githubRepos = await getCollection('githubRepos');
@@ -60,34 +58,16 @@ const projects = featuredProjects
       forks: githubRepo.data.forks_count,
       language: githubRepo.data.language,
       topics: githubRepo.data.topics,
+      featured: project.data.featured,
+      tagline: project.data.tagline ?? null,
+      tech: project.data.tech,
     };
   });
-
-const expertise = [
-  {
-    category: 'Frontend',
-    skills: ['React', 'TypeScript', 'Next.js', 'Vue.js'],
-  },
-  {
-    category: 'Backend',
-    skills: ['Node.js', 'NestJS', 'GraphQL', 'REST APIs'],
-  },
-  {
-    category: 'Infrastructure',
-    skills: ['CI/CD', 'Docker', 'Testing', 'Performance'],
-  },
-  {
-    category: 'Leadership',
-    skills: ['Mentoring', 'Code Review', 'Hiring', 'Onboarding'],
-  },
-];
 ---
 
 <Layout>
   <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   <HeroSection />
-  <AboutSection expertise={expertise} />
-  <WorkHistorySection />
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
