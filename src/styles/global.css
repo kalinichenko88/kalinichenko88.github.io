@@ -43,8 +43,8 @@
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Container */
-  --container-max: 1280px;
-  --container-prose: 920px;
+  --container-wide: 1100px;
+  --container-prose: 680px;
 }
 
 /* ============================================
@@ -236,10 +236,20 @@
    ============================================ */
 
 @layer utilities {
-  /* Container */
+  /* Wide track */
   .container {
     width: 100%;
-    max-width: var(--container-max);
+    max-width: var(--container-wide);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
+  /* Reading track */
+  .container-prose {
+    width: 100%;
+    max-width: var(--container-prose);
     margin-left: auto;
     margin-right: auto;
     padding-left: var(--space-6);
@@ -247,7 +257,8 @@
   }
 
   @media (min-width: 768px) {
-    .container {
+    .container,
+    .container-prose {
       padding-left: var(--space-8);
       padding-right: var(--space-8);
     }
