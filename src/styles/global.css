@@ -731,7 +731,7 @@
 
 [data-theme='cloud'] .card-lift:hover,
 [data-theme='cloud-dark'] .card-lift:hover {
-  box-shadow: 0 12px 40px rgba(124, 92, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(194, 90, 52, 0.15);
 }
 
 /* RSS pulse animation */
@@ -786,12 +786,12 @@
 /* Cloud light - soft shadows, rounded, borderless */
 [data-theme='cloud'] .card {
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 20px rgba(124, 92, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(194, 90, 52, 0.06);
   border-color: transparent;
 }
 
 [data-theme='cloud'] .card:hover {
-  box-shadow: 0 8px 30px rgba(124, 92, 255, 0.12);
+  box-shadow: 0 8px 30px rgba(194, 90, 52, 0.12);
   border-color: transparent;
 }
 
@@ -803,7 +803,7 @@
 }
 
 [data-theme='cloud-dark'] .card:hover {
-  box-shadow: 0 8px 30px rgba(155, 127, 255, 0.15);
+  box-shadow: 0 8px 30px rgba(224, 122, 82, 0.15);
   border-color: var(--color-accent);
 }
 
@@ -829,5 +829,5 @@
 /* Social button glow per theme */
 [data-theme='cloud'] .social-btn:hover,
 [data-theme='cloud-dark'] .social-btn:hover {
-  box-shadow: 0 6px 20px rgba(124, 92, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(194, 90, 52, 0.2);
 }
