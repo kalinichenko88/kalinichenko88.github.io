@@ -70,7 +70,6 @@
   --color-accent-subtle: #f7ebe4;
 
   --color-code-bg: #ecebe5;
-  --grid-color: transparent;
 
   --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
@@ -99,7 +98,6 @@
   --color-accent-subtle: #2a201b;
 
   --color-code-bg: #202022;
-  --grid-color: transparent;
 
   --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
@@ -367,14 +365,6 @@
   .link-underline:hover::after {
     transform: scaleX(1);
     transform-origin: left;
-  }
-
-  /* Grid background pattern */
-  .grid-pattern {
-    background-image:
-      linear-gradient(var(--grid-color) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-    background-size: 60px 60px;
   }
 
   /* Gradient text */
