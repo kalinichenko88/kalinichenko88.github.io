@@ -15,7 +15,7 @@
 
 :root {
   /* Typography Scale - uses CSS variables from Astro font provider */
-  --font-display: var(--font-general-sans), system-ui, sans-serif;
+  --font-display: var(--font-gambetta), Georgia, serif;
   --font-body: var(--font-dm-sans), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
@@ -72,7 +72,7 @@
   --color-code-bg: #f0eff8;
   --grid-color: rgba(124, 92, 255, 0.03);
 
-  --font-display: var(--font-general-sans);
+  --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -101,7 +101,7 @@
   --color-code-bg: #1a1922;
   --grid-color: rgba(155, 127, 255, 0.03);
 
-  --font-display: var(--font-general-sans);
+  --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
   --font-mono: var(--font-jetbrains-mono);
 }
