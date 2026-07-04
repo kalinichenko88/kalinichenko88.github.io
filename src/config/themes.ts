@@ -7,7 +7,6 @@ type Theme = {
 export const THEMES: Theme[] = [
   { id: 'cloud', label: 'Light', iconId: 'sun' },
   { id: 'cloud-dark', label: 'Dark', iconId: 'moon' },
-  { id: 'terminal', label: 'Terminal', iconId: 'terminal' },
 ];
 
 export const AUTO_THEME: Theme = { id: 'auto', label: 'Auto', iconId: 'monitor' };

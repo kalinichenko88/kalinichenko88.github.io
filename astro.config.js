@@ -34,10 +34,10 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontshare(),
-      name: 'General Sans',
-      cssVariable: '--font-general-sans',
-      weights: [400, 500, 600, 700],
-      fallbacks: ['system-ui', 'sans-serif'],
+      name: 'Gambetta',
+      cssVariable: '--font-gambetta',
+      weights: [400, 500, 600],
+      fallbacks: ['Georgia', 'serif'],
     },
     {
       provider: fontProviders.google(),

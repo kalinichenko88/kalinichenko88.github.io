@@ -3,8 +3,10 @@
 .vscode/
 .astro/
 .cursor/
-.claude/
 .playwright-mcp/
+
+# Claude Code: skills, hooks, and settings.json are shared; personal settings stay local
+.claude/settings.local.json
 
 node_modules/
 dist/
@@ -14,7 +16,6 @@ dist/
 .env.local
 .env.*.local
 
-CLAUDE.md
 AGENTS.md
 
 docs/superpowers/
