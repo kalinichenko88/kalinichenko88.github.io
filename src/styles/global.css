@@ -107,35 +107,6 @@
 }
 
 /* ============================================
-   THEME 3: Terminal - Retro-tech, hacker aesthetic
-   ============================================ */
-[data-theme='terminal'] {
-  --color-bg: #0a0a0a;
-  --color-bg-subtle: #0f0f0f;
-  --color-bg-muted: #151515;
-  --color-surface: #0f0f0f;
-  --color-surface-elevated: #151515;
-
-  --color-text: #33ff33;
-  --color-text-secondary: #22cc22;
-  --color-text-tertiary: #1a8c1a;
-
-  --color-border: #1a8c1a;
-  --color-border-subtle: #143314;
-
-  --color-accent: #00ffff;
-  --color-accent-hover: #33ffff;
-  --color-accent-subtle: #0a1a1a;
-
-  --color-code-bg: #0f0f0f;
-  --grid-color: rgba(51, 255, 51, 0.03);
-
-  --font-display: var(--font-jetbrains-mono);
-  --font-body: var(--font-jetbrains-mono);
-  --font-mono: var(--font-jetbrains-mono);
-}
-
-/* ============================================
    Tailwind Theme Extensions
    ============================================ */
 
@@ -759,10 +730,6 @@
   box-shadow: 0 12px 40px rgba(124, 92, 255, 0.15);
 }
 
-[data-theme='terminal'] .card-lift:hover {
-  box-shadow: 0 0 20px rgba(51, 255, 51, 0.2);
-}
-
 /* RSS pulse animation */
 .rss-pulse {
   transition: transform var(--transition-fast);
@@ -808,11 +775,6 @@
   letter-spacing: 0.02em;
 }
 
-[data-theme='terminal'] .kbd-badge {
-  border-style: dashed;
-  color: var(--color-text-secondary);
-}
-
 /* ============================================
    Code Syntax Colors for Hero
    ============================================ */
@@ -834,15 +796,6 @@
   --color-code-boolean: #ff7b72;
   --color-code-bracket: #8b949e;
   --color-code-punctuation: #c9d1d9;
-}
-
-[data-theme='terminal'] {
-  --color-code-keyword: #00ffff;
-  --color-code-string: #33ff33;
-  --color-code-property: #ffff00;
-  --color-code-boolean: #00ffff;
-  --color-code-bracket: #22cc22;
-  --color-code-punctuation: #33ff33;
 }
 
 .code-keyword {
@@ -911,122 +864,8 @@
   border-radius: 9999px;
 }
 
-/* Terminal theme - CRT effects, glow */
-[data-theme='terminal'] {
-  text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
-}
-
-[data-theme='terminal'] .card {
-  border-radius: 0;
-  border-style: dashed;
-  background: linear-gradient(180deg, rgba(51, 255, 51, 0.02) 0%, transparent 100%);
-}
-
-[data-theme='terminal'] .btn-primary {
-  border-radius: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-bg);
-  text-shadow:
-    0 0 10px rgba(0, 255, 255, 0.8),
-    0 0 20px rgba(0, 255, 255, 0.5),
-    0 0 30px rgba(0, 255, 255, 0.3);
-  border: 1px solid var(--color-accent);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-  transition:
-    text-shadow var(--transition-fast),
-    box-shadow var(--transition-fast),
-    background-color var(--transition-fast);
-}
-
-[data-theme='terminal'] .btn-primary:hover {
-  color: var(--color-bg);
-  background-color: var(--color-accent);
-  text-shadow:
-    0 0 20px rgba(0, 255, 255, 1),
-    0 0 40px rgba(0, 255, 255, 0.8),
-    0 0 60px rgba(0, 255, 255, 0.5);
-  box-shadow:
-    0 0 20px rgba(0, 255, 255, 0.6),
-    0 0 40px rgba(0, 255, 255, 0.3);
-}
-
-[data-theme='terminal'] .btn-secondary {
-  border-radius: 0;
-  border-style: dashed;
-}
-
-[data-theme='terminal'] .tag {
-  border-radius: 0;
-  border: 1px dashed var(--color-border);
-}
-
-/* Terminal tag hover - green glow instead of purple */
-[data-theme='terminal'] .tag:hover {
-  background-color: rgba(51, 255, 51, 0.08);
-  color: var(--color-accent);
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
-}
-
 /* Social button glow per theme */
 [data-theme='cloud'] .social-btn:hover,
 [data-theme='cloud-dark'] .social-btn:hover {
   box-shadow: 0 6px 20px rgba(124, 92, 255, 0.2);
-}
-
-[data-theme='terminal'] .social-btn:hover {
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
-}
-
-/* Terminal timeline hover - green accent line */
-[data-theme='terminal'] .timeline-hover:hover {
-  border-color: rgba(51, 255, 51, 0.15);
-}
-
-/* Terminal blog row accent */
-[data-theme='terminal'] .blog-row::before {
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-}
-
-/* Terminal nav underline glow */
-[data-theme='terminal'] .nav-link::after {
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
-}
-
-[data-theme='terminal'] h1::before,
-[data-theme='terminal'] h2::before {
-  content: '> ';
-  color: var(--color-accent);
-}
-
-[data-theme='terminal'] .section-label::before {
-  content: '// ';
-  width: auto;
-  height: auto;
-  background: none;
-  color: var(--color-text-tertiary);
-}
-
-[data-theme='terminal'] a:hover {
-  text-shadow: 0 0 8px var(--color-accent);
-}
-
-/* Scanline overlay for terminal theme */
-[data-theme='terminal'] body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.1) 0px,
-    rgba(0, 0, 0, 0.1) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  z-index: 9999;
-  opacity: 0.3;
 }
