@@ -52,25 +52,25 @@
    ============================================ */
 :root,
 [data-theme='cloud'] {
-  --color-bg: #f8f7fc;
-  --color-bg-subtle: #f0eff8;
-  --color-bg-muted: #e8e6f2;
+  --color-bg: #f4f2ee;
+  --color-bg-subtle: #ecebe5;
+  --color-bg-muted: #e4e2da;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
 
-  --color-text: #2d2d3a;
-  --color-text-secondary: #5c5c6e;
-  --color-text-tertiary: #8e8e9f;
+  --color-text: #232326;
+  --color-text-secondary: #55555b;
+  --color-text-tertiary: #8a8a90;
 
-  --color-border: #e0dfe8;
-  --color-border-subtle: #eceaf4;
+  --color-border: #e2e0da;
+  --color-border-subtle: #eceae4;
 
-  --color-accent: #7c5cff;
-  --color-accent-hover: #6344e5;
-  --color-accent-subtle: #f0ecff;
+  --color-accent: #c25a34;
+  --color-accent-hover: #a94a29;
+  --color-accent-subtle: #f7ebe4;
 
-  --color-code-bg: #f0eff8;
-  --grid-color: rgba(124, 92, 255, 0.03);
+  --color-code-bg: #ecebe5;
+  --grid-color: transparent;
 
   --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
@@ -81,25 +81,25 @@
    THEME 2: Cloud Dark - Deep, calm, refined
    ============================================ */
 [data-theme='cloud-dark'] {
-  --color-bg: #13121a;
-  --color-bg-subtle: #1a1922;
-  --color-bg-muted: #22212b;
-  --color-surface: #1a1922;
-  --color-surface-elevated: #22212b;
+  --color-bg: #1a1a1c;
+  --color-bg-subtle: #202022;
+  --color-bg-muted: #27272a;
+  --color-surface: #232326;
+  --color-surface-elevated: #27272a;
 
-  --color-text: #eeeef4;
-  --color-text-secondary: #a5a5b8;
-  --color-text-tertiary: #6e6e82;
+  --color-text: #ececed;
+  --color-text-secondary: #a6a6ac;
+  --color-text-tertiary: #737379;
 
-  --color-border: #2e2d3a;
-  --color-border-subtle: #22212b;
+  --color-border: #313135;
+  --color-border-subtle: #26262a;
 
-  --color-accent: #9b7fff;
-  --color-accent-hover: #b49fff;
-  --color-accent-subtle: #1e1a2e;
+  --color-accent: #e07a52;
+  --color-accent-hover: #ea8d68;
+  --color-accent-subtle: #2a201b;
 
-  --color-code-bg: #1a1922;
-  --grid-color: rgba(155, 127, 255, 0.03);
+  --color-code-bg: #202022;
+  --grid-color: transparent;
 
   --font-display: var(--font-gambetta);
   --font-body: var(--font-dm-sans);
