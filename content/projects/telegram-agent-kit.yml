@@ -2,5 +2,5 @@ name: Telegram Agent Kit
 slug: telegram-agent-kit
 order: 4
 featured: true
-tagline: 'Build Telegram bots driven by AI agents, in TypeScript.'
-tech: ['TypeScript', 'AI agents', 'Telegram']
+tagline: 'Wire LLM agents to Telegram bots with a runtime-agnostic TypeScript library.'
+tech: ['TypeScript', 'LLM agents', 'Telegram']
