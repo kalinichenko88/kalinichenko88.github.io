@@ -2,5 +2,5 @@ name: VaultMD
 slug: vaultmd
 order: 3
 featured: true
-tagline: 'Turn an Obsidian vault into a fast, self-hosted docs site.'
-tech: ['TypeScript', 'Astro', 'Markdown']
+tagline: 'Query an Obsidian-style markdown vault through a fast SQLite-backed data layer.'
+tech: ['TypeScript', 'Bun', 'SQLite']
