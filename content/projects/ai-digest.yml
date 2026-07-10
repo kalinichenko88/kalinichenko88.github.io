@@ -1,6 +1,6 @@
 name: AI Digest
 slug: ai-digest
-order: 1
+order: 3
 featured: false
-tagline: 'Personalized tech news digest powered by Claude Code and MCP.'
+tagline: 'Personalized Markdown tech digest that collects, deduplicates, and summarizes RSS feeds and GitHub releases.'
 tech: ['Claude Code', 'MCP', 'Markdown']
