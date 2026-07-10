@@ -1,6 +1,6 @@
 name: Obsidian Budget Planner Plugin
 slug: obsidian-budget-planner-plugin
-order: 2
+order: 4
 featured: false
-tagline: 'Budget planning inside Obsidian notes, powered by markdown code blocks.'
+tagline: 'Minimalist budget planning for Obsidian, managed directly inside markdown code blocks.'
 tech: ['Obsidian', 'TypeScript', 'Markdown']

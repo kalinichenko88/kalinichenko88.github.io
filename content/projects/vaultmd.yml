@@ -1,6 +1,6 @@
 name: VaultMD
 slug: vaultmd
-order: 3
+order: 1
 featured: true
-tagline: 'Query an Obsidian-style markdown vault through a fast SQLite-backed data layer.'
+tagline: 'Headless markdown-vault data layer with CRUD, backlinks, keyword search, and a SQLite index.'
 tech: ['TypeScript', 'Bun', 'SQLite']
