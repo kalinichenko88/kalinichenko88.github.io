@@ -2,5 +2,5 @@ name: VaultMD
 slug: vaultmd
 order: 1
 featured: true
-tagline: 'Headless markdown-vault data layer with CRUD, backlinks, keyword search, and a SQLite index.'
+tagline: 'Headless data layer for Markdown vaults on Bun: CRUD over notes plus a derived SQLite index for collection queries, backlinks, and keyword search.'
 tech: ['TypeScript', 'Bun', 'SQLite']
