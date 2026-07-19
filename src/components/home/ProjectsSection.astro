@@ -3,7 +3,10 @@ import ExternalLinkIcon from '../../assets/icons/external-link.svg';
 
 type Project = {
   name: string;
+  /** GitHub repo URL, derived from `slug`. Always present. */
   url: string;
+  /** Live site, when the project has one. Primary link when set. */
+  homepage?: string;
   stars: number;
   featured: boolean;
   tagline: string;
@@ -39,23 +42,40 @@ const more = projects.filter((p) => !p.featured);
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
         featured.map((project) => (
-          <article class="card card-lift group">
-            <a href={project.url} target="_blank" rel="noopener noreferrer" class="block p-6">
-              <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+          <article class="card card-lift group relative p-6">
+            <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+              <a
+                href={project.homepage ?? project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="stretched-link"
+              >
                 {project.name}
-              </h3>
-              <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.tech.map((t) => (
-                  <span class="tag">{t}</span>
-                ))}
-              </div>
+              </a>
+            </h3>
+            <p class="text-foreground-secondary mb-4">{project.tagline}</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              {project.tech.map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </div>
+            <div class="flex items-center gap-4 font-mono text-xs text-foreground-tertiary">
               {project.stars > 0 && (
-                <span class="font-mono text-xs text-foreground-tertiary">
+                <span>
                   {project.stars} {project.stars === 1 ? 'star' : 'stars'}
                 </span>
               )}
-            </a>
+              {project.homepage && (
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="relative z-10 hover:text-accent-text transition-colors"
+                >
+                  GitHub
+                </a>
+              )}
+            </div>
           </article>
         ))
       }
@@ -66,7 +86,7 @@ const more = projects.filter((p) => !p.featured);
         <div class="mt-6 border-t border-line">
           {more.map((project) => (
             <a
-              href={project.url}
+              href={project.homepage ?? project.url}
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"

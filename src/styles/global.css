@@ -262,6 +262,14 @@
     border-color: var(--color-accent);
   }
 
+  /* Makes the whole positioned ancestor clickable, so a card can carry a
+     primary link plus a secondary one (which needs its own stacking context). */
+  .stretched-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
   /* Button - Primary */
   .btn-primary {
     display: inline-flex;
