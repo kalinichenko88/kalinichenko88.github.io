@@ -84,7 +84,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - Fonts configured via top-level `fonts` config (stabilized in Astro 6)
 - Tailwind 4 via Vite plugin (`@tailwindcss/vite`). There is no `tailwind.config.js` and no PostCSS config on purpose: Tailwind 4 ignores a legacy config file unless `global.css` opts in with `@config`, and its bundled Lightning CSS already handles vendor prefixing and minification. Configure the theme in the `@theme` block in `global.css`
 - Typography plugin for prose styling (`@tailwindcss/typography`)
-- Theme switching lives entirely in `Header.astro` (dropdown, `Cmd/Ctrl + /` cycling, OS-preference sync) plus the inline anti-flash script in `Layout.astro`. `src/config/themes.ts` is the single source of theme ids; the inline script duplicates the two ids because `is:inline` scripts cannot import
+- Theme switching lives entirely in `Header.astro` (dropdown, `Cmd/Ctrl + /` cycling, OS-preference sync) plus the inline anti-flash script in `Layout.astro`. `src/config/themes.ts` is the single source of theme ids (`LIGHT_THEME` / `DARK_THEME`); since `is:inline` scripts cannot import, `Layout.astro` passes them to the anti-flash script through `data-light` / `data-dark` attributes rather than hardcoding them
 - The scroll progress bar is pure CSS (`animation-timeline: scroll()` in `global.css`), decorative and `aria-hidden`. Browsers without scroll-driven animations simply do not show it
 - ESLint with TypeScript, Astro, and jsx-a11y plugins
 - External links in markdown open in new tabs (`rehype-external-links` in `astro.config.js`)

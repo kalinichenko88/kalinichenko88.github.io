@@ -4,6 +4,7 @@ import ExternalLinkIcon from '../../assets/icons/external-link.svg';
 type Project = {
   name: string;
   url: string;
+  homepage?: string;
   stars: number;
   featured: boolean;
   tagline: string;
@@ -40,7 +41,12 @@ const more = projects.filter((p) => !p.featured);
       {
         featured.map((project) => (
           <article class="card card-lift group">
-            <a href={project.url} target="_blank" rel="noopener noreferrer" class="block p-6">
+            <a
+              href={project.homepage ?? project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block p-6"
+            >
               <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
                 {project.name}
               </h3>
@@ -66,7 +72,7 @@ const more = projects.filter((p) => !p.featured);
         <div class="mt-6 border-t border-line">
           {more.map((project) => (
             <a
-              href={project.url}
+              href={project.homepage ?? project.url}
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"

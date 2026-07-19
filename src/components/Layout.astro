@@ -6,6 +6,7 @@ import Footer from './Footer.astro';
 import Head from './Head.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { LIGHT_THEME, DARK_THEME } from '../config/themes';
 
 import '../styles/global.css';
 
@@ -31,14 +32,15 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Theme initialization - must be first to prevent flash. Inlined (no imports
-         allowed here), so the two theme ids are duplicated from config/themes.ts. -->
-    <script is:inline>
+    <!-- Theme initialization - must be first to prevent flash -->
+    <script is:inline data-light={LIGHT_THEME} data-dark={DARK_THEME}>
       (function () {
+        const { light, dark } = document.currentScript.dataset;
+
         function theme() {
           const pref = localStorage.getItem('theme');
-          if (pref === 'cloud' || pref === 'cloud-dark') return pref;
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
+          if (pref === light || pref === dark) return pref;
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? dark : light;
         }
 
         document.documentElement.setAttribute('data-theme', theme());
