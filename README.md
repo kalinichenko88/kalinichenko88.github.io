@@ -55,7 +55,7 @@ npm run format     # Format with Prettier
 │   ├── posts/          # Markdown blog posts
 │   └── projects/       # YAML project definitions
 ├── src/
-│   ├── components/     # Astro components (Layout, Header, Footer, TableOfContents)
+│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer, TableOfContents)
 │   │   └── home/       # Homepage sections (Hero, Expertise, Projects, Blog, Contact)
 │   ├── config/         # Theme and resume data
 │   ├── content.config.ts

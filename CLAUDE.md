@@ -37,6 +37,31 @@ This is an Astro 7 personal portfolio site with:
 
 ## Components
 
+### VideoPlayer (`src/components/VideoPlayer.astro`)
+
+Embed video with play/pause overlay and caption. Place video files in `public/videos/`.
+
+Not currently used by any post. It is kept deliberately for upcoming content, so
+don't remove it as dead code.
+
+Usage in MDX posts:
+
+```mdx
+import VideoPlayer from '../../src/components/VideoPlayer.astro';
+
+<VideoPlayer src="/videos/my-demo.mp4" caption="Description shown below the video" />
+
+<!-- With poster image -->
+
+<VideoPlayer
+  src="/videos/my-demo.mp4"
+  caption="Description shown below the video"
+  poster="/images/my-poster.jpg"
+/>
+```
+
+Props: `src` (required), `caption` (required), `poster` (optional). Video is looped, muted, and plays inline. Click to play/pause. Uses a custom element for proper View Transitions lifecycle.
+
 ### TableOfContents (`src/components/TableOfContents.astro`)
 
 Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` array. Rendered once as an inline TOC above the article content in blog post pages (`src/pages/blog/[...id].astro`); it scrolls away naturally on the reading track. Active section tracking (an `IntersectionObserver` re-initialized on `astro:after-swap`) highlights the current heading's TOC link as the user scrolls. Headings use `scroll-margin-top` for proper anchor offset.
