@@ -1,7 +1,6 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
-import { githubReposLoader } from './loaders/github-repos';
 
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './content/posts' }),
@@ -17,53 +16,21 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.yml', base: './content/projects' }),
   schema: z.object({
     name: z.string(),
+    // `slug` is the GitHub repo name; the repo URL is derived from it.
     slug: z.string(),
     order: z.number(),
     featured: z.boolean().default(false),
-    tagline: z.string().optional(),
+    // Required: with the GitHub description gone, this is the only card copy.
+    tagline: z.string(),
     tech: z.array(z.string()).default([]),
-  }),
-});
-
-if (!import.meta.env.GITHUB_TOKEN) {
-  throw new Error(
-    'GITHUB_TOKEN environment variable is required. Create a .env file with your GitHub token.'
-  );
-}
-
-const githubRepos = defineCollection({
-  loader: githubReposLoader({
-    auth: import.meta.env.GITHUB_TOKEN,
-    username: 'kalinichenko88',
-    includeForks: false,
-  }),
-  schema: z.object({
-    name: z.string(),
-    full_name: z.string(),
-    description: z.string().nullable(),
-    html_url: z.url(),
-    homepage: z
-      .url()
-      .nullish()
-      .or(z.literal(''))
-      .transform((val) => val || null),
-    stargazers_count: z.number(),
-    forks_count: z.number(),
-    language: z.string().nullable(),
-    topics: z.array(z.string()),
-    created_at: z.string(),
-    updated_at: z.string(),
-    pushed_at: z.string().nullable(),
-    size: z.number(),
-    open_issues_count: z.number(),
-    default_branch: z.string(),
-    private: z.boolean(),
-    fork: z.boolean(),
+    // Live site, when the project has one. Falls back to the repo URL.
+    homepage: z.url().optional(),
+    // Hand-maintained; bump it when it moves enough to be worth showing.
+    stars: z.number().default(0),
   }),
 });
 
 export const collections = {
   posts,
   projects,
-  githubRepos,
 };

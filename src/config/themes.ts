@@ -4,32 +4,20 @@ type Theme = {
   iconId: string;
 };
 
-export const THEMES: Theme[] = [
+/**
+ * Selectable options, in cycle order. `auto` follows the system preference.
+ *
+ * The ids `cloud` / `cloud-dark` are load-bearing: they are the `data-theme`
+ * values, the localStorage payload, and the giscus theme mapping. Do not rename.
+ */
+export const THEME_OPTIONS: Theme[] = [
+  { id: 'auto', label: 'Auto', iconId: 'monitor' },
   { id: 'cloud', label: 'Light', iconId: 'sun' },
   { id: 'cloud-dark', label: 'Dark', iconId: 'moon' },
 ];
 
-export const AUTO_THEME: Theme = { id: 'auto', label: 'Auto', iconId: 'monitor' };
-
-export const ALL_THEME_OPTIONS: Theme[] = [AUTO_THEME, ...THEMES];
-
-export const THEME_IDS = THEMES.map((t) => t.id);
-export const ALL_OPTION_IDS = ALL_THEME_OPTIONS.map((t) => t.id);
-
-export const DEFAULT_LIGHT_THEME = 'cloud';
-export const DEFAULT_DARK_THEME = 'cloud-dark';
-
-export function isValidPreference(pref: string | null): boolean {
-  return pref !== null && ALL_OPTION_IDS.includes(pref);
-}
-
-export function isValidTheme(theme: string | null): boolean {
-  return theme !== null && THEME_IDS.includes(theme);
-}
-
-export function resolveTheme(preference: string, isDark: boolean): string {
-  if (preference === 'auto' || !THEME_IDS.includes(preference)) {
-    return isDark ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME;
-  }
-  return preference;
+/** Map a stored preference to the `data-theme` value to apply. */
+export function resolveTheme(preference: string | null): string {
+  if (preference === 'cloud' || preference === 'cloud-dark') return preference;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
 }

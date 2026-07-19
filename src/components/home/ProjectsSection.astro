@@ -3,17 +3,10 @@ import ExternalLinkIcon from '../../assets/icons/external-link.svg';
 
 type Project = {
   name: string;
-  slug: string;
-  order: number;
-  description: string | null;
   url: string;
-  homepage: string | null;
   stars: number;
-  forks: number;
-  language: string | null;
-  topics: string[];
   featured: boolean;
-  tagline: string | null;
+  tagline: string;
   tech: string[];
 };
 
@@ -47,18 +40,13 @@ const more = projects.filter((p) => !p.featured);
       {
         featured.map((project) => (
           <article class="card card-lift group">
-            <a
-              href={project.homepage || project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block p-6"
-            >
+            <a href={project.url} target="_blank" rel="noopener noreferrer" class="block p-6">
               <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
                 {project.name}
               </h3>
-              <p class="text-foreground-secondary mb-4">{project.tagline || project.description}</p>
+              <p class="text-foreground-secondary mb-4">{project.tagline}</p>
               <div class="flex flex-wrap gap-2 mb-4">
-                {(project.tech.length ? project.tech : project.topics.slice(0, 3)).map((t) => (
+                {project.tech.map((t) => (
                   <span class="tag">{t}</span>
                 ))}
               </div>
@@ -78,7 +66,7 @@ const more = projects.filter((p) => !p.featured);
         <div class="mt-6 border-t border-line">
           {more.map((project) => (
             <a
-              href={project.homepage || project.url}
+              href={project.url}
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"
@@ -87,7 +75,7 @@ const more = projects.filter((p) => !p.featured);
                 {project.name}
               </span>
               <span class="hidden sm:block flex-1 text-sm text-foreground-tertiary truncate">
-                {project.tagline || project.description}
+                {project.tagline}
               </span>
               {project.stars > 0 && (
                 <span class="font-mono text-xs text-foreground-tertiary shrink-0">

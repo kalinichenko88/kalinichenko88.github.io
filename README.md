@@ -30,11 +30,7 @@ cd kalinichenko88.github.io
 npm install
 ```
 
-Create a `.env` file in the project root:
-
-```
-GITHUB_TOKEN=your_github_token_here
-```
+No environment variables or API tokens are required.
 
 ### Development
 
@@ -59,12 +55,11 @@ npm run format     # Format with Prettier
 │   ├── posts/          # Markdown blog posts
 │   └── projects/       # YAML project definitions
 ├── src/
-│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer, TableOfContents)
-│   │   └── home/       # Homepage sections (Hero, About, Expertise, Projects, Blog, Work History, Contact)
-│   ├── config/         # Theme configuration
+│   ├── components/     # Astro components (Layout, Header, Footer, TableOfContents)
+│   │   └── home/       # Homepage sections (Hero, Expertise, Projects, Blog, Contact)
+│   ├── config/         # Theme and resume data
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
-│   ├── loaders/        # Custom Astro content loaders (GitHub repos)
 │   ├── pages/          # Routes (index, blog, tags, about, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
 └── public/             # Static assets

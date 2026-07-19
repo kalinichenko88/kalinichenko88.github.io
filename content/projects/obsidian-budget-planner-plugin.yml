@@ -4,3 +4,4 @@ order: 4
 featured: false
 tagline: 'Minimalist budget planning for Obsidian, managed directly inside markdown code blocks.'
 tech: ['Obsidian', 'TypeScript', 'Markdown']
+stars: 11

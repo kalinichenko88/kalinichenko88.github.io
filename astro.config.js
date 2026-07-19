@@ -17,6 +17,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    // Astro 7 deprecates the flat `rehypePlugins` option; pass plugins to unified() instead.
     processor: unified({
       rehypePlugins: [[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]],
     }),

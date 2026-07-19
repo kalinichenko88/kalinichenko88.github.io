@@ -68,13 +68,9 @@ jobs:
       - name: Lint
         run: ${{ steps.detect-package-manager.outputs.manager }} run lint
         working-directory: ${{ env.BUILD_PATH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Type check
         run: ${{ steps.detect-package-manager.outputs.manager }} run check
         working-directory: ${{ env.BUILD_PATH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Format check
         run: ${{ steps.detect-package-manager.outputs.manager }} run format:check
         working-directory: ${{ env.BUILD_PATH }}
@@ -123,8 +119,6 @@ jobs:
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
         working-directory: ${{ env.BUILD_PATH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
