@@ -155,6 +155,8 @@ const currentPath = Astro.url.pathname;
 <script>
   import { THEME_OPTIONS, resolveTheme } from '../config/themes';
 
+  const $ = (id: string) => document.getElementById(id);
+
   const OPTION_IDS = THEME_OPTIONS.map((t) => t.id);
   const ICON_BY_ID = Object.fromEntries(THEME_OPTIONS.map((t) => [t.id, t.iconId]));
 
@@ -195,8 +197,8 @@ const currentPath = Astro.url.pathname;
   });
 
   function toggleDropdown(show: boolean) {
-    const dropdown = document.getElementById('theme-dropdown');
-    const toggle = document.getElementById('theme-toggle');
+    const dropdown = $('theme-dropdown');
+    const toggle = $('theme-toggle');
     if (!dropdown || !toggle) return;
 
     dropdown.classList.toggle('opacity-0', !show);
@@ -206,8 +208,8 @@ const currentPath = Astro.url.pathname;
   }
 
   function setMobileMenu(open: boolean, returnFocus = true) {
-    const menu = document.getElementById('mobile-menu');
-    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = $('mobile-menu');
+    const toggle = $('mobile-menu-toggle');
     if (!menu || !toggle) return;
 
     menu.classList.toggle('hidden', !open);
@@ -218,17 +220,14 @@ const currentPath = Astro.url.pathname;
     else if (returnFocus) toggle.focus();
   }
 
-  const isMobileMenuOpen = () =>
-    document.getElementById('mobile-menu')?.classList.contains('hidden') === false;
+  const isMobileMenuOpen = () => $('mobile-menu')?.classList.contains('hidden') === false;
 
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
 
     if (target.closest('#theme-toggle')) {
       e.preventDefault();
-      toggleDropdown(
-        document.getElementById('theme-toggle')?.getAttribute('aria-expanded') !== 'true'
-      );
+      toggleDropdown($('theme-toggle')?.getAttribute('aria-expanded') !== 'true');
       return;
     }
 
@@ -259,8 +258,8 @@ const currentPath = Astro.url.pathname;
 
     // Focus trap for the open mobile menu
     if (e.key === 'Tab' && isMobileMenuOpen()) {
-      const menu = document.getElementById('mobile-menu');
-      const toggle = document.getElementById('mobile-menu-toggle');
+      const menu = $('mobile-menu');
+      const toggle = $('mobile-menu-toggle');
       if (!menu || !toggle) return;
 
       const focusable = [toggle, ...menu.querySelectorAll<HTMLElement>('a, button')];

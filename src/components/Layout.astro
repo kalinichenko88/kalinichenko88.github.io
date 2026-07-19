@@ -27,19 +27,15 @@ const {
   publishedTime,
   tags,
 } = Astro.props;
-
-// `is:inline` cannot import, so the ids ride in on a data attribute instead of
-// being duplicated. config/themes.ts stays the single source.
-const themeIds = JSON.stringify({ light: LIGHT_THEME, dark: DARK_THEME });
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <!-- Theme initialization - must be first to prevent flash -->
-    <script is:inline data-theme-ids={themeIds}>
+    <script is:inline data-light={LIGHT_THEME} data-dark={DARK_THEME}>
       (function () {
-        const { light, dark } = JSON.parse(document.currentScript.dataset.themeIds);
+        const { light, dark } = document.currentScript.dataset;
 
         function theme() {
           const pref = localStorage.getItem('theme');
