@@ -31,38 +31,12 @@ const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 4);
 
-const featuredProjects = await getCollection('projects');
-const githubRepos = await getCollection('githubRepos');
-const repoMap = new Map(githubRepos.map((repo) => [repo.data.name, repo]));
-
-const projects = featuredProjects
+const projects = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order)
-  .map((project) => {
-    const githubRepo = repoMap.get(project.data.slug);
-
-    if (!githubRepo) {
-      throw new Error(
-        `GitHub repository "${project.data.slug}" not found for project "${project.data.name}". ` +
-          `Make sure the slug matches the GitHub repository name exactly.`
-      );
-    }
-
-    return {
-      name: project.data.name,
-      slug: project.data.slug,
-      order: project.data.order,
-      description: githubRepo.data.description,
-      url: githubRepo.data.html_url,
-      homepage: githubRepo.data.homepage,
-      stars: githubRepo.data.stargazers_count,
-      forks: githubRepo.data.forks_count,
-      language: githubRepo.data.language,
-      topics: githubRepo.data.topics,
-      featured: project.data.featured,
-      tagline: project.data.tagline ?? null,
-      tech: project.data.tech,
-    };
-  });
+  .map(({ data }) => ({
+    ...data,
+    url: data.homepage ?? `${GITHUB_PROFILE_LINK}/${data.slug}`,
+  }));
 ---
 
 <Layout>

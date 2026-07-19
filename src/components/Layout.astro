@@ -6,12 +6,6 @@ import Footer from './Footer.astro';
 import Head from './Head.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import {
-  THEME_IDS,
-  ALL_OPTION_IDS,
-  DEFAULT_LIGHT_THEME,
-  DEFAULT_DARK_THEME,
-} from '../config/themes';
 
 import '../styles/global.css';
 
@@ -32,45 +26,26 @@ const {
   publishedTime,
   tags,
 } = Astro.props;
-
-const themeConfig = JSON.stringify({
-  ids: THEME_IDS,
-  allOptionIds: ALL_OPTION_IDS,
-  lightDefault: DEFAULT_LIGHT_THEME,
-  darkDefault: DEFAULT_DARK_THEME,
-});
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Theme initialization - must be first to prevent flash -->
-    <script is:inline data-theme-config={themeConfig}>
+    <!-- Theme initialization - must be first to prevent flash. Inlined (no imports
+         allowed here), so the two theme ids are duplicated from config/themes.ts. -->
+    <script is:inline>
       (function () {
-        const config = JSON.parse(document.currentScript.dataset.themeConfig);
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        function resolveTheme(pref) {
-          if (pref === 'auto' || !config.ids.includes(pref)) {
-            return isDark ? config.darkDefault : config.lightDefault;
-          }
-          return pref;
+        function theme() {
+          const pref = localStorage.getItem('theme');
+          if (pref === 'cloud' || pref === 'cloud-dark') return pref;
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cloud-dark' : 'cloud';
         }
 
-        function getTheme() {
-          let pref = localStorage.getItem('theme');
-          if (!pref || !config.allOptionIds.includes(pref)) {
-            pref = 'auto';
-          }
-          return resolveTheme(pref);
-        }
+        document.documentElement.setAttribute('data-theme', theme());
 
-        // Apply theme immediately on initial load
-        document.documentElement.setAttribute('data-theme', getTheme());
-
-        // Handle View Transitions - apply theme BEFORE swap to prevent flash
+        // View Transitions: apply before swap to prevent a flash
         document.addEventListener('astro:before-swap', (e) => {
-          e.newDocument.documentElement.setAttribute('data-theme', getTheme());
+          e.newDocument.documentElement.setAttribute('data-theme', theme());
         });
       })();
     </script>
@@ -90,18 +65,8 @@ const themeConfig = JSON.stringify({
     <Font cssVariable="--font-jetbrains-mono" preload />
   </head>
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
-    <!-- Scroll Progress Indicator -->
-    <div
-      id="scroll-progress"
-      class="scroll-progress"
-      style="transform: scaleX(0);"
-      role="progressbar"
-      aria-label="Page scroll progress"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      aria-valuenow="0"
-    >
-    </div>
+    <!-- Scroll progress indicator: CSS scroll-driven, decorative (see global.css) -->
+    <div class="scroll-progress" aria-hidden="true"></div>
 
     <Header />
 
@@ -111,154 +76,6 @@ const themeConfig = JSON.stringify({
 
     <Footer />
 
-    <!-- Keyboard Shortcuts & Interactive Features -->
-    <script>
-      import { ALL_OPTION_IDS, DEFAULT_LIGHT_THEME, DEFAULT_DARK_THEME } from '../config/themes';
-
-      // ========================================
-      // Scroll Progress Indicator
-      // ========================================
-      let scrollListener: (() => void) | null = null;
-
-      function updateScrollProgress() {
-        const scrollProgress = document.getElementById('scroll-progress');
-        if (!scrollProgress) return;
-
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-        scrollProgress.style.transform = `scaleX(${progress})`;
-        scrollProgress.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
-      }
-
-      function attachScrollListener() {
-        if (scrollListener) {
-          window.removeEventListener('scroll', scrollListener);
-        }
-        scrollListener = updateScrollProgress;
-        window.addEventListener('scroll', scrollListener, { passive: true });
-        updateScrollProgress();
-      }
-
-      attachScrollListener();
-
-      // ========================================
-      // Keyboard Shortcuts
-      // ========================================
-      function cycleTheme() {
-        const rawPref = localStorage.getItem('theme') || 'auto';
-        const currentPref = ALL_OPTION_IDS.includes(rawPref) ? rawPref : 'auto';
-        const currentIndex = ALL_OPTION_IDS.indexOf(currentPref);
-        const nextIndex = (currentIndex + 1) % ALL_OPTION_IDS.length;
-        const nextPref = ALL_OPTION_IDS[nextIndex];
-
-        // Resolve the CSS theme to apply
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        let cssTheme = nextPref;
-        if (nextPref === 'auto') {
-          cssTheme = isDark ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME;
-        }
-
-        document.documentElement.setAttribute('data-theme', cssTheme);
-        localStorage.setItem('theme', nextPref);
-
-        // Dispatch event for header to update UI (send preference, not just CSS theme)
-        window.dispatchEvent(
-          new CustomEvent('theme-changed', { detail: { preference: nextPref, cssTheme } })
-        );
-      }
-
-      function showShortcutsHint() {
-        // Create a temporary toast notification
-        const existing = document.getElementById('shortcuts-toast');
-        if (existing) existing.remove();
-
-        const toast = document.createElement('div');
-        toast.id = 'shortcuts-toast';
-        toast.style.cssText = `
-          position: fixed;
-          bottom: 2rem;
-          left: 0;
-          right: 0;
-          margin: 0 auto;
-          width: fit-content;
-          padding: 0.75rem 1.5rem;
-          background: var(--color-surface-elevated);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-lg);
-          font-family: var(--font-mono);
-          font-size: 0.875rem;
-          color: var(--color-text);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-          z-index: 9999;
-          opacity: 0;
-          transform: translateY(10px);
-          transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-        `;
-        toast.innerHTML = `
-          <span style="color: var(--color-text-tertiary)">Shortcuts:</span>
-          <span style="color: var(--color-accent)">${navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+/</span> cycle themes
-        `;
-        document.body.appendChild(toast);
-
-        // Trigger animation
-        requestAnimationFrame(() => {
-          toast.style.opacity = '1';
-          toast.style.transform = 'translateY(0)';
-        });
-
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          toast.style.transform = 'translateY(10px)';
-          setTimeout(() => toast.remove(), 200);
-        }, 2500);
-      }
-
-      document.addEventListener('keydown', (e) => {
-        const isMac = navigator.platform.includes('Mac');
-        const modKey = isMac ? e.metaKey : e.ctrlKey;
-
-        // ⌘/Ctrl + / - Cycle themes
-        if (modKey && e.key === '/') {
-          e.preventDefault();
-          cycleTheme();
-        }
-
-        // ⌘/Ctrl + K - Show shortcuts hint
-        if (modKey && e.key === 'k') {
-          e.preventDefault();
-          showShortcutsHint();
-        }
-      });
-
-      // ========================================
-      // Console Easter Egg
-      // ========================================
-      const styles = [
-        'color: #c25a34',
-        'font-size: 14px',
-        'font-weight: bold',
-        'font-family: monospace',
-      ].join(';');
-
-      const subStyles = ['color: #888', 'font-size: 12px', 'font-family: monospace'].join(';');
-
-      // eslint-disable-next-line no-console
-      console.log(
-        '%c⚡ Hey there, fellow developer!\n%cCurious about the code? Check it out:\n%chttps://github.com/kalinichenko88/kalinichenko88.github.io\n%c\nKeyboard shortcuts:\n%c  ⌘/Ctrl + /  →  Cycle themes\n%c  ⌘/Ctrl + K  →  Show shortcuts',
-        styles,
-        subStyles,
-        subStyles,
-        styles,
-        subStyles,
-        subStyles
-      );
-
-      // Re-initialize on Astro page transitions
-      document.addEventListener('astro:after-swap', () => {
-        attachScrollListener();
-      });
-    </script>
     <!-- Cloudflare Web Analytics -->
     <script
       is:inline

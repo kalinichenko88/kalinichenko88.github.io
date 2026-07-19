@@ -30,9 +30,6 @@
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.1",
-    "autoprefixer": "^10.5.4",
-    "cssnano": "^8.0.2",
-    "octokit": "^5.0.5",
     "rehype-external-links": "^3.0.0",
     "tailwindcss": "^4.3.3"
   },

@@ -362,25 +362,6 @@
     transform-origin: left;
   }
 
-  /* Gradient text */
-  .text-gradient {
-    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Code block styling */
-  .code-block {
-    background-color: var(--color-code-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    overflow-x: auto;
-  }
-
   /* Prose overrides for blog */
   .prose-custom {
     --tw-prose-body: var(--color-text-secondary);
@@ -596,25 +577,6 @@
 }
 
 /* ============================================
-   Animations
-   ============================================ */
-
-@keyframes pulse-subtle {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-/* Status indicator pulse */
-.status-available {
-  animation: pulse-subtle 2s ease-in-out infinite;
-}
-
-/* ============================================
    Geeky Interactive Effects
    ============================================ */
 
@@ -646,31 +608,37 @@
   box-shadow: 0 12px 40px rgba(194, 90, 52, 0.15);
 }
 
-/* Scroll progress indicator */
+/* Scroll progress indicator: driven by the root scroller, no JS.
+   Browsers without scroll-driven animations keep the bar at scaleX(0), so it
+   is simply not shown.
+
+   The @supports guard is load-bearing beyond feature detection: it keeps the
+   minifier from folding `animation-timeline` into the `animation` shorthand,
+   which browsers reject outright (it silently killed the animation). */
 .scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
   height: 2px;
   background: var(--color-accent);
   z-index: 100;
+  transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.1s linear;
 }
 
-/* Keyboard shortcut badge */
-.kbd-badge {
-  align-items: center;
-  gap: 2px;
-  padding: 2px 6px;
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 500;
-  color: var(--color-text-tertiary);
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  letter-spacing: 0.02em;
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation-name: scroll-progress;
+    animation-timing-function: linear;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* ============================================

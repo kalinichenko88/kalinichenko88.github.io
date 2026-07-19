@@ -1,6 +1,6 @@
 ---
 import { AUTHOR_NAME, GITHUB_PROFILE_LINK } from '../consts';
-import { ALL_THEME_OPTIONS } from '../config/themes';
+import { THEME_OPTIONS } from '../config/themes';
 import { NAV_LINKS } from '../config/navigation';
 
 import GithubIcon from '../assets/icons/github.svg';
@@ -54,19 +54,8 @@ const currentPath = Astro.url.pathname;
         }
       </div>
 
-      <!-- Right Side: Keyboard Badge + Theme Switcher + GitHub -->
+      <!-- Right Side: Theme Switcher + GitHub -->
       <div class="flex items-center gap-1">
-        <!-- Keyboard Shortcut Badge (hidden on mobile) -->
-        <button
-          type="button"
-          id="shortcuts-badge"
-          class="hidden lg:flex kbd-badge cursor-pointer hover:border-foreground-tertiary transition-colors"
-          aria-label="Show keyboard shortcuts"
-          title="Keyboard shortcuts"
-        >
-          <span id="mod-key">⌘</span>K
-        </button>
-
         <!-- GitHub Link with icon hover effect -->
         <a
           href={GITHUB_PROFILE_LINK}
@@ -100,7 +89,7 @@ const currentPath = Astro.url.pathname;
             role="menu"
           >
             {
-              ALL_THEME_OPTIONS.map((theme) => {
+              THEME_OPTIONS.map((theme) => {
                 const IconComponent = themeIcons[theme.iconId];
                 return (
                   <button
@@ -164,71 +153,25 @@ const currentPath = Astro.url.pathname;
 <div class="h-14" aria-hidden="true"></div>
 
 <script>
-  import {
-    ALL_THEME_OPTIONS,
-    THEMES,
-    DEFAULT_LIGHT_THEME,
-    DEFAULT_DARK_THEME,
-  } from '../config/themes';
+  import { THEME_OPTIONS, resolveTheme } from '../config/themes';
 
-  const THEME_MAP = Object.fromEntries(
-    THEMES.map((t) => [t.id, { iconId: t.iconId, label: t.label }])
-  );
+  const OPTION_IDS = THEME_OPTIONS.map((t) => t.id);
+  const ICON_BY_ID = Object.fromEntries(THEME_OPTIONS.map((t) => [t.id, t.iconId]));
 
-  const ALL_OPTIONS_MAP = Object.fromEntries(
-    ALL_THEME_OPTIONS.map((t) => [t.id, { iconId: t.iconId, label: t.label }])
-  );
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 
-  // Update modifier key display for Windows/Mac
-  const modKeyEl = document.getElementById('mod-key');
-  if (modKeyEl && !navigator.platform.includes('Mac')) {
-    modKeyEl.textContent = 'Ctrl+';
-  }
-
-  // Handle shortcuts badge click
-  const shortcutsBadge = document.getElementById('shortcuts-badge');
-  if (shortcutsBadge) {
-    shortcutsBadge.addEventListener('click', () => {
-      // Dispatch keyboard event to trigger shortcuts hint
-      const event = new KeyboardEvent('keydown', {
-        key: 'k',
-        metaKey: navigator.platform.includes('Mac'),
-        ctrlKey: !navigator.platform.includes('Mac'),
-        bubbles: true,
-      });
-      document.dispatchEvent(event);
-    });
-  }
-
-  function getStoredPreference(): string {
-    return localStorage.getItem('theme') || 'auto';
-  }
-
-  function resolvePreference(pref: string): string {
-    if (pref === 'auto') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? DEFAULT_DARK_THEME
-        : DEFAULT_LIGHT_THEME;
-    }
-    return THEME_MAP[pref] ? pref : DEFAULT_LIGHT_THEME;
+  function storedPreference(): string {
+    const pref = localStorage.getItem('theme');
+    return pref && OPTION_IDS.includes(pref) ? pref : 'auto';
   }
 
   function updateThemeUI(preference: string) {
-    // Show the icon for the preference (auto shows monitor, not sun/moon)
-    const optionConfig = ALL_OPTIONS_MAP[preference];
-    if (optionConfig) {
-      document.querySelectorAll('.theme-icon').forEach((icon) => {
-        if ((icon as HTMLElement).dataset.icon === optionConfig.iconId) {
-          icon.classList.remove('hidden');
-        } else {
-          icon.classList.add('hidden');
-        }
-      });
-    }
-
-    // Update checkmarks in dropdown
+    const iconId = ICON_BY_ID[preference];
+    document.querySelectorAll('.theme-icon').forEach((icon) => {
+      icon.classList.toggle('hidden', (icon as HTMLElement).dataset.icon !== iconId);
+    });
     document.querySelectorAll('.theme-option').forEach((option) => {
-      const check = option.querySelector('.theme-check') as HTMLElement | null;
+      const check = option.querySelector<HTMLElement>('.theme-check');
       if (check) {
         check.style.opacity = (option as HTMLElement).dataset.theme === preference ? '1' : '0';
       }
@@ -236,176 +179,104 @@ const currentPath = Astro.url.pathname;
   }
 
   function applyTheme(preference: string) {
-    if (!ALL_OPTIONS_MAP[preference]) preference = 'auto';
-    const cssTheme = resolvePreference(preference);
-    document.documentElement.setAttribute('data-theme', cssTheme);
+    document.documentElement.setAttribute('data-theme', resolveTheme(preference));
     localStorage.setItem('theme', preference);
-    window.dispatchEvent(new CustomEvent('theme-changed', { detail: { preference, cssTheme } }));
+    updateThemeUI(preference);
+    // Giscus (blog posts) re-renders itself on this
+    window.dispatchEvent(new Event('theme-changed'));
   }
 
-  // Listen for system preference changes to update auto theme in real-time
+  function cycleTheme() {
+    const next = (OPTION_IDS.indexOf(storedPreference()) + 1) % OPTION_IDS.length;
+    applyTheme(OPTION_IDS[next]);
+  }
+
+  // Keep `auto` in sync when the OS preference flips
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    const pref = getStoredPreference();
-    if (pref === 'auto') {
-      const cssTheme = resolvePreference('auto');
-      document.documentElement.setAttribute('data-theme', cssTheme);
-      window.dispatchEvent(
-        new CustomEvent('theme-changed', { detail: { preference: 'auto', cssTheme } })
-      );
-    }
+    if (storedPreference() === 'auto') applyTheme('auto');
   });
 
   function toggleDropdown(show: boolean) {
-    const dropdown = document.getElementById('theme-dropdown');
-    const toggle = document.getElementById('theme-toggle');
+    const dropdown = $('theme-dropdown');
+    const toggle = $('theme-toggle');
     if (!dropdown || !toggle) return;
 
-    if (show) {
-      dropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1');
-      dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
-      toggle.setAttribute('aria-expanded', 'true');
-    } else {
-      dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
-      dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
+    dropdown.classList.toggle('opacity-0', !show);
+    dropdown.classList.toggle('invisible', !show);
+    dropdown.classList.toggle('translate-y-1', !show);
+    toggle.setAttribute('aria-expanded', String(show));
   }
 
-  // Event delegation for all clicks
+  function setMobileMenu(open: boolean, returnFocus = true) {
+    const menu = $('mobile-menu');
+    const toggle = $('mobile-menu-toggle');
+    if (!menu || !toggle) return;
+
+    menu.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+
+    if (open) menu.querySelector('a')?.focus();
+    else if (returnFocus) toggle.focus();
+  }
+
+  const isMobileMenuOpen = () => !$('mobile-menu')?.classList.contains('hidden');
+
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
-    const themeToggle = target.closest('#theme-toggle');
-    const themeDropdown = document.getElementById('theme-dropdown');
-    const themeOption = target.closest('.theme-option') as HTMLElement | null;
 
-    // Theme dropdown toggle
-    if (themeToggle) {
+    if (target.closest('#theme-toggle')) {
       e.preventDefault();
-      const isOpen = themeToggle.getAttribute('aria-expanded') === 'true';
-      toggleDropdown(!isOpen);
+      toggleDropdown($('theme-toggle')?.getAttribute('aria-expanded') !== 'true');
       return;
     }
 
-    // Theme option selection
-    if (themeOption) {
-      const newTheme = themeOption.dataset.theme;
-      if (newTheme) {
-        applyTheme(newTheme);
-        toggleDropdown(false);
-      }
-      return;
-    }
-
-    // Close dropdown when clicking outside
-    if (themeDropdown && !themeDropdown.contains(target)) {
+    const option = target.closest<HTMLElement>('.theme-option');
+    if (option?.dataset.theme) {
+      applyTheme(option.dataset.theme);
       toggleDropdown(false);
+      return;
     }
 
-    // Mobile menu toggle
-    const menuToggle = target.closest('#mobile-menu-toggle');
-    if (menuToggle) {
-      toggleMobileMenu();
-    }
-
-    // Close mobile menu on link click
-    const mobileMenuLink = target.closest('#mobile-menu a');
-    if (mobileMenuLink) {
-      closeMobileMenu();
-    }
+    if (!target.closest('#theme-dropdown')) toggleDropdown(false);
+    if (target.closest('#mobile-menu-toggle')) setMobileMenu(!isMobileMenuOpen());
+    if (target.closest('#mobile-menu a')) setMobileMenu(false);
   });
 
-  function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuToggle = document.getElementById('mobile-menu-toggle');
-    if (!mobileMenu || !menuToggle) return;
-
-    const isOpen = !mobileMenu.classList.contains('hidden');
-    if (isOpen) {
-      closeMobileMenu();
-    } else {
-      openMobileMenu();
-    }
-  }
-
-  function openMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuToggle = document.getElementById('mobile-menu-toggle');
-    if (!mobileMenu || !menuToggle) return;
-
-    mobileMenu.classList.remove('hidden');
-    menuToggle.setAttribute('aria-expanded', 'true');
-    menuToggle.setAttribute('aria-label', 'Close menu');
-
-    // Focus first link in menu
-    const firstLink = mobileMenu.querySelector('a');
-    if (firstLink) firstLink.focus();
-  }
-
-  function closeMobileMenu(returnFocus = true) {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuToggle = document.getElementById('mobile-menu-toggle');
-    if (!mobileMenu || !menuToggle) return;
-
-    mobileMenu.classList.add('hidden');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Open menu');
-
-    // Return focus to toggle button
-    if (returnFocus) menuToggle.focus();
-  }
-
-  function isMobileMenuOpen() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    return mobileMenu && !mobileMenu.classList.contains('hidden');
-  }
-
-  // Keyboard navigation
   document.addEventListener('keydown', (e) => {
-    // Close dropdowns/menus on escape
+    // Cmd/Ctrl + / cycles Auto -> Light -> Dark
+    if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+      e.preventDefault();
+      cycleTheme();
+      return;
+    }
+
     if (e.key === 'Escape') {
       toggleDropdown(false);
-      if (isMobileMenuOpen()) {
-        closeMobileMenu();
-      }
+      if (isMobileMenuOpen()) setMobileMenu(false);
     }
 
-    // Focus trap for mobile menu
+    // Focus trap for the open mobile menu
     if (e.key === 'Tab' && isMobileMenuOpen()) {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const menuToggle = document.getElementById('mobile-menu-toggle');
-      if (!mobileMenu || !menuToggle) return;
+      const menu = $('mobile-menu');
+      const toggle = $('mobile-menu-toggle');
+      if (!menu || !toggle) return;
 
-      const focusableElements = [menuToggle, ...mobileMenu.querySelectorAll('a, button')];
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (e.shiftKey && document.activeElement === firstElement) {
+      const focusable = [toggle, ...menu.querySelectorAll<HTMLElement>('a, button')];
+      const edge = e.shiftKey ? focusable[0] : focusable[focusable.length - 1];
+      if (document.activeElement === edge) {
         e.preventDefault();
-        (lastElement as HTMLElement).focus();
-      } else if (!e.shiftKey && document.activeElement === lastElement) {
-        e.preventDefault();
-        (firstElement as HTMLElement).focus();
+        (e.shiftKey ? focusable[focusable.length - 1] : focusable[0]).focus();
       }
     }
   });
 
-  // Listen for theme changes
-  window.addEventListener('theme-changed', (e) => {
-    updateThemeUI((e as CustomEvent).detail.preference);
-  });
-
-  // Initialize theme on page load
-  function initTheme() {
-    const preference = getStoredPreference();
-    applyTheme(preference);
-
-    // Close mobile menu on navigation (without returning focus)
-    closeMobileMenu(false);
-
-    // Close theme dropdown
+  function init() {
+    updateThemeUI(storedPreference());
+    setMobileMenu(false, false);
     toggleDropdown(false);
   }
 
-  initTheme();
-  document.addEventListener('astro:after-swap', initTheme);
+  init();
+  document.addEventListener('astro:after-swap', init);
 </script>

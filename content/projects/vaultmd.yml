@@ -4,3 +4,4 @@ order: 1
 featured: true
 tagline: 'Headless Markdown-vault data layer for Bun with note CRUD and a derived SQLite index for collection queries, backlinks, and keyword search.'
 tech: ['TypeScript', 'Bun', 'SQLite']
+homepage: 'https://kalinichenko.dev/vaultmd/'

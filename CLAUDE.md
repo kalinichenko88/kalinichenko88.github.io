@@ -19,14 +19,13 @@ A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) o
 
 ## Environment Setup
 
-Requires `GITHUB_TOKEN` environment variable (create `.env` file). Used to fetch GitHub repositories via the Octokit API.
+No environment variables are required. The build makes no network calls beyond font fetching.
 
 ## Architecture
 
 This is an Astro 7 personal portfolio site with:
 
-- **Content Collections** (`src/content.config.ts`): Three collections - `posts` (markdown blog), `projects` (YAML), and `githubRepos` (custom loader fetching from GitHub API)
-- **Custom Loader** (`src/loaders/github-repos.ts`): Astro content loader that fetches repos from GitHub API using Octokit
+- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage` and hand-maintained `stars`. There is no GitHub API call at build time.
 - **Theme System** (`src/config/themes.ts`, `src/styles/global.css`): Two themes (cloud light, cloud-dark), selectable as Light, Dark, or Auto (follows system preference), controlled via `data-theme` attribute on `<html>`. Theme CSS uses CSS custom properties with Tailwind 4's `@theme` directive for integration
 - **Layout** (`src/components/Layout.astro`): Single layout with theme initialization script (inline to prevent flash), Header, Footer, and slot for content
 - **Global Styles** (`src/styles/global.css`): Design tokens, theme definitions, Tailwind extensions, and utility classes (`.card`, `.btn-primary`, `.prose-custom`, etc.)
@@ -34,13 +33,16 @@ This is an Astro 7 personal portfolio site with:
 ## Content Structure
 
 - `content/posts/*.md` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`
-- `content/projects/*.yml` - Featured projects with: `name`, `slug`, `order`
+- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars`
 
 ## Components
 
 ### VideoPlayer (`src/components/VideoPlayer.astro`)
 
 Embed video with play/pause overlay and caption. Place video files in `public/videos/`.
+
+Not currently used by any post. It is kept deliberately for upcoming content, so
+don't remove it as dead code.
 
 Usage in MDX posts:
 
@@ -80,8 +82,10 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - Use `type` instead of `interface` for Astro component `Props`
 - Uses Astro's experimental features: `clientPrerender`, `contentIntellisense`, `svgOptimizer`
 - Fonts configured via top-level `fonts` config (stabilized in Astro 6)
-- Tailwind 4 via Vite plugin (`@tailwindcss/vite`)
+- Tailwind 4 via Vite plugin (`@tailwindcss/vite`). There is no `tailwind.config.js` and no PostCSS config on purpose: Tailwind 4 ignores a legacy config file unless `global.css` opts in with `@config`, and its bundled Lightning CSS already handles vendor prefixing and minification. Configure the theme in the `@theme` block in `global.css`
 - Typography plugin for prose styling (`@tailwindcss/typography`)
+- Theme switching lives entirely in `Header.astro` (dropdown, `Cmd/Ctrl + /` cycling, OS-preference sync) plus the inline anti-flash script in `Layout.astro`. `src/config/themes.ts` is the single source of theme ids; the inline script duplicates the two ids because `is:inline` scripts cannot import
+- The scroll progress bar is pure CSS (`animation-timeline: scroll()` in `global.css`), decorative and `aria-hidden`. Browsers without scroll-driven animations simply do not show it
 - ESLint with TypeScript, Astro, and jsx-a11y plugins
 - External links in markdown open in new tabs (`rehype-external-links` in `astro.config.js`)
 - Site constants in `src/consts.ts`
