@@ -2,24 +2,32 @@
 import Layout from '../components/Layout.astro';
 import ExpertiseGrid from '../components/home/ExpertiseGrid.astro';
 
-import { ROLE, MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
+import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
 import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
 ---
 
-<Layout title="About" description="About Ivan Kalinichenko - Senior Frontend Engineer.">
+<Layout
+  title="About"
+  description="About Ivan Kalinichenko — AI systems engineer and full-stack product developer."
+>
   <section class="py-14 md:py-20">
     <div class="container-prose">
       <h1 class="text-foreground mb-6">About</h1>
       <div class="space-y-4 text-foreground-secondary text-lg leading-relaxed">
         <p>
-          I'm a {ROLE.toLowerCase()} with 10+ years in the industry, from jQuery and Angular.js to modern
-          component architectures. That path shaped how I think about maintainable systems and team productivity.
+          I'm an AI systems engineer with 15+ years in software development. I design and build
+          production systems around AI agents: multi-agent runtimes, MCP servers, long-term memory
+          layers, model routing and failover, and integrations for Telegram and Discord.
         </p>
         <p>
-          Today I build the frontend for a large-scale self-hosted product with React and
-          TypeScript. Beyond writing code, I review merge requests, mentor frontend developers, run
-          technical interviews, and onboard new engineers. I use AI tools as part of the daily
-          workflow.
+          I also take products from 0→1 across the stack—backend, frontend, billing, email, privacy,
+          infrastructure, and documentation—and modernize complex frontend platforms without
+          pausing product delivery.
+        </p>
+        <p>
+          In my current role, I build the frontend for a large-scale self-hosted product with React
+          and TypeScript. I also review merge requests, mentor frontend developers, run technical
+          interviews, and onboard new engineers.
         </p>
         <p>
           Based in <span class="text-foreground">{LOCATION}</span>, working with international
@@ -28,7 +36,7 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
       </div>
 
       <div class="flex flex-wrap gap-3 mt-8">
-        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
+        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Discuss a project</a>
         <a
           href={LINKEDIN_PROFILE_LINK}
           target="_blank"
