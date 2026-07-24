@@ -2,24 +2,33 @@
 import Layout from '../components/Layout.astro';
 import ExpertiseGrid from '../components/home/ExpertiseGrid.astro';
 
-import { ROLE, MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
+import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
 import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
 ---
 
-<Layout title="About" description="About Ivan Kalinichenko - Senior Frontend Engineer.">
+<Layout
+  title="About"
+  description="About Ivan Kalinichenko — AI agent systems, full-stack products, and frontend platforms."
+>
   <section class="py-14 md:py-20">
     <div class="container-prose">
       <h1 class="text-foreground mb-6">About</h1>
       <div class="space-y-4 text-foreground-secondary text-lg leading-relaxed">
         <p>
-          I'm a {ROLE.toLowerCase()} with 10+ years in the industry, from jQuery and Angular.js to modern
-          component architectures. That path shaped how I think about maintainable systems and team productivity.
+          I'm an engineer with 15+ years in production software, from jQuery and Angular.js to
+          modern React, TypeScript, and Node.js systems. That path shaped how I think about
+          maintainable architecture, safe migrations, and team productivity.
         </p>
         <p>
-          Today I build the frontend for a large-scale self-hosted product with React and
+          My main focus is AI infrastructure and agent systems: multi-agent runtimes, MCP servers,
+          long-term memory layers, model routing and failover, and Telegram and Discord
+          integrations. I also build the backend, frontend, infrastructure, and documentation
+          needed to turn those systems into products.
+        </p>
+        <p>
+          I currently build frontend systems for a large self-hosted product with React and
           TypeScript. Beyond writing code, I review merge requests, mentor frontend developers, run
-          technical interviews, and onboard new engineers. I use AI tools as part of the daily
-          workflow.
+          technical interviews, and onboard new engineers.
         </p>
         <p>
           Based in <span class="text-foreground">{LOCATION}</span>, working with international
