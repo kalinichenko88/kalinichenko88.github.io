@@ -35,7 +35,7 @@ const projects = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order)
   .map(({ data }) => ({
     ...data,
-    url: data.homepage ?? `${GITHUB_PROFILE_LINK}/${data.slug}`,
+    url: `${GITHUB_PROFILE_LINK}/${data.slug}`,
   }));
 ---
 

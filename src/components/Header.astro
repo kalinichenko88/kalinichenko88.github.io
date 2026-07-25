@@ -155,10 +155,10 @@ const currentPath = Astro.url.pathname;
 <script>
   import { THEME_OPTIONS, resolveTheme } from '../config/themes';
 
+  const $ = (id: string) => document.getElementById(id);
+
   const OPTION_IDS = THEME_OPTIONS.map((t) => t.id);
   const ICON_BY_ID = Object.fromEntries(THEME_OPTIONS.map((t) => [t.id, t.iconId]));
-
-  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 
   function storedPreference(): string {
     const pref = localStorage.getItem('theme');
@@ -220,7 +220,7 @@ const currentPath = Astro.url.pathname;
     else if (returnFocus) toggle.focus();
   }
 
-  const isMobileMenuOpen = () => !$('mobile-menu')?.classList.contains('hidden');
+  const isMobileMenuOpen = () => $('mobile-menu')?.classList.contains('hidden') === false;
 
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
