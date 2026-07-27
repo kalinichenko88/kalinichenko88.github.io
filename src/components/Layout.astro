@@ -2,6 +2,7 @@
 import { Font } from 'astro:assets';
 
 import Header from './Header.astro';
+import PixelSpotlight from './PixelSpotlight.astro';
 import Footer from './Footer.astro';
 import Head from './Head.astro';
 
@@ -68,6 +69,8 @@ const {
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
     <!-- Scroll progress indicator: CSS scroll-driven, decorative (see global.css) -->
     <div class="scroll-progress" aria-hidden="true"></div>
+
+    <PixelSpotlight />
 
     <Header />
 

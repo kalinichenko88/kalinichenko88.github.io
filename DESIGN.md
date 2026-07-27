@@ -240,8 +240,8 @@ new one-off styles.
 
 Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
 
-- **Pixel spotlight** — homepage only (`PixelSpotlight.astro`, rendered once from
-  `index.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
+- **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
+  `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
   lattice on a 12px grid that is always visible, and a terracotta radial glow
   that follows the cursor, quantized into squares by two striped masks combined
   with `mask-composite: intersect`. Vanilla JS (`pointermove`, rAF-throttled,
@@ -254,9 +254,16 @@ Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
   from, an `accent-text` link over a lit cell measures 3.9:1 against 5.1:1 on
   the bare background. Raising either number reopens that contrast hole.
 
-  Because the layer sits behind everything, any section that paints an opaque
-  background punches a hole in the lattice. That is why the Writing section uses
-  `bg-background-subtle/85` and the footer carries no background fill at all.
+  Because the layer sits behind everything, an opaque background hides it. Use
+  that deliberately, in one direction or the other:
+
+  - Sections that should let the field through use `bg-background-subtle/85`
+    rather than the flat token (the Writing section, the About page's Expertise
+    band). New subtle sections should follow suit.
+  - The footer keeps `bg-background` so the field stops there and the page
+    closes on a plain band.
+  - Cards stay opaque: they are meant to read as surfaces sitting on top of the
+    field.
 
 - **Hover underlines** — links/nav draw an accent underline on hover.
 - **Card lift** — subtle translate + tinted shadow on hover.
