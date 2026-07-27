@@ -2,7 +2,7 @@
 title: 'Automating monorepo tasks with Claude Code slash commands'
 description: 'Using Claude Code custom commands to replace manual dependency updates and tool upgrades in a monorepo.'
 pubDate: 2026-04-02
-tags: [claude-code, ai, tooling, automation]
+tags: [claude-code, ai]
 ---
 
 I work in a monorepo at my day job. There are always maintenance tasks — updating dependencies, upgrading internal tools, syncing configs across packages. None of it is hard, but it's tedious enough that I'd either put it off or spend an afternoon writing a bash script that I'd need to fix next month.

@@ -454,6 +454,7 @@
   }
 
   .prose-custom img {
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     margin: 2em 0;
   }
