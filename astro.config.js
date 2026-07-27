@@ -34,13 +34,6 @@ export default defineConfig({
   },
   fonts: [
     {
-      provider: fontProviders.fontshare(),
-      name: 'Gambetta',
-      cssVariable: '--font-gambetta',
-      weights: [400, 500, 600],
-      fallbacks: ['Georgia', 'serif'],
-    },
-    {
       provider: fontProviders.google(),
       name: 'DM Sans',
       cssVariable: '--font-dm-sans',
