@@ -74,15 +74,19 @@ import VideoPlayer from '../../src/components/VideoPlayer.astro';
 
 Props: `src` (required), `caption` (required), `poster` (optional). Video is looped, muted, and plays inline. Click to play/pause. Uses a custom element for proper View Transitions lifecycle.
 
+### PixelSpotlight (`src/components/PixelSpotlight.astro`)
+
+The site-wide cursor effect: a static 12px dot lattice plus a pixel-quantized terracotta glow that follows the pointer, both as fixed full-viewport layers at `z-index: -1`. Rendered once from `Layout.astro`, so every page carries it - don't add it per page. Its tint and cell fill are contrast-constrained — read the Interaction section of [`DESIGN.md`](./DESIGN.md) before turning either up.
+
 ### TableOfContents (`src/components/TableOfContents.astro`)
 
 Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` array. Rendered once as an inline TOC above the article content in blog post pages (`src/pages/blog/[...id].astro`); it scrolls away naturally on the reading track. Active section tracking (an `IntersectionObserver` re-initialized on `astro:after-swap`) highlights the current heading's TOC link as the user scrolls. Headings use `scroll-margin-top` for proper anchor offset.
 
 ## Section Background Alternation
 
-Homepage sections no longer strictly alternate. Only the Writing section carries the subtle background (`bg-background-subtle`); the others use the default background. When adding or reordering sections, don't assume alternation — check each section's intent instead. Header and Footer both use `bg-background` (matching each other, distinct from sections).
+Homepage sections no longer strictly alternate. Only the Writing section carries the subtle background, and it is translucent (`bg-background-subtle/85`) so the pixel field shows through; the others use the default background. The same applies to the About page's Expertise band. Any new subtle section should use `/85` too, or it will punch a rectangular hole in the field. When adding or reordering sections, don't assume alternation — check each section's intent instead. The Footer keeps an opaque `bg-background` on purpose: it stops the pixel field so the page closes on a plain band. The Header is `bg-background/80` with a blur, so the field shows through it blurred.
 
-Current order: Hero(default) → Selected work/Projects(default) → Writing(subtle) → Contact(default) → Footer(bg-background).
+Current order: Hero(default) → Selected work/Projects(default) → Writing(subtle, translucent) → Contact(default) → Footer(bg-background).
 
 ## Containers & Fonts
 

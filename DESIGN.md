@@ -140,7 +140,7 @@ both themes.
 
 - `--color-accent` (`#c25a34`) is the **bright fill** color. Use it for
   backgrounds, chip fills (via `color-mix`), the hover border on cards, the
-  divider mark, and the hero spotlight. Never use it for small text on a light
+  divider mark, and the page spotlight. Never use it for small text on a light
   background (it lands ~3.8:1 and fails WCAG AA).
 - `--color-accent-text` (`#a94a29` light / `#e07a52` dark) is the **AA-safe
   text** color. Use it for links, `.topic` chips, tag hover, and any small
@@ -240,10 +240,31 @@ new one-off styles.
 
 Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
 
-- **Hero spotlight** — a warm terracotta radial light follows the cursor across
-  the full hero width. Vanilla JS (`pointermove`, rAF-throttled, AbortController
-  cleanup, re-inits on `astro:after-swap`). Disabled under
-  `prefers-reduced-motion`.
+- **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
+  `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
+  lattice on a 12px grid that is always visible, and a terracotta radial glow
+  that follows the cursor, quantized into squares by two striped masks combined
+  with `mask-composite: intersect`. Vanilla JS (`pointermove`, rAF-throttled,
+  re-resolves its node on `astro:after-swap`, ignores `pointerType === 'touch'`).
+  Under `prefers-reduced-motion` the glow is dropped and the static lattice
+  stays.
+
+  The glow tint (18%) and the cell fill (45% of the cell) are held down
+  deliberately: the layer sits under body text, and at the 22% / 72% it started
+  from, an `accent-text` link over a lit cell measures 3.9:1 against 5.1:1 on
+  the bare background. Raising either number reopens that contrast hole.
+
+  Because the layer sits behind everything, an opaque background hides it. Use
+  that deliberately, in one direction or the other:
+
+  - Sections that should let the field through use `bg-background-subtle/85`
+    rather than the flat token (the Writing section, the About page's Expertise
+    band). New subtle sections should follow suit.
+  - The footer keeps `bg-background` so the field stops there and the page
+    closes on a plain band.
+  - Cards stay opaque: they are meant to read as surfaces sitting on top of the
+    field.
+
 - **Hover underlines** — links/nav draw an accent underline on hover.
 - **Card lift** — subtle translate + tinted shadow on hover.
 

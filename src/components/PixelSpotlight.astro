@@ -1,0 +1,80 @@
+---
+// Site-wide cursor effect: a static dot lattice always visible, plus a warm
+// accent glow quantized into pixels that follows the cursor. Rendered once by
+// Layout.astro, so every page carries it. See DESIGN.md > Interaction.
+---
+
+<div class="pixel-fx" aria-hidden="true">
+  <div class="fx-glow"></div>
+</div>
+
+<style>
+  .pixel-fx {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* above the body background, under every section */
+    pointer-events: none;
+    --cell: 12px;
+    background-image: radial-gradient(circle at center, var(--color-line) 1.2px, transparent 1.2px);
+    background-size: var(--cell) var(--cell);
+  }
+
+  .fx-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.32s ease;
+    background: radial-gradient(
+      340px circle at var(--mx) var(--my),
+      color-mix(in srgb, var(--color-accent) 18%, transparent),
+      transparent 70%
+    );
+    /* Square lattice: two striped masks intersected. Tint and fill are held
+       down for contrast, see DESIGN.md > Interaction before raising either. */
+    --fill: calc(var(--cell) * 0.45);
+    mask-image:
+      repeating-linear-gradient(to right, #000 0 var(--fill), transparent var(--fill) var(--cell)),
+      repeating-linear-gradient(to bottom, #000 0 var(--fill), transparent var(--fill) var(--cell));
+    mask-composite: intersect;
+  }
+  :root[data-lit] .fx-glow {
+    opacity: 1;
+  }
+
+  /* the lattice is static, so it stays; only the cursor glow is motion */
+  @media (prefers-reduced-motion: reduce) {
+    .fx-glow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Written to <html>, not to the layer: custom properties inherit, and
+  // ClientRouter replaces the layer on every swap while the root survives.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const root = document.documentElement;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+
+    addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.pointerType === 'touch') return;
+        x = e.clientX;
+        y = e.clientY;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          root.style.setProperty('--mx', `${x}px`);
+          root.style.setProperty('--my', `${y}px`);
+          root.dataset.lit = '';
+          raf = 0;
+        });
+      },
+      { passive: true }
+    );
+
+    document.addEventListener('pointerleave', () => delete root.dataset.lit);
+  }
+</script>
