@@ -34,7 +34,7 @@ const [lead, ...rest] = posts;
       {
         posts.length > 0 ? (
           <div class="grid gap-6 md:grid-cols-2">
-            {lead && <PostCard post={lead} featured class="md:col-span-2" />}
+            {lead && <PostCard post={lead} featured />}
             {rest.map((post) => (
               <PostCard post={post} />
             ))}

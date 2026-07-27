@@ -452,7 +452,6 @@
      figure inside the text, not a full-bleed break. */
   .prose-custom p > img {
     display: block;
-    height: auto;
     max-width: min(100%, 820px);
     margin-inline: auto;
   }

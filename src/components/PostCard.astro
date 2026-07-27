@@ -5,15 +5,18 @@ import { formatDate } from '../lib/format-date';
 
 type Props = {
   post: CollectionEntry<'posts'>;
+  /** The lead card: spans the full grid width and gets the larger type. */
   featured?: boolean;
-  class?: string;
 };
 
-const { post, featured = false, class: className } = Astro.props;
+const { post, featured = false } = Astro.props;
 ---
 
 <article
-  class:list={['card card-lift group relative flex flex-col p-6', featured && 'md:p-8', className]}
+  class:list={[
+    'card card-lift group relative flex flex-col p-6',
+    featured && 'md:col-span-2 md:p-8',
+  ]}
 >
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
   <h2
