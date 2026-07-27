@@ -2,24 +2,35 @@
 import Layout from '../components/Layout.astro';
 import ExpertiseGrid from '../components/home/ExpertiseGrid.astro';
 
-import { ROLE, MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
+import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../consts';
 import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
 ---
 
-<Layout title="About" description="About Ivan Kalinichenko - Senior Frontend Engineer.">
+<Layout
+  title="About"
+  description="About Ivan Kalinichenko — AI agent systems and full-stack engineering."
+>
   <section class="py-14 md:py-20">
     <div class="container-prose">
       <h1 class="text-foreground mb-6">About</h1>
       <div class="space-y-4 text-foreground-secondary text-lg leading-relaxed">
         <p>
-          I'm a {ROLE.toLowerCase()} with 10+ years in the industry, from jQuery and Angular.js to modern
-          component architectures. That path shaped how I think about maintainable systems and team productivity.
+          I design and build production systems around AI agents and the infrastructure they run
+          on. My focus includes agent runtimes, MCP servers, long-term memory layers, model routing
+          and failover, agent development pipelines, and Telegram and Discord integrations.
         </p>
         <p>
-          Today I build the frontend for a large-scale self-hosted product with React and
-          TypeScript. Beyond writing code, I review merge requests, mentor frontend developers, run
-          technical interviews, and onboard new engineers. I use AI tools as part of the daily
-          workflow.
+          I bring 15+ years in frontend and full-stack engineering, from jQuery and AngularJS to
+          modern React and TypeScript. That path shaped how I think about maintainable systems and
+          team productivity.
+        </p>
+        <p>
+          Alongside agent systems, I work on 0→1 full-stack products and frontend modernization:
+          legacy migrations, design systems, component libraries, testing, and build infrastructure.
+        </p>
+        <p>
+          Today I build the frontend for a large-scale self-hosted product. I also review merge
+          requests, mentor frontend developers, run technical interviews, and onboard new engineers.
         </p>
         <p>
           Based in <span class="text-foreground">{LOCATION}</span>, working with international
