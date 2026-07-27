@@ -1,6 +1,6 @@
 ---
-title: "Budget Planner is now in Obsidian Community Plugins"
-description: "My Markdown-based budget planner can now be installed directly from Obsidian."
+title: 'Budget Planner is now in Obsidian Community Plugins'
+description: 'My Markdown-based budget planner can now be installed directly from Obsidian.'
 pubDate: 2026-07-27
 tags: [obsidian, plugin, markdown, personal-finance]
 ---
@@ -11,14 +11,7 @@ This changes one small but important thing: installation is now boring. Open **S
 
 Budget Planner turns a plain Markdown code block into an interactive budget table:
 
-```budget
-Online Services:
-  [x] | Spotify   | 4.99
-  [ ] | YouTube   | 16.99
-  [ ] | 1Password | 6.95
-Entertainment:
-  [ ] | Netflix   | 12.99 | Family plan
-```
+![A budget table in Obsidian with Online Services and Entertainment categories, checkboxes for paid items, and per-category and total sums](../../src/assets/images/budget-planner.png)
 
 In Obsidian's editing view, you can edit cells inline, mark payments, drag rows between categories, sort columns, and see totals. Comments support wikilinks, external links, bold text, and tags.
 
