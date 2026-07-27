@@ -86,7 +86,9 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 ## Containers & Fonts
 
-- Three container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`, used for header/footer and most sections), `.container-content` (content track, `--container-content: 820px`, used for the blog reading experience — post articles, the blog index, and tag pages), and `.container-prose` (tight reading column, `--container-prose: 680px`, used for the homepage intro text and `/about` bio).
+- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`) and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) is only for the homepage intro text and the `/about` bio. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
+- Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
+- Posts in a list render through `src/components/PostCard.astro` (pass `featured` for the lead card). Both `/blog` and `/tags/<tag>` use it — don't hand-roll a second row layout.
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): Gambetta (display/headings), DM Sans (body), JetBrains Mono (code/mono accents).
 
 ## Key Patterns

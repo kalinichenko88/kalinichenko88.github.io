@@ -101,8 +101,6 @@ components:
     padding: 2px 8px
   container-wide:
     width: 1100px
-  container-content:
-    width: 820px
   container-prose:
     width: 680px
 ---
@@ -129,9 +127,9 @@ gets out of its way without going invisible.
   (`data-theme="cloud-dark"`), plus `auto` (follows system). **Do not rename
   these ids** — the Giscus comment theme map and stored `localStorage`
   preferences depend on `cloud` / `cloud-dark`.
-- **Three width tracks:** a reading column (`.container-prose`, ~680px), a
-  wider content track for blog posts and post lists (`.container-content`,
-  ~820px), and a wide track (`.container`, ~1100px).
+- **Two width tracks:** a tight reading column (`.container-prose`, ~680px) and
+  a wide track (`.container`, ~1100px) used by everything else, including blog
+  posts.
 
 ## Colors
 
@@ -186,19 +184,25 @@ for AA; light primary buttons use white on `--color-accent-text`.
 
 ## Layout
 
-Three container tracks, applied by responsibility:
+Two container tracks, applied by responsibility:
 
-- `.container` — wide track, `--container-wide` ~1100px. Header, footer, the
-  homepage Selected-work grid, and any full-width block.
-- `.container-content` — content track, `--container-content` ~820px. The blog
-  reading experience: blog post article, blog index list, and tag pages
-  (`/tags` and `/tags/<tag>`). A roomier reading column than `.container-prose`.
+- `.container` — wide track, `--container-wide` ~1100px. The default. Header,
+  footer, the homepage Selected-work grid, the blog index and tag pages
+  (`/blog`, `/tags`, `/tags/<tag>`), the blog post article, and any full-width
+  block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
   most comfortable measure: homepage intro/writing text and `/about` bio.
 
-Reading content stays on a reading track (`.container-content` or
-`.container-prose`), never the wide track. Do not put an article on the wide
-track, and do not globally narrow the header/footer.
+The site is deliberately wide: the blog post article runs on the full ~1100px
+track, so the post body measure is long (~110 characters) rather than the
+classic 60-80. This is an owner decision, not an oversight. Do not "fix" it back
+to a narrow column. Do not globally narrow the header/footer.
+
+Standalone supporting paragraphs on a wide-track page (a page intro, a card
+description) still get `max-w-prose` so short copy does not stretch across the
+whole track. Post images are capped at 820px and centred inside the text column
+(`.prose-custom p > img`) so a screenshot reads as a figure, not a full-bleed
+banner.
 
 Sections use vertical rhythm `py-14 md:py-20`. Separate two adjacent
 default-background sections with `<hr class="divider" />` (an ornamental
@@ -252,9 +256,10 @@ scripts — no React/Motion in this project.
 
 **Do**
 
-- Put the blog reading experience (posts, post lists, tag pages) on
-  `.container-content` (~820px); tighter reading text (intro, `/about`) on
-  `.container-prose` (~680px); wide grids on `.container` (~1100px).
+- Default to `.container` (~1100px), including for the blog post article; use
+  `.container-prose` (~680px) only for the homepage intro and `/about` bio.
+- Render a post in a list with `PostCard.astro` (`featured` for the lead card)
+  rather than hand-rolling another row layout.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at

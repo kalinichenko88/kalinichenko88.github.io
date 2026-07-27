@@ -44,7 +44,6 @@
 
   /* Container */
   --container-wide: 1100px;
-  --container-content: 820px;
   --container-prose: 680px;
 }
 
@@ -219,16 +218,6 @@
     padding-right: var(--space-6);
   }
 
-  /* Content track (wider reading column for blog posts and post lists) */
-  .container-content {
-    width: 100%;
-    max-width: var(--container-content);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-
   /* Reading track */
   .container-prose {
     width: 100%;
@@ -241,7 +230,6 @@
 
   @media (min-width: 768px) {
     .container,
-    .container-content,
     .container-prose {
       padding-left: var(--space-8);
       padding-right: var(--space-8);
@@ -457,6 +445,15 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     margin: 2em 0;
+  }
+
+  /* The post body runs on the wide track, so an image left at full column width
+     reads as a banner. Cap it and centre it instead: a screenshot stays a
+     figure inside the text, not a full-bleed break. */
+  .prose-custom p > img {
+    display: block;
+    max-width: min(100%, 820px);
+    margin-inline: auto;
   }
 
   .prose-custom hr {
