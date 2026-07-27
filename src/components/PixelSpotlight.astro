@@ -5,7 +5,6 @@
 ---
 
 <div class="pixel-fx" aria-hidden="true">
-  <div class="fx-dots"></div>
   <div class="fx-glow"></div>
 </div>
 
@@ -16,20 +15,13 @@
     z-index: -1; /* above the body background, under every section */
     pointer-events: none;
     --cell: 12px;
-    --mx: 50vw;
-    --my: 50vh;
-  }
-  .pixel-fx > * {
-    position: absolute;
-    inset: 0;
-  }
-
-  .fx-dots {
     background-image: radial-gradient(circle at center, var(--color-line) 1.2px, transparent 1.2px);
     background-size: var(--cell) var(--cell);
   }
 
   .fx-glow {
+    position: absolute;
+    inset: 0;
     opacity: 0;
     transition: opacity 0.32s ease;
     background: radial-gradient(
@@ -37,16 +29,15 @@
       color-mix(in srgb, var(--color-accent) 18%, transparent),
       transparent 70%
     );
-    /* Square lattice: two striped masks intersected, so only the cells survive.
-       Fill and tint are held down on purpose: the glow lands under body text,
-       and a denser field drops accent links below AA (see DESIGN.md). */
+    /* Square lattice: two striped masks intersected. Tint and fill are held
+       down for contrast, see DESIGN.md > Interaction before raising either. */
     --fill: calc(var(--cell) * 0.45);
     mask-image:
       repeating-linear-gradient(to right, #000 0 var(--fill), transparent var(--fill) var(--cell)),
       repeating-linear-gradient(to bottom, #000 0 var(--fill), transparent var(--fill) var(--cell));
     mask-composite: intersect;
   }
-  .pixel-fx[data-lit] .fx-glow {
+  :root[data-lit] .fx-glow {
     opacity: 1;
   }
 
@@ -59,42 +50,31 @@
 </style>
 
 <script>
-  let fx: HTMLElement | null = null;
-  let raf = 0;
-  let x = 0;
-  let y = 0;
-
-  // ClientRouter keeps this module alive across swaps, so re-resolve the node
-  // and let the listeners no-op on pages that don't render the layer.
-  function bind() {
-    fx = document.querySelector<HTMLElement>('.pixel-fx');
-  }
-
+  // Written to <html>, not to the layer: custom properties inherit, and
+  // ClientRouter replaces the layer on every swap while the root survives.
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const root = document.documentElement;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+
     addEventListener(
       'pointermove',
       (e) => {
-        if (!fx || e.pointerType === 'touch') return;
+        if (e.pointerType === 'touch') return;
         x = e.clientX;
         y = e.clientY;
         if (raf) return;
         raf = requestAnimationFrame(() => {
-          if (fx) {
-            fx.style.setProperty('--mx', `${x}px`);
-            fx.style.setProperty('--my', `${y}px`);
-            fx.dataset.lit = '';
-          }
+          root.style.setProperty('--mx', `${x}px`);
+          root.style.setProperty('--my', `${y}px`);
+          root.dataset.lit = '';
           raf = 0;
         });
       },
       { passive: true }
     );
 
-    document.addEventListener('pointerleave', () => {
-      if (fx) delete fx.dataset.lit;
-    });
+    document.addEventListener('pointerleave', () => delete root.dataset.lit);
   }
-
-  bind();
-  document.addEventListener('astro:after-swap', bind);
 </script>
