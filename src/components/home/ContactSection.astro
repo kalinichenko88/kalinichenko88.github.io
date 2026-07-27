@@ -13,13 +13,16 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
 <section id="contact" class="py-14 md:py-20">
   <div class="container">
     <div class="max-w-prose">
-      <h2 class="text-foreground mb-4">Let's work together</h2>
-      <p class="text-foreground-secondary mb-6">Interested in collaboration? Get in touch.</p>
+      <h2 class="text-foreground mb-4">Have a system to build?</h2>
+      <p class="text-foreground-secondary mb-6">
+        Building an agent system, taking an AI product from prototype to production, or planning a
+        complex frontend migration? Let's talk.
+      </p>
 
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <a href={`mailto:${mailProfileLink}`} class="btn-primary">
           <EmailIcon class="w-4 h-4" />
-          Send me an email
+          Discuss your project
         </a>
         <a
           href={linkedinProfileLink}
