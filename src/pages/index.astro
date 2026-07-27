@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import Layout from '../components/Layout.astro';
+import PixelSpotlight from '../components/PixelSpotlight.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
@@ -41,6 +42,7 @@ const projects = (await getCollection('projects'))
 
 <Layout>
   <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+  <PixelSpotlight />
   <HeroSection />
   <div class="container"><hr class="divider" /></div>
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />

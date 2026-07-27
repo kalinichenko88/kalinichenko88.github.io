@@ -4,29 +4,26 @@ import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK, GITHUB_PROFILE_LINK } from '../..
 
 <section class="hero" id="hero">
   <div class="container">
-    <div class="hero-inner">
-      <div class="spotlight" aria-hidden="true"></div>
-      <div class="intro">
-        <h1 class="hero-name">{AUTHOR_NAME}</h1>
-        <p class="lead">
-          {ROLE} with 10+ years across React, TypeScript, and Node.js.
-        </p>
-        <p class="sub">
-          I build the frontend for a large self-hosted product, and spend the rest of my time on
-          side projects, developer tools, and AI experiments. This is where I write about what I
-          learn along the way.
-        </p>
-        <div class="actions">
-          <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
-          <a
-            href={GITHUB_PROFILE_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-secondary"
-          >
-            GitHub
-          </a>
-        </div>
+    <div class="intro">
+      <h1 class="hero-name">{AUTHOR_NAME}</h1>
+      <p class="lead">
+        {ROLE} with 10+ years across React, TypeScript, and Node.js.
+      </p>
+      <p class="sub">
+        I build the frontend for a large self-hosted product, and spend the rest of my time on side
+        projects, developer tools, and AI experiments. This is where I write about what I learn
+        along the way.
+      </p>
+      <div class="actions">
+        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
+        <a
+          href={GITHUB_PROFILE_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary"
+        >
+          GitHub
+        </a>
       </div>
     </div>
   </div>
@@ -37,12 +34,7 @@ import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK, GITHUB_PROFILE_LINK } from '../..
     padding-top: var(--space-16);
     padding-bottom: var(--space-8);
   }
-  .hero-inner {
-    position: relative;
-  }
   .intro {
-    position: relative;
-    z-index: 1;
     max-width: var(--container-prose);
   }
   .hero-name {
@@ -66,68 +58,4 @@ import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK, GITHUB_PROFILE_LINK } from '../..
     gap: var(--space-3);
     align-items: center;
   }
-
-  /* signature: warm cursor spotlight across the full hero width */
-  .spotlight {
-    position: absolute;
-    inset: -28px -24px;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 28px;
-    opacity: 0;
-    transition: opacity 0.32s ease;
-    background: radial-gradient(
-      340px circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in srgb, var(--color-accent) 22%, transparent),
-      transparent 70%
-    );
-  }
-  .hero-inner:hover .spotlight {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .spotlight {
-      display: none;
-    }
-  }
 </style>
-
-<script>
-  function initHeroSpotlight() {
-    const hero = document.querySelector<HTMLElement>('#hero .hero-inner');
-    const spot = document.querySelector<HTMLElement>('#hero .spotlight');
-    if (!hero || !spot) return;
-
-    type El = HTMLElement & { __spotCleanup?: () => void };
-    const el = hero as El;
-    if (el.__spotCleanup) el.__spotCleanup();
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const controller = new AbortController();
-    el.__spotCleanup = () => controller.abort();
-
-    let raf = 0;
-    let mx = 0;
-    let my = 0;
-    hero.addEventListener(
-      'pointermove',
-      (e) => {
-        const r = hero.getBoundingClientRect();
-        mx = e.clientX - r.left;
-        my = e.clientY - r.top;
-        if (!raf) {
-          raf = requestAnimationFrame(() => {
-            spot.style.setProperty('--mx', `${mx}px`);
-            spot.style.setProperty('--my', `${my}px`);
-            raf = 0;
-          });
-        }
-      },
-      { signal: controller.signal }
-    );
-  }
-
-  initHeroSpotlight();
-  document.addEventListener('astro:after-swap', initHeroSpotlight);
-</script>

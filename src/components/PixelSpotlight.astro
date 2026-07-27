@@ -1,0 +1,100 @@
+---
+// Page-wide cursor effect: a static dot lattice always visible, plus a warm
+// accent glow quantized into pixels that follows the cursor. Homepage only.
+// See DESIGN.md > Interaction.
+---
+
+<div class="pixel-fx" aria-hidden="true">
+  <div class="fx-dots"></div>
+  <div class="fx-glow"></div>
+</div>
+
+<style>
+  .pixel-fx {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* above the body background, under every section */
+    pointer-events: none;
+    --cell: 12px;
+    --mx: 50vw;
+    --my: 50vh;
+  }
+  .pixel-fx > * {
+    position: absolute;
+    inset: 0;
+  }
+
+  .fx-dots {
+    background-image: radial-gradient(circle at center, var(--color-line) 1.2px, transparent 1.2px);
+    background-size: var(--cell) var(--cell);
+  }
+
+  .fx-glow {
+    opacity: 0;
+    transition: opacity 0.32s ease;
+    background: radial-gradient(
+      340px circle at var(--mx) var(--my),
+      color-mix(in srgb, var(--color-accent) 18%, transparent),
+      transparent 70%
+    );
+    /* Square lattice: two striped masks intersected, so only the cells survive.
+       Fill and tint are held down on purpose: the glow lands under body text,
+       and a denser field drops accent links below AA (see DESIGN.md). */
+    --fill: calc(var(--cell) * 0.45);
+    mask-image:
+      repeating-linear-gradient(to right, #000 0 var(--fill), transparent var(--fill) var(--cell)),
+      repeating-linear-gradient(to bottom, #000 0 var(--fill), transparent var(--fill) var(--cell));
+    mask-composite: intersect;
+  }
+  .pixel-fx[data-lit] .fx-glow {
+    opacity: 1;
+  }
+
+  /* the lattice is static, so it stays; only the cursor glow is motion */
+  @media (prefers-reduced-motion: reduce) {
+    .fx-glow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  let fx: HTMLElement | null = null;
+  let raf = 0;
+  let x = 0;
+  let y = 0;
+
+  // ClientRouter keeps this module alive across swaps, so re-resolve the node
+  // and let the listeners no-op on pages that don't render the layer.
+  function bind() {
+    fx = document.querySelector<HTMLElement>('.pixel-fx');
+  }
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    addEventListener(
+      'pointermove',
+      (e) => {
+        if (!fx || e.pointerType === 'touch') return;
+        x = e.clientX;
+        y = e.clientY;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          if (fx) {
+            fx.style.setProperty('--mx', `${x}px`);
+            fx.style.setProperty('--my', `${y}px`);
+            fx.dataset.lit = '';
+          }
+          raf = 0;
+        });
+      },
+      { passive: true }
+    );
+
+    document.addEventListener('pointerleave', () => {
+      if (fx) delete fx.dataset.lit;
+    });
+  }
+
+  bind();
+  document.addEventListener('astro:after-swap', bind);
+</script>
