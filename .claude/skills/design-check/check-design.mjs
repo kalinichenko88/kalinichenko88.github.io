@@ -146,7 +146,9 @@ for (const [label, re] of forbidden) {
 console.log('\nTheme ids (must stay cloud / cloud-dark for giscus + localStorage):');
 const themes = readFileSync(THEMES, 'utf8');
 for (const id of ['cloud', 'cloud-dark']) {
-  const ok = new RegExp(`id:\\s*['"]${id}['"]`).test(themes);
+  // Matches the quoted literal anywhere in themes.ts: the ids live on the
+  // LIGHT_THEME / DARK_THEME constants, not on an `id:` property.
+  const ok = new RegExp(`['"]${id}['"]`).test(themes);
   if (!ok) hardFail++;
   line(ok, `id '${id}' present`);
 }

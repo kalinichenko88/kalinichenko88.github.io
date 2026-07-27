@@ -2,9 +2,8 @@
 import { getCollection } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
-import { readingTime } from '../../lib/reading-time';
-import { formatDate } from '../../lib/format-date';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -23,11 +22,12 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
+const [lead, ...rest] = posts;
 ---
 
 <Layout title={`Posts tagged: ${tag}`} description={`All blog posts tagged with "${tag}".`}>
   <section class="py-14 md:py-20">
-    <div class="container-content">
+    <div class="container">
       <a
         href="/blog"
         class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
@@ -40,25 +40,9 @@ const { posts } = Astro.props;
         <span class="topic">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
       </div>
 
-      <div class="border-t border-line mt-8">
-        {
-          posts.map((post) => (
-            <article class="group relative py-6 border-b border-line">
-              <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title} />
-              <h2 class="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-accent-text transition-colors">
-                {post.data.title}
-              </h2>
-              <p class="text-foreground-secondary text-sm mb-2 line-clamp-2">
-                {post.data.description}
-              </p>
-              <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
-                <span>
-                  {formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
-                </span>
-              </div>
-            </article>
-          ))
-        }
+      <div class="grid gap-6 md:grid-cols-2 mt-8">
+        {lead && <PostCard post={lead} featured class="md:col-span-2" />}
+        {rest.map((post) => <PostCard post={post} />)}
       </div>
     </div>
   </section>
