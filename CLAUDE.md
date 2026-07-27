@@ -35,6 +35,18 @@ This is an Astro 7 personal portfolio site with:
 - `content/posts/*.md` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`
 - `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars`
 
+### Tags
+
+Every tag becomes a page under `/tags/<tag>`, so a tag only earns its place if it groups posts. Keep the vocabulary small and reuse existing tags before inventing one — check `content/posts/*` first.
+
+- 2 to 3 tags per post. One tool tag (`obsidian`, `neovim`, `claude-code`) plus one or two topic tags (`ai`, `git`, `personal-finance`, `meta`).
+- The first tag is the chip shown on `/blog` (`src/pages/blog/index.astro`), so put the most specific one first.
+- No attribute tags (`plugin`, `markdown`) and no near-synonyms (`tooling` next to `automation`). Both were removed for this reason.
+
+### Post images
+
+Put them in `src/assets/images/` and reference them with a relative path from the markdown file (`../../src/assets/images/foo.png`). Astro's image pipeline then optimizes them and emits `width`/`height`. Images under `public/` are served as-is and skip all of that.
+
 ## Components
 
 ### VideoPlayer (`src/components/VideoPlayer.astro`)

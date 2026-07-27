@@ -2,7 +2,7 @@
 title: 'Budget Planner is now in Obsidian Community Plugins'
 description: 'My Markdown-based budget planner can now be installed directly from Obsidian.'
 pubDate: 2026-07-27
-tags: [obsidian, plugin, markdown, personal-finance]
+tags: [obsidian, personal-finance]
 ---
 
 Yesterday, [Budget Planner](https://community.obsidian.md/plugins/budget-planner) was added to the official Obsidian Community Plugins directory.
