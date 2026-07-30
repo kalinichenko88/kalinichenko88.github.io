@@ -2,7 +2,7 @@
 title: 'The Best Pull Request Deletes More Than It Adds'
 description: 'How Ponytail became a useful cleanup stage in my Claude Code review workflow.'
 pubDate: 2026-07-30
-tags: [claude-code, code-review, refactoring]
+tags: [claude-code, ai, code-review, refactoring]
 ---
 
 A cleanup pass across three of my repositories removed **765 net source lines**. On [this site](https://github.com/kalinichenko88/kalinichenko88.github.io) alone, it removed 668 lines and three dependencies, while cutting the build from 4.65 seconds to roughly 580 milliseconds.
