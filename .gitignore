@@ -4,6 +4,7 @@
 .astro/
 .cursor/
 .playwright-mcp/
+.worktrees/
 
 # Claude Code: skills, hooks, and settings.json are shared; personal settings stay local
 .claude/settings.local.json
