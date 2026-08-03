@@ -16,7 +16,7 @@ const [lead, ...rest] = posts;
 >
   <section class="py-14 md:py-20">
     <div class="container">
-      <div class="flex items-center gap-3 mb-3">
+      <div class="flex items-center gap-3 mb-3" data-reveal="heading">
         <h1 class="text-foreground">Writing</h1>
         <a
           href="/rss.xml"
@@ -27,16 +27,20 @@ const [lead, ...rest] = posts;
           <RssIcon class="w-5 h-5" />
         </a>
       </div>
-      <p class="text-foreground-secondary mb-10 max-w-prose">
+      <p
+        class="text-foreground-secondary mb-10 max-w-prose"
+        data-reveal="content"
+        data-stagger-index="1"
+      >
         AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way.
       </p>
 
       {
         posts.length > 0 ? (
           <div class="grid gap-6 md:grid-cols-2">
-            {lead && <PostCard post={lead} featured />}
-            {rest.map((post) => (
-              <PostCard post={post} />
+            {lead && <PostCard post={lead} featured motionIndex={1} />}
+            {rest.map((post, index) => (
+              <PostCard post={post} motionIndex={index + 2} />
             ))}
           </div>
         ) : (

@@ -77,6 +77,15 @@
   --motion-depth-distance: 28px;
 }
 
+[data-motion-limit='calm'] {
+  --motion-reveal-distance: 14px;
+  --motion-reveal-duration: 560ms;
+  --motion-stagger: 60ms;
+  --motion-pointer-translation: 0;
+  --motion-pointer-rotation: 0;
+  --motion-depth-distance: 0px;
+}
+
 /* ============================================
    THEME 1: Cloud Light (Default) - Soft, airy, approachable
    ============================================ */
@@ -621,6 +630,7 @@
 
 .card-lift:hover {
   --card-lift-y: -4px;
+  transform: translateY(var(--card-lift-y));
 }
 
 [data-theme='cloud'] .card-lift:hover,
@@ -678,7 +688,9 @@
     rotateZ(var(--motion-entry-rotate));
   transition:
     opacity var(--motion-reveal-duration) var(--motion-ease),
-    transform var(--motion-reveal-duration) var(--motion-ease);
+    transform var(--motion-reveal-duration) var(--motion-ease),
+    box-shadow var(--transition-base),
+    border-color var(--transition-fast);
   transition-delay: calc(var(--motion-index, 0) * var(--motion-stagger));
 }
 
@@ -769,12 +781,23 @@
 @media (prefers-reduced-motion: reduce) {
   [data-motion-ready] [data-reveal],
   [data-motion-ready] [data-reveal].is-revealed,
+  [data-motion-ready][data-motion='experimental'] .hero-name .motion-word,
   .hero-name .motion-word {
     opacity: 1;
     transform: none;
     translate: none;
     animation: none;
     transition: none;
+  }
+
+  [data-motion='expressive'] .divider::after,
+  [data-motion='experimental'] .divider::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .card-lift:hover {
+    transform: none;
   }
 }
 

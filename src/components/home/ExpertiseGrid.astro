@@ -13,8 +13,13 @@ const { expertise } = Astro.props;
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
   {
-    expertise.map((area) => (
-      <div class="card card-lift p-5">
+    expertise.map((area, index) => (
+      <div
+        class="card card-lift p-5"
+        data-reveal="card"
+        data-stagger-index={index + 1}
+        style={`--motion-index: ${index + 1}`}
+      >
         <h3 class="font-display font-semibold text-foreground mb-4">{area.category}</h3>
         <div class="flex flex-wrap gap-2">
           {area.skills.map((skill) => (

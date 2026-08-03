@@ -20,3 +20,20 @@ test('does not add a JavaScript scroll listener', async () => {
   );
   assert.doesNotMatch(controller, /addEventListener\(['"]scroll/);
 });
+
+test('reduced motion overrides profile-only choreography', () => {
+  const reducedMotion = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
+  assert.match(
+    reducedMotion,
+    /\[data-motion-ready\]\[data-motion='experimental'\] \.hero-name \.motion-word/
+  );
+  assert.match(reducedMotion, /\.divider::after/);
+});
+
+test('preserves card lift and surface transitions outside reveal composition', () => {
+  assert.match(css, /\.card-lift:hover\s*{[^}]*--card-lift-y:[^}]*transform:/s);
+  assert.match(
+    css,
+    /\[data-motion-ready\] \[data-reveal\]\s*{[^}]*box-shadow[^}]*border-color/s
+  );
+});

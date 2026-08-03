@@ -7,9 +7,11 @@ type Props = {
   post: CollectionEntry<'posts'>;
   /** The lead card: spans the full grid width and gets the larger type. */
   featured?: boolean;
+  /** Stable sequence position for profile-based entry motion. */
+  motionIndex?: number;
 };
 
-const { post, featured = false } = Astro.props;
+const { post, featured = false, motionIndex = 0 } = Astro.props;
 ---
 
 <article
@@ -17,6 +19,9 @@ const { post, featured = false } = Astro.props;
     'card card-lift group relative flex flex-col p-6',
     featured && 'md:col-span-2 md:p-8',
   ]}
+  data-reveal="card"
+  data-stagger-index={motionIndex}
+  style={`--motion-index: ${motionIndex}`}
 >
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
   <h2

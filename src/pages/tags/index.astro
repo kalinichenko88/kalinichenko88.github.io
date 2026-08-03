@@ -19,23 +19,31 @@ const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 <Layout title="Tags" description="Browse all blog post tags.">
   <section class="py-14 md:py-20">
     <div class="container">
-      <a
-        href="/blog"
-        class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
-      >
-        <ArrowLeftIcon class="w-4 h-4" />
-        Back to blog
-      </a>
-      <h1 class="text-foreground mb-3">All tags</h1>
-      <p class="text-foreground-secondary mb-10">
-        {tags.length}
-        {tags.length === 1 ? 'tag' : 'tags'}
-      </p>
+      <div data-reveal="heading">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeftIcon class="w-4 h-4" />
+          Back to blog
+        </a>
+        <h1 class="text-foreground mb-3">All tags</h1>
+        <p class="text-foreground-secondary mb-10">
+          {tags.length}
+          {tags.length === 1 ? 'tag' : 'tags'}
+        </p>
+      </div>
 
       <div class="flex flex-wrap gap-3">
         {
-          tags.map(([tag, count]) => (
-            <a href={`/tags/${tag}`} class="tag">
+          tags.map(([tag, count], index) => (
+            <a
+              href={`/tags/${tag}`}
+              class="tag"
+              data-reveal="card"
+              data-stagger-index={index + 1}
+              style={`--motion-index: ${index + 1}`}
+            >
               {tag}
               <span class="ml-1.5 text-foreground-tertiary">{count}</span>
             </a>
