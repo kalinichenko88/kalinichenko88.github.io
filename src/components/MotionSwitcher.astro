@@ -1,0 +1,247 @@
+---
+import CheckIcon from '../assets/icons/check.svg';
+import ChevronDownIcon from '../assets/icons/chevron-down.svg';
+import { MOTION_OPTIONS } from '../config/motion';
+---
+
+<motion-switcher class="motion-switcher">
+  <button type="button" class="motion-trigger" aria-expanded="false" aria-controls="motion-panel">
+    <span data-motion-trigger-label>Motion: Calm</span>
+    <ChevronDownIcon class="motion-chevron" />
+  </button>
+
+  <div id="motion-panel" class="motion-panel" hidden>
+    <fieldset>
+      <legend class="sr-only">Motion profile</legend>
+      {
+        MOTION_OPTIONS.map((option) => (
+          <label class="motion-option">
+            <input type="radio" name="motion-profile" value={option.id} />
+            <span>
+              <strong>{option.label}</strong>
+              <small>{option.description}</small>
+            </span>
+            <CheckIcon class="motion-check" />
+          </label>
+        ))
+      }
+    </fieldset>
+  </div>
+</motion-switcher>
+
+<script>
+  import {
+    DEFAULT_MOTION_PROFILE,
+    MOTION_CHANGED_EVENT,
+    MOTION_STORAGE_KEY,
+    isMotionProfile,
+  } from '../config/motion';
+
+  class MotionSwitcherElement extends HTMLElement {
+    private listeners: AbortController | null = null;
+
+    connectedCallback() {
+      this.listeners?.abort();
+      this.listeners = new AbortController();
+      const { signal } = this.listeners;
+      const trigger = this.querySelector<HTMLButtonElement>('.motion-trigger');
+      const panel = this.querySelector<HTMLElement>('.motion-panel');
+      const label = this.querySelector<HTMLElement>('[data-motion-trigger-label]');
+      const inputs = [...this.querySelectorAll<HTMLInputElement>('input[name="motion-profile"]')];
+      if (!trigger || !panel || !label) return;
+
+      const close = (restoreFocus = false) => {
+        panel.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        if (restoreFocus) trigger.focus();
+      };
+      const sync = (profile: string) => {
+        const resolved = isMotionProfile(profile) ? profile : DEFAULT_MOTION_PROFILE;
+        const selected = inputs.find((input) => input.value === resolved);
+        inputs.forEach((input) => (input.checked = input === selected));
+        label.textContent = `Motion: ${selected?.nextElementSibling?.querySelector('strong')?.textContent ?? 'Calm'}`;
+      };
+      const apply = (profile: string) => {
+        if (!isMotionProfile(profile)) return;
+        document.documentElement.dataset.motion = profile;
+        try {
+          localStorage.setItem(MOTION_STORAGE_KEY, profile);
+        } catch {
+          // Storage can be blocked; the root attribute still updates for this visit.
+        }
+        sync(profile);
+        window.dispatchEvent(new CustomEvent(MOTION_CHANGED_EVENT, { detail: { profile } }));
+        close();
+      };
+
+      sync(document.documentElement.dataset.motion ?? DEFAULT_MOTION_PROFILE);
+      trigger.addEventListener(
+        'click',
+        () => {
+          panel.hidden = !panel.hidden;
+          trigger.setAttribute('aria-expanded', String(!panel.hidden));
+        },
+        { signal }
+      );
+      this.addEventListener(
+        'change',
+        (event) => {
+          const input = event.target as HTMLInputElement;
+          if (input.name === 'motion-profile') apply(input.value);
+        },
+        { signal }
+      );
+      document.addEventListener(
+        'click',
+        (event) => {
+          if (!this.contains(event.target as Node)) close();
+        },
+        { signal }
+      );
+      document.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key === 'Escape' && !panel.hidden) close(true);
+        },
+        { signal }
+      );
+      window.addEventListener(
+        MOTION_CHANGED_EVENT,
+        (event) => {
+          const profile = (event as CustomEvent<{ profile: string }>).detail.profile;
+          sync(profile);
+        },
+        { signal }
+      );
+    }
+
+    disconnectedCallback() {
+      this.listeners?.abort();
+      this.listeners = null;
+    }
+  }
+
+  if (!customElements.get('motion-switcher')) {
+    customElements.define('motion-switcher', MotionSwitcherElement);
+  }
+</script>
+
+<style>
+  .motion-switcher {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 80;
+    font-family: var(--font-body);
+  }
+
+  .motion-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.12);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .motion-trigger:hover {
+    border-color: var(--color-accent);
+  }
+
+  .motion-trigger:focus-visible,
+  .motion-option:has(input:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .motion-chevron {
+    width: 1rem;
+    height: 1rem;
+    transition: transform var(--transition-fast);
+  }
+
+  .motion-trigger[aria-expanded='true'] .motion-chevron {
+    transform: rotate(180deg);
+  }
+
+  .motion-panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--space-2));
+    width: min(20rem, calc(100vw - 2rem));
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface-elevated);
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.16);
+  }
+
+  .motion-panel[hidden] {
+    display: none;
+  }
+
+  fieldset {
+    display: grid;
+    gap: var(--space-1);
+    border: 0;
+  }
+
+  .motion-option {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+
+  .motion-option:hover {
+    background: var(--color-bg-subtle);
+    color: var(--color-text);
+  }
+
+  .motion-option input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: var(--color-accent);
+  }
+
+  .motion-option span {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .motion-option strong {
+    color: var(--color-text);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .motion-option small {
+    color: var(--color-text-tertiary);
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .motion-check {
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-accent);
+    opacity: 0;
+  }
+
+  .motion-option:has(input:checked) .motion-check {
+    opacity: 1;
+  }
+</style>
