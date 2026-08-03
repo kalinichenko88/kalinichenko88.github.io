@@ -42,3 +42,7 @@ test('staggers reveal properties without delaying card interaction', () => {
     /transition-delay:\s*(?:calc\(var\(--motion-index, 0\) \* var\(--motion-stagger\)\),\s*){3}0ms,/
   );
 });
+
+test('replay reset bypasses transitions while restoring the hidden state', () => {
+  assert.match(css, /\[data-reveal\]\.is-replay-reset\s*{[^}]*transition: none/s);
+});

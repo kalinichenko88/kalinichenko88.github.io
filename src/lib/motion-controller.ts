@@ -30,6 +30,8 @@ export class MotionController {
   private frame = 0;
   private activeReactive: HTMLElement | null = null;
   private pendingPointer: PendingPointer | null = null;
+  private replayFrame = 0;
+  private replayElements: HTMLElement[] = [];
   private started = false;
 
   start(): void {
@@ -46,6 +48,7 @@ export class MotionController {
   }
 
   initPage(): void {
+    this.finishReplay();
     this.observer?.disconnect();
     this.resetReactive();
 
@@ -137,7 +140,10 @@ export class MotionController {
   }
 
   private replayVisible(): void {
+    this.finishReplay();
     this.resetReactive();
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const visible = [...document.querySelectorAll<HTMLElement>('[data-reveal].is-revealed')].filter(
       (element) => {
         const rect = element.getBoundingClientRect();
@@ -145,11 +151,30 @@ export class MotionController {
       }
     );
 
-    visible.forEach((element) => element.classList.remove('is-revealed'));
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        visible.forEach((element) => element.classList.add('is-revealed'));
-      })
-    );
+    this.replayElements = visible;
+    visible.forEach((element) => {
+      element.classList.add('is-replay-reset');
+      element.classList.remove('is-revealed');
+    });
+    this.replayFrame = requestAnimationFrame(() => {
+      this.replayFrame = requestAnimationFrame(() => {
+        visible.forEach((element) => {
+          element.classList.remove('is-replay-reset');
+          element.classList.add('is-revealed');
+        });
+        this.replayFrame = 0;
+        this.replayElements = [];
+      });
+    });
+  }
+
+  private finishReplay(): void {
+    cancelAnimationFrame(this.replayFrame);
+    this.replayFrame = 0;
+    this.replayElements.forEach((element) => {
+      element.classList.remove('is-replay-reset');
+      element.classList.add('is-revealed');
+    });
+    this.replayElements = [];
   }
 }

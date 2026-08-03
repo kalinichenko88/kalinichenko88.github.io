@@ -28,3 +28,17 @@ test('performs pointer layout reads inside the scheduled frame', async () => {
   assert.ok(geometryRead > scheduledFrame);
   assert.ok(styleRead > scheduledFrame);
 });
+
+test('replay snaps elements to their start state before revealing again', async () => {
+  const source = await readFile(
+    new URL('../src/lib/motion-controller.ts', import.meta.url),
+    'utf8'
+  );
+  assert.match(source, /classList\.add\('is-replay-reset'\)/);
+  assert.match(source, /classList\.remove\('is-replay-reset'\)/);
+
+  const firstFrame = source.indexOf('this.replayFrame = requestAnimationFrame');
+  const secondFrame = source.indexOf('this.replayFrame = requestAnimationFrame', firstFrame + 1);
+  const resetRelease = source.indexOf("classList.remove('is-replay-reset')");
+  assert.ok(resetRelease > secondFrame, 'reset must remain active for one complete frame');
+});

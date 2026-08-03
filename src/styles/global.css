@@ -709,6 +709,15 @@
   opacity: 1;
 }
 
+[data-motion-ready] [data-reveal].is-replay-reset {
+  transition: none;
+}
+
+[data-motion-ready] [data-reveal].is-replay-reset .motion-word,
+[data-motion-ready] .divider.is-replay-reset::after {
+  transition: none;
+}
+
 [data-stagger-index='1'] {
   --motion-index: 1;
 }
