@@ -42,7 +42,7 @@ const projects = (await getCollection('projects'))
 <Layout>
   <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
   <HeroSection />
-  <div class="container"><hr class="divider" /></div>
+  <div class="container"><hr class="divider" data-reveal="content" /></div>
   <ProjectsSection projects={projects} githubProfileLink={GITHUB_PROFILE_LINK} />
   {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />

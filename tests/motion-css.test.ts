@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+
+const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
+
+test('defines all motion profiles and progressive enhancement guards', () => {
+  assert.match(css, /\[data-motion='calm'\]/);
+  assert.match(css, /\[data-motion='expressive'\]/);
+  assert.match(css, /\[data-motion='experimental'\]/);
+  assert.match(css, /\[data-motion-ready\] \[data-reveal\]/);
+  assert.match(css, /@supports \(animation-timeline: view\(\)\)/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
+});
+
+test('does not add a JavaScript scroll listener', async () => {
+  const controller = await readFile(
+    new URL('../src/lib/motion-controller.ts', import.meta.url),
+    'utf8'
+  );
+  assert.doesNotMatch(controller, /addEventListener\(['"]scroll/);
+});

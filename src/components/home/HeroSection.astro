@@ -1,20 +1,31 @@
 ---
 import { AUTHOR_NAME, ROLE, MAIL_PROFILE_LINK, GITHUB_PROFILE_LINK } from '../../consts';
+
+const authorWords = AUTHOR_NAME.split(/\s+/);
 ---
 
 <section class="hero" id="hero">
   <div class="container">
     <div class="intro">
-      <h1 class="hero-name">{AUTHOR_NAME}</h1>
-      <p class="lead">
+      <h1 class="hero-name" data-reveal="hero" data-stagger-index="0">
+        {
+          authorWords.map((word, index) => (
+            <>
+              <span class="motion-word" style={`--word-index: ${index}`}>{word}</span>
+              {index < authorWords.length - 1 && ' '}
+            </>
+          ))
+        }
+      </h1>
+      <p class="lead" data-reveal="hero" data-stagger-index="1">
         {ROLE} with 10+ years across React, TypeScript, and Node.js.
       </p>
-      <p class="sub">
+      <p class="sub" data-reveal="hero" data-stagger-index="2">
         I build the frontend for a large self-hosted product, and spend the rest of my time on side
         projects, developer tools, and AI experiments. This is where I write about what I learn
         along the way.
       </p>
-      <div class="actions">
+      <div class="actions" data-reveal="hero" data-stagger-index="3">
         <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
         <a
           href={GITHUB_PROFILE_LINK}

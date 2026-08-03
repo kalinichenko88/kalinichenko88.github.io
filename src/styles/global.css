@@ -47,6 +47,36 @@
   --container-prose: 680px;
 }
 
+/* Motion profile: calm by default */
+:root,
+[data-motion='calm'] {
+  --motion-reveal-distance: 14px;
+  --motion-reveal-duration: 560ms;
+  --motion-stagger: 60ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-pointer-translation: 0;
+  --motion-pointer-rotation: 0;
+  --motion-depth-distance: 0px;
+}
+
+[data-motion='expressive'] {
+  --motion-reveal-distance: 28px;
+  --motion-reveal-duration: 700ms;
+  --motion-stagger: 90ms;
+  --motion-pointer-translation: 4;
+  --motion-pointer-rotation: 2;
+  --motion-depth-distance: 16px;
+}
+
+[data-motion='experimental'] {
+  --motion-reveal-distance: 44px;
+  --motion-reveal-duration: 900ms;
+  --motion-stagger: 120ms;
+  --motion-pointer-translation: 7;
+  --motion-pointer-rotation: 3.5;
+  --motion-depth-distance: 28px;
+}
+
 /* ============================================
    THEME 1: Cloud Light (Default) - Soft, airy, approachable
    ============================================ */
@@ -590,7 +620,7 @@
 }
 
 .card-lift:hover {
-  transform: translateY(-4px);
+  --card-lift-y: -4px;
 }
 
 [data-theme='cloud'] .card-lift:hover,
@@ -628,6 +658,123 @@
 @keyframes scroll-progress {
   to {
     transform: scaleX(1);
+  }
+}
+
+/* ============================================
+   Motion Profiles
+   ============================================ */
+
+[data-motion-ready] [data-reveal] {
+  --motion-reveal-y: var(--motion-reveal-distance);
+  --motion-entry-rotate: 0deg;
+  opacity: 0;
+  transform:
+    translate3d(0, var(--motion-reveal-y), 0)
+    translate3d(var(--motion-pointer-x, 0px), var(--motion-pointer-y, 0px), 0)
+    translateY(var(--card-lift-y, 0px))
+    rotateX(var(--motion-pointer-rx, 0deg))
+    rotateY(var(--motion-pointer-ry, 0deg))
+    rotateZ(var(--motion-entry-rotate));
+  transition:
+    opacity var(--motion-reveal-duration) var(--motion-ease),
+    transform var(--motion-reveal-duration) var(--motion-ease);
+  transition-delay: calc(var(--motion-index, 0) * var(--motion-stagger));
+}
+
+[data-motion-ready] [data-reveal].is-revealed {
+  --motion-reveal-y: 0px;
+  --motion-entry-rotate: 0deg;
+  opacity: 1;
+}
+
+[data-stagger-index='1'] {
+  --motion-index: 1;
+}
+
+[data-stagger-index='2'] {
+  --motion-index: 2;
+}
+
+[data-stagger-index='3'] {
+  --motion-index: 3;
+}
+
+[data-stagger-index='4'] {
+  --motion-index: 4;
+}
+
+[data-motion='experimental'] [data-reveal='card']:not(.is-revealed):nth-child(odd) {
+  --motion-entry-rotate: -1.5deg;
+}
+
+[data-motion='experimental'] [data-reveal='card']:not(.is-revealed):nth-child(even) {
+  --motion-entry-rotate: 1.5deg;
+}
+
+[data-motion='expressive'] .divider::after,
+[data-motion='experimental'] .divider::after {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-reveal-duration) var(--motion-ease);
+}
+
+[data-motion='expressive'] .divider.is-revealed::after,
+[data-motion='experimental'] .divider.is-revealed::after {
+  transform: scaleX(1);
+}
+
+.hero-name .motion-word {
+  display: inline;
+}
+
+[data-motion-ready][data-motion='experimental'] .hero-name[data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-motion-ready][data-motion='experimental'] .hero-name .motion-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.75em, 0) rotate(2deg);
+  transition:
+    opacity var(--motion-reveal-duration) var(--motion-ease),
+    transform var(--motion-reveal-duration) var(--motion-ease);
+  transition-delay: calc(var(--word-index, 0) * var(--motion-stagger));
+}
+
+[data-motion-ready][data-motion='experimental'] .hero-name.is-revealed .motion-word {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  [data-motion='expressive'] [data-scroll-depth],
+  [data-motion='experimental'] [data-scroll-depth] {
+    animation: motion-scroll-depth linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+}
+
+@keyframes motion-scroll-depth {
+  from {
+    translate: 0 calc(var(--motion-depth-distance) * -1);
+  }
+  to {
+    translate: 0 var(--motion-depth-distance);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-ready] [data-reveal],
+  [data-motion-ready] [data-reveal].is-revealed,
+  .hero-name .motion-word {
+    opacity: 1;
+    transform: none;
+    translate: none;
+    animation: none;
+    transition: none;
   }
 }
 

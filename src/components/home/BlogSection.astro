@@ -15,7 +15,7 @@ const [lead, ...rest] = latestPosts;
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
   <div class="container">
-    <div class="flex items-end justify-between gap-4 mb-8">
+    <div class="flex items-end justify-between gap-4 mb-8" data-reveal="heading">
       <h2 class="text-foreground">Writing</h2>
       <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
         Read all
@@ -25,7 +25,11 @@ const [lead, ...rest] = latestPosts;
 
     {
       lead && (
-        <a href={`/blog/${lead.id}`} class="block group mb-8 max-w-prose">
+        <a
+          href={`/blog/${lead.id}`}
+          class="block group mb-8 max-w-prose"
+          data-reveal="content"
+        >
           <h3 class="font-display font-semibold text-2xl text-foreground mb-3 group-hover:text-accent transition-colors">
             {lead.data.title}
           </h3>
@@ -43,10 +47,13 @@ const [lead, ...rest] = latestPosts;
     {
       rest.length > 0 && (
         <div class="border-t border-line max-w-prose">
-          {rest.map((post) => (
+          {rest.map((post, index) => (
             <a
               href={`/blog/${post.id}`}
               class="flex items-baseline gap-4 py-4 border-b border-line group"
+              data-reveal="card"
+              data-stagger-index={index + 1}
+              style={`--motion-index: ${index + 1}`}
             >
               <time class="font-mono text-xs text-foreground-tertiary w-24 shrink-0">
                 {formatDate(post.data.pubDate)}
