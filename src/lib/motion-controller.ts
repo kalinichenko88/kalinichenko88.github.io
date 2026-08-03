@@ -2,6 +2,11 @@ import { MOTION_CHANGED_EVENT } from '../config/motion.ts';
 
 type PointerRect = Pick<DOMRect, 'left' | 'top' | 'width' | 'height'>;
 type PointerCaps = { translation: number; rotation: number };
+type PendingPointer = {
+  target: HTMLElement;
+  clientX: number;
+  clientY: number;
+};
 
 export function pointerMotion(
   clientX: number,
@@ -24,6 +29,7 @@ export class MotionController {
   private observer: IntersectionObserver | null = null;
   private frame = 0;
   private activeReactive: HTMLElement | null = null;
+  private pendingPointer: PendingPointer | null = null;
   private started = false;
 
   start(): void {
@@ -85,26 +91,40 @@ export class MotionController {
 
     if (this.activeReactive !== target) this.resetReactive();
     this.activeReactive = target;
-
-    const rect = target.getBoundingClientRect();
-    const styles = getComputedStyle(document.documentElement);
-    const caps = {
-      translation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0,
-      rotation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-rotation')) || 0,
+    this.pendingPointer = {
+      target,
+      clientX: event.clientX,
+      clientY: event.clientY,
     };
-    const values = pointerMotion(event.clientX, event.clientY, rect, caps);
 
-    cancelAnimationFrame(this.frame);
+    if (this.frame) return;
+
     this.frame = requestAnimationFrame(() => {
-      target.style.setProperty('--motion-pointer-x', `${values.x}px`);
-      target.style.setProperty('--motion-pointer-y', `${values.y}px`);
-      target.style.setProperty('--motion-pointer-rx', `${values.rx}deg`);
-      target.style.setProperty('--motion-pointer-ry', `${values.ry}deg`);
+      this.frame = 0;
+      const pending = this.pendingPointer;
+      this.pendingPointer = null;
+      if (!pending || this.activeReactive !== pending.target) return;
+
+      const rect = pending.target.getBoundingClientRect();
+      const styles = getComputedStyle(document.documentElement);
+      const caps = {
+        translation:
+          Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0,
+        rotation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-rotation')) || 0,
+      };
+      const values = pointerMotion(pending.clientX, pending.clientY, rect, caps);
+
+      pending.target.style.setProperty('--motion-pointer-x', `${values.x}px`);
+      pending.target.style.setProperty('--motion-pointer-y', `${values.y}px`);
+      pending.target.style.setProperty('--motion-pointer-rx', `${values.rx}deg`);
+      pending.target.style.setProperty('--motion-pointer-ry', `${values.ry}deg`);
     });
   }
 
   private resetReactive(): void {
     cancelAnimationFrame(this.frame);
+    this.frame = 0;
+    this.pendingPointer = null;
     for (const name of [
       '--motion-pointer-x',
       '--motion-pointer-y',

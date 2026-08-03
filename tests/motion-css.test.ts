@@ -31,11 +31,14 @@ test('reduced motion overrides profile-only choreography', () => {
   assert.match(reducedMotion, /\.scroll-progress/);
 });
 
-test('preserves card lift and surface transitions outside reveal composition', () => {
+test('staggers reveal properties without delaying card interaction', () => {
   assert.match(css, /\.card-lift:hover\s*{[^}]*--card-lift-y:[^}]*transform:/s);
-  assert.match(css, /\[data-motion-ready\] \[data-reveal\]\s*{[^}]*box-shadow[^}]*border-color/s);
   assert.match(
     css,
-    /transition-delay:\s*calc\(var\(--motion-index, 0\) \* var\(--motion-stagger\)\),\s*0ms,/
+    /transition:\s*opacity[^;]+translate[^;]+rotate[^;]+transform[^;]+box-shadow[^;]+border-color/s
+  );
+  assert.match(
+    css,
+    /transition-delay:\s*(?:calc\(var\(--motion-index, 0\) \* var\(--motion-stagger\)\),\s*){3}0ms,/
   );
 });
