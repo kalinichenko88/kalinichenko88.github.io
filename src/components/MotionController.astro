@@ -1,0 +1,12 @@
+<script>
+  import { MotionController } from '../lib/motion-controller';
+
+  declare global {
+    interface Window {
+      __motionController?: MotionController;
+    }
+  }
+
+  window.__motionController ??= new MotionController();
+  window.__motionController.start();
+</script>
