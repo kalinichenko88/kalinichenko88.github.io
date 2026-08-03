@@ -679,19 +679,16 @@
   --motion-reveal-y: var(--motion-reveal-distance);
   --motion-entry-rotate: 0deg;
   opacity: 0;
-  transform:
-    translate3d(0, var(--motion-reveal-y), 0)
+  transform: translate3d(0, var(--motion-reveal-y), 0)
     translate3d(var(--motion-pointer-x, 0px), var(--motion-pointer-y, 0px), 0)
-    translateY(var(--card-lift-y, 0px))
-    rotateX(var(--motion-pointer-rx, 0deg))
-    rotateY(var(--motion-pointer-ry, 0deg))
-    rotateZ(var(--motion-entry-rotate));
+    translateY(var(--card-lift-y, 0px)) rotateX(var(--motion-pointer-rx, 0deg))
+    rotateY(var(--motion-pointer-ry, 0deg)) rotateZ(var(--motion-entry-rotate));
   transition:
     opacity var(--motion-reveal-duration) var(--motion-ease),
     transform var(--motion-reveal-duration) var(--motion-ease),
     box-shadow var(--transition-base),
     border-color var(--transition-fast);
-  transition-delay: calc(var(--motion-index, 0) * var(--motion-stagger));
+  transition-delay: calc(var(--motion-index, 0) * var(--motion-stagger)), 0ms, 0ms, 0ms;
 }
 
 [data-motion-ready] [data-reveal].is-revealed {
@@ -798,6 +795,11 @@
 
   .card-lift:hover {
     transform: none;
+  }
+
+  .scroll-progress {
+    animation: none;
+    transform: scaleX(0);
   }
 }
 

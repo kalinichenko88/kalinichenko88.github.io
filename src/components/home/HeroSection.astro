@@ -11,7 +11,9 @@ const authorWords = AUTHOR_NAME.split(/\s+/);
         {
           authorWords.map((word, index) => (
             <>
-              <span class="motion-word" style={`--word-index: ${index}`}>{word}</span>
+              <span class="motion-word" style={`--word-index: ${index}`}>
+                {word}
+              </span>
               {index < authorWords.length - 1 && ' '}
             </>
           ))

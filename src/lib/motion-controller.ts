@@ -89,8 +89,7 @@ export class MotionController {
     const rect = target.getBoundingClientRect();
     const styles = getComputedStyle(document.documentElement);
     const caps = {
-      translation:
-        Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0,
+      translation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0,
       rotation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-rotation')) || 0,
     };
     const values = pointerMotion(event.clientX, event.clientY, rect, caps);

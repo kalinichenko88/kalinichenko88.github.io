@@ -25,11 +25,7 @@ const [lead, ...rest] = latestPosts;
 
     {
       lead && (
-        <a
-          href={`/blog/${lead.id}`}
-          class="block group mb-8 max-w-prose"
-          data-reveal="content"
-        >
+        <a href={`/blog/${lead.id}`} class="block group mb-8 max-w-prose" data-reveal="content">
           <h3 class="font-display font-semibold text-2xl text-foreground mb-3 group-hover:text-accent transition-colors">
             {lead.data.title}
           </h3>

@@ -28,12 +28,14 @@ test('reduced motion overrides profile-only choreography', () => {
     /\[data-motion-ready\]\[data-motion='experimental'\] \.hero-name \.motion-word/
   );
   assert.match(reducedMotion, /\.divider::after/);
+  assert.match(reducedMotion, /\.scroll-progress/);
 });
 
 test('preserves card lift and surface transitions outside reveal composition', () => {
   assert.match(css, /\.card-lift:hover\s*{[^}]*--card-lift-y:[^}]*transform:/s);
+  assert.match(css, /\[data-motion-ready\] \[data-reveal\]\s*{[^}]*box-shadow[^}]*border-color/s);
   assert.match(
     css,
-    /\[data-motion-ready\] \[data-reveal\]\s*{[^}]*box-shadow[^}]*border-color/s
+    /transition-delay:\s*calc\(var\(--motion-index, 0\) \* var\(--motion-stagger\)\),\s*0ms,/
   );
 });

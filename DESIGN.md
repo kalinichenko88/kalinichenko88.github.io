@@ -238,7 +238,42 @@ new one-off styles.
 
 ## Interaction
 
-Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
+Motion is always motivated. The selectable profile changes intensity without
+changing content, layout, or information hierarchy:
+
+- `calm` is the default (`MOTION_INTENSITY ~3`): short, soft reveal and modest
+  stagger only.
+- `expressive` (`MOTION_INTENSITY ~6`) adds stronger sequencing, divider
+  drawing, bounded card response, and subtle scroll depth.
+- `experimental` (`MOTION_INTENSITY ~9`) adds kinetic hero words, stronger
+  depth, and opposing card entry rotation. The movement remains bounded.
+
+The active id lives on the root `data-motion` attribute. It persists under
+`localStorage['motion-profile']`, and the fixed bottom-right
+`MotionSwitcher.astro` exposes the three choices as native radio controls. The
+inline initializer in `Layout.astro` resolves the stored profile before paint
+and preserves it across Astro view transitions.
+
+Motion coverage is declarative:
+
+- `data-reveal="hero|heading|card|content"` opts a major structural block into
+  IntersectionObserver reveal.
+- `data-stagger-index` or `--motion-index` gives sibling blocks a stable
+  sequence.
+- `data-reactive` enables bounded pointer response, while `data-scroll-depth`
+  opts into the CSS `view()` timeline when supported.
+- `data-motion-limit="calm"` locally caps a block that should stay quiet, such
+  as the 404 message.
+
+Only major structural blocks may be annotated. Article paragraphs and the
+rendered `<Content />` prose remain static. Hidden states are gated by
+`data-motion-ready`, so disabling JavaScript leaves every piece of content
+visible. `prefers-reduced-motion: reduce` forces every profile to an immediate,
+static state.
+
+The profile system uses native CSS, IntersectionObserver, and one rAF-throttled
+pointer pipeline. Do not add a global scroll listener or a third-party
+animation dependency for it.
 
 - **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
   `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
@@ -289,6 +324,8 @@ scripts — no React/Motion in this project.
   bespoke styles.
 - Separate adjacent default-bg sections with `<hr class="divider" />`.
 - Honor `prefers-reduced-motion` for any motion.
+- Use one motivated `data-reveal` variant for each major structural block that
+  benefits from hierarchy or storytelling. Keep article paragraphs static.
 - Keep the theme swap on `[data-theme='cloud' | 'cloud-dark']` CSS variables.
 
 **Don't**
@@ -303,6 +340,8 @@ scripts — no React/Motion in this project.
 - No portrait or monogram in the intro — the identity is typographic.
 - No section that inverts the theme mid-page.
 - No third theme (the terminal theme was removed).
+- No global JavaScript scroll listeners for reveal, depth, or progress effects.
+- No third-party animation dependency for the motion profile system.
 - Don't use the bright `--color-accent` as small text on a light background
   (fails AA — use `--color-accent-text`).
 
@@ -318,7 +357,8 @@ scripts — no React/Motion in this project.
 5. Separate it from its neighbor with a `.divider`, or give one section a
    `bg-background-subtle` (keep at most one subtle section per view).
 6. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
-   motivated effect.
+   motivated effect. Add `data-reveal` only to a major structural block, and
+   leave article paragraphs unannotated.
 7. Verify: `npm run build` and `npm run lint` are green; the acceptance sweep
    `grep -rniE "terminal|grid-pattern|general sans|section-label|7c5cff|—|–" src/`
    returns nothing new; check the surface in both light and dark.
