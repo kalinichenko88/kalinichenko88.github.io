@@ -1,5 +1,3 @@
-import { MOTION_CHANGED_EVENT } from '../config/motion.ts';
-
 type PointerRect = Pick<DOMRect, 'left' | 'top' | 'width' | 'height'>;
 type PointerCaps = { translation: number; rotation: number };
 type PendingPointer = {
@@ -30,8 +28,6 @@ export class MotionController {
   private frame = 0;
   private activeReactive: HTMLElement | null = null;
   private pendingPointer: PendingPointer | null = null;
-  private replayFrame = 0;
-  private replayElements: HTMLElement[] = [];
   private started = false;
 
   start(): void {
@@ -43,12 +39,10 @@ export class MotionController {
       passive: true,
     });
     document.addEventListener('pointerleave', () => this.resetReactive());
-    window.addEventListener(MOTION_CHANGED_EVENT, () => this.replayVisible());
     this.initPage();
   }
 
   initPage(): void {
-    this.finishReplay();
     this.observer?.disconnect();
     this.resetReactive();
 
@@ -62,6 +56,13 @@ export class MotionController {
       elements.forEach((element) => element.classList.add('is-revealed'));
       return;
     }
+
+    // Nodes swapped in by ClientRouter come from an unstyled document, so the
+    // browser starts a 1 -> 0 transition on insert and the reveal never plays.
+    // Snap them to the hidden state with transitions off first.
+    elements.forEach((element) => element.classList.add('is-motion-reset'));
+    void document.body.offsetHeight;
+    elements.forEach((element) => element.classList.remove('is-motion-reset'));
 
     this.observer = new IntersectionObserver(
       (entries) =>
@@ -77,11 +78,7 @@ export class MotionController {
   }
 
   private onPointerMove(event: PointerEvent): void {
-    if (
-      event.pointerType === 'touch' ||
-      matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      document.documentElement.dataset.motion === 'calm'
-    ) {
+    if (event.pointerType === 'touch' || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       this.resetReactive();
       return;
     }
@@ -137,44 +134,5 @@ export class MotionController {
       this.activeReactive?.style.removeProperty(name);
     }
     this.activeReactive = null;
-  }
-
-  private replayVisible(): void {
-    this.finishReplay();
-    this.resetReactive();
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const visible = [...document.querySelectorAll<HTMLElement>('[data-reveal].is-revealed')].filter(
-      (element) => {
-        const rect = element.getBoundingClientRect();
-        return rect.bottom > 0 && rect.top < innerHeight;
-      }
-    );
-
-    this.replayElements = visible;
-    visible.forEach((element) => {
-      element.classList.add('is-replay-reset');
-      element.classList.remove('is-revealed');
-    });
-    this.replayFrame = requestAnimationFrame(() => {
-      this.replayFrame = requestAnimationFrame(() => {
-        visible.forEach((element) => {
-          element.classList.remove('is-replay-reset');
-          element.classList.add('is-revealed');
-        });
-        this.replayFrame = 0;
-        this.replayElements = [];
-      });
-    });
-  }
-
-  private finishReplay(): void {
-    cancelAnimationFrame(this.replayFrame);
-    this.replayFrame = 0;
-    this.replayElements.forEach((element) => {
-      element.classList.remove('is-replay-reset');
-      element.classList.add('is-revealed');
-    });
-    this.replayElements = [];
   }
 }

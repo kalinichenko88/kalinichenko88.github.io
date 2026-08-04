@@ -26,12 +26,3 @@ test('article prose is not annotated for reveal', async () => {
   assert.doesNotMatch(article, /class="prose[^>]+data-reveal/);
   assert.doesNotMatch(article, /data-reveal[^>]+class="prose/);
 });
-
-test('kinetic hero fragments preserve one accessible author name', async () => {
-  const hero = await readFile(
-    new URL('../src/components/home/HeroSection.astro', import.meta.url),
-    'utf8'
-  );
-  assert.match(hero, /<h1[^>]+aria-label=\{AUTHOR_NAME\}/);
-  assert.match(hero, /class="motion-words" aria-hidden="true"/);
-});

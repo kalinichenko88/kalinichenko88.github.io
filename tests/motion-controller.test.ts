@@ -29,16 +29,21 @@ test('performs pointer layout reads inside the scheduled frame', async () => {
   assert.ok(styleRead > scheduledFrame);
 });
 
-test('replay snaps elements to their start state before revealing again', async () => {
+test('snaps swapped-in elements to the hidden state before observing them', async () => {
   const source = await readFile(
     new URL('../src/lib/motion-controller.ts', import.meta.url),
     'utf8'
   );
-  assert.match(source, /classList\.add\('is-replay-reset'\)/);
-  assert.match(source, /classList\.remove\('is-replay-reset'\)/);
+  const initPage = source.slice(
+    source.indexOf('initPage()'),
+    source.indexOf('private onPointerMove')
+  );
+  const add = initPage.indexOf("classList.add('is-motion-reset')");
+  const flush = initPage.indexOf('offsetHeight');
+  const remove = initPage.indexOf("classList.remove('is-motion-reset')");
+  const observe = initPage.indexOf('new IntersectionObserver');
 
-  const firstFrame = source.indexOf('this.replayFrame = requestAnimationFrame');
-  const secondFrame = source.indexOf('this.replayFrame = requestAnimationFrame', firstFrame + 1);
-  const resetRelease = source.indexOf("classList.remove('is-replay-reset')");
-  assert.ok(resetRelease > secondFrame, 'reset must remain active for one complete frame');
+  // Without the forced style flush between add and remove the browser never
+  // computes the hidden state, and the reveal transition is skipped.
+  assert.ok(add >= 0 && flush > add && remove > flush && observe > remove);
 });

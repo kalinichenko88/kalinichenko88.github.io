@@ -238,21 +238,12 @@ new one-off styles.
 
 ## Interaction
 
-Motion is always motivated. The selectable profile changes intensity without
-changing content, layout, or information hierarchy:
-
-- `calm` is the default (`MOTION_INTENSITY ~3`): short, soft reveal and modest
-  stagger only.
-- `expressive` (`MOTION_INTENSITY ~6`) adds stronger sequencing, divider
-  drawing, bounded card response, and subtle scroll depth.
-- `experimental` (`MOTION_INTENSITY ~9`) adds kinetic hero words, stronger
-  depth, and opposing card entry rotation. The movement remains bounded.
-
-The active id lives on the root `data-motion` attribute. It persists under
-`localStorage['motion-profile']`, and the fixed bottom-right
-`MotionSwitcher.astro` exposes the three choices as native radio controls. The
-inline initializer in `Layout.astro` resolves the stored profile before paint
-and preserves it across Astro view transitions.
+Motion is always motivated. There is one intensity, tuned once in the
+`--motion-*` tokens at the top of `global.css`: a 28px/700ms reveal with a 90ms
+stagger, divider drawing, bounded pointer response on cards, and 16px of scroll
+depth. It changes no content, layout, or information hierarchy. There is no
+runtime profile switch, and reintroducing one is a deliberate decision, not a
+default.
 
 Motion coverage is declarative:
 
@@ -262,18 +253,25 @@ Motion coverage is declarative:
   sequence.
 - `data-reactive` enables bounded pointer response, while `data-scroll-depth`
   opts into the CSS `view()` timeline when supported.
-- `data-motion-limit="calm"` locally caps a block that should stay quiet, such
-  as the 404 message.
+- `data-motion-limit` locally quiets a block that should stay still, such as
+  the 404 message.
 
 Only major structural blocks may be annotated. Article paragraphs and the
 rendered `<Content />` prose remain static. Hidden states are gated by
 `data-motion-ready`, so disabling JavaScript leaves every piece of content
-visible. `prefers-reduced-motion: reduce` forces every profile to an immediate,
-static state.
+visible. `prefers-reduced-motion: reduce` forces an immediate, static state.
 
-The profile system uses native CSS, IntersectionObserver, and one rAF-throttled
-pointer pipeline. Do not add a global scroll listener or a third-party
-animation dependency for it.
+`MotionController` snaps freshly swapped-in elements to the hidden state with
+`is-motion-reset` (transitions off) plus a forced reflow before observing them.
+Without that, nodes adopted from ClientRouter's parsed document carry a
+computed style from an unstyled document, the browser starts a 1 -> 0
+transition on insert, and the reveal never plays on navigation. The
+`is-motion-reset` rule must stay after the reveal rules in `global.css` because
+their specificity is equal.
+
+The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
+pipeline. Do not add a global scroll listener or a third-party animation
+dependency for it.
 
 - **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
   `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot

@@ -6,11 +6,9 @@ import PixelSpotlight from './PixelSpotlight.astro';
 import Footer from './Footer.astro';
 import Head from './Head.astro';
 import MotionController from './MotionController.astro';
-import MotionSwitcher from './MotionSwitcher.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { LIGHT_THEME, DARK_THEME } from '../config/themes';
-import { DEFAULT_MOTION_PROFILE, MOTION_OPTIONS, MOTION_STORAGE_KEY } from '../config/motion';
 
 import '../styles/global.css';
 
@@ -55,33 +53,6 @@ const {
         });
       })();
     </script>
-    <script
-      is:inline
-      data-motion-key={MOTION_STORAGE_KEY}
-      data-motion-default={DEFAULT_MOTION_PROFILE}
-      data-motion-values={MOTION_OPTIONS.map(({ id }) => id).join(',')}
-    >
-      (function () {
-        const script = document.currentScript;
-        const key = script.dataset.motionKey;
-        const fallback = script.dataset.motionDefault;
-        const values = script.dataset.motionValues.split(',');
-
-        function motionProfile() {
-          try {
-            const stored = localStorage.getItem(key);
-            return values.includes(stored) ? stored : fallback;
-          } catch {
-            return fallback;
-          }
-        }
-
-        document.documentElement.dataset.motion = motionProfile();
-        document.addEventListener('astro:before-swap', (event) => {
-          event.newDocument.documentElement.dataset.motion = motionProfile();
-        });
-      })();
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Head
@@ -110,7 +81,6 @@ const {
 
     <Footer />
 
-    <MotionSwitcher />
     <MotionController />
 
     <!-- Cloudflare Web Analytics -->
