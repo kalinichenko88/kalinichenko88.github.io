@@ -1,5 +1,4 @@
 type PointerRect = Pick<DOMRect, 'left' | 'top' | 'width' | 'height'>;
-type PointerCaps = { translation: number; rotation: number };
 type PendingPointer = {
   target: HTMLElement;
   clientX: number;
@@ -10,17 +9,12 @@ export function pointerMotion(
   clientX: number,
   clientY: number,
   rect: PointerRect,
-  caps: PointerCaps
+  translation: number
 ) {
   const nx = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width) * 2 - 1));
   const ny = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height) * 2 - 1));
 
-  return {
-    x: nx * caps.translation,
-    y: ny * caps.translation,
-    rx: ny === 0 ? 0 : ny * -caps.rotation,
-    ry: nx * caps.rotation,
-  };
+  return { x: nx * translation, y: ny * translation };
 }
 
 export class MotionController {
@@ -46,8 +40,9 @@ export class MotionController {
     this.observer?.disconnect();
     this.resetReactive();
 
+    // data-motion-ready is owned by the inline head script in Layout.astro, so
+    // the hidden state applies from the first paint instead of after a flash.
     const elements = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
-    document.documentElement.dataset.motionReady = '';
 
     if (
       matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -68,10 +63,15 @@ export class MotionController {
       (entries) =>
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
+          // A block taller than the viewport can never reach 0.18, so it would
+          // stay at opacity 0 forever. Reveal those on first contact instead.
+          if (entry.intersectionRatio < 0.18 && entry.boundingClientRect.height <= innerHeight) {
+            return;
+          }
           entry.target.classList.add('is-revealed');
           this.observer?.unobserve(entry.target);
         }),
-      { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
+      { threshold: [0, 0.18], rootMargin: '0px 0px -8% 0px' }
     );
 
     elements.forEach((element) => this.observer?.observe(element));
@@ -106,18 +106,15 @@ export class MotionController {
       if (!pending || this.activeReactive !== pending.target) return;
 
       const rect = pending.target.getBoundingClientRect();
-      const styles = getComputedStyle(document.documentElement);
-      const caps = {
-        translation:
-          Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0,
-        rotation: Number.parseFloat(styles.getPropertyValue('--motion-pointer-rotation')) || 0,
-      };
-      const values = pointerMotion(pending.clientX, pending.clientY, rect, caps);
+      // Read from the target, not the root, so [data-motion-limit] can quiet
+      // a subtree the way it quiets reveals.
+      const styles = getComputedStyle(pending.target);
+      const translation =
+        Number.parseFloat(styles.getPropertyValue('--motion-pointer-translation')) || 0;
+      const values = pointerMotion(pending.clientX, pending.clientY, rect, translation);
 
       pending.target.style.setProperty('--motion-pointer-x', `${values.x}px`);
       pending.target.style.setProperty('--motion-pointer-y', `${values.y}px`);
-      pending.target.style.setProperty('--motion-pointer-rx', `${values.rx}deg`);
-      pending.target.style.setProperty('--motion-pointer-ry', `${values.ry}deg`);
     });
   }
 
@@ -125,12 +122,7 @@ export class MotionController {
     cancelAnimationFrame(this.frame);
     this.frame = 0;
     this.pendingPointer = null;
-    for (const name of [
-      '--motion-pointer-x',
-      '--motion-pointer-y',
-      '--motion-pointer-rx',
-      '--motion-pointer-ry',
-    ]) {
+    for (const name of ['--motion-pointer-x', '--motion-pointer-y']) {
       this.activeReactive?.style.removeProperty(name);
     }
     this.activeReactive = null;

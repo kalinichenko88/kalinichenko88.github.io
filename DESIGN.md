@@ -251,15 +251,24 @@ Motion coverage is declarative:
   IntersectionObserver reveal.
 - `data-stagger-index` or `--motion-index` gives sibling blocks a stable
   sequence.
-- `data-reactive` enables bounded pointer response, while `data-scroll-depth`
-  opts into the CSS `view()` timeline when supported.
+- `data-reactive` enables a bounded pointer offset (translation only, no tilt:
+  nothing here establishes a `perspective`, so a rotation would be invisible),
+  while `data-scroll-depth` opts into the CSS `view()` timeline when supported.
 - `data-motion-limit` locally quiets a block that should stay still, such as
-  the 404 message.
+  the 404 message. It works for reveal and pointer alike, because the pointer
+  caps are read from the reactive element rather than the root.
+
+The stagger is clamped at `--motion-index` 4 in `global.css`. Long lists would
+otherwise queue up an unbounded delay, and a card at index 20 would sit still
+for nearly two seconds after the reader had already scrolled it into view.
 
 Only major structural blocks may be annotated. Article paragraphs and the
 rendered `<Content />` prose remain static. Hidden states are gated by
-`data-motion-ready`, so disabling JavaScript leaves every piece of content
-visible. `prefers-reduced-motion: reduce` forces an immediate, static state.
+`data-motion-ready`, set by the inline head script in `Layout.astro` so the
+gate is in place before the first paint. That script also drops the gate after
+2s if the motion bundle never runs, and with JavaScript disabled it never sets
+it at all, so content is never left invisible.
+`prefers-reduced-motion: reduce` forces an immediate, static state.
 
 `MotionController` snaps freshly swapped-in elements to the hidden state with
 `is-motion-reset` (transitions off) plus a forced reflow before observing them.

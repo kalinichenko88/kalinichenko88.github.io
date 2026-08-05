@@ -22,6 +22,14 @@ test('hidden states stay gated on data-motion-ready so no-JS renders content', (
   assert.match(css, /\[data-motion-ready\] \.divider::after {[^}]*scaleX\(0\)/s);
 });
 
+test('never pairs the animation shorthand with animation-timeline', () => {
+  // Lightning CSS folds them into one shorthand that browsers reject, which
+  // silently kills the animation in the built CSS only. Longhands survive.
+  for (const [rule] of css.matchAll(/{[^}]*animation-timeline:[^}]*}/gs)) {
+    assert.doesNotMatch(rule, /\banimation:\s/, `shorthand + timeline in: ${rule}`);
+  }
+});
+
 test('does not add a JavaScript scroll listener', async () => {
   const controller = await readFile(
     new URL('../src/lib/motion-controller.ts', import.meta.url),
@@ -45,7 +53,20 @@ test('staggers reveal properties without delaying card interaction', () => {
   );
   assert.match(
     css,
-    /transition-delay:\s*(?:calc\(var\(--motion-index, 0\) \* var\(--motion-stagger\)\),\s*){2}0ms,/
+    /transition-delay:\s*(?:calc\(min\(var\(--motion-index, 0\), 4\) \* var\(--motion-stagger\)\),\s*){2}0ms,/
+  );
+});
+
+test('gates the hidden state before first paint and drops it if the bundle dies', async () => {
+  const layout = await readFile(new URL('../src/components/Layout.astro', import.meta.url), 'utf8');
+  const head = layout.slice(0, layout.indexOf('</head>'));
+  assert.match(head, /dataset\.motionReady = ''/, 'gate must be set in <head>');
+  assert.match(head, /delete document\.documentElement\.dataset\.motionReady/, 'needs a fallback');
+  // The swap drops root attributes the incoming document lacks.
+  assert.match(
+    head,
+    /astro:before-swap[\s\S]{0,200}newDocument\.documentElement\.dataset\.motionReady/,
+    'gate must be carried across view transitions'
   );
 });
 
