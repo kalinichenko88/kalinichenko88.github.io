@@ -3,7 +3,7 @@ version: alpha
 name: kalinichenko.dev
 description: >-
   Content-first editorial personal site. Warm "Terracotta + Slate" palette,
-  Gambetta display serif, one accent, two themes (light/dark). Tokens below are
+  DM Sans throughout, one accent, two themes (light/dark). Tokens below are
   the LIGHT theme (default); dark-theme values live in the "Themes" section of
   the body. Authoritative source of truth is src/styles/global.css CSS custom
   properties — this file mirrors them for humans and agents.
@@ -23,24 +23,24 @@ colors:
   accent-subtle: '#f7ebe4'
 typography:
   h1:
-    fontFamily: Gambetta
+    fontFamily: DM Sans
     fontSize: clamp(2rem, 4vw, 2.75rem)
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: -0.02em
   h2:
-    fontFamily: Gambetta
+    fontFamily: DM Sans
     fontSize: clamp(1.5rem, 3vw, 1.875rem)
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: -0.02em
   h3:
-    fontFamily: Gambetta
+    fontFamily: DM Sans
     fontSize: clamp(1.125rem, 2vw, 1.375rem)
     fontWeight: 600
     lineHeight: 1.2
   hero-name:
-    fontFamily: Gambetta
+    fontFamily: DM Sans
     fontSize: clamp(2.5rem, 5.5vw, 3.6rem)
     fontWeight: 600
   body:
@@ -117,12 +117,13 @@ and _how to apply_ it. The runtime source of truth is
 ## Overview
 
 **Direction: characterful, content-first, editorial.** Warmth and personality
-come from a warm palette, an expressive serif display face, and one restrained
+come from a warm palette, a confident heading scale, and one restrained
 interaction — not from gadgetry. Writing is the primary content; the design
 gets out of its way without going invisible.
 
-- **Fonts:** Gambetta (display/headings, Fontshare), DM Sans (body, Google),
-  JetBrains Mono (code + small mono labels, Google).
+- **Fonts:** DM Sans (headings and body, Google), JetBrains Mono (code + small
+  mono labels, Google). Two families only — headings and body share DM Sans and
+  separate by size, weight and tracking rather than by a second face.
 - **Two themes:** light (`data-theme="cloud"`) and dark
   (`data-theme="cloud-dark"`), plus `auto` (follows system). **Do not rename
   these ids** — the Giscus comment theme map and stored `localStorage`
@@ -171,8 +172,9 @@ for AA; light primary buttons use white on `--color-accent-text`.
 
 ## Typography
 
-- **Headings → Gambetta**, weight 600, tight tracking. Sizes scale with
-  `clamp()` (see tokens). The homepage hero name is the largest step.
+- **Headings → DM Sans**, weight 600, tight tracking (`-0.02em`). Sizes scale
+  with `clamp()` (see tokens). The homepage hero name is the largest step.
+  Headings carry their weight through size and tracking, not a contrasting face.
 - **Body → DM Sans**, 1rem / 1.65 for UI and supporting copy.
 - **Blog post body → `prose` step: 19px / 1.75** on the reading column. This is
   the deliberate "writing is the largest, most comfortable text" rule — the post
@@ -233,7 +235,7 @@ new one-off styles.
 - `.divider` — ornamental section rule with a short terracotta mark.
 - `.link-underline` — text link with an accent underline that draws on hover.
 - `.nav-link` — header nav item with an animated underline indicator.
-- `.prose-custom` — blog article prose (Gambetta headings, 19px/1.75 body,
+- `.prose-custom` — blog article prose (DM Sans headings, 19px/1.75 body,
   accent-text links, tinted code blocks).
 
 ## Interaction
@@ -310,7 +312,7 @@ scripts — no React/Motion in this project.
 
 1. Wrap it in `<section class="py-14 md:py-20">`; text goes in
    `.container-prose`, wide grids in `.container`.
-2. Lead with a Gambetta heading (default `h2`). No eyebrow.
+2. Lead with a `font-display` heading (default `h2`). No eyebrow.
 3. Build from the existing components (`.card`, `.btn-primary`, `.tag`,
    `.topic`, `.divider`, `.link-underline`).
 4. Accent usage: fills → `var(--color-accent)`; small text/links →
