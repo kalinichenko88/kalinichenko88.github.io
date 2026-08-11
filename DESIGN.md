@@ -82,8 +82,9 @@ components:
     rounded: '{rounded.pill}'
     padding: 12px 32px
   btn-secondary:
-    backgroundColor: transparent
+    backgroundColor: '{colors.surface}'
     textColor: '{colors.text}'
+    borderColor: '{colors.text-tertiary}' # 3.07:1 light / 3.69:1 dark — AA for controls
     rounded: '{rounded.pill}'
     padding: 12px 32px
   card:
@@ -149,6 +150,12 @@ both themes.
 
 Large display text (card/post title hover in `text-accent`) may use the bright
 accent — large text only needs 3:1.
+
+**Borders that carry meaning need 3:1 too.** `--color-border` is a hairline for
+separators (rules, card edges, table lines) and lands ~1.2:1 against the page —
+decorative only. When a border is the thing that defines a control, as on
+`.btn-secondary`, it must use `--color-text-tertiary` (3.07:1 light / 3.69:1
+dark) so the control has a perceivable boundary.
 
 ### Themes
 
@@ -228,7 +235,9 @@ new one-off styles.
 - `.card` / `.card-lift` — surface panel with border; `.card-lift` adds the
   hover lift + tinted shadow.
 - `.btn-primary` — pill, accent fill, AA-correct text per theme (see Colors).
-- `.btn-secondary` — pill, transparent, border; accent border on hover.
+- `.btn-secondary` — pill on a surface fill with a `text-tertiary` border;
+  hover darkens the fill to `bg-subtle` and strengthens the border to
+  `text-secondary`.
 - `.tag` — mono pill, secondary text on `bg-subtle`; accent-text on hover.
 - `.topic` — mono pill in accent-text on a `color-mix` accent tint; the
   writing "topic mark" derived from a post's first tag.
