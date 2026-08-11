@@ -93,7 +93,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`) and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) is only for the homepage intro text and the `/about` bio. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
 - Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
 - Posts in a list render through `src/components/PostCard.astro` (pass `featured` for the lead card). Both `/blog` and `/tags/<tag>` use it — don't hand-roll a second row layout.
-- Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): Gambetta (display/headings), DM Sans (body), JetBrains Mono (code/mono accents).
+- Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): DM Sans (headings and body, via both `--font-display` and `--font-body`), JetBrains Mono (code/mono accents). Only two families load; headings separate from body by size, weight and tracking, not by a second face.
 
 ## Key Patterns
 
@@ -104,6 +104,6 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - Typography plugin for prose styling (`@tailwindcss/typography`)
 - Theme switching lives entirely in `Header.astro` (dropdown, `Cmd/Ctrl + /` cycling, OS-preference sync) plus the inline anti-flash script in `Layout.astro`. `src/config/themes.ts` is the single source of theme ids (`LIGHT_THEME` / `DARK_THEME`); since `is:inline` scripts cannot import, `Layout.astro` passes them to the anti-flash script through `data-light` / `data-dark` attributes rather than hardcoding them
 - The scroll progress bar is pure CSS (`animation-timeline: scroll()` in `global.css`), decorative and `aria-hidden`. Browsers without scroll-driven animations simply do not show it
-- ESLint with TypeScript, Astro, and jsx-a11y plugins
+- ESLint with TypeScript and Astro plugins (`eslint.config.js`)
 - External links in markdown open in new tabs (`rehype-external-links` in `astro.config.js`)
 - Site constants in `src/consts.ts`
