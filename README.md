@@ -10,9 +10,9 @@ Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 - **Styling** — Tailwind CSS 4 via Vite plugin + Typography plugin
 - **Themes** — Light, Dark (+ Auto based on system preference)
 - **Content** — Astro Content Collections (Markdown blog posts, YAML projects)
-- **GitHub Repos** — Fetched at build time via Octokit custom content loader
+- **Projects** — Hand-maintained YAML content collection (no build-time API calls)
 - **Comments** — Giscus (GitHub Discussions)
-- **Fonts** — Gambetta, DM Sans, JetBrains Mono (via Astro's built-in font optimization)
+- **Fonts** — DM Sans, JetBrains Mono (via Astro's built-in font optimization)
 - **Linting** — ESLint + Prettier with Husky pre-commit hooks
 
 ## Getting Started
