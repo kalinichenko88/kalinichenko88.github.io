@@ -79,7 +79,7 @@
 
   --color-text: #232326;
   --color-text-secondary: #55555b;
-  --color-text-tertiary: #8a8a90;
+  --color-text-tertiary: #6b6b71; /* 4.73:1 — carries small text (meta, dates) */
 
   --color-border: #e2e0da;
   --color-border-subtle: #eceae4;
@@ -104,7 +104,7 @@
 
   --color-text: #ececed;
   --color-text-secondary: #a6a6ac;
-  --color-text-tertiary: #737379;
+  --color-text-tertiary: #8f8f95; /* 5.40:1 — carries small text (meta, dates) */
 
   --color-border: #313135;
   --color-border-subtle: #26262a;

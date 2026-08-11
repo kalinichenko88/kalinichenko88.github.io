@@ -14,7 +14,7 @@ colors:
   surface: '#ffffff'
   text: '#232326'
   text-secondary: '#55555b'
-  text-tertiary: '#8a8a90'
+  text-tertiary: '#6b6b71' # 4.73:1 — must stay AA, it carries small meta text
   border: '#e2e0da'
   border-subtle: '#eceae4'
   accent: '#c25a34' # bright terracotta — FILLS ONLY (backgrounds, borders, marks)
@@ -84,7 +84,7 @@ components:
   btn-secondary:
     backgroundColor: '{colors.surface}'
     textColor: '{colors.text}'
-    borderColor: '{colors.text-tertiary}' # 3.07:1 light / 3.69:1 dark — AA for controls
+    borderColor: '{colors.text-tertiary}' # 4.73:1 light / 5.40:1 dark
     rounded: '{rounded.pill}'
     padding: 12px 32px
   card:
@@ -151,10 +151,17 @@ both themes.
 Large display text (card/post title hover in `text-accent`) may use the bright
 accent — large text only needs 3:1.
 
+**The text ramp is three steps and all three carry text:** `--color-text`
+(14:1), `--color-text-secondary` (6.6:1 / 7.2:1), `--color-text-tertiary`
+(4.7:1 / 5.4:1). Tertiary is the quietest step, not a decorative one — it
+colors post dates, reading time, project taglines, star counts, footer labels
+and job periods, so it must stay at or above 4.5:1. It was `#8a8a90` / `#737379`
+(3.07:1 / 3.69:1) and failed AA everywhere it was used.
+
 **Borders that carry meaning need 3:1 too.** `--color-border` is a hairline for
 separators (rules, card edges, table lines) and lands ~1.2:1 against the page —
 decorative only. When a border is the thing that defines a control, as on
-`.btn-secondary`, it must use `--color-text-tertiary` (3.07:1 light / 3.69:1
+`.btn-secondary`, it must use `--color-text-tertiary` (4.73:1 light / 5.40:1
 dark) so the control has a perceivable boundary.
 
 ### Themes
@@ -169,7 +176,7 @@ Theme values are swapped via CSS custom properties under
 | surface        | `#ffffff` | `#232326` |
 | text           | `#232326` | `#ececed` |
 | text-secondary | `#55555b` | `#a6a6ac` |
-| text-tertiary  | `#8a8a90` | `#737379` |
+| text-tertiary  | `#6b6b71` | `#8f8f95` |
 | border         | `#e2e0da` | `#313135` |
 | accent (fill)  | `#c25a34` | `#e07a52` |
 | accent-text    | `#a94a29` | `#e07a52` |
