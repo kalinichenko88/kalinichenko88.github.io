@@ -5,6 +5,7 @@ import Header from './Header.astro';
 import PixelSpotlight from './PixelSpotlight.astro';
 import Footer from './Footer.astro';
 import Head from './Head.astro';
+import MotionController from './MotionController.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { LIGHT_THEME, DARK_THEME } from '../config/themes';
@@ -33,7 +34,12 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Theme initialization - must be first to prevent flash -->
+    <!-- Encoding first: the HTML prescan only reads the opening 1024 bytes,
+         and the inline scripts below are big enough to push it past that. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Theme initialization - must be early to prevent flash -->
     <script is:inline data-light={LIGHT_THEME} data-dark={DARK_THEME}>
       (function () {
         const { light, dark } = document.currentScript.dataset;
@@ -52,8 +58,30 @@ const {
         });
       })();
     </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      // Gate the hidden reveal states before the first paint, or the page
+      // renders visible and then snaps to opacity 0 when the motion bundle
+      // lands. If that bundle never runs, drop the gate so nothing stays
+      // hidden; JS disabled never sets it in the first place.
+      (function () {
+        function armFailsafe() {
+          setTimeout(function () {
+            if (!window.__motionController) delete document.documentElement.dataset.motionReady;
+          }, 2000);
+        }
+
+        document.documentElement.dataset.motionReady = '';
+        armFailsafe();
+
+        // View Transitions: the swap drops root attributes the new document
+        // lacks, same reason the theme is re-applied above. Re-arm too, or a
+        // bundle that never loads leaves every page after the first blank.
+        document.addEventListener('astro:before-swap', (event) => {
+          event.newDocument.documentElement.dataset.motionReady = '';
+          if (!window.__motionController) armFailsafe();
+        });
+      })();
+    </script>
     <Head
       title={title}
       description={description}
@@ -79,6 +107,8 @@ const {
     </main>
 
     <Footer />
+
+    <MotionController />
 
     <!-- Cloudflare Web Analytics -->
     <script

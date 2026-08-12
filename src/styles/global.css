@@ -47,6 +47,25 @@
   --container-prose: 680px;
 }
 
+/* Motion */
+:root {
+  --motion-reveal-distance: 28px;
+  --motion-reveal-duration: 700ms;
+  --motion-stagger: 90ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-pointer-translation: 4;
+  --motion-depth-distance: 16px;
+}
+
+/* Locally quiets a block that should stay still, such as the 404 message. */
+[data-motion-limit] {
+  --motion-reveal-distance: 14px;
+  --motion-reveal-duration: 560ms;
+  --motion-stagger: 60ms;
+  --motion-pointer-translation: 0;
+  --motion-depth-distance: 0px;
+}
+
 /* ============================================
    THEME 1: Cloud Light (Default) - Soft, airy, approachable
    ============================================ */
@@ -60,7 +79,7 @@
 
   --color-text: #232326;
   --color-text-secondary: #55555b;
-  --color-text-tertiary: #8a8a90;
+  --color-text-tertiary: #6b6b71; /* 4.73:1 — carries small text (meta, dates) */
 
   --color-border: #e2e0da;
   --color-border-subtle: #eceae4;
@@ -85,7 +104,7 @@
 
   --color-text: #ececed;
   --color-text-secondary: #a6a6ac;
-  --color-text-tertiary: #737379;
+  --color-text-tertiary: #8f8f95; /* 5.40:1 — carries small text (meta, dates) */
 
   --color-border: #313135;
   --color-border-subtle: #26262a;
@@ -279,8 +298,13 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text);
-    background-color: transparent;
-    border: 1px solid var(--color-border);
+    /* Surface fill, not transparent: the pixel field showed straight through
+       and the button read as a floating label. --color-border against the page
+       is 1.18:1 light / 1.34:1 dark, so the outline was effectively invisible;
+       --color-text-tertiary is the one palette step that clears the 3:1 WCAG
+       floor for a control boundary. */
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-text-tertiary);
     border-radius: var(--radius-md);
     transition:
       border-color var(--transition-fast),
@@ -288,7 +312,7 @@
   }
 
   .btn-secondary:hover {
-    border-color: var(--color-text-tertiary);
+    border-color: var(--color-text-secondary);
     background-color: var(--color-bg-subtle);
   }
 
@@ -314,7 +338,11 @@
   .tag:hover {
     color: var(--color-accent-text);
     background-color: var(--color-accent-subtle);
-    transform: translateY(-1px);
+    /* Not `transform`: this rule is layered, and the unlayered reveal rule
+       wins whatever the specificity. Feed the lift through the same custom
+       property .card-lift uses, which that rule reads. */
+    --card-lift-y: -1px;
+    transform: translateY(var(--card-lift-y));
   }
 
   /* Link with underline animation */
@@ -590,7 +618,8 @@
 }
 
 .card-lift:hover {
-  transform: translateY(-4px);
+  --card-lift-y: -4px;
+  transform: translateY(var(--card-lift-y));
 }
 
 [data-theme='cloud'] .card-lift:hover,
@@ -628,6 +657,134 @@
 @keyframes scroll-progress {
   to {
     transform: scaleX(1);
+  }
+}
+
+/* ============================================
+   Motion
+   ============================================ */
+
+@property --motion-scroll-depth-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+[data-motion-ready] [data-reveal] {
+  --motion-reveal-y: var(--motion-reveal-distance);
+  opacity: 0;
+  translate: 0 calc(var(--motion-reveal-y) + var(--motion-scroll-depth-y));
+  transform: translate3d(var(--motion-pointer-x, 0px), var(--motion-pointer-y, 0px), 0)
+    translateY(var(--card-lift-y, 0px));
+  transition:
+    opacity var(--motion-reveal-duration) var(--motion-ease),
+    translate var(--motion-reveal-duration) var(--motion-ease),
+    transform 180ms var(--motion-ease),
+    box-shadow var(--transition-base),
+    border-color var(--transition-fast);
+  transition-delay:
+    calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)),
+    calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)), 0ms, 0ms, 0ms;
+}
+
+[data-motion-ready] [data-reveal].is-revealed {
+  --motion-reveal-y: 0px;
+  opacity: 1;
+}
+
+/* Scoped to dividers that opt in: only [data-reveal] elements ever receive
+   is-revealed, so hiding the mark on a plain <hr class="divider" /> would
+   leave it at scaleX(0) forever. */
+[data-motion-ready] .divider[data-reveal]::after {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-reveal-duration) var(--motion-ease);
+}
+
+[data-motion-ready] .divider[data-reveal].is-revealed::after {
+  transform: scaleX(1);
+}
+
+/* Must stay after the reveal rules above: same specificity, so order decides. */
+[data-motion-ready] [data-reveal].is-motion-reset,
+[data-motion-ready] .divider.is-motion-reset::after {
+  transition: none;
+}
+
+/* Longhands only, like .scroll-progress above. The `animation` shorthand lets
+   the minifier fold `animation-timeline` into it, which browsers reject: the
+   built CSS shipped `animation: linear both motion-scroll-depth view()` and
+   the depth effect was dead in production. The @supports guard does not
+   prevent that fold. No animation-range either: entry 0% -> exit 100% is
+   already the default for view(), and the minifier rewrites it to exit 0%. */
+@supports (animation-timeline: view()) {
+  [data-scroll-depth] {
+    animation-name: motion-scroll-depth;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+  }
+}
+
+@keyframes motion-scroll-depth {
+  from {
+    --motion-scroll-depth-y: calc(var(--motion-depth-distance) * -1);
+  }
+  to {
+    --motion-scroll-depth-y: var(--motion-depth-distance);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-ready] [data-reveal],
+  [data-motion-ready] [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    translate: none;
+    animation: none;
+    transition: none;
+  }
+
+  [data-motion-ready] .divider::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .card-lift:hover {
+    transform: none;
+  }
+
+  .scroll-progress {
+    animation: none;
+    transform: scaleX(0);
+  }
+}
+
+/* Reveals clear only when the observer fires, and it never fires for content
+   that was not scrolled into view. Without this, printing a page emits blank
+   bands where every below-the-fold block should be. */
+@media print {
+  /* Reset through the custom properties the reveal rule reads, not the
+     transform/translate longhands: the minifier folds `transform: none` plus
+     `translate: none` into a single `transform: translate(0)` and drops the
+     translate reset, which leaves every printed block offset by the reveal
+     distance. */
+  [data-motion-ready] [data-reveal] {
+    --motion-reveal-y: 0px;
+    --motion-scroll-depth-y: 0px;
+    --card-lift-y: 0px;
+    opacity: 1;
+    animation: none;
+    transition: none;
+  }
+
+  [data-motion-ready] .divider[data-reveal]::after {
+    transform: scaleX(1);
+  }
+
+  .pixel-fx,
+  .scroll-progress {
+    display: none;
   }
 }
 

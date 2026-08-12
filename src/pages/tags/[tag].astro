@@ -28,21 +28,23 @@ const [lead, ...rest] = posts;
 <Layout title={`Posts tagged: ${tag}`} description={`All blog posts tagged with "${tag}".`}>
   <section class="py-14 md:py-20">
     <div class="container">
-      <a
-        href="/blog"
-        class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
-      >
-        <ArrowLeftIcon class="w-4 h-4" />
-        Back to blog
-      </a>
-      <div class="flex items-center gap-3 mb-3">
-        <h1 class="text-foreground">{tag}</h1>
-        <span class="topic">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+      <div data-reveal="heading">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeftIcon class="w-4 h-4" />
+          Back to blog
+        </a>
+        <div class="flex items-center gap-3 mb-3">
+          <h1 class="text-foreground">{tag}</h1>
+          <span class="topic">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+        </div>
       </div>
 
       <div class="grid gap-6 md:grid-cols-2 mt-8">
-        {lead && <PostCard post={lead} featured />}
-        {rest.map((post) => <PostCard post={post} />)}
+        {lead && <PostCard post={lead} featured motionIndex={1} />}
+        {rest.map((post, index) => <PostCard post={post} motionIndex={index + 2} />)}
       </div>
     </div>
   </section>

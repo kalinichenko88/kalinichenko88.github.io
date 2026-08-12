@@ -14,7 +14,7 @@ colors:
   surface: '#ffffff'
   text: '#232326'
   text-secondary: '#55555b'
-  text-tertiary: '#8a8a90'
+  text-tertiary: '#6b6b71' # 4.73:1 — must stay AA, it carries small meta text
   border: '#e2e0da'
   border-subtle: '#eceae4'
   accent: '#c25a34' # bright terracotta — FILLS ONLY (backgrounds, borders, marks)
@@ -82,8 +82,9 @@ components:
     rounded: '{rounded.pill}'
     padding: 12px 32px
   btn-secondary:
-    backgroundColor: transparent
+    backgroundColor: '{colors.surface}'
     textColor: '{colors.text}'
+    borderColor: '{colors.text-tertiary}' # 4.73:1 light / 5.40:1 dark
     rounded: '{rounded.pill}'
     padding: 12px 32px
   card:
@@ -150,6 +151,19 @@ both themes.
 Large display text (card/post title hover in `text-accent`) may use the bright
 accent — large text only needs 3:1.
 
+**The text ramp is three steps and all three carry text:** `--color-text`
+(14:1), `--color-text-secondary` (6.6:1 / 7.2:1), `--color-text-tertiary`
+(4.7:1 / 5.4:1). Tertiary is the quietest step, not a decorative one — it
+colors post dates, reading time, project taglines, star counts, footer labels
+and job periods, so it must stay at or above 4.5:1. It was `#8a8a90` / `#737379`
+(3.07:1 / 3.69:1) and failed AA everywhere it was used.
+
+**Borders that carry meaning need 3:1 too.** `--color-border` is a hairline for
+separators (rules, card edges, table lines) and lands ~1.2:1 against the page —
+decorative only. When a border is the thing that defines a control, as on
+`.btn-secondary`, it must use `--color-text-tertiary` (4.73:1 light / 5.40:1
+dark) so the control has a perceivable boundary.
+
 ### Themes
 
 Theme values are swapped via CSS custom properties under
@@ -162,7 +176,7 @@ Theme values are swapped via CSS custom properties under
 | surface        | `#ffffff` | `#232326` |
 | text           | `#232326` | `#ececed` |
 | text-secondary | `#55555b` | `#a6a6ac` |
-| text-tertiary  | `#8a8a90` | `#737379` |
+| text-tertiary  | `#6b6b71` | `#8f8f95` |
 | border         | `#e2e0da` | `#313135` |
 | accent (fill)  | `#c25a34` | `#e07a52` |
 | accent-text    | `#a94a29` | `#e07a52` |
@@ -228,7 +242,9 @@ new one-off styles.
 - `.card` / `.card-lift` — surface panel with border; `.card-lift` adds the
   hover lift + tinted shadow.
 - `.btn-primary` — pill, accent fill, AA-correct text per theme (see Colors).
-- `.btn-secondary` — pill, transparent, border; accent border on hover.
+- `.btn-secondary` — pill on a surface fill with a `text-tertiary` border;
+  hover darkens the fill to `bg-subtle` and strengthens the border to
+  `text-secondary`.
 - `.tag` — mono pill, secondary text on `bg-subtle`; accent-text on hover.
 - `.topic` — mono pill in accent-text on a `color-mix` accent tint; the
   writing "topic mark" derived from a post's first tag.
@@ -240,7 +256,55 @@ new one-off styles.
 
 ## Interaction
 
-Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
+Motion is always motivated. There is one intensity, tuned once in the
+`--motion-*` tokens at the top of `global.css`: a 28px/700ms reveal with a 90ms
+stagger, divider drawing, bounded pointer response on cards, and 16px of scroll
+depth. It changes no content, layout, or information hierarchy. There is no
+runtime profile switch, and reintroducing one is a deliberate decision, not a
+default.
+
+Motion coverage is declarative:
+
+- `data-reveal` opts a major structural block into IntersectionObserver reveal.
+  The value (`hero`, `heading`, `card`, `content`) is a label for the reader:
+  no selector matches it and every value animates identically. Don't expect
+  changing it to change anything.
+- inline `--motion-index` gives sibling blocks a stable sequence. It is the
+  only source: a `data-stagger-index` attribute used to set the same value
+  from CSS and the two disagreed above index 4.
+- `data-reactive` enables a bounded pointer offset (translation only, no tilt:
+  nothing here establishes a `perspective`, so a rotation would be invisible),
+  while `data-scroll-depth` opts into the CSS `view()` timeline when supported.
+- `data-motion-limit` locally quiets a block that should stay still, such as
+  the 404 message. It works for reveal and pointer alike, because the pointer
+  caps are read from the reactive element rather than the root.
+
+The stagger is clamped at `--motion-index` 4 in `global.css`. Long lists would
+otherwise queue up an unbounded delay, and a card at index 20 would sit still
+for nearly two seconds after the reader had already scrolled it into view.
+
+Only major structural blocks may be annotated. Article paragraphs and the
+rendered `<Content />` prose remain static. Hidden states are gated by
+`data-motion-ready`, set by the inline head script in `Layout.astro` so the
+gate is in place before the first paint. That script also drops the gate after
+2s if the motion bundle never runs, and with JavaScript disabled it never sets
+it at all, so content is never left invisible.
+`prefers-reduced-motion: reduce` forces an immediate, static state.
+
+`MotionController` snaps freshly swapped-in elements to the hidden state with
+`is-motion-reset` (transitions off) plus a forced reflow before observing them.
+Without that, nodes adopted from ClientRouter's parsed document carry a
+computed style from an unstyled document, the browser starts a 1 -> 0
+transition on insert, and the reveal never plays on navigation. The
+`is-motion-reset` rule must stay after the reveal rules in `global.css` because
+their specificity is equal.
+
+The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
+pipeline. Do not add a third-party animation dependency for it, and keep
+reveal, depth and progress off JavaScript scroll listeners — those are CSS
+or observer driven. The one scroll listener that exists is the spotlight's,
+passive and rAF-throttled: what sits under a still cursor changes as the page
+moves, and nothing else can tell it.
 
 - **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
   `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
@@ -250,6 +314,18 @@ Motion is restrained and always motivated (`MOTION_INTENSITY ~4`).
   re-resolves its node on `astro:after-swap`, ignores `pointerType === 'touch'`).
   Under `prefers-reduced-motion` the glow is dropped and the static lattice
   stays.
+
+  **The glow lights bare background only.** It sits behind the page, so over a
+  text block it tints the very thing being read. Each frame the handler
+  hit-tests the cursor and drops the glow when it lands on text, on that text's
+  margin box, or anywhere between two text blocks. The margin and between rules
+  are what stop it blinking on in every paragraph gap: a straight pass down an
+  article went from lit 37% of the way with 7 flickers to 0% with none. Gutters,
+  the space between sections, and empty page area stay lit. Probing is vertical
+  only, since a paragraph's side margins are the gutter and the glow belongs
+  there, and it **steps** outward rather than sampling one fixed offset — a
+  prose `h2` carries a 71px top margin, and a single probe overshoots its box
+  into the next gap and leaves the heading's own margin lit.
 
   The glow tint (18%) and the cell fill (45% of the cell) are held down
   deliberately: the layer sits under body text, and at the 22% / 72% it started
@@ -289,8 +365,12 @@ scripts — no React/Motion in this project.
   16–17px.
 - Reuse the component classes above; extend `global.css` rather than inlining
   bespoke styles.
-- Separate adjacent default-bg sections with `<hr class="divider" />`.
+- Separate adjacent default-bg sections with `<hr class="divider" data-reveal />`.
+  The accent mark draws itself on reveal, so a divider without `data-reveal`
+  keeps the hairline and simply never draws the mark.
 - Honor `prefers-reduced-motion` for any motion.
+- Put `data-reveal` on each major structural block that benefits from hierarchy
+  or storytelling. Keep article paragraphs static.
 - Keep the theme swap on `[data-theme='cloud' | 'cloud-dark']` CSS variables.
 
 **Don't**
@@ -305,6 +385,9 @@ scripts — no React/Motion in this project.
 - No portrait or monogram in the intro — the identity is typographic.
 - No section that inverts the theme mid-page.
 - No third theme (the terminal theme was removed).
+- No JavaScript scroll listeners for reveal, depth, or progress effects; the
+  spotlight's passive, rAF-throttled one is the sole exception.
+- No third-party animation dependency for the motion profile system.
 - Don't use the bright `--color-accent` as small text on a light background
   (fails AA — use `--color-accent-text`).
 
@@ -320,7 +403,8 @@ scripts — no React/Motion in this project.
 5. Separate it from its neighbor with a `.divider`, or give one section a
    `bg-background-subtle` (keep at most one subtle section per view).
 6. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
-   motivated effect.
+   motivated effect. Add `data-reveal` only to a major structural block, and
+   leave article paragraphs unannotated.
 7. Verify: `npm run build` and `npm run lint` are green; the acceptance sweep
    `grep -rniE "terminal|grid-pattern|general sans|section-label|7c5cff|—|–" src/`
    returns nothing new; check the surface in both light and dark.

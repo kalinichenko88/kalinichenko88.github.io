@@ -10,7 +10,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
 {
   tocHeadings.length > 0 && (
-    <nav class="toc" aria-label={label}>
+    <nav class="toc" aria-label={label} data-reveal="content">
       <p class="toc-title">On this page</p>
       <ul class="toc-list">
         {tocHeadings.map((heading) => (

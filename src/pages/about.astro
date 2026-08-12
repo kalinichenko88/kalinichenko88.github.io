@@ -9,8 +9,11 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
 <Layout title="About" description="About Ivan Kalinichenko - Senior Frontend Engineer.">
   <section class="py-14 md:py-20">
     <div class="container-prose">
-      <h1 class="text-foreground mb-6">About</h1>
-      <div class="space-y-4 text-foreground-secondary text-lg leading-relaxed">
+      <h1 class="text-foreground mb-6" data-reveal="heading">About</h1>
+      <div
+        class="space-y-4 text-foreground-secondary text-lg leading-relaxed"
+        data-reveal="content"
+      >
         <p>
           I'm a {ROLE.toLowerCase()} with 10+ years in the industry, from jQuery and Angular.js to modern
           component architectures. That path shaped how I think about maintainable systems and team productivity.
@@ -27,7 +30,7 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-3 mt-8">
+      <div class="flex flex-wrap gap-3 mt-8" data-reveal="content" style="--motion-index: 1">
         <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
         <a
           href={LINKEDIN_PROFILE_LINK}
@@ -43,18 +46,22 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
 
   <section class="py-14 md:py-20 bg-background-subtle/85">
     <div class="container">
-      <h2 class="text-foreground mb-8">Expertise</h2>
+      <h2 class="text-foreground mb-8" data-reveal="heading">Expertise</h2>
       <ExpertiseGrid expertise={EXPERTISE} />
     </div>
   </section>
 
   <section class="py-14 md:py-20">
     <div class="container-prose">
-      <h2 class="text-foreground mb-8">Work history</h2>
+      <h2 class="text-foreground mb-8" data-reveal="heading">Work history</h2>
       <div class="space-y-6">
         {
-          WORK_HISTORY.map((job) => (
-            <div class="flex items-baseline justify-between gap-4 border-b border-line pb-4">
+          WORK_HISTORY.map((job, index) => (
+            <div
+              class="flex items-baseline justify-between gap-4 border-b border-line pb-4"
+              data-reveal="card"
+              style={`--motion-index: ${index + 1}`}
+            >
               <div>
                 <div class="font-medium text-foreground">{job.company}</div>
                 <div class="text-sm text-foreground-secondary">{job.title}</div>

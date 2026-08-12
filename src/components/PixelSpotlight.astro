@@ -52,11 +52,90 @@
 <script>
   // Written to <html>, not to the layer: custom properties inherit, and
   // ClientRouter replaces the layer on every swap while the root survives.
+  // The glow sits behind the page, so over a text block it tints the very thing
+  // being read. Light it only when the cursor is on bare background.
+  const TEXT = 'p, h1, h2, h3, h4, h5, h6, li, a, button, code, pre, blockquote, figure, table';
+  // The gap between two paragraphs is their margin, not background. Without
+  // this the glow blinks on in every gap while reading down a page. Probing
+  // only vertically: a paragraph's side margins are the gutter, and the glow
+  // belongs there.
+  // Stepped, not a single sample at PROBE: a prose h2 carries a 71px top
+  // margin, so one probe at a fixed offset overshoots its box and lands in the
+  // next gap, leaving the heading's own margin lit.
+  const PROBE = 88;
+  const STEP = 16;
+
+  function textAt(cx: number, cy: number): Element | null {
+    return document.elementFromPoint(cx, cy)?.closest(TEXT) ?? null;
+  }
+
+  function nearestText(cx: number, cy: number, dir: number): Element | null {
+    for (let d = STEP; d <= PROBE; d += STEP) {
+      const el = textAt(cx, cy + dir * d);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  function inMarginBox(el: Element, cy: number): boolean {
+    const rect = el.getBoundingClientRect();
+    const styles = getComputedStyle(el);
+    return (
+      cy >= rect.top - Number.parseFloat(styles.marginTop) &&
+      cy <= rect.bottom + Number.parseFloat(styles.marginBottom)
+    );
+  }
+
+  // An opaque fill already covers the glow, so text on top of one cannot be
+  // tinted and there is nothing to suppress. Without this, a card's full-bleed
+  // overlay link darkens the glow across the whole card and the gutters around
+  // it. Anything translucent (a /85 section) still lets the field through.
+  function onOpaqueFill(el: Element | null): boolean {
+    for (let node = el; node && node !== document.body; node = node.parentElement) {
+      const color = getComputedStyle(node).backgroundColor;
+      const alpha = /^rgba\(.*,\s*([\d.]+)\)$/.exec(color)?.[1];
+      if (color && color !== 'transparent' && (alpha === undefined || Number(alpha) >= 1)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function overText(cx: number, cy: number): boolean {
+    const hit = textAt(cx, cy);
+    if (hit) return !onOpaqueFill(hit);
+
+    const above = nearestText(cx, cy, -1);
+    const below = nearestText(cx, cy, 1);
+    // Text on both sides means the cursor is inside a text flow, whatever the
+    // gap: margins do not always tile it (a code block leaves a bare band).
+    if (above && below) return !onOpaqueFill(above);
+    // At the top or bottom edge of a block, only its own margin counts, so the
+    // real background between sections stays lit.
+    if (above && inMarginBox(above, cy)) return !onOpaqueFill(above);
+    if (below && inMarginBox(below, cy)) return !onOpaqueFill(below);
+    return false;
+  }
+
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const root = document.documentElement;
     let raf = 0;
     let x = 0;
     let y = 0;
+
+    let seen = false;
+
+    function schedule() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        root.style.setProperty('--mx', `${x}px`);
+        root.style.setProperty('--my', `${y}px`);
+        // Hit-tests and style reads run here, once per frame, not per event.
+        if (overText(x, y)) delete root.dataset.lit;
+        else root.dataset.lit = '';
+      });
+    }
 
     addEventListener(
       'pointermove',
@@ -64,16 +143,15 @@
         if (e.pointerType === 'touch') return;
         x = e.clientX;
         y = e.clientY;
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          root.style.setProperty('--mx', `${x}px`);
-          root.style.setProperty('--my', `${y}px`);
-          root.dataset.lit = '';
-          raf = 0;
-        });
+        seen = true;
+        schedule();
       },
       { passive: true }
     );
+
+    // What sits under a still cursor changes when the page scrolls, and the
+    // glow would otherwise keep whatever answer the last pointer move gave.
+    addEventListener('scroll', () => seen && schedule(), { passive: true });
 
     document.addEventListener('pointerleave', () => delete root.dataset.lit);
   }
