@@ -265,10 +265,13 @@ default.
 
 Motion coverage is declarative:
 
-- `data-reveal="hero|heading|card|content"` opts a major structural block into
-  IntersectionObserver reveal.
-- `data-stagger-index` or `--motion-index` gives sibling blocks a stable
-  sequence.
+- `data-reveal` opts a major structural block into IntersectionObserver reveal.
+  The value (`hero`, `heading`, `card`, `content`) is a label for the reader:
+  no selector matches it and every value animates identically. Don't expect
+  changing it to change anything.
+- inline `--motion-index` gives sibling blocks a stable sequence. It is the
+  only source: a `data-stagger-index` attribute used to set the same value
+  from CSS and the two disagreed above index 4.
 - `data-reactive` enables a bounded pointer offset (translation only, no tilt:
   nothing here establishes a `perspective`, so a rotation would be invisible),
   while `data-scroll-depth` opts into the CSS `view()` timeline when supported.
@@ -297,8 +300,11 @@ transition on insert, and the reveal never plays on navigation. The
 their specificity is equal.
 
 The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
-pipeline. Do not add a global scroll listener or a third-party animation
-dependency for it.
+pipeline. Do not add a third-party animation dependency for it, and keep
+reveal, depth and progress off JavaScript scroll listeners — those are CSS
+or observer driven. The one scroll listener that exists is the spotlight's,
+passive and rAF-throttled: what sits under a still cursor changes as the page
+moves, and nothing else can tell it.
 
 - **Pixel spotlight** — site-wide (`PixelSpotlight.astro`, rendered once from
   `Layout.astro`). Two fixed full-viewport layers at `z-index: -1`: a static dot
@@ -359,10 +365,12 @@ scripts — no React/Motion in this project.
   16–17px.
 - Reuse the component classes above; extend `global.css` rather than inlining
   bespoke styles.
-- Separate adjacent default-bg sections with `<hr class="divider" />`.
+- Separate adjacent default-bg sections with `<hr class="divider" data-reveal />`.
+  The accent mark draws itself on reveal, so a divider without `data-reveal`
+  keeps the hairline and simply never draws the mark.
 - Honor `prefers-reduced-motion` for any motion.
-- Use one motivated `data-reveal` variant for each major structural block that
-  benefits from hierarchy or storytelling. Keep article paragraphs static.
+- Put `data-reveal` on each major structural block that benefits from hierarchy
+  or storytelling. Keep article paragraphs static.
 - Keep the theme swap on `[data-theme='cloud' | 'cloud-dark']` CSS variables.
 
 **Don't**
@@ -377,7 +385,8 @@ scripts — no React/Motion in this project.
 - No portrait or monogram in the intro — the identity is typographic.
 - No section that inverts the theme mid-page.
 - No third theme (the terminal theme was removed).
-- No global JavaScript scroll listeners for reveal, depth, or progress effects.
+- No JavaScript scroll listeners for reveal, depth, or progress effects; the
+  spotlight's passive, rAF-throttled one is the sole exception.
 - No third-party animation dependency for the motion profile system.
 - Don't use the bright `--color-accent` as small text on a light background
   (fails AA — use `--color-accent-text`).

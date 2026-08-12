@@ -41,7 +41,6 @@ const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
               href={`/tags/${tag}`}
               class="tag"
               data-reveal="card"
-              data-stagger-index={index + 1}
               style={`--motion-index: ${index + 1}`}
             >
               {tag}

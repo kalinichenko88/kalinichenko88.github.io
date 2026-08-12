@@ -30,7 +30,7 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-3 mt-8" data-reveal="content" data-stagger-index="1">
+      <div class="flex flex-wrap gap-3 mt-8" data-reveal="content" style="--motion-index: 1">
         <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">Get in touch</a>
         <a
           href={LINKEDIN_PROFILE_LINK}
@@ -60,7 +60,6 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
             <div
               class="flex items-baseline justify-between gap-4 border-b border-line pb-4"
               data-reveal="card"
-              data-stagger-index={index + 1}
               style={`--motion-index: ${index + 1}`}
             >
               <div>

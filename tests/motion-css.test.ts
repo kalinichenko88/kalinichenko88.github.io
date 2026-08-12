@@ -19,7 +19,9 @@ test('carries no leftover profile selectors', () => {
 
 test('hidden states stay gated on data-motion-ready so no-JS renders content', () => {
   assert.match(css, /\[data-motion-ready\] \[data-reveal\] {[^}]*opacity: 0/s);
-  assert.match(css, /\[data-motion-ready\] \.divider::after {[^}]*scaleX\(0\)/s);
+  // Scoped to [data-reveal]: only those elements ever get is-revealed, so an
+  // unscoped rule would hide the mark on a plain divider forever.
+  assert.match(css, /\[data-motion-ready\] \.divider\[data-reveal\]::after {[^}]*scaleX\(0\)/s);
 });
 
 test('never pairs the animation shorthand with animation-timeline', () => {

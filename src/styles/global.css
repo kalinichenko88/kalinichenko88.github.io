@@ -338,7 +338,11 @@
   .tag:hover {
     color: var(--color-accent-text);
     background-color: var(--color-accent-subtle);
-    transform: translateY(-1px);
+    /* Not `transform`: this rule is layered, and the unlayered reveal rule
+       wins whatever the specificity. Feed the lift through the same custom
+       property .card-lift uses, which that rule reads. */
+    --card-lift-y: -1px;
+    transform: translateY(var(--card-lift-y));
   }
 
   /* Link with underline animation */
@@ -688,29 +692,16 @@
   opacity: 1;
 }
 
-[data-stagger-index='1'] {
-  --motion-index: 1;
-}
-
-[data-stagger-index='2'] {
-  --motion-index: 2;
-}
-
-[data-stagger-index='3'] {
-  --motion-index: 3;
-}
-
-[data-stagger-index='4'] {
-  --motion-index: 4;
-}
-
-[data-motion-ready] .divider::after {
+/* Scoped to dividers that opt in: only [data-reveal] elements ever receive
+   is-revealed, so hiding the mark on a plain <hr class="divider" /> would
+   leave it at scaleX(0) forever. */
+[data-motion-ready] .divider[data-reveal]::after {
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--motion-reveal-duration) var(--motion-ease);
 }
 
-[data-motion-ready] .divider.is-revealed::after {
+[data-motion-ready] .divider[data-reveal].is-revealed::after {
   transform: scaleX(1);
 }
 
@@ -766,6 +757,34 @@
   .scroll-progress {
     animation: none;
     transform: scaleX(0);
+  }
+}
+
+/* Reveals clear only when the observer fires, and it never fires for content
+   that was not scrolled into view. Without this, printing a page emits blank
+   bands where every below-the-fold block should be. */
+@media print {
+  /* Reset through the custom properties the reveal rule reads, not the
+     transform/translate longhands: the minifier folds `transform: none` plus
+     `translate: none` into a single `transform: translate(0)` and drops the
+     translate reset, which leaves every printed block offset by the reveal
+     distance. */
+  [data-motion-ready] [data-reveal] {
+    --motion-reveal-y: 0px;
+    --motion-scroll-depth-y: 0px;
+    --card-lift-y: 0px;
+    opacity: 1;
+    animation: none;
+    transition: none;
+  }
+
+  [data-motion-ready] .divider[data-reveal]::after {
+    transform: scaleX(1);
+  }
+
+  .pixel-fx,
+  .scroll-progress {
+    display: none;
   }
 }
 

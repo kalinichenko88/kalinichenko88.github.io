@@ -46,7 +46,6 @@ const more = projects.filter((p) => !p.featured);
           <article
             class="card card-lift group"
             data-reveal="card"
-            data-stagger-index={index + 1}
             style={`--motion-index: ${index + 1}`}
             data-reactive
             data-scroll-depth
@@ -87,7 +86,6 @@ const more = projects.filter((p) => !p.featured);
               rel="noopener noreferrer"
               class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"
               data-reveal="card"
-              data-stagger-index={index + 1}
               style={`--motion-index: ${index + 1}`}
             >
               <span class="font-medium text-foreground group-hover:text-accent-text transition-colors">

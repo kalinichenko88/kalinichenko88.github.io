@@ -86,17 +86,35 @@
     );
   }
 
+  // An opaque fill already covers the glow, so text on top of one cannot be
+  // tinted and there is nothing to suppress. Without this, a card's full-bleed
+  // overlay link darkens the glow across the whole card and the gutters around
+  // it. Anything translucent (a /85 section) still lets the field through.
+  function onOpaqueFill(el: Element | null): boolean {
+    for (let node = el; node && node !== document.body; node = node.parentElement) {
+      const color = getComputedStyle(node).backgroundColor;
+      const alpha = /^rgba\(.*,\s*([\d.]+)\)$/.exec(color)?.[1];
+      if (color && color !== 'transparent' && (alpha === undefined || Number(alpha) >= 1)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   function overText(cx: number, cy: number): boolean {
-    if (textAt(cx, cy)) return true;
+    const hit = textAt(cx, cy);
+    if (hit) return !onOpaqueFill(hit);
 
     const above = nearestText(cx, cy, -1);
     const below = nearestText(cx, cy, 1);
     // Text on both sides means the cursor is inside a text flow, whatever the
     // gap: margins do not always tile it (a code block leaves a bare band).
-    if (above && below) return true;
+    if (above && below) return !onOpaqueFill(above);
     // At the top or bottom edge of a block, only its own margin counts, so the
     // real background between sections stays lit.
-    return (above != null && inMarginBox(above, cy)) || (below != null && inMarginBox(below, cy));
+    if (above && inMarginBox(above, cy)) return !onOpaqueFill(above);
+    if (below && inMarginBox(below, cy)) return !onOpaqueFill(below);
+    return false;
   }
 
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -105,24 +123,35 @@
     let x = 0;
     let y = 0;
 
+    let seen = false;
+
+    function schedule() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        root.style.setProperty('--mx', `${x}px`);
+        root.style.setProperty('--my', `${y}px`);
+        // Hit-tests and style reads run here, once per frame, not per event.
+        if (overText(x, y)) delete root.dataset.lit;
+        else root.dataset.lit = '';
+      });
+    }
+
     addEventListener(
       'pointermove',
       (e) => {
         if (e.pointerType === 'touch') return;
         x = e.clientX;
         y = e.clientY;
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          root.style.setProperty('--mx', `${x}px`);
-          root.style.setProperty('--my', `${y}px`);
-          // Hit-tests and style reads run here, once per frame, not per move.
-          if (overText(x, y)) delete root.dataset.lit;
-          else root.dataset.lit = '';
-          raf = 0;
-        });
+        seen = true;
+        schedule();
       },
       { passive: true }
     );
+
+    // What sits under a still cursor changes when the page scrolls, and the
+    // glow would otherwise keep whatever answer the last pointer move gave.
+    addEventListener('scroll', () => seen && schedule(), { passive: true });
 
     document.addEventListener('pointerleave', () => delete root.dataset.lit);
   }
