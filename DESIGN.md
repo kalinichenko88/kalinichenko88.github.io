@@ -309,6 +309,18 @@ dependency for it.
   Under `prefers-reduced-motion` the glow is dropped and the static lattice
   stays.
 
+  **The glow lights bare background only.** It sits behind the page, so over a
+  text block it tints the very thing being read. Each frame the handler
+  hit-tests the cursor and drops the glow when it lands on text, on that text's
+  margin box, or anywhere between two text blocks. The margin and between rules
+  are what stop it blinking on in every paragraph gap: a straight pass down an
+  article went from lit 37% of the way with 7 flickers to 0% with none. Gutters,
+  the space between sections, and empty page area stay lit. Probing is vertical
+  only, since a paragraph's side margins are the gutter and the glow belongs
+  there, and it **steps** outward rather than sampling one fixed offset — a
+  prose `h2` carries a 71px top margin, and a single probe overshoots its box
+  into the next gap and leaves the heading's own margin lit.
+
   The glow tint (18%) and the cell fill (45% of the cell) are held down
   deliberately: the layer sits under body text, and at the 22% / 72% it started
   from, an `accent-text` link over a lit cell measures 3.9:1 against 5.1:1 on
