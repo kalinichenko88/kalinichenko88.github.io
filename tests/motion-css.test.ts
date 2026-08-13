@@ -72,11 +72,45 @@ test('gates the hidden state before first paint and drops it if the bundle dies'
   );
 });
 
-test('motion reset bypasses transitions and outranks the reveal rules', () => {
-  assert.match(css, /\[data-reveal\]\.is-motion-reset[^{]*{[^}]*transition: none/s);
-  // Equal specificity to the rules it overrides, so source order decides.
-  assert.ok(
-    css.indexOf('.is-motion-reset') > css.lastIndexOf('.divider.is-revealed::after'),
-    'is-motion-reset must come after the reveal rules'
+// Comments here explain the very hazards these tests guard, so matching
+// against them would pass on prose alone.
+const bare = css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+function rule(selector: RegExp) {
+  const found = bare.match(selector);
+  assert.ok(found, `no rule matching ${selector}`);
+  return found[0];
+}
+
+test('declares the reveal transition only on the revealed state', () => {
+  // Nodes swapped in by ClientRouter arrive from an unstyled document at
+  // opacity 1, so a transition on the hidden state animates 1 -> 0 on insert
+  // and the page sinks on every client-side navigation.
+  const hidden = rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
+  assert.doesNotMatch(hidden, /transition:[^;]*\b(?:opacity|translate)\b/s);
+  assert.match(
+    bare,
+    /\[data-reveal\]\.is-revealed {[^}]*transition:[^;]*opacity[^;]*translate/s,
+    'the reveal transition belongs on .is-revealed'
   );
+  assert.doesNotMatch(rule(/\.divider\[data-reveal\]::after {[^}]*}/s), /transition:/);
+  assert.match(bare, /\.divider\[data-reveal\]\.is-revealed::after {[^}]*transition: transform/s);
+});
+
+test('keeps reveal and scroll depth on separate elements', () => {
+  // One transitioned property cannot carry two motion sources: the transition
+  // freezes its endpoints while the timeline keeps moving the other term.
+  const hidden = rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
+  assert.doesNotMatch(hidden, /translate:[^;]*--motion-scroll-depth-y/);
+  assert.match(bare, /\[data-scroll-depth\] {\s*translate: 0 var\(--motion-scroll-depth-y\)/);
+});
+
+test('gates scroll depth on data-motion-ready like every other motion state', () => {
+  // The timeline is pure CSS, so an ungated rule keeps the cards drifting with
+  // JavaScript off while every other block has gone static.
+  const selectors = [...bare.matchAll(/[^{}]*\[data-scroll-depth\][^{}]*(?={)/g)];
+  assert.ok(selectors.length >= 4, `expected the base, @supports, reduced-motion and print rules`);
+  for (const [selector] of selectors) {
+    assert.match(selector, /\[data-motion-ready\]/, `ungated: ${selector.trim()}`);
+  }
 });

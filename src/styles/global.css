@@ -664,18 +664,82 @@
    Motion
    ============================================ */
 
+/* End the view transition on the next frame instead of ~280ms later, and drop
+   its cross-fade with it. ClientRouter still calls startViewTransition, and for
+   as long as the transition is alive the page is a composited snapshot; WebKit
+   shows one stale frame of that snapshot when it tears down. That lands in the
+   middle of the reveal, so the whole page appears to drop back and rise a
+   second time. A Safari screen recording put it 283ms after the swap, against
+   a 294ms transition lifetime measured here - the same instant.
+   Computed styles are clean throughout, opacity and translate both monotonic,
+   so no DOM- or CSS-level check can see this. Confirmed by tracing them live in
+   Safari itself: the numbers matched headless to two decimals while the screen
+   visibly jumped.
+   The `(*)` selectors are load-bearing. Killing `animation` on old and new
+   alone leaves ::view-transition-group with a UA animation of its own, and that
+   keeps the transition - and the snapshot - alive for the full 280ms. The
+   reveal is this site's page transition; the cross-fade on top of it was
+   redundant, ghosted the outgoing page's text over the incoming one, and
+   brought this with it. */
+::view-transition-group(*),
+::view-transition-image-pair(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: normal;
+}
+
 @property --motion-scroll-depth-y {
   syntax: '<length>';
   inherits: false;
   initial-value: 0px;
 }
 
+/* Depth rides its own wrapper element, so it gets a `translate` nobody else
+   writes to. It used to share the card's, and a transition freezes its
+   endpoints when it starts: the scroll timeline kept moving the depth term
+   underneath the reveal, so a card snapped by the depth distance on the way in
+   and snapped back when the reveal finished. One motion source per property.
+   Two dead ends, both measured, do not retry them: transitioning a registered
+   custom property instead (WebKit drops custom-property transitions partway
+   through a view transition and cuts the reveal short), and parking depth on
+   `top` (correct, but it relayouts the card on every scroll frame instead of
+   staying on the compositor).
+   Gated on `data-motion-ready` like every other motion state: the timeline is
+   pure CSS, so without the gate the cards keep drifting when JS is off or the
+   motion bundle never lands and the rest of the page has gone static. Every
+   later override needs the gate too, or it loses on specificity. */
+[data-motion-ready] [data-scroll-depth] {
+  translate: 0 var(--motion-scroll-depth-y);
+}
+
 [data-motion-ready] [data-reveal] {
   --motion-reveal-y: var(--motion-reveal-distance);
   opacity: 0;
-  translate: 0 calc(var(--motion-reveal-y) + var(--motion-scroll-depth-y));
+  translate: 0 var(--motion-reveal-y);
   transform: translate3d(var(--motion-pointer-x, 0px), var(--motion-pointer-y, 0px), 0)
     translateY(var(--card-lift-y, 0px));
+  /* No opacity/translate transition on the hidden state, on purpose. Nodes
+     swapped in by ClientRouter arrive from an unstyled document at opacity 1,
+     so a transition here makes the browser animate 1 -> 0 on insert: the page
+     flashes in, sinks, then floats up again. Safari showed exactly that -
+     WebKit starts transitions in the rendering update, so the old
+     add-class/force-reflow/remove-class guard collapsed to a no-op there while
+     it worked in Blink. The reveal still animates because transitions read
+     transition-* from the after-change style, which .is-revealed carries. */
+  transition:
+    transform 180ms var(--motion-ease),
+    box-shadow var(--transition-base),
+    border-color var(--transition-fast);
+}
+
+[data-motion-ready] [data-reveal].is-revealed {
+  --motion-reveal-y: 0px;
+  opacity: 1;
   transition:
     opacity var(--motion-reveal-duration) var(--motion-ease),
     translate var(--motion-reveal-duration) var(--motion-ease),
@@ -687,28 +751,17 @@
     calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)), 0ms, 0ms, 0ms;
 }
 
-[data-motion-ready] [data-reveal].is-revealed {
-  --motion-reveal-y: 0px;
-  opacity: 1;
-}
-
 /* Scoped to dividers that opt in: only [data-reveal] elements ever receive
    is-revealed, so hiding the mark on a plain <hr class="divider" /> would
    leave it at scaleX(0) forever. */
 [data-motion-ready] .divider[data-reveal]::after {
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform var(--motion-reveal-duration) var(--motion-ease);
 }
 
 [data-motion-ready] .divider[data-reveal].is-revealed::after {
   transform: scaleX(1);
-}
-
-/* Must stay after the reveal rules above: same specificity, so order decides. */
-[data-motion-ready] [data-reveal].is-motion-reset,
-[data-motion-ready] .divider.is-motion-reset::after {
-  transition: none;
+  transition: transform var(--motion-reveal-duration) var(--motion-ease);
 }
 
 /* Longhands only, like .scroll-progress above. The `animation` shorthand lets
@@ -718,7 +771,7 @@
    prevent that fold. No animation-range either: entry 0% -> exit 100% is
    already the default for view(), and the minifier rewrites it to exit 0%. */
 @supports (animation-timeline: view()) {
-  [data-scroll-depth] {
+  [data-motion-ready] [data-scroll-depth] {
     animation-name: motion-scroll-depth;
     animation-timing-function: linear;
     animation-fill-mode: both;
@@ -743,6 +796,15 @@
     translate: none;
     animation: none;
     transition: none;
+  }
+
+  /* Its own selector now that depth lives on a wrapper rather than on the
+     reveal target, or the scroll timeline keeps running here. Keep the
+     `[data-motion-ready]` prefix: the rules it overrides carry it, and equal
+     specificity is what lets source order decide. */
+  [data-motion-ready] [data-scroll-depth] {
+    translate: none;
+    animation: none;
   }
 
   [data-motion-ready] .divider::after {
@@ -771,11 +833,15 @@
      distance. */
   [data-motion-ready] [data-reveal] {
     --motion-reveal-y: 0px;
-    --motion-scroll-depth-y: 0px;
     --card-lift-y: 0px;
     opacity: 1;
     animation: none;
     transition: none;
+  }
+
+  [data-motion-ready] [data-scroll-depth] {
+    translate: none;
+    animation: none;
   }
 
   [data-motion-ready] .divider[data-reveal]::after {

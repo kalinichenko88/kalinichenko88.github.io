@@ -52,13 +52,6 @@ export class MotionController {
       return;
     }
 
-    // Nodes swapped in by ClientRouter come from an unstyled document, so the
-    // browser starts a 1 -> 0 transition on insert and the reveal never plays.
-    // Snap them to the hidden state with transitions off first.
-    elements.forEach((element) => element.classList.add('is-motion-reset'));
-    void document.body.offsetHeight;
-    elements.forEach((element) => element.classList.remove('is-motion-reset'));
-
     this.observer = new IntersectionObserver(
       (entries) =>
         entries.forEach((entry) => {

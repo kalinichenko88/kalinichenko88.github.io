@@ -43,35 +43,38 @@ const more = projects.filter((p) => !p.featured);
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
         featured.map((project, index) => (
-          <article
-            class="card card-lift group"
-            data-reveal="card"
-            style={`--motion-index: ${index + 1}`}
-            data-reactive
-            data-scroll-depth
-          >
-            <a
-              href={project.homepage ?? project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block p-6"
+          // The depth offset needs an element of its own: the card's `translate`
+          // is the reveal's, and one property cannot carry two motion sources.
+          <div class="h-full" data-scroll-depth>
+            <article
+              class="card card-lift group h-full"
+              data-reveal="card"
+              style={`--motion-index: ${index + 1}`}
+              data-reactive
             >
-              <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
-                {project.name}
-              </h3>
-              <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.tech.map((t) => (
-                  <span class="tag">{t}</span>
-                ))}
-              </div>
-              {project.stars > 0 && (
-                <span class="font-mono text-xs text-foreground-tertiary">
-                  {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-                </span>
-              )}
-            </a>
-          </article>
+              <a
+                href={project.homepage ?? project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block p-6"
+              >
+                <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+                  {project.name}
+                </h3>
+                <p class="text-foreground-secondary mb-4">{project.tagline}</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {project.tech.map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </div>
+                {project.stars > 0 && (
+                  <span class="font-mono text-xs text-foreground-tertiary">
+                    {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+                  </span>
+                )}
+              </a>
+            </article>
+          </div>
         ))
       }
     </div>
