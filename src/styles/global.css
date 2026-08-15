@@ -799,9 +799,7 @@
   }
 
   /* Its own selector now that depth lives on a wrapper rather than on the
-     reveal target, or the scroll timeline keeps running here. Keep the
-     `[data-motion-ready]` prefix: the rules it overrides carry it, and equal
-     specificity is what lets source order decide. */
+     reveal target, or the scroll timeline keeps running here. */
   [data-motion-ready] [data-scroll-depth] {
     translate: none;
     animation: none;

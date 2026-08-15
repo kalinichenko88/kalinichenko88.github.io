@@ -280,8 +280,7 @@ Motion coverage is declarative:
   one freezes its endpoints while the other keeps moving, and the block snaps
   by the difference at both ends. That is why `data-scroll-depth` goes on a
   wrapper element of its own rather than on the revealed block: it needs a
-  `translate` nobody else writes to. `top` would work too and was rejected -
-  it relayouts on every scroll frame instead of staying on the compositor.
+  `translate` nobody else writes to.
 - `data-motion-limit` locally quiets a block that should stay still, such as
   the 404 message. It works for reveal and pointer alike, because the pointer
   caps are read from the reactive element rather than the root.

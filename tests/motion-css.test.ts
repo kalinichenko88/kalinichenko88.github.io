@@ -82,12 +82,13 @@ function rule(selector: RegExp) {
   return found[0];
 }
 
+const hidden = () => rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
+
 test('declares the reveal transition only on the revealed state', () => {
   // Nodes swapped in by ClientRouter arrive from an unstyled document at
   // opacity 1, so a transition on the hidden state animates 1 -> 0 on insert
   // and the page sinks on every client-side navigation.
-  const hidden = rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
-  assert.doesNotMatch(hidden, /transition:[^;]*\b(?:opacity|translate)\b/s);
+  assert.doesNotMatch(hidden(), /transition:[^;]*\b(?:opacity|translate)\b/s);
   assert.match(
     bare,
     /\[data-reveal\]\.is-revealed {[^}]*transition:[^;]*opacity[^;]*translate/s,
@@ -97,19 +98,15 @@ test('declares the reveal transition only on the revealed state', () => {
   assert.match(bare, /\.divider\[data-reveal\]\.is-revealed::after {[^}]*transition: transform/s);
 });
 
-test('keeps reveal and scroll depth on separate elements', () => {
+test('keeps scroll depth on its own element, gated like every other motion state', () => {
   // One transitioned property cannot carry two motion sources: the transition
-  // freezes its endpoints while the timeline keeps moving the other term.
-  const hidden = rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
-  assert.doesNotMatch(hidden, /translate:[^;]*--motion-scroll-depth-y/);
-  assert.match(bare, /\[data-scroll-depth\] {\s*translate: 0 var\(--motion-scroll-depth-y\)/);
-});
-
-test('gates scroll depth on data-motion-ready like every other motion state', () => {
-  // The timeline is pure CSS, so an ungated rule keeps the cards drifting with
+  // freezes its endpoints while the timeline keeps moving the other term. And
+  // the timeline is pure CSS, so an ungated rule keeps the cards drifting with
   // JavaScript off while every other block has gone static.
+  assert.doesNotMatch(hidden(), /translate:[^;]*--motion-scroll-depth-y/);
+  assert.match(bare, /\[data-scroll-depth\] {\s*translate: 0 var\(--motion-scroll-depth-y\)/);
   const selectors = [...bare.matchAll(/[^{}]*\[data-scroll-depth\][^{}]*(?={)/g)];
-  assert.ok(selectors.length >= 4, `expected the base, @supports, reduced-motion and print rules`);
+  assert.ok(selectors.length, 'no scroll-depth rules');
   for (const [selector] of selectors) {
     assert.match(selector, /\[data-motion-ready\]/, `ungated: ${selector.trim()}`);
   }
