@@ -224,7 +224,8 @@ Sections use vertical rhythm `py-14 md:py-20`. Separate two adjacent
 default-background sections with `<hr class="divider" />` (an ornamental
 hairline with a short terracotta mark) inside a `.container`, or give one of the
 two a `bg-background-subtle`. The homepage keeps a single subtle-background
-section (Writing); the rest are default with a divider where they touch.
+section (Writing) and no dividers: the sections carry enough vertical rhythm to
+separate themselves, so `.divider` is available but currently unused.
 
 ## Shapes & Elevation
 
