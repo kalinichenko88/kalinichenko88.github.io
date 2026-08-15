@@ -275,6 +275,12 @@ Motion coverage is declarative:
 - `data-reactive` enables a bounded pointer offset (translation only, no tilt:
   nothing here establishes a `perspective`, so a rotation would be invisible),
   while `data-scroll-depth` opts into the CSS `view()` timeline when supported.
+  Each motion source owns one property: reveal on `translate`, pointer and lift
+  on `transform`. Never feed two of them into one property - the transitioned
+  one freezes its endpoints while the other keeps moving, and the block snaps
+  by the difference at both ends. That is why `data-scroll-depth` goes on a
+  wrapper element of its own rather than on the revealed block: it needs a
+  `translate` nobody else writes to.
 - `data-motion-limit` locally quiets a block that should stay still, such as
   the 404 message. It works for reveal and pointer alike, because the pointer
   caps are read from the reactive element rather than the root.
@@ -291,13 +297,47 @@ gate is in place before the first paint. That script also drops the gate after
 it at all, so content is never left invisible.
 `prefers-reduced-motion: reduce` forces an immediate, static state.
 
-`MotionController` snaps freshly swapped-in elements to the hidden state with
-`is-motion-reset` (transitions off) plus a forced reflow before observing them.
-Without that, nodes adopted from ClientRouter's parsed document carry a
-computed style from an unstyled document, the browser starts a 1 -> 0
-transition on insert, and the reveal never plays on navigation. The
-`is-motion-reset` rule must stay after the reveal rules in `global.css` because
-their specificity is equal.
+The hidden reveal state declares no `opacity` or `translate` transition; only
+`.is-revealed` does. That split is load-bearing, not tidiness. Nodes adopted
+from ClientRouter's parsed document carry the computed style of an unstyled
+document (opacity 1), so a transition on the hidden state makes the browser
+animate 1 -> 0 on insert: on every client-side navigation the page flashes in,
+sinks, then floats up again. Safari showed exactly that. The earlier guard - an
+`is-motion-reset` class toggled around a forced reflow - only worked in Blink;
+WebKit starts transitions during the rendering update, so add and remove in one
+task collapsed to a no-op. Declaring the transition on `.is-revealed` needs no
+guard at all: transitions read `transition-*` from the after-change style, so
+the reveal still animates while the insert cannot. Same split on the divider's
+`::after`.
+
+There is no cross-fade between pages, and the view transition is made to end on
+the next frame. `global.css` sets `animation: none` on every view-transition
+pseudo-element - `group`, `image-pair`, `old`, `new`, all with `(*)` - so
+ClientRouter swaps the document and the reveal alone carries the transition.
+
+The `(*)` and the `group` selector are load-bearing, not tidiness. While a view
+transition is alive the page is a composited snapshot, and WebKit paints one
+stale frame of it at teardown; with the UA animations in place that teardown
+lands 280ms in, in the middle of the reveal, so the whole page drops back and
+rises a second time on every navigation. Killing `animation` on `old` and `new`
+only removes the cross-fade - `::view-transition-group` keeps its own UA
+animation and holds the transition open for the full duration on its own.
+Measured: 294ms lifetime before, 30ms after.
+
+Computed styles stay clean through all of it, opacity and translate both
+monotonic, verified by tracing them live in Safari while the screen visibly
+jumped. No DOM- or CSS-level check can catch this class of bug, and it does not
+reproduce in headless WebKit at all, which renders in software. Reach for a
+screen recording early next time. Do not restore the cross-fade: besides
+bringing this back, it ghosted the outgoing page's text over the incoming one.
+
+The reveal replays on every client-side navigation, visible blocks included -
+that entrance is the point, not an accident to optimise away. Suppressing it
+for what is already in the viewport was tried and reverted: it removed the
+motion the site is built around. Note the one place it reads unevenly: on a
+post the heading block rises 28px while the static `<Content />` prose right
+under it does not move, because prose is never a reveal target. That is the
+accepted trade, not a bug to fix by annotating the prose.
 
 The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
 pipeline. Do not add a third-party animation dependency for it, and keep

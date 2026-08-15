@@ -13,6 +13,7 @@ npm run preview   # Preview production build
 npm run lint      # Run ESLint
 npm run lint:fix  # Auto-fix ESLint issues
 npm run format    # Format with Prettier
+npm test          # node:test suite in tests/ (also runs in CI)
 ```
 
 A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) on staged files, so committing may reformat them.
