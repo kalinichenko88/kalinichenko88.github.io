@@ -43,7 +43,8 @@ This is an Astro 7 personal portfolio site with:
 
 Every tag becomes a page under `/tags/<tag>`, so a tag only earns its place if it groups posts. Keep the vocabulary small and reuse existing tags before inventing one — check `content/posts/*` first.
 
-- 2 to 3 tags per post. One tool tag (`obsidian`, `neovim`, `claude-code`) plus one or two topic tags (`ai`, `git`, `personal-finance`, `meta`).
+- 2 to 3 tags per post. One tool tag (`obsidian`, `neovim`, `claude-code`) plus one or two topic tags (`ai`, `git`, `personal-finance`, `meta`, `code-review`). A post about the site itself has no tool to name and carries `meta` alone.
+- `tests/post-tags.test.ts` enforces this and holds the vocabulary. A new tag goes there too.
 - The first tag is the chip shown on `/blog` (`src/pages/blog/index.astro`), so put the most specific one first.
 - No attribute tags (`plugin`, `markdown`) and no near-synonyms (`tooling` next to `automation`). Both were removed for this reason.
 
