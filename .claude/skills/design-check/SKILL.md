@@ -51,8 +51,9 @@ It only reads tokens against the page `bg`. Small text on another fill (a
 - **Accent split:** bright `--color-accent` only for FILLS; `--color-accent-text`
   for small accent text/links. Any new small accent text uses `-text`.
 - **Container track:** `.container` (~1100px) by default, including the blog
-  post article; `.container-prose` (~680px) only for the homepage intro and the
-  `/about` bio. Post body at the 19px/1.75 `prose` step.
+  post article; `.container-prose` (~680px) only for `/about` reading text (bio,
+  work history); the homepage intro uses `--container-prose` as a max-width.
+  Post body at the 19px/1.75 `prose` step.
 - **No eyebrow:** the headline names the section; no numbered/uppercase-mono
   label above it.
 - **Motion:** `data-reveal` on major structural blocks only, never on article
