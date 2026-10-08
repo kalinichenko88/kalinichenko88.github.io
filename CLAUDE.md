@@ -15,7 +15,7 @@ npm run lint:fix  # Auto-fix ESLint issues
 npm run format    # Format with Prettier
 npm run format:check  # Check formatting without writing
 npm run check     # astro check (types + .astro diagnostics)
-npm test          # node:test suite in tests/
+npm test          # node:test suite in tests/, including the design-check hard rules
 npm run verify    # everything CI runs: lint, check, format:check, test, build
 ```
 

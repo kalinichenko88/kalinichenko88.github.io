@@ -32,7 +32,8 @@ node .claude/skills/design-check/check-design.mjs --selftest
 npm run verify
 ```
 
-Exit code 1 = a hard rule failed (fix before shipping). Advisory items (em-dash
+Exit code 1 = a hard rule failed (fix before shipping). `npm test` runs the same
+hard rules through `tests/design-check.test.ts`, so they fail CI too. Advisory items (em-dash
 in `.astro`/`.ts` files) are printed for you to review, not auto-failed — some
 may be in code, not visible copy.
 
