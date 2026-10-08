@@ -14,7 +14,7 @@ colors:
   surface: '#ffffff'
   text: '#232326'
   text-secondary: '#55555b'
-  text-tertiary: '#6b6b71' # 4.73:1 — must stay AA, it carries small meta text
+  text-tertiary: '#68686e' # 4.95:1 on bg, 4.63:1 on bg-subtle — must stay AA on both, it carries small meta text
   border: '#e2e0da'
   border-subtle: '#eceae4'
   accent: '#c25a34' # bright terracotta — FILLS ONLY (backgrounds, borders, marks)
@@ -84,7 +84,7 @@ components:
   btn-secondary:
     backgroundColor: '{colors.surface}'
     textColor: '{colors.text}'
-    borderColor: '{colors.text-tertiary}' # 4.73:1 light / 5.40:1 dark
+    borderColor: '{colors.text-tertiary}' # 4.95:1 light / 5.40:1 dark
     rounded: '{rounded.pill}'
     padding: 12px 32px
   card:
@@ -97,7 +97,7 @@ components:
     rounded: '{rounded.pill}'
     padding: 4px 12px
   topic:
-    textColor: '{colors.accent-text}'
+    textColor: '#954429' # accent-text mixed 15% toward text; plain accent-text fails AA on the tint
     rounded: '{rounded.pill}'
     padding: 2px 8px
   container-wide:
@@ -153,15 +153,18 @@ accent — large text only needs 3:1.
 
 **The text ramp is three steps and all three carry text:** `--color-text`
 (14:1), `--color-text-secondary` (6.6:1 / 7.2:1), `--color-text-tertiary`
-(4.7:1 / 5.4:1). Tertiary is the quietest step, not a decorative one — it
+(4.95:1 / 5.4:1 on the page, down to 4.63:1 on light `bg-subtle` and 4.87:1 on
+dark cards). Tertiary is the quietest step, not a decorative one — it
 colors post dates, reading time, project taglines, star counts, footer labels
-and job periods, so it must stay at or above 4.5:1. It was `#8a8a90` / `#737379`
-(3.07:1 / 3.69:1) and failed AA everywhere it was used.
+and job periods, so it must stay at or above 4.5:1 on every fill it sits on,
+not just the page: the Writing band and the `.tag` pill put it on `bg-subtle`,
+where `#6b6b71` measured 4.43:1. It was `#8a8a90` / `#737379` (3.07:1 /
+3.69:1) before that and failed AA everywhere it was used.
 
 **Borders that carry meaning need 3:1 too.** `--color-border` is a hairline for
 separators (rules, card edges, table lines) and lands ~1.2:1 against the page —
 decorative only. When a border is the thing that defines a control, as on
-`.btn-secondary`, it must use `--color-text-tertiary` (4.73:1 light / 5.40:1
+`.btn-secondary`, it must use `--color-text-tertiary` (4.95:1 light / 5.40:1
 dark) so the control has a perceivable boundary.
 
 ### Themes
@@ -176,7 +179,7 @@ Theme values are swapped via CSS custom properties under
 | surface        | `#ffffff` | `#232326` |
 | text           | `#232326` | `#ececed` |
 | text-secondary | `#55555b` | `#a6a6ac` |
-| text-tertiary  | `#6b6b71` | `#8f8f95` |
+| text-tertiary  | `#68686e` | `#8f8f95` |
 | border         | `#e2e0da` | `#313135` |
 | accent (fill)  | `#c25a34` | `#e07a52` |
 | accent-text    | `#a94a29` | `#e07a52` |
@@ -248,8 +251,10 @@ new one-off styles.
   hover darkens the fill to `bg-subtle` and strengthens the border to
   `text-secondary`.
 - `.tag` — mono pill, secondary text on `bg-subtle`; accent-text on hover.
-- `.topic` — mono pill in accent-text on a `color-mix` accent tint; the
-  writing "topic mark" derived from a post's first tag.
+- `.topic` — mono pill on a 12% accent tint; the writing "topic mark" derived
+  from a post's first tag. Its text is accent-text pulled 15% toward the ink:
+  plain accent-text on its own tint measured 4.15:1 on the light Writing band
+  and 4.45:1 on dark cards.
 - `.divider` — ornamental section rule with a short terracotta mark.
 - `.link-underline` — text link with an accent underline that draws on hover.
 - `.nav-link` — header nav item with an animated underline indicator.
@@ -449,6 +454,5 @@ scripts — no React/Motion in this project.
 6. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
    motivated effect. Add `data-reveal` only to a major structural block, and
    leave article paragraphs unannotated.
-7. Verify: `npm run verify` and
-   `node .claude/skills/design-check/check-design.mjs` pass; check the surface
-   in both light and dark.
+7. Verify: `npm run verify` passes (its `npm test` runs the design-check hard
+   rules); check the surface in both light and dark.

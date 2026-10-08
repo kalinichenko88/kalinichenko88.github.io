@@ -42,6 +42,22 @@ function contrast(a, b) {
   const [l1, l2] = [relLum(a), relLum(b)].sort((x, y) => y - x);
   return (l1 + 0.05) / (l2 + 0.05);
 }
+// `color-mix(in srgb, top weight, under)`; with `transparent` as `under` it is
+// also `top` at that alpha painted over `under`.
+function mix(top, weight, under) {
+  if (!top || !under) return undefined;
+  const [a, b] = [toRgb(top), toRgb(under)];
+  return (
+    '#' +
+    a
+      .map((c, i) =>
+        Math.round((c * weight + b[i] * (1 - weight)) * 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  );
+}
 
 // ---------- token parsing ----------
 function themeBlock(css, selector) {
@@ -92,6 +108,10 @@ if (process.argv.includes('--selftest')) {
       `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`
     );
   }
+  // The weight belongs to the first color; swapped, this gives #bfbfbf.
+  const m = mix('#ffffff', 0.25, '#000000');
+  if (m !== '#404040') bad++;
+  line(m === '#404040', `mix(#ffffff, 0.25, #000000) = ${m} (expected #404040)`);
   console.log(bad ? `\nSELF-TEST FAILED (${bad})` : '\nSelf-test OK');
   process.exit(bad ? 1 : 0);
 }
@@ -103,13 +123,35 @@ const dark = themeBlock(css, "[data-theme='cloud-dark']");
 // ---------- 1. contrast (hard) ----------
 console.log('Contrast (WCAG AA >= 4.5 for small text/CTA):');
 const pairs = [
-  ['light accent-text on bg', light['accent-text'], light['bg']],
   ['light CTA text (white) on button fill (accent-text)', '#ffffff', light['accent-text']],
-  ['dark accent-text on bg', dark['accent-text'], dark['bg']],
   ['dark CTA text (bg) on button fill (accent)', dark['bg'], dark['accent']],
-  ['light text-tertiary (meta, dates) on bg', light['text-tertiary'], light['bg']],
-  ['dark text-tertiary (meta, dates) on bg', dark['text-tertiary'], dark['bg']],
 ];
+
+// .topic pill: its text sits on its own translucent accent tint, which eats
+// contrast. Both are read from the rule; an unrecognised value reads as MISSING
+// so a change to the rule has to update this check too.
+const topic = css.match(/\.topic\s*\{([^}]*)\}/)?.[1] ?? '';
+const tint = topic.match(
+  /background-color:\s*color-mix\(in srgb, var\(--color-accent\) (\d+)%, transparent\)/
+)?.[1];
+const textMix = topic.match(
+  /^\s*color:\s*color-mix\(in srgb, var\(--color-accent-text\) (\d+)%, var\(--color-text\)\);/m
+)?.[1];
+// Every small-text token on every fill it sits on: the page, bg-subtle (the
+// .tag pill, and the worst case for the translucent /85 bands), cards and
+// accent-subtle (.tag on hover). The .topic pill lays its own tint over each.
+for (const [name, t] of Object.entries({ light, dark })) {
+  for (const fill of ['bg', 'bg-subtle', 'surface', 'accent-subtle']) {
+    for (const token of ['text-tertiary', 'accent-text']) {
+      pairs.push([`${name} ${token} on ${fill}`, t[token], t[fill]]);
+    }
+    pairs.push([
+      `${name} .topic pill on ${fill}`,
+      textMix && mix(t['accent-text'], textMix / 100, t['text']),
+      tint && mix(t['accent'], tint / 100, t[fill]),
+    ]);
+  }
+}
 for (const [label, a, b] of pairs) {
   if (!a || !b) {
     line(false, `${label}: MISSING token`);

@@ -32,19 +32,26 @@ node .claude/skills/design-check/check-design.mjs --selftest
 npm run verify
 ```
 
-Exit code 1 = a hard rule failed (fix before shipping). Advisory items (em-dash
+Exit code 1 = a hard rule failed (fix before shipping). `npm test` runs the same
+hard rules through `tests/design-check.test.ts`, so they fail CI too. Advisory items (em-dash
 in `.astro`/`.ts` files) are printed for you to review, not auto-failed — some
 may be in code, not visible copy.
 
 ## What the script checks
 
-WCAG AA (>=4.5:1) in both themes on the accent pairs (accent-text on bg, CTA
-text on the button fill) and on `text-tertiary` against the page; no leftover
-purple / `.section-label` / terminal theme / `grid-pattern` / General Sans; theme
-ids stay `cloud` / `cloud-dark`; flags `—`/`–` in `src/**/*.{astro,ts}`.
+WCAG AA (>=4.5:1) in both themes for the small-text tokens (`text-tertiary`,
+`accent-text`) and the `.topic` pill (read from its rule, tint included) on every
+fill they sit on: page `bg`, `bg-subtle`, card `surface` and `accent-subtle`
+(`.tag` on hover); plus CTA text on
+the button fill. No leftover purple / `.section-label` / terminal theme /
+`grid-pattern` / General Sans; theme ids stay `cloud` / `cloud-dark`; flags
+`—`/`–` in `src/**/*.{astro,ts}`.
 
-It only reads tokens against the page `bg`. Small text on another fill (a
-`bg-background-subtle/85` band, a card surface) needs its own contrast check.
+Opaque `bg-subtle` stands in for the `bg-background-subtle/85` bands, since it
+is the worst case of their fill. The PixelSpotlight dots and glow that show
+through are not modelled; the Interaction section of `DESIGN.md` budgets them.
+A new fill, or small text in a new token, needs adding to the loop in the
+script.
 
 ## Judgment checklist (the script can't verify these)
 

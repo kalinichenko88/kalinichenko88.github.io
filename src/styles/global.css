@@ -79,7 +79,7 @@
 
   --color-text: #232326;
   --color-text-secondary: #55555b;
-  --color-text-tertiary: #6b6b71; /* 4.73:1 — carries small text (meta, dates) */
+  --color-text-tertiary: #68686e; /* 4.95:1 on bg, 4.63:1 on bg-subtle — carries small text (meta, dates) */
 
   --color-border: #e2e0da;
   --color-border-subtle: #eceae4;
@@ -104,7 +104,7 @@
 
   --color-text: #ececed;
   --color-text-secondary: #a6a6ac;
-  --color-text-tertiary: #8f8f95; /* 5.40:1 — carries small text (meta, dates) */
+  --color-text-tertiary: #8f8f95; /* 5.40:1 on bg, 4.87:1 on surface — carries small text (meta, dates) */
 
   --color-border: #313135;
   --color-border-subtle: #26262a;
@@ -589,7 +589,9 @@
     letter-spacing: 0.02em;
     padding: 0.15rem 0.5rem;
     border-radius: 9999px;
-    color: var(--color-accent-text);
+    /* Plain accent-text loses AA on its own tint (4.15:1 on the light Writing
+       band, 4.45:1 on dark cards); pulling it 15% toward the ink fixes both. */
+    color: color-mix(in srgb, var(--color-accent-text) 85%, var(--color-text));
     background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
   }
 }
