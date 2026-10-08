@@ -28,8 +28,8 @@ node .claude/skills/design-check/check-design.mjs
 # prove the contrast math is trustworthy
 node .claude/skills/design-check/check-design.mjs --selftest
 
-# the project gates, the same five CI runs
-npm run lint && npm run check && npm run format:check && npm test && npm run build
+# the project gate, everything CI runs
+npm run verify
 ```
 
 Exit code 1 = a hard rule failed (fix before shipping). Advisory items (em-dash

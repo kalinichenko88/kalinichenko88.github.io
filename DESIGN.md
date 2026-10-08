@@ -447,8 +447,6 @@ scripts — no React/Motion in this project.
 6. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
    motivated effect. Add `data-reveal` only to a major structural block, and
    leave article paragraphs unannotated.
-7. Verify: `npm run lint`, `check`, `format:check`, `test` and `build` are
-   green, and `node .claude/skills/design-check/check-design.mjs` passes; the
-   acceptance sweep
-   `grep -rniE "terminal|grid-pattern|general sans|section-label|7c5cff|—|–" src/`
-   returns nothing new; check the surface in both light and dark.
+7. Verify: `npm run verify` and
+   `node .claude/skills/design-check/check-design.mjs` pass; check the surface
+   in both light and dark.

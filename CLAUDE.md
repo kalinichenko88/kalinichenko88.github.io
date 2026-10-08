@@ -16,9 +16,8 @@ npm run format    # Format with Prettier
 npm run format:check  # Check formatting without writing
 npm run check     # astro check (types + .astro diagnostics)
 npm test          # node:test suite in tests/
+npm run verify    # everything CI runs: lint, check, format:check, test, build
 ```
-
-CI runs `lint`, `check`, `format:check`, `test` and `build`; run all five before opening a PR.
 
 A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) on staged files, so committing may reformat them.
 
@@ -91,7 +90,7 @@ Rendered once from `Layout.astro`. Pages opt major blocks into reveal with `data
 
 ### TableOfContents (`src/components/TableOfContents.astro`)
 
-Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` array. Rendered once as an inline TOC above the article content in blog post pages (`src/pages/blog/[...id].astro`); it scrolls away with the article. Active section tracking highlights the current heading's TOC link as the user scrolls; its `IntersectionObserver` (re-initialized on `astro:after-swap`) lives in `src/pages/blog/[...id].astro`, not in the component. Headings use `scroll-margin-top` for proper anchor offset.
+Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` array. Rendered once as an inline TOC above the article content in blog post pages (`src/pages/blog/[...id].astro`); it scrolls away with the article. Active section tracking highlights the current heading's TOC link as the user scrolls; its `IntersectionObserver` (re-initialized on `astro:after-swap`) lives in that page, not in the component. Headings use `scroll-margin-top` for proper anchor offset.
 
 ## Section Backgrounds
 
@@ -119,8 +118,6 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - Site constants in `src/consts.ts`
 
 ## Dependency Updates
-
-`package.json` cannot carry comments, so two entries are explained here:
 
 - `overrides` forces `postcss-selector-parser` ^7.1.6 under `@tailwindcss/typography`, which pins 6.0.10 and fails `npm audit`. Drop it once typography ships on the v7 parser.
 - `allowScripts` pins `esbuild@<version>`. When an update moves esbuild, move the pin with it, or npm warns on every install.

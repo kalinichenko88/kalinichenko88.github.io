@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "verify": "npm run lint && npm run check && npm run format:check && npm test && npm run build",
     "prepare": "husky"
   },
   "lint-staged": {

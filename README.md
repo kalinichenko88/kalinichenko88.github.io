@@ -48,9 +48,8 @@ npm run format     # Format with Prettier
 npm run format:check  # Check formatting without writing
 npm run check      # astro check (types + .astro diagnostics)
 npm test           # node:test suite in tests/
+npm run verify     # everything CI runs: lint, check, format:check, test, build
 ```
-
-CI runs `lint`, `check`, `format:check`, `test` and `build`.
 
 ## Project Structure
 
@@ -60,15 +59,15 @@ CI runs `lint`, `check`, `format:check`, `test` and `build`.
 │   └── projects/       # YAML project definitions
 ├── src/
 │   ├── assets/         # Icons and post images (optimized by Astro)
-│   ├── components/     # Astro components (Layout, Header, Footer, PostCard, PixelSpotlight, ...)
-│   │   └── home/       # Homepage sections (Hero, Expertise, Projects, Blog, Contact)
+│   ├── components/     # Astro components
+│   │   └── home/       # Homepage sections
 │   ├── config/         # Theme, navigation and resume data
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
 │   ├── lib/            # Motion controller and small helpers
 │   ├── pages/          # Routes (index, blog, tags, about, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
-├── tests/              # node:test suite (motion guards)
+├── tests/              # node:test suite
 └── public/             # Static assets
 ```
 
