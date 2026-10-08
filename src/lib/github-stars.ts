@@ -1,10 +1,6 @@
 /**
- * Live star count for a GitHub repo, read at build time.
- *
- * Returns `fallback` (the hand-kept YAML count) whenever GitHub cannot answer:
- * a rate limit or an outage must never fail the build. CI passes the workflow's
- * built-in GITHUB_TOKEN for the higher rate limit; locally the call goes
- * unauthenticated, which is plenty for a handful of repos.
+ * Live star count from GitHub, or `fallback` (the YAML value) on any failure,
+ * so a rate limit or outage never fails the build.
  */
 export async function githubStars(repoUrl: string, fallback: number): Promise<number> {
   const token = process.env.GITHUB_TOKEN;
@@ -16,9 +12,8 @@ export async function githubStars(repoUrl: string, fallback: number): Promise<nu
         signal: AbortSignal.timeout(5000),
       }
     );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const { stargazers_count } = await res.json();
-    if (typeof stargazers_count !== 'number') throw new Error('no stargazers_count');
+    if (typeof stargazers_count !== 'number') throw new Error(`HTTP ${res.status}`);
     return stargazers_count;
   } catch (error) {
     console.warn(
