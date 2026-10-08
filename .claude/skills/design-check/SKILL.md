@@ -28,32 +28,41 @@ node .claude/skills/design-check/check-design.mjs
 # prove the contrast math is trustworthy
 node .claude/skills/design-check/check-design.mjs --selftest
 
-# the project gates (no unit-test suite exists)
-npm run build && npm run lint
+# the project gates, the same five CI runs
+npm run lint && npm run check && npm run format:check && npm test && npm run build
 ```
 
 Exit code 1 = a hard rule failed (fix before shipping). Advisory items (em-dash
-in `.astro` copy) are printed for you to review, not auto-failed — some may be
-in code, not visible copy.
+in `.astro`/`.ts` files) are printed for you to review, not auto-failed — some
+may be in code, not visible copy.
 
 ## What the script checks
 
-WCAG AA (>=4.5:1) on the four critical pairs, both themes; no leftover purple /
-`.section-label` / terminal theme / `grid-pattern` / General Sans; theme ids stay
-`cloud` / `cloud-dark`; flags `—`/`–` in `.astro` files.
+WCAG AA (>=4.5:1) in both themes on the accent pairs (accent-text on bg, CTA
+text on the button fill) and on `text-tertiary` against the page; no leftover
+purple / `.section-label` / terminal theme / `grid-pattern` / General Sans; theme
+ids stay `cloud` / `cloud-dark`; flags `—`/`–` in `src/**/*.{astro,ts}`.
+
+It only reads tokens against the page `bg`. Small text on another fill (a
+`bg-background-subtle/85` band, a card surface) needs its own contrast check.
 
 ## Judgment checklist (the script can't verify these)
 
 - **Accent split:** bright `--color-accent` only for FILLS; `--color-accent-text`
   for small accent text/links. Any new small accent text uses `-text`.
-- **Container track:** reading content on `.container-prose` (~680px); wide
-  blocks on `.container` (~1100px). Post body at the 19px/1.75 `prose` step.
+- **Container track:** `.container` (~1100px) by default, including the blog
+  post article; `.container-prose` (~680px) only for the homepage intro and the
+  `/about` bio. Post body at the 19px/1.75 `prose` step.
 - **No eyebrow:** the headline names the section; no numbered/uppercase-mono
   label above it.
-- **One motivated interaction max**, with a `prefers-reduced-motion` guard.
-- **Section separation:** a `<hr class="divider" />` or one `bg-background-subtle`
-  section between adjacent default-bg sections (not more than one subtle per view).
-- **Visual smoke in BOTH themes** (light + dark) before calling it done.
+- **Motion:** `data-reveal` on major structural blocks only, never on article
+  prose (`npm test` enforces both). Any other interaction is one motivated
+  effect with a `prefers-reduced-motion` guard.
+- **Section backgrounds:** sections do not alternate. A new subtle section uses
+  the translucent `bg-background-subtle/85`, so the pixel field shows through;
+  keep at most one per view. `.divider` exists but the homepage uses none.
+- **Visual smoke in BOTH themes:** `npm run dev` (port 3000), then look at the
+  surface in light and dark; `Cmd/Ctrl + /` cycles the theme.
 
 ## If a check fails
 
