@@ -107,6 +107,8 @@ const pairs = [
   ['light CTA text (white) on button fill (accent-text)', '#ffffff', light['accent-text']],
   ['dark accent-text on bg', dark['accent-text'], dark['bg']],
   ['dark CTA text (bg) on button fill (accent)', dark['bg'], dark['accent']],
+  ['light text-tertiary (meta, dates) on bg', light['text-tertiary'], light['bg']],
+  ['dark text-tertiary (meta, dates) on bg', dark['text-tertiary'], dark['bg']],
 ];
 for (const [label, a, b] of pairs) {
   if (!a || !b) {

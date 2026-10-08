@@ -87,19 +87,15 @@ const blogPostSchema = {
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-2 mb-4">
-          {
-            post.data.tags.map((tag: string) => (
-              <a href={`/tags/${tag}`} class="tag">
-                {tag}
-              </a>
-            ))
-          }
+          {post.data.tags.map((tag: string) => (
+            <a href={`/tags/${tag}`} class="tag">
+              {tag}
+            </a>
+          ))}
         </div>
 
         <!-- Title -->
-        <h1 class="text-foreground mb-4">
-          {post.data.title}
-        </h1>
+        <h1 class="text-foreground mb-4">{post.data.title}</h1>
 
         <!-- Meta -->
         <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
@@ -113,13 +109,11 @@ const blogPostSchema = {
         </div>
       </header>
 
-      {
-        tocHeadings.length > 0 && (
-          <div class="mb-10">
-            <TableOfContents headings={headings} />
-          </div>
-        )
-      }
+      {tocHeadings.length > 0 && (
+        <div class="mb-10">
+          <TableOfContents headings={headings} />
+        </div>
+      )}
 
       <div class="prose prose-custom max-w-none">
         <Content />

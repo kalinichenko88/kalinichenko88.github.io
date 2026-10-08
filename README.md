@@ -19,8 +19,7 @@ Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 
 ### Prerequisites
 
-- Node.js 22+
-- A [GitHub personal access token](https://github.com/settings/tokens) for fetching repositories
+- Node.js 22.12+
 
 ### Setup
 
@@ -40,28 +39,35 @@ npm run build      # Production build
 npm run preview    # Preview production build
 ```
 
-### Linting & Formatting
+### Checks
 
 ```bash
 npm run lint       # Run ESLint
 npm run lint:fix   # Auto-fix ESLint issues
 npm run format     # Format with Prettier
+npm run format:check  # Check formatting without writing
+npm run check      # astro check (types + .astro diagnostics)
+npm test           # node:test suite in tests/
+npm run verify     # everything CI runs: lint, check, format:check, test, build
 ```
 
 ## Project Structure
 
 ```
 ├── content/
-│   ├── posts/          # Markdown blog posts
+│   ├── posts/          # Markdown/MDX blog posts
 │   └── projects/       # YAML project definitions
 ├── src/
-│   ├── components/     # Astro components (Layout, Header, Footer, VideoPlayer, TableOfContents)
-│   │   └── home/       # Homepage sections (Hero, Expertise, Projects, Blog, Contact)
-│   ├── config/         # Theme and resume data
+│   ├── assets/         # Icons and post images (optimized by Astro)
+│   ├── components/     # Astro components
+│   │   └── home/       # Homepage sections
+│   ├── config/         # Theme, navigation and resume data
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
+│   ├── lib/            # Motion controller and small helpers
 │   ├── pages/          # Routes (index, blog, tags, about, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
+├── tests/              # node:test suite
 └── public/             # Static assets
 ```
 

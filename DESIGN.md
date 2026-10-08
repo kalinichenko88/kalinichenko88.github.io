@@ -207,7 +207,8 @@ Two container tracks, applied by responsibility:
   (`/blog`, `/tags`, `/tags/<tag>`), the blog post article, and any full-width
   block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
-  most comfortable measure: homepage intro/writing text and `/about` bio.
+  most comfortable measure: the `/about` bio and work history. The homepage
+  intro reuses the measure through `--container-prose` on its `.intro` block.
 
 The site is deliberately wide: the blog post article runs on the full ~1100px
 track, so the post body measure is long (~110 characters) rather than the
@@ -397,7 +398,8 @@ scripts — no React/Motion in this project.
 **Do**
 
 - Default to `.container` (~1100px), including for the blog post article; use
-  `.container-prose` (~680px) only for the homepage intro and `/about` bio.
+  `.container-prose` (~680px) only for `/about` reading text (bio, work
+  history).
 - Render a post in a list with `PostCard.astro` (`featured` for the lead card)
   rather than hand-rolling another row layout.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
@@ -434,18 +436,19 @@ scripts — no React/Motion in this project.
 
 ## How to add a new page or section
 
-1. Wrap it in `<section class="py-14 md:py-20">`; text goes in
-   `.container-prose`, wide grids in `.container`.
+1. Wrap it in `<section class="py-14 md:py-20">` with a `.container` inside;
+   `.container-prose` is only for `/about` reading text (bio, work history).
 2. Lead with a `font-display` heading (default `h2`). No eyebrow.
 3. Build from the existing components (`.card`, `.btn-primary`, `.tag`,
    `.topic`, `.divider`, `.link-underline`).
 4. Accent usage: fills → `var(--color-accent)`; small text/links →
    `var(--color-accent-text)`.
 5. Separate it from its neighbor with a `.divider`, or give one section a
-   `bg-background-subtle` (keep at most one subtle section per view).
+   translucent `bg-background-subtle/85` (keep at most one subtle section per
+   view).
 6. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
    motivated effect. Add `data-reveal` only to a major structural block, and
    leave article paragraphs unannotated.
-7. Verify: `npm run build` and `npm run lint` are green; the acceptance sweep
-   `grep -rniE "terminal|grid-pattern|general sans|section-label|7c5cff|—|–" src/`
-   returns nothing new; check the surface in both light and dark.
+7. Verify: `npm run verify` and
+   `node .claude/skills/design-check/check-design.mjs` pass; check the surface
+   in both light and dark.
