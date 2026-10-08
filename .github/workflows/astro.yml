@@ -20,11 +20,10 @@ on:
   schedule:
     - cron: '0 6 * * 1'
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Read-only by default. Only the deploy job gets the Pages write scopes, so the
+# token handed to the build (and every build-time dependency) cannot touch Pages.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -86,6 +85,9 @@ jobs:
     name: Build
     needs: quality
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read # configure-pages reads the Pages site config
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -135,8 +137,11 @@ jobs:
           path: ${{ env.BUILD_PATH }}/dist
 
   deploy:
-    # Only deploy on pushes to main, never from pull requests
+    # Deploys every main run (push, the weekly schedule, a manual run), never a pull request
     if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

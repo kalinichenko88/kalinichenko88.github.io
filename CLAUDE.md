@@ -23,7 +23,7 @@ A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) o
 
 ## Environment Setup
 
-No environment variables are required. Besides font fetching, the build makes one unauthenticated GitHub API call per project for its star count (see below). CI sets the workflow's built-in `GITHUB_TOKEN` for the higher rate limit; no personal token is ever needed.
+No environment variables are required. Besides font fetching, the homepage makes one GitHub API call per project for its star count (see below): once per build, and on every request to `/` under `astro dev`. The call is unauthenticated unless `GITHUB_TOKEN` is set; CI sets the workflow's built-in one for the higher rate limit, and no personal token is ever needed. A stale `GITHUB_TOKEN` in your shell makes GitHub answer 401, so the counts fall back to YAML with a warning.
 
 ## Architecture
 
