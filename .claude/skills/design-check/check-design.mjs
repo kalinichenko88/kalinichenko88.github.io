@@ -130,28 +130,20 @@ const topic = css.match(/\.topic\s*\{([^}]*)\}/)?.[1] ?? '';
 const tint = topic.match(
   /background-color:\s*color-mix\(in srgb, var\(--color-accent\) (\d+)%, transparent\)/
 )?.[1];
-const topicColor = topic.match(/^\s*color:\s*([^;]+);/m)?.[1].trim();
-const textMix = topicColor?.match(
-  /^color-mix\(in srgb, var\(--color-accent-text\) (\d+)%, var\(--color-text\)\)$/
-);
-const topicText = (t) =>
-  topicColor === 'var(--color-accent-text)'
-    ? t['accent-text']
-    : textMix && mix(t['accent-text'], textMix[1] / 100, t['text']);
+const textMix = topic.match(
+  /^\s*color:\s*color-mix\(in srgb, var\(--color-accent-text\) (\d+)%, var\(--color-text\)\);/m
+)?.[1];
 // Every small-text token on every fill it sits on: the page, bg-subtle (the
 // .tag pill, and the worst case for the translucent /85 bands) and cards. The
 // .topic pill lays its own tint over each of them.
-for (const [name, t] of [
-  ['light', light],
-  ['dark', dark],
-]) {
+for (const [name, t] of Object.entries({ light, dark })) {
   for (const fill of ['bg', 'bg-subtle', 'surface']) {
     for (const token of ['text-tertiary', 'accent-text']) {
       pairs.push([`${name} ${token} on ${fill}`, t[token], t[fill]]);
     }
     pairs.push([
       `${name} .topic pill on ${fill}`,
-      topicText(t),
+      textMix && mix(t['accent-text'], textMix / 100, t['text']),
       tint && mix(t['accent'], tint / 100, t[fill]),
     ]);
   }
