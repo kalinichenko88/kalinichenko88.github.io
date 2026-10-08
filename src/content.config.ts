@@ -25,7 +25,8 @@ const projects = defineCollection({
     tech: z.array(z.string()).default([]),
     // Live site, when the project has one. Falls back to the repo URL.
     homepage: z.url().optional(),
-    // Hand-maintained; bump it when it moves enough to be worth showing.
+    // Fallback only: the build reads the live count from GitHub and uses this
+    // when the API cannot answer (see src/lib/github-stars.ts).
     stars: z.number().default(0),
   }),
 });
