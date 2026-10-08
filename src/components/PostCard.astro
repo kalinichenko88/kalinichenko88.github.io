@@ -40,7 +40,9 @@ const { post, featured = false, motionIndex = 0 } = Astro.props;
     {post.data.description}
   </p>
   <div class="mt-auto flex flex-wrap items-center gap-3 font-mono text-xs text-foreground-tertiary">
-    <span>{formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read</span>
+    <span>
+      {formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
+    </span>
     {post.data.tags[0] && <span class="topic">{post.data.tags[0]}</span>}
   </div>
 </article>

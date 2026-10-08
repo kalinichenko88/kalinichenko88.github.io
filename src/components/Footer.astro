@@ -46,48 +46,40 @@ const socialLinks = [
 
       <!-- Navigation Column -->
       <div class="md:col-span-4">
-        <h4
-          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
-        >
+        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
           Navigation
         </h4>
         <ul class="grid grid-cols-2 gap-x-6 gap-y-3">
-          {
-            NAV_LINKS.map((link) => (
-              <li>
-                <a
-                  href={link.href}
-                  class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))
-          }
+          {NAV_LINKS.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-foreground-secondary hover:text-foreground transition-colors duration-150"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
 
       <!-- Connect Column -->
       <div class="md:col-span-4">
-        <h4
-          class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4"
-        >
+        <h4 class="font-mono text-xs font-medium text-foreground-tertiary uppercase tracking-wider mb-4">
           Connect
         </h4>
         <div class="flex flex-wrap gap-2">
-          {
-            socialLinks.map((link) => (
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-btn p-2.5 rounded-lg border border-line text-foreground-tertiary"
-                aria-label={link.label}
-              >
-                <link.Icon class="w-4 h-4" />
-              </a>
-            ))
-          }
+          {socialLinks.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn p-2.5 rounded-lg border border-line text-foreground-tertiary"
+              aria-label={link.label}
+            >
+              <link.Icon class="w-4 h-4" />
+            </a>
+          ))}
         </div>
       </div>
     </div>
