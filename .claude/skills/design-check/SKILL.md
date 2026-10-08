@@ -40,14 +40,17 @@ may be in code, not visible copy.
 
 WCAG AA (>=4.5:1) in both themes for the small-text tokens (`text-tertiary`,
 `accent-text`) and the `.topic` pill (read from its rule, tint included) on every
-fill they sit on: page `bg`, `bg-subtle` and card `surface`; plus CTA text on
+fill they sit on: page `bg`, `bg-subtle`, card `surface` and `accent-subtle`
+(`.tag` on hover); plus CTA text on
 the button fill. No leftover purple / `.section-label` / terminal theme /
 `grid-pattern` / General Sans; theme ids stay `cloud` / `cloud-dark`; flags
 `—`/`–` in `src/**/*.{astro,ts}`.
 
 Opaque `bg-subtle` stands in for the `bg-background-subtle/85` bands, since it
-is their worst case. A new fill, or small text in a new token, needs adding to
-the loop in the script.
+is the worst case of their fill. The PixelSpotlight dots and glow that show
+through are not modelled; the Interaction section of `DESIGN.md` budgets them.
+A new fill, or small text in a new token, needs adding to the loop in the
+script.
 
 ## Judgment checklist (the script can't verify these)
 

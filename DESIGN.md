@@ -97,7 +97,7 @@ components:
     rounded: '{rounded.pill}'
     padding: 4px 12px
   topic:
-    textColor: 'color-mix(in srgb, {colors.accent-text} 85%, {colors.text})' # plain accent-text fails AA on the tint
+    textColor: '#954429' # accent-text mixed 15% toward text; plain accent-text fails AA on the tint
     rounded: '{rounded.pill}'
     padding: 2px 8px
   container-wide:
@@ -153,7 +153,8 @@ accent — large text only needs 3:1.
 
 **The text ramp is three steps and all three carry text:** `--color-text`
 (14:1), `--color-text-secondary` (6.6:1 / 7.2:1), `--color-text-tertiary`
-(4.95:1 / 5.4:1). Tertiary is the quietest step, not a decorative one — it
+(4.95:1 / 5.4:1 on the page, down to 4.63:1 on light `bg-subtle` and 4.87:1 on
+dark cards). Tertiary is the quietest step, not a decorative one — it
 colors post dates, reading time, project taglines, star counts, footer labels
 and job periods, so it must stay at or above 4.5:1 on every fill it sits on,
 not just the page: the Writing band and the `.tag` pill put it on `bg-subtle`,

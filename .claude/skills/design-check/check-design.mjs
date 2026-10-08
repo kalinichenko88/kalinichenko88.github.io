@@ -108,6 +108,10 @@ if (process.argv.includes('--selftest')) {
       `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`
     );
   }
+  // The weight belongs to the first color; swapped, this gives #bfbfbf.
+  const m = mix('#ffffff', 0.25, '#000000');
+  if (m !== '#404040') bad++;
+  line(m === '#404040', `mix(#ffffff, 0.25, #000000) = ${m} (expected #404040)`);
   console.log(bad ? `\nSELF-TEST FAILED (${bad})` : '\nSelf-test OK');
   process.exit(bad ? 1 : 0);
 }
@@ -134,10 +138,10 @@ const textMix = topic.match(
   /^\s*color:\s*color-mix\(in srgb, var\(--color-accent-text\) (\d+)%, var\(--color-text\)\);/m
 )?.[1];
 // Every small-text token on every fill it sits on: the page, bg-subtle (the
-// .tag pill, and the worst case for the translucent /85 bands) and cards. The
-// .topic pill lays its own tint over each of them.
+// .tag pill, and the worst case for the translucent /85 bands), cards and
+// accent-subtle (.tag on hover). The .topic pill lays its own tint over each.
 for (const [name, t] of Object.entries({ light, dark })) {
-  for (const fill of ['bg', 'bg-subtle', 'surface']) {
+  for (const fill of ['bg', 'bg-subtle', 'surface', 'accent-subtle']) {
     for (const token of ['text-tertiary', 'accent-text']) {
       pairs.push([`${name} ${token} on ${fill}`, t[token], t[fill]]);
     }

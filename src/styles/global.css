@@ -104,7 +104,7 @@
 
   --color-text: #ececed;
   --color-text-secondary: #a6a6ac;
-  --color-text-tertiary: #8f8f95; /* 5.40:1 — carries small text (meta, dates) */
+  --color-text-tertiary: #8f8f95; /* 5.40:1 on bg, 4.87:1 on surface — carries small text (meta, dates) */
 
   --color-border: #313135;
   --color-border-subtle: #26262a;
