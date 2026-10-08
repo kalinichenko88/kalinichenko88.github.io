@@ -6,6 +6,7 @@ import HeroSection from '../components/home/HeroSection.astro';
 import ProjectsSection from '../components/home/ProjectsSection.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import ContactSection from '../components/home/ContactSection.astro';
+import { githubStars } from '../lib/github-stars';
 
 import {
   AUTHOR_NAME,
@@ -31,12 +32,14 @@ const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 4);
 
-const projects = (await getCollection('projects'))
-  .sort((a, b) => a.data.order - b.data.order)
-  .map(({ data }) => ({
-    ...data,
-    url: `${GITHUB_PROFILE_LINK}/${data.slug}`,
-  }));
+const projects = await Promise.all(
+  (await getCollection('projects'))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async ({ data }) => {
+      const url = `${GITHUB_PROFILE_LINK}/${data.slug}`;
+      return { ...data, url, stars: await githubStars(url, data.stars) };
+    })
+);
 ---
 
 <Layout>

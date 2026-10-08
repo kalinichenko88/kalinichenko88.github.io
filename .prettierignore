@@ -4,3 +4,5 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 .superpowers/
+# Recorded API responses, kept byte-for-byte as the source sent them
+tests/fixtures/

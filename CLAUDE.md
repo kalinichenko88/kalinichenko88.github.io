@@ -23,13 +23,13 @@ A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) o
 
 ## Environment Setup
 
-No environment variables are required. The build makes no network calls beyond font fetching.
+No environment variables are required. Besides font fetching, the build makes one unauthenticated GitHub API call per project for its star count (see below). CI sets the workflow's built-in `GITHUB_TOKEN` for the higher rate limit; no personal token is ever needed.
 
 ## Architecture
 
 This is an Astro 7 personal portfolio site with:
 
-- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage` and hand-maintained `stars`. There is no GitHub API call at build time.
+- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage` and a fallback `stars`. The homepage reads each repo's live star count at build time (`src/lib/github-stars.ts`, plain `fetch`, no dependency) and falls back to the YAML `stars` on any failure, so a GitHub rate limit or outage never fails the build. The deploy workflow also runs weekly on a `schedule:` so counts refresh between pushes.
 - **Theme System** (`src/config/themes.ts`, `src/styles/global.css`): Two themes (cloud light, cloud-dark), selectable as Light, Dark, or Auto (follows system preference), controlled via `data-theme` attribute on `<html>`. Theme CSS uses CSS custom properties with Tailwind 4's `@theme` directive for integration
 - **Layout** (`src/components/Layout.astro`): Single layout with theme initialization script (inline to prevent flash), Header, Footer, and slot for content
 - **Global Styles** (`src/styles/global.css`): Design tokens, theme definitions, Tailwind extensions, and utility classes (`.card`, `.btn-primary`, `.prose-custom`, etc.)
@@ -37,7 +37,7 @@ This is an Astro 7 personal portfolio site with:
 ## Content Structure
 
 - `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`
-- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars`
+- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins)
 
 ### Tags
 
