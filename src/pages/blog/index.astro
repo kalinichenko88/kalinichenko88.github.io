@@ -31,7 +31,7 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.
       </p>
 
       {posts.length > 0 ? (
-        <div class="columns-1 gap-6 md:columns-2 lg:columns-3">
+        <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
           {posts.map((post, index) => (
             <PostCard post={post} motionIndex={index + 1} />
           ))}

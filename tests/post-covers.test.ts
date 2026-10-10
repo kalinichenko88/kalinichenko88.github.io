@@ -47,11 +47,8 @@ test('every cover went through prepare.mjs and has its social image', async () =
   }
 });
 
-const surfaces = [
-  'src/components/PostCard.astro',
-  'src/components/home/BlogSection.astro',
-  'src/pages/blog/[...id].astro',
-];
+// /blog, /tags and the homepage Writing row all render covers through PostCard.
+const surfaces = ['src/components/PostCard.astro', 'src/pages/blog/[...id].astro'];
 
 test('every cover surface renders it without a build-time crop', async () => {
   for (const file of surfaces) {

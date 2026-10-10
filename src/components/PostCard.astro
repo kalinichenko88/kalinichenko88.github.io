@@ -6,17 +6,24 @@ import { formatDate } from '../lib/format-date';
 
 type Props = {
   post: CollectionEntry<'posts'>;
+  /** Title level: h2 on a page of posts, h3 inside a section with its own h2. */
+  heading?: 'h2' | 'h3';
+  /**
+   * Reveal the card on its own. Off inside a sideways row, which reveals as one
+   * block: a card clipped by the row would stay a blank peek at the edge.
+   */
+  reveal?: boolean;
   /** Stable sequence position for profile-based entry motion. */
   motionIndex?: number;
 };
 
-const { post, motionIndex = 0 } = Astro.props;
+const { post, heading: Heading = 'h2', reveal = true, motionIndex = 0 } = Astro.props;
 ---
 
 <article
-  class="card card-lift group relative mb-6 break-inside-avoid p-6"
-  data-reveal="card"
-  style={`--motion-index: ${motionIndex}`}
+  class="card card-lift group relative p-6"
+  data-reveal={reveal ? 'card' : undefined}
+  style={reveal ? `--motion-index: ${motionIndex}` : undefined}
 >
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
   {post.data.cover && (
@@ -28,9 +35,9 @@ const { post, motionIndex = 0 } = Astro.props;
       class="mb-5 h-auto w-full"
     />
   )}
-  <h2 class="font-display font-semibold text-lg text-foreground mb-2 transition-colors group-hover:text-accent-text">
+  <Heading class="font-display font-semibold text-lg text-foreground mb-2 transition-colors group-hover:text-accent-text">
     {post.data.title}
-  </h2>
+  </Heading>
   <p class="text-sm text-foreground-secondary mb-4">{post.data.description}</p>
   <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-foreground-tertiary">
     <span>

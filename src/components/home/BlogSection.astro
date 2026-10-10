@@ -1,8 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
-import { readingTime } from '../../lib/reading-time';
-import { formatDate } from '../../lib/format-date';
+import PostCard from '../PostCard.astro';
 
 import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
 
@@ -11,7 +9,6 @@ type Props = {
 };
 
 const { latestPosts } = Astro.props;
-const [lead, ...rest] = latestPosts;
 ---
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
@@ -24,54 +21,21 @@ const [lead, ...rest] = latestPosts;
       </a>
     </div>
 
-    {lead && (
-      <a
-        href={`/blog/${lead.id}`}
-        class="group mb-8 flex flex-col gap-6 md:flex-row md:items-center md:gap-10"
-        data-reveal="content"
-      >
-        {lead.data.cover && (
-          <Image
-            src={lead.data.cover}
-            alt=""
-            widths={[400, 800]}
-            sizes="(min-width: 768px) 352px, 100vw"
-            class="h-48 w-full object-contain md:order-last md:h-56 md:w-[22rem] md:shrink-0"
-          />
-        )}
-        <div class="max-w-prose">
-          <h3 class="font-display font-semibold text-2xl text-foreground mb-3 group-hover:text-accent transition-colors">
-            {lead.data.title}
-          </h3>
-          <p class="text-foreground-secondary mb-3">{lead.data.description}</p>
-          <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
-            <span>
-              {formatDate(lead.data.pubDate)} · {readingTime(lead.body ?? '')} min read
-            </span>
-            {lead.data.tags[0] && <span class="topic">{lead.data.tags[0]}</span>}
-          </div>
-        </div>
-      </a>
-    )}
-
-    {rest.length > 0 && (
-      <div class="border-t border-line max-w-prose">
-        {rest.map((post, index) => (
-          <a
-            href={`/blog/${post.id}`}
-            class="flex items-baseline gap-4 py-4 border-b border-line group"
-            data-reveal="card"
-            style={`--motion-index: ${index + 1}`}
-          >
-            <time class="font-mono text-xs text-foreground-tertiary w-24 shrink-0">
-              {formatDate(post.data.pubDate)}
-            </time>
-            <span class="font-display font-semibold text-foreground group-hover:text-accent-text transition-colors">
-              {post.data.title}
-            </span>
-          </a>
-        ))}
-      </div>
-    )}
+    <!--
+      One row of the same cards as /blog, scrolled sideways with native scroll
+      snap. The cards are 18rem, so about three and a half show at the 1100px
+      track and the clipped one says there is more. The row bleeds into the
+      container padding so the card shadow and hover lift are not clipped. The
+      row reveals as one block: a card revealed on its own would stay a blank
+      peek at the clipped edge.
+    -->
+    <div
+      data-reveal="content"
+      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:thin] *:w-72 *:shrink-0 *:snap-start"
+    >
+      {latestPosts.map((post) => (
+        <PostCard post={post} heading="h3" reveal={false} />
+      ))}
+    </div>
   </div>
 </section>

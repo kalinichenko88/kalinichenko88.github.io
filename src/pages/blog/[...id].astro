@@ -107,10 +107,10 @@ const blogPostSchema = {
             <Image
               src={post.data.cover}
               alt=""
-              widths={[360, 720]}
-              sizes="(min-width: 768px) 360px, 100vw"
+              widths={[480, 960]}
+              sizes="(min-width: 768px) 480px, 100vw"
               priority
-              class="h-40 w-full object-contain md:order-last md:h-60 md:w-[22.5rem] md:shrink-0"
+              class="h-48 w-full object-contain md:order-last md:h-80 md:w-auto md:max-w-[45%] md:shrink-0"
             />
           )}
           <div class="min-w-0 flex-1">

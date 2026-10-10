@@ -285,14 +285,18 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   build time.
 - **Decorative.** `alt=""` everywhere: the title always sits next to it.
 - **Where:** in post cards, full width directly above the title, so drawing
-  and title read as one unit; to the right of the homepage Writing lead and
-  inside its link; to the right of the title in the post header (above it on
-  mobile, height capped).
+  and title read as one unit; to the right of the title in the post header,
+  up to 20rem tall, its box hugging the drawing and vertically centred on the
+  title block (above it on mobile, height capped).
 - **Post lists are a masonry of equal cards.** `/blog` and `/tags/<tag>` pack
   cards into CSS columns (one, two, three by width), so card heights follow
   their covers. Columns read top to bottom, so on desktop the order runs down
   each column; native `display: grid-lanes` would keep row order but is not in
   Chrome yet (checked in 155). There is no featured lead card.
+- **The homepage Writing section is one sideways row of the same cards**,
+  18rem wide with native scroll snap, so about three and a half show and the
+  clipped one says there is more. The row reveals as one block; a card
+  revealed on its own would stay a blank peek at the clipped edge.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.
@@ -447,8 +451,9 @@ scripts — no React/Motion in this project.
 - Default to `.container` (~1100px), including for the blog post article; use
   `.container-prose` (~680px) only for `/about` reading text (bio, work
   history).
-- Render a post in a list with `PostCard.astro` inside the same CSS-columns
-  masonry rather than hand-rolling another layout.
+- Render a post in a list with `PostCard.astro`, inside the CSS-columns
+  masonry or the homepage's sideways row, rather than hand-rolling another
+  layout. The container owns the layout classes (`*:` children utilities).
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at
