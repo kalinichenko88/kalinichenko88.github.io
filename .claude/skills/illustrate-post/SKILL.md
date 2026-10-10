@@ -8,8 +8,8 @@ description: Use when a blog post in this repo (kalinichenko.dev) needs a cover 
 ## Overview
 
 Every post has a hand-drawn cover: a loose pencil sketch of one metaphor
-object, white-filled, greyscale with one terracotta accent, on a transparent
-background. Codex generates three variants with its built-in `image_gen` tool,
+object, ink lines with flat white and pastel fills from a fixed palette, on a
+transparent background. Codex generates three variants with its built-in `image_gen` tool,
 `prepare.mjs` gates, normalizes and compresses them, and the author picks one.
 The rules for how covers are shown live in `DESIGN.md` (Illustrations).
 
@@ -60,8 +60,9 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
    variant rejected for transparency is regenerated once and dropped if it
    fails again. A duplicate is regenerated.
 7. **Self-check by eye,** on `variant-N.light.png` and `variant-N.dark.png`:
-   every object white-filled, terracotta is the only chromatic accent and
-   covers one or two small elements, no text or letters, no logos or brand
+   every object filled (white or a palette pastel, never a hollow outline),
+   colors only from the palette and two or three of them, most of the drawing
+   still white, no saturated color, no text or letters, no logos or brand
    marks, no people, no glow or halo, nothing cut at the edges. A failure is a
    warning, not a gate: name it next to the variant.
 8. **Pick.** `open "$RUN/sheet.png"`, list each variant's metaphor and
@@ -111,16 +112,20 @@ Use the built-in image_gen tool to edit the attached image, which is the edit ta
 Style/medium: quick, loose hand-drawn sketch made with a digital pencil, like a
 page from a sketchbook. Few, light, confident ink lines with visible imperfect
 strokes. Almost no shading: at most a few soft grey hatching strokes in one or
-two places. Most of each object is left as untouched white paper. Every object
-is filled with flat white paper color, never a hollow outline. Simplify every
-shape and leave out small details; a quick study, not a rendering.
+two places. Every object is filled, with flat white paper color or a flat
+pastel wash from the palette, never a hollow outline. Simplify every shape and
+leave out small details; a quick study, not a rendering.
 Subject rules: concrete physical objects only. No people, no text, no letters,
 no logos or brand marks.
 Composition/framing: one compact object group, centered, nothing cut at the
 edges. No ground plane, no cast shadow, no glow or halo.
-Color palette: black ink and grey graphite on white only; terracotta #c25a34 is
-the only other color, on one or two small elements. No yellow, wood brown,
-blue or any other hue anywhere, even where the real object would have one.
+Color palette: black ink and grey graphite lines, plus soft muted pastel
+washes from this palette only: sage green #a8c49a, dusty blue #9fbcd4, butter
+yellow #f0d68a, blush pink #eab3a4, lavender #bcb2db, soft terracotta #dd8f6e.
+Use two or three of these colors, applied as flat, slightly uneven
+colored-pencil fills on the objects that would naturally carry them (a green
+leaf, a blue cup). Leave the rest as white paper. No saturated or bright
+colors, and no hue outside the palette.
 Constraints: genuinely transparent background (preserve the alpha channel),
 landscape 3:2 (1536x1024), no frame, no border, no watermark.
 ```

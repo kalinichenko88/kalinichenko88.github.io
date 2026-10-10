@@ -265,18 +265,20 @@ new one-off styles.
 
 Every post has a cover illustration, made with the `illustrate-post` skill.
 
-- **Style:** a loose hand-drawn pencil sketch of one metaphor object.
-  Greyscale, every object filled with flat white, terracotta `#c25a34` as the
-  only chromatic accent on one or two small elements, transparent background.
-  No people, no text, no logos. The file is trimmed to its drawing with an
-  even margin, so every cover has its own proportions (a tall seedling, a
-  wide notebook).
-- **The accent is baked in.** A cover keeps `#c25a34` in both themes, next to
-  the dark theme's `#e07a52`. Covers are content, like a photo, not UI, so the
-  per-theme accent rule does not apply to them. The author compared the two
-  side by side and kept it.
-- **Shown as is in both themes.** The white fills read on the dark background
-  like paper cut-outs; no filter, no backing tile.
+- **Style:** a loose hand-drawn pencil sketch of one metaphor object: ink and
+  graphite lines, every object filled with flat white or a pastel wash,
+  transparent background. No people, no text, no logos. The file is trimmed to
+  its drawing with an even margin, so every cover has its own proportions (a
+  tall seedling, a wide notebook).
+- **A palette of their own.** Covers use two or three of six muted pastels on
+  the objects that would carry them: sage green `#a8c49a`, dusty blue
+  `#9fbcd4`, butter yellow `#f0d68a`, blush pink `#eab3a4`, lavender `#bcb2db`,
+  soft terracotta `#dd8f6e`. Covers are content, like a photo, not UI, so the
+  one-accent rule above does not apply to them. The saturated UI accent
+  `#c25a34` is not in the palette, only its pastel cousin, so a cover never
+  competes with a link.
+- **Shown as is in both themes.** The white and pastel fills read on the dark
+  background like paper cut-outs; no filter, no backing tile.
 - **Never cropped on site.** In a card the cover spans the card's width at its
   own height; elsewhere size the box in CSS and use `object-contain`. Never
   give a cover `<Image>` both `width` and `height`: sharp would crop it at
