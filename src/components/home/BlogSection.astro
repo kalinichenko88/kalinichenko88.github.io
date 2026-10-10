@@ -29,15 +29,16 @@ const { latestPosts } = Astro.props;
         <div class="hidden gap-2 md:flex">
           <button
             type="button"
-            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors hover:border-foreground-secondary hover:bg-background-subtle"
+            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40"
             data-step="-1"
             aria-label="Scroll to newer posts"
+            disabled
           >
             <ArrowLeftIcon class="w-4 h-4" />
           </button>
           <button
             type="button"
-            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors hover:border-foreground-secondary hover:bg-background-subtle"
+            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40"
             data-step="1"
             aria-label="Scroll to older posts"
           >
@@ -75,15 +76,37 @@ const { latestPosts } = Astro.props;
   class PostRowElement extends HTMLElement {
     #row: HTMLElement | null = null;
     #buttons: HTMLButtonElement[] = [];
+    #edges: IntersectionObserver | null = null;
 
     connectedCallback() {
       this.#row = this.querySelector<HTMLElement>('[data-row]');
       this.#buttons = [...this.querySelectorAll<HTMLButtonElement>('button[data-step]')];
       this.#buttons.forEach((button) => button.addEventListener('click', this.#scroll));
+
+      // A button is disabled while the card at its end is fully in the row:
+      // nothing is left to scroll that way. Watching the two end cards needs no
+      // scroll listener, and it disables both when every card fits. The row
+      // opens at its start, so the markup ships "newer" already disabled.
+      const [prev, next] = this.#buttons;
+      const first = this.#row?.firstElementChild;
+      const last = this.#row?.lastElementChild;
+      if (!this.#row || !prev || !next || !first || !last) return;
+      this.#edges = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((entry) => {
+            const atEnd = entry.intersectionRatio >= 0.98;
+            if (entry.target === first) prev.disabled = atEnd;
+            if (entry.target === last) next.disabled = atEnd;
+          }),
+        { root: this.#row, threshold: 0.98 }
+      );
+      this.#edges.observe(first);
+      this.#edges.observe(last);
     }
 
     disconnectedCallback() {
       this.#buttons.forEach((button) => button.removeEventListener('click', this.#scroll));
+      this.#edges?.disconnect();
     }
 
     #scroll = (event: Event) => {
