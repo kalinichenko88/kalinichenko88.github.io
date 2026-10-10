@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
@@ -47,12 +47,22 @@ test('reduced motion overrides every reveal', () => {
   assert.match(reducedMotion, /\.scroll-progress/);
 });
 
+// A card that moves under the cursor jitters: lifted off a pointer resting on
+// its bottom edge, it loses the hover, drops back and lifts again.
+test('cards stay put on hover', async () => {
+  for (const [hover] of css.matchAll(/\.card[\w-]*:hover\s*{[^}]*}/g)) {
+    assert.doesNotMatch(hover, /transform|translate/, `card moves on hover: ${hover}`);
+  }
+  const components = new URL('../src/components/', import.meta.url);
+  for (const file of await readdir(components, { recursive: true })) {
+    if (!file.endsWith('.astro')) continue;
+    const source = await readFile(new URL(file, components), 'utf8');
+    assert.doesNotMatch(source, /data-reactive|card-lift/, `${file} still moves on hover`);
+  }
+});
+
 test('staggers reveal properties without delaying card interaction', () => {
-  assert.match(css, /\.card-lift:hover\s*{[^}]*--card-lift-y:[^}]*transform:/s);
-  assert.match(
-    css,
-    /transition:\s*opacity[^;]+translate[^;]+transform[^;]+box-shadow[^;]+border-color/s
-  );
+  assert.match(css, /transition:\s*opacity[^;]+translate[^;]+box-shadow[^;]+border-color/s);
   assert.match(
     css,
     /transition-delay:\s*(?:calc\(min\(var\(--motion-index, 0\), 4\) \* var\(--motion-stagger\)\),\s*){2}0ms,/

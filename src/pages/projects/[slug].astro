@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '../../components/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
+import { getProjects } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts')).sort(
+    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+  );
+
+  return (await getProjects()).map((project) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      // Posts on the project's topic: any post sharing one of its tags.
+      related: posts.filter((post) => post.data.tags.some((tag) => project.tags.includes(tag))),
+    },
+  }));
+}
+
+const { project, related } = Astro.props;
+---
+
+<Layout title={project.name} description={project.tagline}>
+  <section class="py-14 md:py-20">
+    <div class="container">
+      <div data-reveal="heading">
+        <a
+          href="/projects"
+          class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeftIcon class="w-4 h-4" />
+          Back to projects
+        </a>
+        <h1 class="text-foreground mb-4">{project.name}</h1>
+        <p class="text-lg text-foreground-secondary max-w-prose">{project.tagline}</p>
+      </div>
+
+      <div data-reveal="content" style="--motion-index: 1">
+        <div class="flex flex-wrap gap-2 mt-6">
+          {project.tech.map((t) => (
+            <span class="tag">{t}</span>
+          ))}
+        </div>
+        <div class="flex flex-wrap items-center gap-3 mt-8">
+          <a
+            href={project.homepage ?? project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-primary"
+          >
+            {project.homepage ? 'Visit website' : 'View on GitHub'}
+          </a>
+          {project.homepage && (
+            <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              View on GitHub
+            </a>
+          )}
+          {project.stars > 0 && (
+            <span class="font-mono text-xs text-foreground-tertiary ml-2">
+              {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {related.length > 0 && (
+        <>
+          <hr class="divider" data-reveal />
+          <div class="flex flex-wrap items-center gap-3 mb-8" data-reveal="heading">
+            <h2 class="text-foreground mr-1">Related posts</h2>
+            {project.tags.map((tag) => (
+              <a href={`/tags/${tag}`} class="tag">
+                {tag}
+              </a>
+            ))}
+          </div>
+          <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
+            {related.map((post, index) => (
+              <PostCard post={post} heading="h3" motionIndex={index + 1} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+</Layout>

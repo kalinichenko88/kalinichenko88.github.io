@@ -27,6 +27,9 @@ const projects = defineCollection({
     // Required: with the GitHub description gone, this is the only card copy.
     tagline: z.string(),
     tech: z.array(z.string()).default([]),
+    // Post tags (tests/post-tags.test.ts holds the vocabulary). /projects lists
+    // every post sharing one of them as the project's related posts.
+    tags: z.array(z.string()).default([]),
     // Live site, when the project has one. Falls back to the repo URL.
     homepage: z.url().optional(),
     // Fallback only: the build reads the live count from GitHub and uses this

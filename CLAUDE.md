@@ -29,7 +29,7 @@ No environment variables are required. Besides font fetching, the build makes on
 
 This is an Astro 7 personal portfolio site with:
 
-- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage` and a fallback `stars`. The homepage reads each repo's live star count at build time (`src/lib/github-stars.ts`, plain `fetch`, no dependency) and falls back to the YAML `stars` on any failure, so a GitHub rate limit or outage never fails the build. The deploy workflow also runs weekly on a `schedule:` so counts refresh between pushes.
+- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage`, a fallback `stars` and post `tags`. Every page that shows projects (the homepage's featured cards, `/projects` and `/projects/<slug>`) loads them through `getProjects()` in `src/lib/projects.ts`, which reads each repo's live star count at build time (`src/lib/github-stars.ts`, plain `fetch`, no dependency, asked once per repo per build) and falls back to the YAML `stars` on any failure, so a GitHub rate limit or outage never fails the build. The deploy workflow also runs weekly on a `schedule:` so counts refresh between pushes.
 - **Theme System** (`src/config/themes.ts`, `src/styles/global.css`): Two themes (cloud light, cloud-dark), selectable as Light, Dark, or Auto (follows system preference), controlled via `data-theme` attribute on `<html>`. Theme CSS uses CSS custom properties with Tailwind 4's `@theme` directive for integration
 - **Layout** (`src/components/Layout.astro`): Single layout with theme initialization script (inline to prevent flash), Header, Footer, and slot for content
 - **Global Styles** (`src/styles/global.css`): Design tokens, theme definitions, Tailwind extensions, and utility classes (`.card`, `.btn-primary`, `.prose-custom`, etc.)
@@ -37,14 +37,14 @@ This is an Astro 7 personal portfolio site with:
 ## Content Structure
 
 - `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`, `cover` (see Post covers)
-- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins)
+- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins), optional `tags[]` (from the post-tag vocabulary; the project's page `/projects/<slug>` lists every post sharing one as its related posts, and shows no related section when none does). Project cards render through `src/components/ProjectCard.astro` on the homepage and `/projects`, and link to the project's page, which carries the website and repo links
 
 ### Tags
 
 Every tag becomes a page under `/tags/<tag>`, so a tag only earns its place if it groups posts. Keep the vocabulary small and reuse existing tags before inventing one — check `content/posts/*` first.
 
 - 2 to 3 tags per post. One tool tag (`obsidian`, `neovim`, `claude-code`) plus one or two topic tags (`ai`, `git`, `personal-finance`, `meta`, `code-review`). A post about the site itself has no tool to name and carries `meta` alone.
-- `tests/post-tags.test.ts` enforces this and holds the vocabulary. A new tag goes there too.
+- `tests/post-tags.test.ts` enforces this and holds the vocabulary. A new tag goes there too. Project `tags` must come from the same vocabulary, so a typo cannot leave a project with no related posts.
 - The first tag is the chip shown on `/blog` (`src/pages/blog/index.astro`), so put the most specific one first.
 - No attribute tags (`plugin`, `markdown`) and no near-synonyms (`tooling` next to `automation`). Both were removed for this reason.
 
@@ -105,9 +105,9 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 ## Containers & Fonts
 
-- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`) and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
+- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, `/projects/<slug>` and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
 - Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
-- Posts in a list render through `src/components/PostCard.astro`: on `/blog` and `/tags/<tag>` packed into a CSS-columns masonry (`columns-1 md:columns-2 lg:columns-3`), on the homepage Writing section as one sideways scroll-snap row of the latest eight (`heading="h3"` and `row`: equal-height cards with one cover box height, and no per-card reveal, since the row reveals as one block). The row hides its scrollbar on every system; the `post-row` custom element in `BlogSection.astro` drives the ← → buttons. There is no featured lead card. The container owns the layout classes through `*:` children utilities — don't hand-roll a second card.
+- Posts in a list render through `src/components/PostCard.astro`: on `/blog`, `/tags/<tag>` and a project's related posts (`/projects/<slug>`) packed into a CSS-columns masonry (`columns-1 md:columns-2 lg:columns-3`), on the homepage Writing section as one sideways scroll-snap row of the latest eight (`heading="h3"` and `row`: equal-height cards with one cover box height, and no per-card reveal, since the row reveals as one block). The row hides its scrollbar on every system; the `post-row` custom element in `BlogSection.astro` drives the ← → buttons. There is no featured lead card. The container owns the layout classes through `*:` children utilities — don't hand-roll a second card.
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): DM Sans (headings and body, via both `--font-display` and `--font-body`), JetBrains Mono (code/mono accents). Only two families load; headings separate from body by size, weight and tracking, not by a second face.
 
 ## Key Patterns

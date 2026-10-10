@@ -1,25 +1,13 @@
 ---
-import ExternalLinkIcon from '../../assets/icons/external-link.svg';
-
-type Project = {
-  name: string;
-  url: string;
-  homepage?: string;
-  stars: number;
-  featured: boolean;
-  tagline: string;
-  tech: string[];
-};
+import ProjectCard from '../ProjectCard.astro';
+import type { Project } from '../../lib/projects';
 
 type Props = {
+  /** The featured projects; every project is listed on /projects. */
   projects: Project[];
-  githubProfileLink: string;
 };
 
-const { projects, githubProfileLink } = Astro.props;
-
-const featured = projects.filter((p) => p.featured);
-const more = projects.filter((p) => !p.featured);
+const { projects } = Astro.props;
 ---
 
 <section id="projects" class="py-14 md:py-20">
@@ -29,79 +17,15 @@ const more = projects.filter((p) => !p.featured);
       data-reveal="heading"
     >
       <h2 class="text-foreground">Selected work</h2>
-      <a
-        href={githubProfileLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link-underline text-sm inline-flex items-center gap-2"
-      >
-        View GitHub profile
-        <ExternalLinkIcon class="w-4 h-4" />
+      <a href="/projects" class="link-underline text-sm inline-flex items-center gap-2">
+        All projects
       </a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {featured.map((project, index) => (
-        // The depth offset needs an element of its own: the card's `translate`
-        // is the reveal's, and one property cannot carry two motion sources.
-        <div class="h-full" data-scroll-depth>
-          <article
-            class="card card-lift group h-full"
-            data-reveal="card"
-            style={`--motion-index: ${index + 1}`}
-            data-reactive
-          >
-            <a
-              href={project.homepage ?? project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block p-6"
-            >
-              <h3 class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
-                {project.name}
-              </h3>
-              <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.tech.map((t) => (
-                  <span class="tag">{t}</span>
-                ))}
-              </div>
-              {project.stars > 0 && (
-                <span class="font-mono text-xs text-foreground-tertiary">
-                  {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-                </span>
-              )}
-            </a>
-          </article>
-        </div>
+      {projects.map((project, index) => (
+        <ProjectCard project={project} heading="h3" motionIndex={index + 1} />
       ))}
     </div>
-
-    {more.length > 0 && (
-      <div class="mt-6 border-t border-line">
-        {more.map((project, index) => (
-          <a
-            href={project.homepage ?? project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-baseline justify-between gap-4 py-4 border-b border-line group"
-            data-reveal="card"
-            style={`--motion-index: ${index + 1}`}
-          >
-            <span class="font-medium text-foreground group-hover:text-accent-text transition-colors">
-              {project.name}
-            </span>
-            <span class="hidden sm:block flex-1 text-sm text-foreground-tertiary truncate">
-              {project.tagline}
-            </span>
-            {project.stars > 0 && (
-              <span class="font-mono text-xs text-foreground-tertiary shrink-0">
-                {project.stars} ★
-              </span>
-            )}
-          </a>
-        ))}
-      </div>
-    )}
   </div>
 </section>
