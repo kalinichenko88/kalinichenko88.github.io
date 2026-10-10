@@ -1,0 +1,35 @@
+---
+name: Obsidian Budget Planner Plugin
+slug: obsidian-budget-planner-plugin
+order: 4
+featured: false
+tagline: 'Minimalist budget planning for Obsidian, managed directly inside markdown code blocks.'
+tech: ['Obsidian', 'TypeScript', 'Markdown']
+stars: 11
+tags: [obsidian, personal-finance]
+---
+
+Budget Planner keeps a budget inside an Obsidian note. You write a small code block, and in the editor it becomes a table: tick what is paid, edit names and amounts in place, drag rows between categories, and the totals add up on their own.
+
+![A budget table in Obsidian with Online Services and Entertainment categories, checkboxes for paid items, and per-category and total sums](../../src/assets/images/budget-planner.png)
+
+## The note stays plain text
+
+This is everything the table above is made of:
+
+````md
+```budget
+Online Services:
+	[x] | Spotify   | 4.99
+	[ ] | Youtube   | 16.99
+	[ ] | 1Password | 6.95
+Entertainment:
+	[ ] | Netflix   | 12.99  | Family plan
+```
+````
+
+A line ending in `:` starts a category. A row is a checkbox, a name, an amount and an optional comment, split by `|`. Every change made in the table rewrites the block with its columns aligned, so it stays easy to read and edit by hand. The table shows in the editor; Reading view shows the plain block.
+
+## Get started
+
+Open **Settings → Community Plugins → Browse**, search for **Budget Planner** and install it. Then run **Budget Planner: Insert budget block** from the command palette in any note.

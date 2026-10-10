@@ -1,0 +1,52 @@
+---
+name: VaultMD
+slug: vaultmd
+order: 1
+featured: true
+tagline: 'Headless Markdown-vault data layer for Bun with note CRUD and a derived SQLite index for collection queries, backlinks, and keyword search.'
+tech: ['TypeScript', 'Bun', 'SQLite']
+homepage: 'https://vaultmd.kalinichenko.dev/'
+tags: [obsidian]
+---
+
+A folder of Markdown notes is easy to edit, sync and keep in git, but hard to query from code. Which notes are tagged `project` and still open? What links to this page? Where did a word come up? VaultMD answers those questions for a Bun app, with no Obsidian or any other editor running.
+
+The files on disk stay the only source of truth. Next to them VaultMD keeps a SQLite index that it can rebuild from the files at any time, so deleting it loses nothing. Every write updates the file and the index together, so the two never disagree.
+
+## A quick look
+
+```ts
+import { createVault } from 'vaultmd';
+
+const vault = await createVault({
+  root: '/path/to/vault',
+  // Read everything, but only write under Notes/.
+  prefixes: { read: [''], write: ['Notes/'] },
+  // The index lives outside the vault, so it never gets synced as content.
+  indexPath: './data/vault-index.db',
+});
+
+await vault.notes.createNote('Notes/today.md', {
+  frontmatter: { tags: ['project'], status: 'open' },
+  body: 'See [[roadmap]] for context.\n',
+});
+
+// Open project notes, newest first.
+const open = vault.query.queryNotes({ tag: 'project', where: { status: 'open' } });
+
+// Every note that links to the roadmap.
+const incoming = vault.query.backlinks('Notes/roadmap.md');
+
+// Keyword search over note bodies.
+const hits = vault.query.searchText('context');
+```
+
+Each vault instance gets its own read and write scope through `prefixes`. That makes it safe to give one consumer, an AI agent for example, the whole vault to read and a single folder to write.
+
+## Get started
+
+```bash
+bun add vaultmd
+```
+
+VaultMD needs Bun 1.3.14 or newer and does not run under Node. The full API is on the [documentation site](https://vaultmd.kalinichenko.dev/).

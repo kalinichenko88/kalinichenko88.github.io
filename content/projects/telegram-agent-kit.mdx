@@ -1,0 +1,56 @@
+---
+name: Telegram Agent Kit
+slug: telegram-agent-kit
+order: 2
+featured: true
+tagline: 'Runtime-agnostic ESM toolkit with a zero-dependency core, Markdown-to-HTML rendering, and live draft streaming for Telegram agents.'
+tech: ['TypeScript', 'LLM agents', 'Telegram']
+tags: [ai]
+---
+
+Hooking an AI agent up to a Telegram bot looks like a weekend job. Then the edge cases arrive:
+
+- Models write Markdown, but Telegram accepts only a small, strict subset of HTML. One unclosed tag and the whole message is rejected.
+- Streaming a reply into a live draft means rendering half-finished Markdown several times a second.
+- When a turn fails, the conversation has to roll back cleanly, or the agent's memory drifts away from what really happened.
+
+Telegram Agent Kit solves these once. Its core has no runtime dependencies and runs on Node 20+, Bun and Deno, and the formatting part in the browser too. It makes no network calls of its own: you give it a few small functions that call the Bot API, and it handles everything around them.
+
+## Markdown that never breaks a message
+
+`mdToTelegramHtml` turns whatever the model wrote into HTML that Telegram accepts, and it never throws:
+
+```ts
+import { mdToTelegramHtml } from 'telegram-agent-kit';
+
+mdToTelegramHtml('**Done.** Saved to `notes.md`.');
+// '<b>Done.</b> Saved to <code>notes.md</code>.'
+
+// In a live draft, partial mode closes whatever the stream left open.
+mdToTelegramHtml('Here is **the plan', { partial: true });
+// 'Here is <b>the plan</b>'
+```
+
+## What the user sees
+
+While the agent works, its draft shows the plan and each tool call above the growing answer. Once the reply is sent, the draft disappears on its own:
+
+```text
+📋 Plan
+✔️ f̶i̶n̶d̶ ̶t̶h̶e̶ ̶w̶e̶e̶k̶'̶s̶ ̶e̶n̶t̶r̶i̶e̶s̶
+🔘 total the calories
+⬜ compare against the target
+🔧 `query_journal`…
+─────
+Over the week you ate 14,200 kcal
+```
+
+With the optional `telegram-agent-kit/deepagents` adapter this feed needs no wiring at all.
+
+## Get started
+
+```bash
+npm install telegram-agent-kit
+```
+
+The [README](https://github.com/kalinichenko88/telegram-agent-kit#readme) walks through a full bot turn, from the Bot API calls to rollback on failure.
