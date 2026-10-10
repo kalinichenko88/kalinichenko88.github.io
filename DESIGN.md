@@ -299,7 +299,11 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   cover sits in the same 11rem box, the tag chip takes its own line, and the
   date drops to the bottom, so titles and dates line up across the row. The
   row reveals as one block; a card revealed on its own would stay a blank peek
-  at the clipped edge.
+  at the clipped edge. Its scrollbar is hidden on every system, so Windows
+  looks like macOS (where the scrollbar is an overlay); round ← → buttons
+  beside "Read all" scroll it one card at a time for a mouse wheel that only
+  scrolls down, and are hidden below `md`, where people swipe. Keyboard focus
+  on a card scrolls the row to it.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.

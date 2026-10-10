@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import PostCard from '../PostCard.astro';
 
+import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
 
 type Props = {
@@ -12,30 +13,90 @@ const { latestPosts } = Astro.props;
 ---
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
-  <div class="container">
+  <post-row class="container block">
     <div class="flex items-end justify-between gap-4 mb-8" data-reveal="heading">
       <h2 class="text-foreground">Writing</h2>
-      <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
-        Read all
-        <ArrowRightIcon class="w-4 h-4" />
-      </a>
+      <div class="flex items-center gap-3">
+        <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2 mr-2">
+          Read all
+        </a>
+        <!--
+          Touch and trackpads swipe the row; these are for a mouse wheel that
+          only scrolls down. Styled like .btn-secondary (the text-tertiary
+          border clears 3:1 for a control) but with utilities, because that
+          class sets its own display and padding and would win over them.
+        -->
+        <div class="hidden gap-2 md:flex">
+          <button
+            type="button"
+            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors hover:border-foreground-secondary hover:bg-background-subtle"
+            data-step="-1"
+            aria-label="Scroll to newer posts"
+          >
+            <ArrowLeftIcon class="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors hover:border-foreground-secondary hover:bg-background-subtle"
+            data-step="1"
+            aria-label="Scroll to older posts"
+          >
+            <ArrowRightIcon class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
 
     <!--
       One row of the same cards as /blog, scrolled sideways with native scroll
       snap. The cards are 18rem, so about three and a half show at the 1100px
-      track and the clipped one says there is more. The row bleeds into the
-      container padding so the card shadow and hover lift are not clipped. The
-      row reveals as one block: a card revealed on its own would stay a blank
-      peek at the clipped edge.
+      track and the clipped one says there is more. The scrollbar is hidden on
+      every system so the row looks the same on Windows as on macOS, where it
+      is an overlay; the buttons above and keyboard focus scroll it instead.
+      The row bleeds into the container padding so the card shadow and hover
+      lift are not clipped. The row reveals as one block: a card revealed on
+      its own would stay a blank peek at the clipped edge.
     -->
     <div
+      data-row
       data-reveal="content"
-      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:thin] *:w-72 *:shrink-0 *:snap-start"
+      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden *:w-72 *:shrink-0 *:snap-start"
     >
       {latestPosts.map((post) => (
         <PostCard post={post} heading="h3" row />
       ))}
     </div>
-  </div>
+  </post-row>
 </section>
+
+<script>
+  // Scrolls the row one card per click. A custom element, like VideoPlayer, so
+  // the listeners follow the element through ClientRouter navigation.
+  class PostRowElement extends HTMLElement {
+    #row: HTMLElement | null = null;
+    #buttons: HTMLButtonElement[] = [];
+
+    connectedCallback() {
+      this.#row = this.querySelector<HTMLElement>('[data-row]');
+      this.#buttons = [...this.querySelectorAll<HTMLButtonElement>('button[data-step]')];
+      this.#buttons.forEach((button) => button.addEventListener('click', this.#scroll));
+    }
+
+    disconnectedCallback() {
+      this.#buttons.forEach((button) => button.removeEventListener('click', this.#scroll));
+    }
+
+    #scroll = (event: Event) => {
+      const card = this.#row?.firstElementChild as HTMLElement | null;
+      if (!this.#row || !card) return;
+      const step = card.offsetWidth + parseFloat(getComputedStyle(this.#row).columnGap || '0');
+      const direction = Number((event.currentTarget as HTMLButtonElement).dataset.step);
+      this.#row.scrollBy({
+        left: direction * step,
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    };
+  }
+
+  if (!customElements.get('post-row')) customElements.define('post-row', PostRowElement);
+</script>
