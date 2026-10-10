@@ -36,7 +36,7 @@ This is an Astro 7 personal portfolio site with:
 
 ## Content Structure
 
-- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`
+- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`, `cover` (see Post covers)
 - `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins)
 
 ### Tags
@@ -51,6 +51,10 @@ Every tag becomes a page under `/tags/<tag>`, so a tag only earns its place if i
 ### Post images
 
 Put them in `src/assets/images/` and reference them with a relative path from the markdown file (`../../src/assets/images/foo.png`). Astro's image pipeline then optimizes them and emits `width`/`height`. Images under `public/` are served as-is and skip all of that.
+
+### Post covers
+
+Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` requires exactly one cover per post and checks every cover went through the skill's `prepare.mjs` (palette-compressed, transparent, trimmed to its drawing, named after the post, with its social image next to it). How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md). Each cover has a 1200×630 `<post-id>.og.jpg` beside it, written by the skill; the post page picks it up by name for `og:image`, `twitter:image` and JSON-LD `image`, passing it through `Layout` to `Head` as `image`; pages without one keep the author photo.
 
 ## Components
 
@@ -83,7 +87,7 @@ Props: `src` (required), `caption` (required), `poster` (optional). Video is loo
 
 The site-wide cursor effect: a static 12px dot lattice plus a pixel-quantized terracotta glow that follows the pointer, both as fixed full-viewport layers at `z-index: -1`. Rendered once from `Layout.astro`, so every page carries it - don't add it per page. Its tint and cell fill are contrast-constrained — read the Interaction section of [`DESIGN.md`](./DESIGN.md) before turning either up.
 
-The glow lights bare background only: it drops when the cursor is on text, on that text's margin box, or between two text blocks — but not when that text sits on an opaque fill, where the glow is covered and cannot tint anything. The `TEXT` selector, the stepped probe, the margin check and the opaque-fill check are all load-bearing; narrowing any of them puts the tint back behind the words, and dropping the opaque-fill check kills the glow across whole cards. It also recomputes on a passive, rAF-throttled `scroll` listener, since what sits under a still cursor changes as the page moves. See the Interaction section of `DESIGN.md` for why each rule exists.
+The glow lights bare background only: it drops when the cursor is on text, on that text's margin box, or between two text blocks — but not when that text sits on an opaque fill, where the glow is covered and cannot tint anything. The `TEXT` selector, the stepped probe, the margin check and the opaque-fill check are all load-bearing; narrowing any of them puts the tint back behind the words, and dropping the opaque-fill check kills the glow across whole cards. It also recomputes on a passive, rAF-throttled `scroll` listener, since what sits under a still cursor changes as the page moves. Post covers are transparent images, not text: the glow lights their empty parts like any bare background, on purpose. See the Interaction section of `DESIGN.md` for why each rule exists.
 
 ### Motion (`src/components/MotionController.astro` → `src/lib/motion-controller.ts`)
 
@@ -103,7 +107,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 - Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`) and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
 - Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
-- Posts in a list render through `src/components/PostCard.astro` (pass `featured` for the lead card). Both `/blog` and `/tags/<tag>` use it — don't hand-roll a second row layout.
+- Posts in a list render through `src/components/PostCard.astro`: on `/blog` and `/tags/<tag>` packed into a CSS-columns masonry (`columns-1 md:columns-2 lg:columns-3`), on the homepage Writing section as one sideways scroll-snap row of the latest eight (`heading="h3"` and `row`: equal-height cards with one cover box height, and no per-card reveal, since the row reveals as one block). The row hides its scrollbar on every system; the `post-row` custom element in `BlogSection.astro` drives the ← → buttons. There is no featured lead card. The container owns the layout classes through `*:` children utilities — don't hand-roll a second card.
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): DM Sans (headings and body, via both `--font-display` and `--font-body`), JetBrains Mono (code/mono accents). Only two families load; headings separate from body by size, weight and tracking, not by a second face.
 
 ## Key Patterns

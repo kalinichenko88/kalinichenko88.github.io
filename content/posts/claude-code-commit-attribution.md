@@ -3,6 +3,7 @@ title: 'Disabling commit and PR attribution in Claude Code'
 description: 'How to remove or customize Claude Code attribution in commits and pull request descriptions.'
 pubDate: 2026-08-11
 tags: [claude-code, git]
+cover: ../../src/assets/images/covers/claude-code-commit-attribution.png
 ---
 
 Claude Code adds attribution to commits and pull request descriptions by default. A commit gets a trailer like this (the model name can vary):

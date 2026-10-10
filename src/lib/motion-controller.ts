@@ -17,6 +17,10 @@ export function pointerMotion(
   return { x: nx * translation, y: ny * translation };
 }
 
+export function onScreen(rect: Pick<DOMRect, 'top' | 'bottom'>, viewportHeight: number) {
+  return rect.top < viewportHeight && rect.bottom > 0;
+}
+
 export class MotionController {
   private observer: IntersectionObserver | null = null;
   private frame = 0;
@@ -67,7 +71,17 @@ export class MotionController {
       { threshold: [0, 0.18], rootMargin: '0px 0px -8% 0px' }
     );
 
-    elements.forEach((element) => this.observer?.observe(element));
+    // The 18% rule is for blocks scrolled into view, so their reveal plays where
+    // it is seen. A block already on screen when the page opens reveals now,
+    // however little of it shows: a masonry card peeking in below its neighbours
+    // otherwise stays a blank band until the first scroll.
+    elements.forEach((element) => {
+      if (onScreen(element.getBoundingClientRect(), innerHeight)) {
+        element.classList.add('is-revealed');
+      } else {
+        this.observer?.observe(element);
+      }
+    });
   }
 
   private onPointerMove(event: PointerEvent): void {

@@ -3,6 +3,7 @@ title: Hello World
 description: First post on the new blog. A quick intro and what to expect.
 pubDate: 2026-02-13
 tags: [meta]
+cover: ../../src/assets/images/covers/hello-world.png
 ---
 
 Hey, I'm Ivan — a frontend engineer who's been building for the web for over a decade.

@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { readingTime } from '../../lib/reading-time';
-import { formatDate } from '../../lib/format-date';
+import PostCard from '../PostCard.astro';
 
+import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
 
 type Props = {
@@ -10,52 +10,116 @@ type Props = {
 };
 
 const { latestPosts } = Astro.props;
-const [lead, ...rest] = latestPosts;
+const buttonClass =
+  'inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40';
 ---
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
-  <div class="container">
+  <post-row class="container block">
     <div class="flex items-end justify-between gap-4 mb-8" data-reveal="heading">
       <h2 class="text-foreground">Writing</h2>
-      <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2">
-        Read all
-        <ArrowRightIcon class="w-4 h-4" />
-      </a>
+      <div class="flex items-center gap-3">
+        <a href="/blog" class="link-underline text-sm inline-flex items-center gap-2 mr-2">
+          Read all
+        </a>
+        <!--
+          Touch and trackpads swipe the row; these are for a mouse wheel that
+          only scrolls down. Styled like .btn-secondary (the text-tertiary
+          border clears 3:1 for a control) but with utilities, because that
+          class sets its own display and padding and would win over them.
+        -->
+        <div class="hidden gap-2 md:flex">
+          <button
+            type="button"
+            class={buttonClass}
+            data-step="-1"
+            aria-label="Scroll to newer posts"
+            disabled
+          >
+            <ArrowLeftIcon class="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            class={buttonClass}
+            data-step="1"
+            aria-label="Scroll to older posts"
+          >
+            <ArrowRightIcon class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
 
-    {lead && (
-      <a href={`/blog/${lead.id}`} class="block group mb-8 max-w-prose" data-reveal="content">
-        <h3 class="font-display font-semibold text-2xl text-foreground mb-3 group-hover:text-accent transition-colors">
-          {lead.data.title}
-        </h3>
-        <p class="text-foreground-secondary mb-3">{lead.data.description}</p>
-        <div class="flex items-center gap-3 font-mono text-xs text-foreground-tertiary">
-          <span>
-            {formatDate(lead.data.pubDate)} · {readingTime(lead.body ?? '')} min read
-          </span>
-          {lead.data.tags[0] && <span class="topic">{lead.data.tags[0]}</span>}
-        </div>
-      </a>
-    )}
-
-    {rest.length > 0 && (
-      <div class="border-t border-line max-w-prose">
-        {rest.map((post, index) => (
-          <a
-            href={`/blog/${post.id}`}
-            class="flex items-baseline gap-4 py-4 border-b border-line group"
-            data-reveal="card"
-            style={`--motion-index: ${index + 1}`}
-          >
-            <time class="font-mono text-xs text-foreground-tertiary w-24 shrink-0">
-              {formatDate(post.data.pubDate)}
-            </time>
-            <span class="font-display font-semibold text-foreground group-hover:text-accent-text transition-colors">
-              {post.data.title}
-            </span>
-          </a>
-        ))}
-      </div>
-    )}
-  </div>
+    <!--
+      One row of the same cards as /blog, scrolled sideways with native scroll
+      snap. The cards are 18rem, so about three and a half show at the 1100px
+      track and the clipped one says there is more. The scrollbar is hidden on
+      every system so the row looks the same on Windows as on macOS, where it
+      is an overlay; the buttons above and keyboard focus scroll it instead.
+      The row bleeds into the container padding so the card shadow and hover
+      lift are not clipped. The row reveals as one block: a card revealed on
+      its own would stay a blank peek at the clipped edge.
+    -->
+    <div
+      data-row
+      data-reveal="content"
+      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden *:w-72 *:shrink-0 *:snap-start"
+    >
+      {latestPosts.map((post) => (
+        <PostCard post={post} heading="h3" row />
+      ))}
+    </div>
+  </post-row>
 </section>
+
+<script>
+  // Scrolls the row one card per click. A custom element, like VideoPlayer, so
+  // the listeners follow the element through ClientRouter navigation.
+  class PostRowElement extends HTMLElement {
+    #row: HTMLElement | null = null;
+    #edges: IntersectionObserver | null = null;
+
+    connectedCallback() {
+      this.#row = this.querySelector<HTMLElement>('[data-row]');
+      // One delegated listener on the element: it goes away with it.
+      this.addEventListener('click', this.#scroll);
+
+      // A button is disabled while the card at its end is fully in the row:
+      // nothing is left to scroll that way. Watching the two end cards needs no
+      // scroll listener, and it disables both when every card fits. The row
+      // opens at its start, so the markup ships "newer" already disabled.
+      const [prev, next] = this.querySelectorAll<HTMLButtonElement>('button[data-step]');
+      const first = this.#row?.firstElementChild;
+      const last = this.#row?.lastElementChild;
+      if (!this.#row || !prev || !next || !first || !last) return;
+      this.#edges = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((entry) => {
+            const atEnd = entry.intersectionRatio >= 0.98;
+            if (entry.target === first) prev.disabled = atEnd;
+            if (entry.target === last) next.disabled = atEnd;
+          }),
+        { root: this.#row, threshold: 0.98 }
+      );
+      this.#edges.observe(first);
+      this.#edges.observe(last);
+    }
+
+    disconnectedCallback() {
+      this.#edges?.disconnect();
+    }
+
+    #scroll = (event: Event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button[data-step]');
+      const card = this.#row?.firstElementChild as HTMLElement | null;
+      if (!button || !this.#row || !card) return;
+      // One card width; mandatory snap carries it over the gap to the next card.
+      this.#row.scrollBy({
+        left: Number(button.dataset.step) * card.offsetWidth,
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    };
+  }
+
+  if (!customElements.get('post-row')) customElements.define('post-row', PostRowElement);
+</script>

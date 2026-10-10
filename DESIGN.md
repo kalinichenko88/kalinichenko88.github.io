@@ -261,6 +261,56 @@ new one-off styles.
 - `.prose-custom` — blog article prose (DM Sans headings, 19px/1.75 body,
   accent-text links, tinted code blocks).
 
+## Illustrations
+
+Every post has a cover illustration, made with the `illustrate-post` skill.
+
+- **Style:** a loose hand-drawn pencil sketch of one metaphor object: ink and
+  graphite lines, every object filled with flat white or a pastel wash,
+  transparent background. No people, no text, no logos. The file is trimmed to
+  its drawing with an even margin, so every cover has its own proportions (a
+  tall seedling, a wide notebook).
+- **A palette of their own.** Covers use two or three of six muted pastels on
+  the objects that would carry them: sage green `#a8c49a`, dusty blue
+  `#9fbcd4`, butter yellow `#f0d68a`, blush pink `#eab3a4`, lavender `#bcb2db`,
+  soft terracotta `#dd8f6e`. Covers are content, like a photo, not UI, so the
+  one-accent rule above does not apply to them. The saturated UI accent
+  `#c25a34` is not in the palette, only its pastel cousin, so a cover never
+  competes with a link.
+- **Shown as is in both themes.** The white and pastel fills read on the dark
+  background like paper cut-outs; no filter, no backing tile.
+- **Never cropped on site.** In a card the cover spans the card's width at its
+  own height; elsewhere size the box in CSS and use `object-contain`. Never
+  give a cover `<Image>` both `width` and `height`: sharp would crop it at
+  build time.
+- **Decorative.** `alt=""` everywhere: the title always sits next to it.
+- **Where:** in post cards, full width directly above the title, so drawing
+  and title read as one unit; to the right of the title in the post header,
+  up to 20rem tall, its box hugging the drawing and vertically centred on the
+  title block (above it on mobile, height capped).
+- **Post lists are a masonry of equal cards.** `/blog` and `/tags/<tag>` pack
+  cards into CSS columns (one, two, three by width), so card heights follow
+  their covers. Columns read top to bottom, so on desktop the order runs down
+  each column; native `display: grid-lanes` would keep row order but is not in
+  Chrome yet (checked in 155). There is no featured lead card.
+- **The homepage Writing section is one sideways row of the same cards**,
+  18rem wide with native scroll snap, so about three and a half show and the
+  clipped one says there is more. In the row the cards are equal height: each
+  cover sits in the same 11rem box, the tag chip takes its own line, and the
+  date drops to the bottom, so titles and dates line up across the row. The
+  row reveals as one block; a card revealed on its own would stay a blank peek
+  at the clipped edge. Its scrollbar is hidden on every system, so Windows
+  looks like macOS (where the scrollbar is an overlay); round ← → buttons
+  beside "Read all" scroll it one card at a time for a mouse wheel that only
+  scrolls down, and are hidden below `md`, where people swipe. A button is
+  disabled (40% opacity, no hover) while the card at its end is fully in view,
+  so at the start only → works, at the end only ←, and neither when every card
+  fits; an IntersectionObserver on the two end cards drives it, not a scroll
+  listener. Keyboard focus on a card scrolls the row to it.
+- **Social image:** a separate 1200×630 JPEG the skill writes next to each
+  cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
+  `#f4f2ee`, so no platform crop reaches it.
+
 ## Interaction
 
 Motion is always motivated. There is one intensity, tuned once in the
@@ -275,7 +325,10 @@ Motion coverage is declarative:
 - `data-reveal` opts a major structural block into IntersectionObserver reveal.
   The value (`hero`, `heading`, `card`, `content`) is a label for the reader:
   no selector matches it and every value animates identically. Don't expect
-  changing it to change anything.
+  changing it to change anything. A block scrolled into view reveals once 18%
+  of it shows above the bottom 8% of the viewport, so the motion plays where it
+  is seen; a block already on screen when the page opens reveals at once,
+  however little shows, so a masonry card peeking in is never a blank band.
 - inline `--motion-index` gives sibling blocks a stable sequence. It is the
   only source: a `data-stagger-index` attribute used to set the same value
   from CSS and the two disagreed above index 4.
@@ -389,6 +442,9 @@ moves, and nothing else can tell it.
     closes on a plain band.
   - Cards stay opaque: they are meant to read as surfaces sitting on top of the
     field.
+  - Post covers are transparent: their empty parts are bare background, so the
+    lattice and the glow show through them on the page and the Writing band.
+    That is intended; a cover is not text and does not drop the glow.
 
 - **Hover underlines** — links/nav draw an accent underline on hover.
 - **Card lift** — subtle translate + tinted shadow on hover.
@@ -405,8 +461,9 @@ scripts — no React/Motion in this project.
 - Default to `.container` (~1100px), including for the blog post article; use
   `.container-prose` (~680px) only for `/about` reading text (bio, work
   history).
-- Render a post in a list with `PostCard.astro` (`featured` for the lead card)
-  rather than hand-rolling another row layout.
+- Render a post in a list with `PostCard.astro`, inside the CSS-columns
+  masonry or the homepage's sideways row, rather than hand-rolling another
+  layout. The container owns the layout classes (`*:` children utilities).
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at

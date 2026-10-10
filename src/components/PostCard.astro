@@ -1,45 +1,53 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { readingTime } from '../lib/reading-time';
 import { formatDate } from '../lib/format-date';
 
 type Props = {
   post: CollectionEntry<'posts'>;
-  /** The lead card: spans the full grid width and gets the larger type. */
-  featured?: boolean;
+  /** Title level: h2 on a page of posts, h3 inside a section with its own h2. */
+  heading?: 'h2' | 'h3';
+  /**
+   * The card sits in a sideways row of equal cards (the homepage): the cover
+   * gets one box height so titles and dates line up, the date drops to the
+   * bottom, and the card skips its own reveal, because the row reveals as one
+   * block and a card clipped by the row would stay a blank peek at the edge.
+   */
+  row?: boolean;
   /** Stable sequence position for profile-based entry motion. */
   motionIndex?: number;
 };
 
-const { post, featured = false, motionIndex = 0 } = Astro.props;
+const { post, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
 ---
 
 <article
-  class:list={[
-    'card card-lift group relative flex flex-col p-6',
-    featured && 'md:col-span-2 md:p-8',
-  ]}
-  data-reveal="card"
-  style={`--motion-index: ${motionIndex}`}
+  class:list={['card card-lift group relative p-6', row && 'flex flex-col']}
+  data-reveal={row ? undefined : 'card'}
+  style={row ? undefined : `--motion-index: ${motionIndex}`}
 >
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
-  <h2
-    class:list={[
-      'font-display font-semibold text-foreground mb-2 transition-colors group-hover:text-accent-text',
-      featured ? 'text-2xl md:text-3xl' : 'text-lg',
-    ]}
-  >
+  {post.data.cover && (
+    <Image
+      src={post.data.cover}
+      alt=""
+      widths={[400, 800]}
+      sizes="(min-width: 1024px) 290px, (min-width: 768px) 45vw, 100vw"
+      class:list={['mb-5 w-full', row ? 'h-44 object-contain' : 'h-auto']}
+    />
+  )}
+  <Heading class="font-display font-semibold text-lg text-foreground mb-2 transition-colors group-hover:text-accent-text">
     {post.data.title}
-  </h2>
-  <p
+  </Heading>
+  <p class="text-sm text-foreground-secondary mb-4">{post.data.description}</p>
+  <div
     class:list={[
-      'text-foreground-secondary mb-4',
-      featured ? 'max-w-prose' : 'text-sm line-clamp-3',
+      'flex gap-3 font-mono text-xs text-foreground-tertiary',
+      // In a row the chip always takes its own line, so every date lines up.
+      row ? 'mt-auto flex-col items-start' : 'flex-wrap items-center',
     ]}
   >
-    {post.data.description}
-  </p>
-  <div class="mt-auto flex flex-wrap items-center gap-3 font-mono text-xs text-foreground-tertiary">
     <span>
       {formatDate(post.data.pubDate)} · {readingTime(post.body ?? '')} min read
     </span>

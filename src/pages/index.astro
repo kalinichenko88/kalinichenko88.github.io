@@ -30,7 +30,7 @@ const personSchema = {
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 4);
+  .slice(0, 8);
 
 const projects = await Promise.all(
   (await getCollection('projects'))
