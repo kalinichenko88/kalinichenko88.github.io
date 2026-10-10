@@ -53,7 +53,6 @@
   --motion-reveal-duration: 700ms;
   --motion-stagger: 90ms;
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --motion-pointer-translation: 4;
   --motion-depth-distance: 16px;
 }
 
@@ -62,7 +61,6 @@
   --motion-reveal-distance: 14px;
   --motion-reveal-duration: 560ms;
   --motion-stagger: 60ms;
-  --motion-pointer-translation: 0;
   --motion-depth-distance: 0px;
 }
 
@@ -338,11 +336,7 @@
   .tag:hover {
     color: var(--color-accent-text);
     background-color: var(--color-accent-subtle);
-    /* Not `transform`: this rule is layered, and the unlayered reveal rule
-       wins whatever the specificity. Feed the lift through the same custom
-       property .card-lift uses, which that rule reads. */
-    --card-lift-y: -1px;
-    transform: translateY(var(--card-lift-y));
+    transform: translateY(-1px);
   }
 
   /* Link with underline animation */
@@ -611,21 +605,16 @@
   transform: rotate(6deg) scale(1.15);
 }
 
-/* Card lift with glow on hover */
-.card-lift {
+/* Card glow on hover. It does not move: a card lifted off a pointer resting
+   on its bottom edge loses the hover, drops back and lifts again. */
+.card-hover {
   transition:
-    transform var(--transition-base),
     box-shadow var(--transition-base),
     border-color var(--transition-base);
 }
 
-.card-lift:hover {
-  --card-lift-y: -4px;
-  transform: translateY(var(--card-lift-y));
-}
-
-[data-theme='cloud'] .card-lift:hover,
-[data-theme='cloud-dark'] .card-lift:hover {
+[data-theme='cloud'] .card-hover:hover,
+[data-theme='cloud-dark'] .card-hover:hover {
   box-shadow: 0 12px 40px rgba(194, 90, 52, 0.15);
 }
 
@@ -723,8 +712,6 @@
   --motion-reveal-y: var(--motion-reveal-distance);
   opacity: 0;
   translate: 0 var(--motion-reveal-y);
-  transform: translate3d(var(--motion-pointer-x, 0px), var(--motion-pointer-y, 0px), 0)
-    translateY(var(--card-lift-y, 0px));
   /* No opacity/translate transition on the hidden state, on purpose. Nodes
      swapped in by ClientRouter arrive from an unstyled document at opacity 1,
      so a transition here makes the browser animate 1 -> 0 on insert: the page
@@ -734,7 +721,6 @@
      it worked in Blink. The reveal still animates because transitions read
      transition-* from the after-change style, which .is-revealed carries. */
   transition:
-    transform 180ms var(--motion-ease),
     box-shadow var(--transition-base),
     border-color var(--transition-fast);
 }
@@ -745,12 +731,11 @@
   transition:
     opacity var(--motion-reveal-duration) var(--motion-ease),
     translate var(--motion-reveal-duration) var(--motion-ease),
-    transform 180ms var(--motion-ease),
     box-shadow var(--transition-base),
     border-color var(--transition-fast);
   transition-delay:
     calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)),
-    calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)), 0ms, 0ms, 0ms;
+    calc(min(var(--motion-index, 0), 4) * var(--motion-stagger)), 0ms, 0ms;
 }
 
 /* Scoped to dividers that opt in: only [data-reveal] elements ever receive
@@ -794,7 +779,6 @@
   [data-motion-ready] [data-reveal],
   [data-motion-ready] [data-reveal].is-revealed {
     opacity: 1;
-    transform: none;
     translate: none;
     animation: none;
     transition: none;
@@ -812,10 +796,6 @@
     transition: none;
   }
 
-  .card-lift:hover {
-    transform: none;
-  }
-
   .scroll-progress {
     animation: none;
     transform: scaleX(0);
@@ -826,14 +806,13 @@
    that was not scrolled into view. Without this, printing a page emits blank
    bands where every below-the-fold block should be. */
 @media print {
-  /* Reset through the custom properties the reveal rule reads, not the
-     transform/translate longhands: the minifier folds `transform: none` plus
+  /* Reset through the custom property the reveal rule reads, not the
+     translate longhand: the minifier folds `transform: none` plus
      `translate: none` into a single `transform: translate(0)` and drops the
      translate reset, which leaves every printed block offset by the reveal
      distance. */
   [data-motion-ready] [data-reveal] {
     --motion-reveal-y: 0px;
-    --card-lift-y: 0px;
     opacity: 1;
     animation: none;
     transition: none;

@@ -17,10 +17,9 @@ const { project, heading: Heading = 'h2', motionIndex = 0 } = Astro.props;
 
 <div class="h-full" data-scroll-depth>
   <article
-    class="card card-lift group h-full"
+    class="card card-hover group h-full"
     data-reveal="card"
     style={`--motion-index: ${motionIndex}`}
-    data-reactive
   >
     <a href={`/projects/${project.slug}`} class="block p-6">
       <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">

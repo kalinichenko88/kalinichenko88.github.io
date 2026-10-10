@@ -238,17 +238,18 @@ separate themselves, so `.divider` is available but currently unused.
 
 - **One radius system:** cards `xl` (16px), buttons/tags/chips `pill`
   (9999px), inputs/small surfaces `md` (8px). Keep it consistent.
-- **Shadows are tinted to the accent, never pure black.** Cards lift on hover
-  (`translateY(-4px)` + a soft terracotta-tinted shadow). Dark theme uses a
-  slightly stronger tint. No neon/outer glows.
+- **Shadows are tinted to the accent, never pure black.** Cards answer hover
+  with a soft terracotta-tinted shadow and border, and stay where they are: a
+  card that moved lost the hover under a pointer resting on its edge and
+  jittered. Dark theme uses a slightly stronger tint. No neon/outer glows.
 
 ## Components
 
 Reusable classes live in `global.css` (`@layer utilities`). Prefer them over
 new one-off styles.
 
-- `.card` / `.card-lift` — surface panel with border; `.card-lift` adds the
-  hover lift + tinted shadow.
+- `.card` / `.card-hover` — surface panel with border; `.card-hover` adds the
+  tinted hover shadow. Neither moves the card.
 - `.btn-primary` — pill, accent fill, AA-correct text per theme (see Colors).
 - `.btn-secondary` — pill on a surface fill with a `text-tertiary` border;
   hover darkens the fill to `bg-subtle` and strengthens the border to
@@ -318,8 +319,8 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
 
 Motion is always motivated. There is one intensity, tuned once in the
 `--motion-*` tokens at the top of `global.css`: a 28px/700ms reveal with a 90ms
-stagger, divider drawing, bounded pointer response on cards, and 16px of scroll
-depth. It changes no content, layout, or information hierarchy. There is no
+stagger, divider drawing, and 16px of scroll depth. Nothing moves on hover:
+cards used to lift and follow the pointer, and both made them jitter. It changes no content, layout, or information hierarchy. There is no
 runtime profile switch, and reintroducing one is a deliberate decision, not a
 default.
 
@@ -335,18 +336,14 @@ Motion coverage is declarative:
 - inline `--motion-index` gives sibling blocks a stable sequence. It is the
   only source: a `data-stagger-index` attribute used to set the same value
   from CSS and the two disagreed above index 4.
-- `data-reactive` enables a bounded pointer offset (translation only, no tilt:
-  nothing here establishes a `perspective`, so a rotation would be invisible),
-  while `data-scroll-depth` opts into the CSS `view()` timeline when supported.
-  Each motion source owns one property: reveal on `translate`, pointer and lift
-  on `transform`. Never feed two of them into one property - the transitioned
-  one freezes its endpoints while the other keeps moving, and the block snaps
-  by the difference at both ends. That is why `data-scroll-depth` goes on a
-  wrapper element of its own rather than on the revealed block: it needs a
-  `translate` nobody else writes to.
+- `data-scroll-depth` opts into the CSS `view()` timeline when supported.
+  Each motion source owns one property. Never feed two of them into one
+  property - the transitioned one freezes its endpoints while the other keeps
+  moving, and the block snaps by the difference at both ends. That is why
+  `data-scroll-depth` goes on a wrapper element of its own rather than on the
+  revealed block: it needs a `translate` nobody else writes to.
 - `data-motion-limit` locally quiets a block that should stay still, such as
-  the 404 message. It works for reveal and pointer alike, because the pointer
-  caps are read from the reactive element rather than the root.
+  the 404 message.
 
 The stagger is clamped at `--motion-index` 4 in `global.css`. Long lists would
 otherwise queue up an unbounded delay, and a card at index 20 would sit still
@@ -402,8 +399,7 @@ post the heading block rises 28px while the static `<Content />` prose right
 under it does not move, because prose is never a reveal target. That is the
 accepted trade, not a bug to fix by annotating the prose.
 
-The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
-pipeline. Do not add a third-party animation dependency for it, and keep
+The system uses native CSS and IntersectionObserver. Do not add a third-party animation dependency for it, and keep
 reveal, depth and progress off JavaScript scroll listeners — those are CSS
 or observer driven. The one scroll listener that exists is the spotlight's,
 passive and rAF-throttled: what sits under a still cursor changes as the page
@@ -450,7 +446,7 @@ moves, and nothing else can tell it.
     That is intended; a cover is not text and does not drop the glow.
 
 - **Hover underlines** — links/nav draw an accent underline on hover.
-- **Card lift** — subtle translate + tinted shadow on hover.
+- **Card hover** — tinted shadow and border on hover, no movement.
 
 Any new motion above a hover state MUST honor `prefers-reduced-motion` and must
 justify itself (feedback / hierarchy / state / storytelling). No ambient loops
