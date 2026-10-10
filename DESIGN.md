@@ -414,6 +414,9 @@ moves, and nothing else can tell it.
     closes on a plain band.
   - Cards stay opaque: they are meant to read as surfaces sitting on top of the
     field.
+  - Post covers are transparent: their empty parts are bare background, so the
+    lattice and the glow show through them on the page and the Writing band.
+    That is intended; a cover is not text and does not drop the glow.
 
 - **Hover underlines** — links/nav draw an accent underline on hover.
 - **Card lift** — subtle translate + tinted shadow on hover.

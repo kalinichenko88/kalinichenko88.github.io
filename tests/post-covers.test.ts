@@ -18,9 +18,9 @@ async function coverLines() {
   return posts;
 }
 
-test('a post declares at most one cover', async () => {
+test('every post declares exactly one cover', async () => {
   for (const { file, lines } of await coverLines()) {
-    assert.ok(lines.length <= 1, `${file} has ${lines.length} cover lines`);
+    assert.equal(lines.length, 1, `${file} has ${lines.length} cover lines; run illustrate-post`);
   }
 });
 
