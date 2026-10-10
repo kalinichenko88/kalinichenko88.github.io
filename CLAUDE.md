@@ -54,7 +54,7 @@ Put them in `src/assets/images/` and reference them with a relative path from th
 
 ### Post covers
 
-Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` checks every cover is a transparent 1536×1024 master. How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md).
+Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` checks every cover is a transparent 1536×1024 master. How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md). The post page also turns the cover into the post's social image (`og:image`, `twitter:image`, JSON-LD `image`): a 1200×630 JPEG crop passed through `Layout` to `Head` as `image`; pages without one keep the author photo.
 
 ## Components
 

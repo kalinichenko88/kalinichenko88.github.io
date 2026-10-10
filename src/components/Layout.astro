@@ -19,6 +19,7 @@ type Props = {
   type?: 'website' | 'article';
   publishedTime?: string;
   tags?: string[];
+  image?: { src: string; alt: string };
 };
 
 const {
@@ -28,6 +29,7 @@ const {
   type,
   publishedTime,
   tags,
+  image,
 } = Astro.props;
 ---
 
@@ -88,6 +90,7 @@ const {
       type={type}
       publishedTime={publishedTime}
       tags={tags}
+      image={image}
     />
 
     <!-- Fonts -->
