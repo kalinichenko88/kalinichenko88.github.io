@@ -4,12 +4,16 @@ import { glob } from 'astro/loaders';
 
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './content/posts' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.date(),
-    tags: z.array(z.string()),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDate: z.date(),
+      tags: z.array(z.string()),
+      // Written by the illustrate-post skill. Optional so a post being written
+      // still renders; tests/post-covers.test.ts makes it mandatory in CI.
+      cover: image().optional(),
+    }),
 });
 
 const projects = defineCollection({

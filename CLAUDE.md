@@ -36,7 +36,7 @@ This is an Astro 7 personal portfolio site with:
 
 ## Content Structure
 
-- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`
+- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`, `cover` (see Post covers)
 - `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins)
 
 ### Tags
@@ -51,6 +51,10 @@ Every tag becomes a page under `/tags/<tag>`, so a tag only earns its place if i
 ### Post images
 
 Put them in `src/assets/images/` and reference them with a relative path from the markdown file (`../../src/assets/images/foo.png`). Astro's image pipeline then optimizes them and emits `width`/`height`. Images under `public/` are served as-is and skip all of that.
+
+### Post covers
+
+Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` checks every cover is a transparent 1536×1024 master. How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md).
 
 ## Components
 

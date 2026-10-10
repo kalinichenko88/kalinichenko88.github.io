@@ -104,17 +104,19 @@ Use the built-in image_gen tool to edit the attached image, which is the edit ta
 ## Style block
 
 ```text
-Style/medium: quick, loose hand-drawn sketch made with a digital pencil. Light
-confident ink line with visible imperfect strokes, minimal soft grey shading
-only in a few places. Every object is filled with flat white paper color, never
-a hollow outline. Sketchbook study, not a finished rendering. Fewer details
-rather than more.
+Style/medium: quick, loose hand-drawn sketch made with a digital pencil, like a
+page from a sketchbook. Few, light, confident ink lines with visible imperfect
+strokes. Almost no shading: at most a few soft grey hatching strokes in one or
+two places. Most of each object is left as untouched white paper. Every object
+is filled with flat white paper color, never a hollow outline. Simplify every
+shape and leave out small details; a quick study, not a rendering.
 Subject rules: concrete physical objects only. No people, no text, no letters,
 no logos or brand marks.
 Composition/framing: one compact object group, centered, nothing cut at the
 edges. No ground plane, no cast shadow, no glow or halo.
-Color palette: greyscale ink and graphite; terracotta #c25a34 is the only
-chromatic accent, on one or two small elements only.
+Color palette: black ink and grey graphite on white only; terracotta #c25a34 is
+the only other color, on one or two small elements. No yellow, wood brown,
+blue or any other hue anywhere, even where the real object would have one.
 Constraints: genuinely transparent background (preserve the alpha channel),
 landscape 3:2 (1536x1024), no frame, no border, no watermark.
 ```
@@ -124,7 +126,11 @@ variant for its framing.
 
 ## References
 
-References: none yet
+Two frozen covers anchor the style. Do not replace them with newer ones; a
+rolling set drifts.
+
+- `src/assets/images/covers/best-pull-request-deletes-more-than-it-adds.png`
+- `src/assets/images/covers/budget-planner-obsidian-community-plugins.png`
 
 ## Fallback
 
