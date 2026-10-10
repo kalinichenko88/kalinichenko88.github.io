@@ -5,3 +5,4 @@ featured: false
 tagline: 'Personalized Markdown tech digest that collects, deduplicates, and summarizes RSS feeds and GitHub releases.'
 tech: ['Claude Code', 'MCP', 'Markdown']
 stars: 1
+tags: [claude-code, ai]

@@ -1,7 +1,7 @@
 ---
 import { AUTHOR_NAME, GITHUB_PROFILE_LINK } from '../consts';
 import { THEME_OPTIONS } from '../config/themes';
-import { NAV_LINKS } from '../config/navigation';
+import { NAV_LINKS, isActive } from '../config/navigation';
 
 import GithubIcon from '../assets/icons/github.svg';
 import CheckIcon from '../assets/icons/check.svg';
@@ -37,10 +37,7 @@ const currentPath = Astro.url.pathname;
             href={link.href}
             class:list={[
               'nav-link px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
-              currentPath === link.href ||
-              (!link.href.startsWith('/#') &&
-                link.href !== '/' &&
-                (currentPath === link.href + '/' || currentPath.startsWith(link.href + '/')))
+              isActive(link.href, currentPath)
                 ? 'text-foreground active'
                 : 'text-foreground-secondary hover:text-foreground',
             ]}
@@ -129,7 +126,7 @@ const currentPath = Astro.url.pathname;
           href={link.href}
           class:list={[
             'block px-4 py-2.5 text-sm font-medium rounded-md transition-colors duration-150',
-            currentPath === link.href
+            isActive(link.href, currentPath)
               ? 'text-foreground bg-background-subtle'
               : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
           ]}

@@ -155,7 +155,7 @@ accent — large text only needs 3:1.
 (14:1), `--color-text-secondary` (6.6:1 / 7.2:1), `--color-text-tertiary`
 (4.95:1 / 5.4:1 on the page, down to 4.63:1 on light `bg-subtle` and 4.87:1 on
 dark cards). Tertiary is the quietest step, not a decorative one — it
-colors post dates, reading time, project taglines, star counts, footer labels
+colors post dates, reading time, star counts, footer labels
 and job periods, so it must stay at or above 4.5:1 on every fill it sits on,
 not just the page: the Writing band and the `.tag` pill put it on `bg-subtle`,
 where `#6b6b71` measured 4.43:1. It was `#8a8a90` / `#737379` (3.07:1 /
@@ -210,8 +210,8 @@ Two container tracks, applied by responsibility:
 
 - `.container` — wide track, `--container-wide` ~1100px. The default. Header,
   footer, the homepage Selected-work grid, the blog index and tag pages
-  (`/blog`, `/tags`, `/tags/<tag>`), the blog post article, and any full-width
-  block.
+  (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, the blog post article, and any
+  full-width block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
   most comfortable measure: the `/about` bio and work history. The homepage
   intro reuses the measure through `--container-prose` on its `.intro` block.
@@ -467,6 +467,8 @@ scripts — no React/Motion in this project.
 - Render a post in a list with `PostCard.astro`, inside the CSS-columns
   masonry or the homepage's sideways row, rather than hand-rolling another
   layout. The container owns the layout classes (`*:` children utilities).
+  The exception is a project's related posts on `/projects`: a plain title
+  list inside the project card, since one post can sit under several projects.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at

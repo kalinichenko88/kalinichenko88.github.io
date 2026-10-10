@@ -23,5 +23,15 @@ test('falls back to the YAML count when GitHub refuses', async (t) => {
   t.mock.method(console, 'warn', () => {});
   t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 403 }));
 
-  assert.equal(await githubStars(REPO, 3), 3);
+  assert.equal(await githubStars('https://github.com/kalinichenko88/vaultmd', 3), 3);
+});
+
+// The homepage and /projects both read every project's count in one build.
+test('asks GitHub once per repo, however many pages read it', async (t) => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => new Response(recorded));
+  const repo = 'https://github.com/kalinichenko88/ai-digest';
+
+  assert.equal(await githubStars(repo, 1), 11);
+  assert.equal(await githubStars(repo, 1), 11);
+  assert.equal(fetch.mock.callCount(), 1);
 });

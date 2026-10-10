@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const files = [
   'src/pages/about.astro',
+  'src/pages/projects.astro',
   'src/pages/blog/index.astro',
   'src/pages/blog/[...id].astro',
   'src/pages/tags/index.astro',
