@@ -165,7 +165,10 @@ where `#6b6b71` measured 4.43:1. It was `#8a8a90` / `#737379` (3.07:1 /
 separators (rules, card edges, table lines) and lands ~1.2:1 against the page —
 decorative only. When a border is the thing that defines a control, as on
 `.btn-secondary`, it must use `--color-text-tertiary` (4.95:1 light / 5.40:1
-dark) so the control has a perceivable boundary.
+dark) so the control has a perceivable boundary. The one exception is the
+round ← → buttons of the Writing row: they carry the card hairline and turn
+accent on hover, like the cards beside them. An icon button is identified by
+its glyph, not its edge, and the arrow in `text` on `surface` is far above 3:1.
 
 ### Themes
 

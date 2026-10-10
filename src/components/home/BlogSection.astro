@@ -11,7 +11,7 @@ type Props = {
 
 const { latestPosts } = Astro.props;
 const buttonClass =
-  'inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40';
+  'inline-flex size-9 items-center justify-center rounded-full border border-line bg-surface text-foreground transition-colors enabled:hover:border-accent enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40';
 ---
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
@@ -24,9 +24,9 @@ const buttonClass =
         </a>
         <!--
           Touch and trackpads swipe the row; these are for a mouse wheel that
-          only scrolls down. Styled like .btn-secondary (the text-tertiary
-          border clears 3:1 for a control) but with utilities, because that
-          class sets its own display and padding and would win over them.
+          only scrolls down. They wear the card hairline, not the .btn-secondary
+          text-tertiary border, so they sit quietly next to the cards; the
+          arrow glyph is what identifies them and it clears 3:1 on its own.
         -->
         <div class="hidden gap-2 md:flex">
           <button
