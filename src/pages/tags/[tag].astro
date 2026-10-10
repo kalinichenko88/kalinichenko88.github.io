@@ -22,7 +22,6 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-const [lead, ...rest] = posts;
 ---
 
 <Layout title={`Posts tagged: ${tag}`} description={`All blog posts tagged with "${tag}".`}>
@@ -44,10 +43,9 @@ const [lead, ...rest] = posts;
         </div>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-2 mt-8">
-        {lead && <PostCard post={lead} featured motionIndex={1} />}
-        {rest.map((post, index) => (
-          <PostCard post={post} motionIndex={index + 2} />
+      <div class="columns-1 gap-6 md:columns-2 lg:columns-3 mt-8">
+        {posts.map((post, index) => (
+          <PostCard post={post} motionIndex={index + 1} />
         ))}
       </div>
     </div>

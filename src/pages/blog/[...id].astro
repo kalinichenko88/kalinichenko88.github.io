@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
@@ -42,19 +43,14 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
 const minutesRead = readingTime(post.body ?? '');
 
-// The one place a cover is cropped: social previews want 1200x630. The
-// illustrate-post skill keeps a 14% margin top and bottom for this crop, and
-// the light page background stands in for the transparency JPEG lacks.
-const social = post.data.cover
-  ? await getImage({
-      src: post.data.cover,
-      width: 1200,
-      height: 630,
-      fit: 'cover',
-      background: '#f4f2ee',
-      format: 'jpeg',
-    })
-  : undefined;
+// Social previews want 1200x630, and a cover keeps its drawing's own
+// proportions, so the illustrate-post skill writes a padded <post-id>.og.jpg
+// next to each cover. tests/post-covers.test.ts keeps the two names in step.
+const socialImages = import.meta.glob<ImageMetadata>('../../assets/images/covers/*.og.jpg', {
+  eager: true,
+  import: 'default',
+});
+const social = socialImages[`../../assets/images/covers/${post.id}.og.jpg`];
 const socialImage = social && {
   src: new URL(social.src, Astro.url).href,
   alt: post.data.title,

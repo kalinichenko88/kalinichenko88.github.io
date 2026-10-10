@@ -4,9 +4,10 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import sharp from 'sharp';
 
-// Covers come from the illustrate-post skill, whose prepare.mjs writes every
-// master transparent and at 1536x1024. This catches a file that skipped it,
-// such as a hand download from ChatGPT, and a re-run that added a second line.
+// Covers come from the illustrate-post skill, whose prepare.mjs trims every
+// cover to its drawing, palette-compresses it and writes its social image.
+// This catches a file that skipped it, such as a hand download from ChatGPT
+// (truecolor, no social image), and a re-run that added a second line.
 const postsDir = new URL('../content/posts/', import.meta.url);
 
 async function coverLines() {
@@ -24,14 +25,25 @@ test('every post declares exactly one cover', async () => {
   }
 });
 
-test('every cover is a transparent 1536x1024 master', async () => {
+test('every cover went through prepare.mjs and has its social image', async () => {
   for (const { file, lines } of await coverLines()) {
     if (lines.length === 0) continue;
+    const id = file.replace(/\.mdx?$/, '');
     const relative = lines[0].slice('cover: '.length).trim();
+    // The post page finds the social image by this name.
+    assert.equal(relative, `../../src/assets/images/covers/${id}.png`, `${file}: cover path`);
     const path = fileURLToPath(new URL(relative, new URL(file, postsDir)));
-    const { width, height } = await sharp(path).metadata();
-    assert.deepEqual([width, height], [1536, 1024], `${file}: cover is ${width}x${height}`);
+
+    const meta = await sharp(path).metadata();
+    assert.ok(meta.isPalette, `${file}: cover is not palette-compressed; run prepare.mjs`);
     assert.equal((await sharp(path).stats()).isOpaque, false, `${file}: cover is opaque`);
+
+    const social = await sharp(path.replace(/\.png$/, '.og.jpg')).metadata();
+    assert.deepEqual(
+      [social.format, social.width, social.height],
+      ['jpeg', 1200, 630],
+      `${file}: social image`
+    );
   }
 });
 

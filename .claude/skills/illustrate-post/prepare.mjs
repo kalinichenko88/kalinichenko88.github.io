@@ -5,7 +5,8 @@
 //
 //   node .claude/skills/illustrate-post/prepare.mjs <run-dir>
 //
-// Reads variant-N.png and writes variant-N.cover.png (the master to commit),
+// Reads variant-N.png and writes variant-N.cover.png (the cover to commit,
+// trimmed to its drawing), variant-N.og.jpg (its 1200x630 social image),
 // variant-N.light.png and variant-N.dark.png (flattened, for viewing) and
 // sheet.png (every accepted variant on both backgrounds). Exits 1 if none
 // passed.
@@ -14,15 +15,13 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
 
-export const WIDTH = 1536;
-export const HEIGHT = 1024;
-// The social image is a 1200x630 cover crop of the 3:2 master, which trims
-// 10.6% from the top and bottom. The vertical margin keeps the drawing clear.
-export const MARGIN_X = Math.round(WIDTH * 0.1);
-export const MARGIN_Y = Math.round(HEIGHT * 0.14);
+// Even transparent margin around the drawing, as a share of its longer side.
+// The cover keeps the drawing's own proportions, so a card can hug it.
+export const PAD = 0.06;
 // Generated PNGs carry faint alpha noise (1 to 7) almost to the canvas edge;
 // above this threshold the bounding box is the drawing.
 const ALPHA_THRESHOLD = 16;
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 const LIGHT = '#f4f2ee';
 const DARK = '#1a1a1c';
 
@@ -55,27 +54,32 @@ export async function normalize(input) {
   const box = await subjectBox(input);
   if (!box) throw new Error('no subject: nothing above the alpha threshold');
 
-  const subject = await sharp(input)
+  const pad = Math.round(Math.max(box.width, box.height) * PAD);
+  return sharp(input)
     .extract(box)
-    .resize({ width: WIDTH - 2 * MARGIN_X, height: HEIGHT - 2 * MARGIN_Y, fit: 'inside' })
+    .extend({ top: pad, bottom: pad, left: pad, right: pad, background: TRANSPARENT })
+    .png({ palette: true, quality: 90 })
+    .toBuffer();
+}
+
+// Social previews want 1200x630 and no transparency. The whole drawing sits
+// inside a 10% margin on the light page colour, so no platform crop reaches it.
+export async function socialImage(cover) {
+  const width = 1200;
+  const height = 630;
+  const drawing = await sharp(cover)
+    .resize({ width: width * 0.8, height: height * 0.8, fit: 'inside' })
     .png()
     .toBuffer({ resolveWithObject: true });
-  return sharp({
-    create: {
-      width: WIDTH,
-      height: HEIGHT,
-      channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
-    },
-  })
+  return sharp({ create: { width, height, channels: 3, background: LIGHT } })
     .composite([
       {
-        input: subject.data,
-        left: Math.round((WIDTH - subject.info.width) / 2),
-        top: Math.round((HEIGHT - subject.info.height) / 2),
+        input: drawing.data,
+        left: Math.round((width - drawing.info.width) / 2),
+        top: Math.round((height - drawing.info.height) / 2),
       },
     ])
-    .png({ palette: true, quality: 90 })
+    .jpeg({ quality: 85 })
     .toBuffer();
 }
 
@@ -87,8 +91,6 @@ const TILE_W = 480;
 const TILE_H = 320;
 const GAP = 16;
 const LABEL = 28;
-// The band a 1200x630 crop keeps of a 3:2 tile, outlined on the light tile.
-const OG_INSET = Math.round((TILE_H - TILE_W * (630 / 1200)) / 2);
 
 export async function contactSheet(variants) {
   const layers = [];
@@ -103,18 +105,15 @@ export async function contactSheet(variants) {
     });
     for (const [row, background] of [LIGHT, DARK].entries()) {
       layers.push({
-        input: await sharp(cover).resize(TILE_W, TILE_H).flatten({ background }).png().toBuffer(),
+        input: await sharp(cover)
+          .resize(TILE_W, TILE_H, { fit: 'contain', background: TRANSPARENT })
+          .flatten({ background })
+          .png()
+          .toBuffer(),
         left,
         top: LABEL + row * (TILE_H + GAP),
       });
     }
-    layers.push({
-      input: Buffer.from(
-        `<svg width="${TILE_W}" height="${TILE_H}"><rect x="1" y="${OG_INSET}" width="${TILE_W - 2}" height="${TILE_H - 2 * OG_INSET}" fill="none" stroke="#c25a34" stroke-width="2" stroke-dasharray="8 6"/></svg>`
-      ),
-      left,
-      top: LABEL,
-    });
   }
   return sharp({
     create: {
@@ -153,6 +152,7 @@ if (import.meta.main) {
     try {
       const cover = await normalize(raw);
       writeFileSync(join(dir, `variant-${n}.cover.png`), cover);
+      writeFileSync(join(dir, `variant-${n}.og.jpg`), await socialImage(cover));
       writeFileSync(join(dir, `variant-${n}.light.png`), await flatten(cover, LIGHT));
       writeFileSync(join(dir, `variant-${n}.dark.png`), await flatten(cover, DARK));
       accepted.push({ n, cover });

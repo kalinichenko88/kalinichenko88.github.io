@@ -54,7 +54,7 @@ Put them in `src/assets/images/` and reference them with a relative path from th
 
 ### Post covers
 
-Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` requires exactly one cover per post and checks every cover is a transparent 1536×1024 master. How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md). The post page also turns the cover into the post's social image (`og:image`, `twitter:image`, JSON-LD `image`): a 1200×630 JPEG crop passed through `Layout` to `Head` as `image`; pages without one keep the author photo.
+Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` requires exactly one cover per post and checks every cover went through the skill's `prepare.mjs` (palette-compressed, transparent, trimmed to its drawing, named after the post, with its social image next to it). How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md). Each cover has a 1200×630 `<post-id>.og.jpg` beside it, written by the skill; the post page picks it up by name for `og:image`, `twitter:image` and JSON-LD `image`, passing it through `Layout` to `Head` as `image`; pages without one keep the author photo.
 
 ## Components
 
@@ -107,7 +107,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 - Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`) and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
 - Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
-- Posts in a list render through `src/components/PostCard.astro` (pass `featured` for the lead card). Both `/blog` and `/tags/<tag>` use it — don't hand-roll a second row layout.
+- Posts in a list render through `src/components/PostCard.astro`, packed into a CSS-columns masonry (`columns-1 md:columns-2 lg:columns-3`) of equal cards; there is no featured lead card. Both `/blog` and `/tags/<tag>` use it — don't hand-roll a second layout.
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): DM Sans (headings and body, via both `--font-display` and `--font-body`), JetBrains Mono (code/mono accents). Only two families load; headings separate from body by size, weight and tracking, not by a second face.
 
 ## Key Patterns

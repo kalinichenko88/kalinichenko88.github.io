@@ -3,14 +3,16 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 import {
-  HEIGHT,
-  MARGIN_X,
-  MARGIN_Y,
-  WIDTH,
+  PAD,
   contactSheet,
   normalize,
+  socialImage,
   subjectBox,
 } from '../.claude/skills/illustrate-post/prepare.mjs';
+
+// image_gen answers a 3:2 request with 1536x1024.
+const WIDTH = 1536;
+const HEIGHT = 1024;
 
 type Box = { left: number; top: number; width: number; height: number };
 
@@ -40,38 +42,51 @@ async function generated(subject?: Box): Promise<Buffer> {
     .toBuffer();
 }
 
-const near = (actual: number, expected: number) =>
-  assert.ok(Math.abs(actual - expected) <= 2, `${actual} is not within 2px of ${expected}`);
-
 test('finds the drawing, not the alpha noise around it', async () => {
   const box = { left: 40, top: 300, width: 600, height: 200 };
   assert.deepEqual(await subjectBox(await generated(box)), box);
 });
 
-test('centres a drawing the model pushed against the edge', async () => {
+test('trims the cover to the drawing with an even margin', async () => {
   // Touching the left edge and squeezed to the top, as the 3:2 probe framed it.
   const output = await normalize(await generated({ left: 0, top: 10, width: 900, height: 300 }));
-  const { width, height } = await sharp(output).metadata();
-  assert.deepEqual([width, height], [WIDTH, HEIGHT]);
+  const pad = Math.round(900 * PAD);
+  const meta = await sharp(output).metadata();
+  assert.deepEqual([meta.width, meta.height], [900 + 2 * pad, 300 + 2 * pad]);
+  assert.ok(meta.isPalette, 'the cover is palette-compressed');
   assert.equal((await sharp(output).stats()).isOpaque, false);
-
-  const box = await subjectBox(output);
-  assert.ok(box);
-  // 900x300 fills the 1228x738 area by width: 1228x409, centred.
-  near(box.left, MARGIN_X);
-  near(box.left + box.width, WIDTH - MARGIN_X);
-  near(box.top + box.height / 2, HEIGHT / 2);
+  assert.deepEqual(await subjectBox(output), { left: pad, top: pad, width: 900, height: 300 });
 });
 
-test('keeps a tall drawing inside the band the OG crop keeps', async () => {
-  const output = await normalize(
-    await generated({ left: 700, top: 0, width: 100, height: HEIGHT })
-  );
-  const box = await subjectBox(output);
-  assert.ok(box);
-  // A 1200x630 cover crop of 1536x1024 keeps rows 109 to 915.
-  near(box.top, MARGIN_Y);
-  assert.ok(box.top >= 109 && box.top + box.height <= 915, JSON.stringify(box));
+test('fits the whole drawing inside a 1200x630 social image', async () => {
+  // A tall drawing is the case a plain cover crop would cut.
+  const cover = await normalize(await generated({ left: 700, top: 0, width: 100, height: HEIGHT }));
+  const { data, info } = await sharp(await socialImage(cover))
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  assert.deepEqual([info.width, info.height], [1200, 630]);
+
+  // The drawing is whatever differs from #f4f2ee, the light page colour.
+  let left = info.width;
+  let top = info.height;
+  let right = -1;
+  let bottom = -1;
+  for (let y = 0; y < info.height; y++) {
+    for (let x = 0; x < info.width; x++) {
+      const p = (y * info.width + x) * info.channels;
+      const off =
+        Math.abs(data[p] - 0xf4) + Math.abs(data[p + 1] - 0xf2) + Math.abs(data[p + 2] - 0xee);
+      if (off <= 24) continue;
+      left = Math.min(left, x);
+      right = Math.max(right, x);
+      top = Math.min(top, y);
+      bottom = Math.max(bottom, y);
+    }
+  }
+  // Scaled whole, the 100x1024 drawing keeps its proportions; a crop would not.
+  const ratio = (right - left + 1) / (bottom - top + 1);
+  assert.ok(Math.abs(ratio - 100 / 1024) < 0.01, `drawing ratio ${ratio}`);
+  assert.ok(top > 0 && bottom < info.height - 1, `drawing touches an edge: ${top}..${bottom}`);
 });
 
 test('rejects an opaque image', async () => {
@@ -87,9 +102,14 @@ test('rejects an image with nothing but noise', async () => {
   await assert.rejects(normalize(await generated()), /no subject/);
 });
 
-test('lays the variants out side by side on both backgrounds', async () => {
-  const cover = await normalize(await generated({ left: 400, top: 300, width: 600, height: 400 }));
-  const sheet = await contactSheet([1, 2, 3].map((n) => ({ n, cover })));
+test('lays covers of any shape side by side on both backgrounds', async () => {
+  const wide = await normalize(await generated({ left: 100, top: 400, width: 1200, height: 300 }));
+  const tall = await normalize(await generated({ left: 700, top: 100, width: 200, height: 800 }));
+  const sheet = await contactSheet([
+    { n: 1, cover: wide },
+    { n: 2, cover: tall },
+    { n: 3, cover: wide },
+  ]);
   const { width, height } = await sharp(sheet).metadata();
   assert.deepEqual([width, height], [1504, 700]);
 });

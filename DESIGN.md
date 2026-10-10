@@ -267,24 +267,33 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
 
 - **Style:** a loose hand-drawn pencil sketch of one metaphor object.
   Greyscale, every object filled with flat white, terracotta `#c25a34` as the
-  only chromatic accent on one or two small elements, transparent background,
-  3:2 (1536×1024). No people, no text, no logos.
+  only chromatic accent on one or two small elements, transparent background.
+  No people, no text, no logos. The file is trimmed to its drawing with an
+  even margin, so every cover has its own proportions (a tall seedling, a
+  wide notebook).
 - **The accent is baked in.** A cover keeps `#c25a34` in both themes, next to
   the dark theme's `#e07a52`. Covers are content, like a photo, not UI, so the
   per-theme accent rule does not apply to them. The author compared the two
   side by side and kept it.
 - **Shown as is in both themes.** The white fills read on the dark background
   like paper cut-outs; no filter, no backing tile.
-- **Never cropped on site.** Size the box in CSS and use `object-contain`; the
-  transparent margins are invisible. Never give a cover `<Image>` both `width`
-  and `height`: sharp would crop it at build time.
+- **Never cropped on site.** In a card the cover spans the card's width at its
+  own height; elsewhere size the box in CSS and use `object-contain`. Never
+  give a cover `<Image>` both `width` and `height`: sharp would crop it at
+  build time.
 - **Decorative.** `alt=""` everywhere: the title always sits next to it.
-- **Where:** above the title in post cards (to the right in the featured card),
-  to the right of the homepage Writing lead and inside its link, and to the
-  right of the title in the post header (above it on mobile, height capped).
-- **Social image, the one crop:** the post page renders a 1200×630 JPEG cover
-  crop flattened onto `#f4f2ee`. The skill's normalize step keeps a 14% margin
-  top and bottom so the crop never cuts the drawing.
+- **Where:** in post cards, full width directly above the title, so drawing
+  and title read as one unit; to the right of the homepage Writing lead and
+  inside its link; to the right of the title in the post header (above it on
+  mobile, height capped).
+- **Post lists are a masonry of equal cards.** `/blog` and `/tags/<tag>` pack
+  cards into CSS columns (one, two, three by width), so card heights follow
+  their covers. Columns read top to bottom, so on desktop the order runs down
+  each column; native `display: grid-lanes` would keep row order but is not in
+  Chrome yet (checked in 155). There is no featured lead card.
+- **Social image:** a separate 1200×630 JPEG the skill writes next to each
+  cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
+  `#f4f2ee`, so no platform crop reaches it.
 
 ## Interaction
 
@@ -433,8 +442,8 @@ scripts — no React/Motion in this project.
 - Default to `.container` (~1100px), including for the blog post article; use
   `.container-prose` (~680px) only for `/about` reading text (bio, work
   history).
-- Render a post in a list with `PostCard.astro` (`featured` for the lead card)
-  rather than hand-rolling another row layout.
+- Render a post in a list with `PostCard.astro` inside the same CSS-columns
+  masonry rather than hand-rolling another layout.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at
