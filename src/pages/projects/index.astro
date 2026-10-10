@@ -1,0 +1,43 @@
+---
+import Layout from '../../components/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import { getProjects } from '../../lib/projects';
+import { GITHUB_PROFILE_LINK } from '../../consts';
+
+const projects = await getProjects();
+---
+
+<Layout
+  title="Projects"
+  description="Open-source tools I build and maintain, each next to what I've written on its topic."
+>
+  <section class="py-14 md:py-20">
+    <div class="container">
+      <div
+        class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-3"
+        data-reveal="heading"
+      >
+        <h1 class="text-foreground">Projects</h1>
+        <a
+          href={GITHUB_PROFILE_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-underline text-sm inline-flex items-center gap-2"
+        >
+          View GitHub profile
+          <ExternalLinkIcon class="w-4 h-4" />
+        </a>
+      </div>
+      <p class="text-foreground-secondary mb-10 max-w-prose" data-reveal="content">
+        Open-source tools I build and maintain, each next to what I've written on its topic.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} motionIndex={index + 1} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

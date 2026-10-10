@@ -1,0 +1,42 @@
+---
+import type { Project } from '../lib/projects';
+
+type Props = {
+  project: Project;
+  /** Title level: h2 on /projects, h3 inside the homepage section. */
+  heading?: 'h2' | 'h3';
+  /** Stable sequence position for profile-based entry motion. */
+  motionIndex?: number;
+};
+
+const { project, heading: Heading = 'h2', motionIndex = 0 } = Astro.props;
+
+// The depth offset needs an element of its own: the card's `translate` is the
+// reveal's, and one property cannot carry two motion sources.
+---
+
+<div class="h-full" data-scroll-depth>
+  <article
+    class="card card-lift group h-full"
+    data-reveal="card"
+    style={`--motion-index: ${motionIndex}`}
+    data-reactive
+  >
+    <a href={`/projects/${project.slug}`} class="block p-6">
+      <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+        {project.name}
+      </Heading>
+      <p class="text-foreground-secondary mb-4">{project.tagline}</p>
+      <div class="flex flex-wrap gap-2 mb-4">
+        {project.tech.map((t) => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+      {project.stars > 0 && (
+        <span class="font-mono text-xs text-foreground-tertiary">
+          {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+        </span>
+      )}
+    </a>
+  </article>
+</div>

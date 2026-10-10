@@ -210,8 +210,8 @@ Two container tracks, applied by responsibility:
 
 - `.container` — wide track, `--container-wide` ~1100px. The default. Header,
   footer, the homepage Selected-work grid, the blog index and tag pages
-  (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, the blog post article, and any
-  full-width block.
+  (`/blog`, `/tags`, `/tags/<tag>`), `/projects` and `/projects/<slug>`, the blog
+  post article, and any full-width block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
   most comfortable measure: the `/about` bio and work history. The homepage
   intro reuses the measure through `--container-prose` on its `.intro` block.
@@ -291,8 +291,8 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   and title read as one unit; to the right of the title in the post header,
   up to 20rem tall, its box hugging the drawing and vertically centred on the
   title block (above it on mobile, height capped).
-- **Post lists are a masonry of equal cards.** `/blog` and `/tags/<tag>` pack
-  cards into CSS columns (one, two, three by width), so card heights follow
+- **Post lists are a masonry of equal cards.** `/blog`, `/tags/<tag>` and a
+  project's related posts on `/projects/<slug>` pack cards into CSS columns (one, two, three by width), so card heights follow
   their covers. Columns read top to bottom, so on desktop the order runs down
   each column; native `display: grid-lanes` would keep row order but is not in
   Chrome yet (checked in 155). There is no featured lead card.
@@ -467,8 +467,6 @@ scripts — no React/Motion in this project.
 - Render a post in a list with `PostCard.astro`, inside the CSS-columns
   masonry or the homepage's sideways row, rather than hand-rolling another
   layout. The container owns the layout classes (`*:` children utilities).
-  The exception is a project's related posts on `/projects`: a plain title
-  list inside the project card, since one post can sit under several projects.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at
