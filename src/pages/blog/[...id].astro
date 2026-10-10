@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
@@ -85,27 +86,41 @@ const blogPostSchema = {
           Back to all posts
         </a>
 
-        <!-- Tags -->
-        <div class="flex flex-wrap gap-2 mb-4">
-          {post.data.tags.map((tag: string) => (
-            <a href={`/tags/${tag}`} class="tag">
-              {tag}
-            </a>
-          ))}
-        </div>
+        <div class="flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
+          {post.data.cover && (
+            <Image
+              src={post.data.cover}
+              alt=""
+              widths={[360, 720]}
+              sizes="(min-width: 768px) 360px, 100vw"
+              priority
+              class="h-40 w-full object-contain md:order-last md:h-60 md:w-[22.5rem] md:shrink-0"
+            />
+          )}
+          <div class="min-w-0 flex-1">
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              {post.data.tags.map((tag: string) => (
+                <a href={`/tags/${tag}`} class="tag">
+                  {tag}
+                </a>
+              ))}
+            </div>
 
-        <!-- Title -->
-        <h1 class="text-foreground mb-4">{post.data.title}</h1>
+            <!-- Title -->
+            <h1 class="text-foreground mb-4">{post.data.title}</h1>
 
-        <!-- Meta -->
-        <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
-          <time datetime={post.data.pubDate.toISOString()}>
-            {formatDate(post.data.pubDate, { month: 'long' })}
-          </time>
-          <span class="flex items-center gap-2">
-            <ClockIcon class="w-4 h-4" />
-            {minutesRead} min read
-          </span>
+            <!-- Meta -->
+            <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate, { month: 'long' })}
+              </time>
+              <span class="flex items-center gap-2">
+                <ClockIcon class="w-4 h-4" />
+                {minutesRead} min read
+              </span>
+            </div>
+          </div>
         </div>
       </header>
 

@@ -261,6 +261,31 @@ new one-off styles.
 - `.prose-custom` — blog article prose (DM Sans headings, 19px/1.75 body,
   accent-text links, tinted code blocks).
 
+## Illustrations
+
+Every post has a cover illustration, made with the `illustrate-post` skill.
+
+- **Style:** a loose hand-drawn pencil sketch of one metaphor object.
+  Greyscale, every object filled with flat white, terracotta `#c25a34` as the
+  only chromatic accent on one or two small elements, transparent background,
+  3:2 (1536×1024). No people, no text, no logos.
+- **The accent is baked in.** A cover keeps `#c25a34` in both themes, next to
+  the dark theme's `#e07a52`. Covers are content, like a photo, not UI, so the
+  per-theme accent rule does not apply to them. The author compared the two
+  side by side and kept it.
+- **Shown as is in both themes.** The white fills read on the dark background
+  like paper cut-outs; no filter, no backing tile.
+- **Never cropped on site.** Size the box in CSS and use `object-contain`; the
+  transparent margins are invisible. Never give a cover `<Image>` both `width`
+  and `height`: sharp would crop it at build time.
+- **Decorative.** `alt=""` everywhere: the title always sits next to it.
+- **Where:** above the title in post cards (to the right in the featured card),
+  to the right of the homepage Writing lead and inside its link, and to the
+  right of the title in the post header (above it on mobile, height capped).
+- **Social image, the one crop:** the post page renders a 1200×630 JPEG cover
+  crop flattened onto `#f4f2ee`. The skill's normalize step keeps a 14% margin
+  top and bottom so the crop never cuts the drawing.
+
 ## Interaction
 
 Motion is always motivated. There is one intensity, tuned once in the

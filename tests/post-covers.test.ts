@@ -34,3 +34,23 @@ test('every cover is a transparent 1536x1024 master', async () => {
     assert.equal((await sharp(path).stats()).isOpaque, false, `${file}: cover is opaque`);
   }
 });
+
+const surfaces = [
+  'src/components/PostCard.astro',
+  'src/components/home/BlogSection.astro',
+  'src/pages/blog/[...id].astro',
+];
+
+test('every cover surface renders it without a build-time crop', async () => {
+  for (const file of surfaces) {
+    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const tags = source.match(/<Image\b[^>]*\.data\.cover\b[^>]*>/g) ?? [];
+    assert.ok(tags.length > 0, `${file} does not render the cover`);
+    for (const tag of tags) {
+      // With both set and no fit, sharp crops to cover before CSS applies.
+      assert.doesNotMatch(tag, /\sheight=/, `${file}: a cover <Image> must not set height`);
+      assert.match(tag, /\salt=""/, `${file}: covers are decorative, alt=""`);
+      assert.match(tag, /\swidths=/, `${file}: a cover <Image> needs widths and sizes`);
+    }
+  }
+});
