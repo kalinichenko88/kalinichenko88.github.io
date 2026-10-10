@@ -295,8 +295,11 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   Chrome yet (checked in 155). There is no featured lead card.
 - **The homepage Writing section is one sideways row of the same cards**,
   18rem wide with native scroll snap, so about three and a half show and the
-  clipped one says there is more. The row reveals as one block; a card
-  revealed on its own would stay a blank peek at the clipped edge.
+  clipped one says there is more. In the row the cards are equal height: each
+  cover sits in the same 11rem box, the tag chip takes its own line, and the
+  date drops to the bottom, so titles and dates line up across the row. The
+  row reveals as one block; a card revealed on its own would stay a blank peek
+  at the clipped edge.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.

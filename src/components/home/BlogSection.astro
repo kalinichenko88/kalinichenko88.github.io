@@ -31,10 +31,10 @@ const { latestPosts } = Astro.props;
     -->
     <div
       data-reveal="content"
-      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:thin] *:w-72 *:shrink-0 *:snap-start"
+      class="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pt-2 pb-6 [scrollbar-width:thin] *:w-72 *:shrink-0 *:snap-start"
     >
       {latestPosts.map((post) => (
-        <PostCard post={post} heading="h3" reveal={false} />
+        <PostCard post={post} heading="h3" row />
       ))}
     </div>
   </div>
