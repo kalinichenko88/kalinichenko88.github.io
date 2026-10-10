@@ -10,7 +10,6 @@
 // variant-N.light.png and variant-N.dark.png (flattened, for viewing) and
 // sheet.png (every accepted variant on both backgrounds). Exits 1 if none
 // passed.
-import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
@@ -64,21 +63,11 @@ export async function normalize(input) {
 
 // Social previews want 1200x630 and no transparency. The whole drawing sits
 // inside a 10% margin on the light page colour, so no platform crop reaches it.
-export async function socialImage(cover) {
-  const width = 1200;
-  const height = 630;
-  const drawing = await sharp(cover)
-    .resize({ width: width * 0.8, height: height * 0.8, fit: 'inside' })
-    .png()
-    .toBuffer({ resolveWithObject: true });
-  return sharp({ create: { width, height, channels: 3, background: LIGHT } })
-    .composite([
-      {
-        input: drawing.data,
-        left: Math.round((width - drawing.info.width) / 2),
-        top: Math.round((height - drawing.info.height) / 2),
-      },
-    ])
+export function socialImage(cover) {
+  return sharp(cover)
+    .flatten({ background: LIGHT })
+    .resize(960, 504, { fit: 'contain', background: LIGHT })
+    .extend({ top: 63, bottom: 63, left: 120, right: 120, background: LIGHT })
     .jpeg({ quality: 85 })
     .toBuffer();
 }
@@ -135,22 +124,13 @@ if (import.meta.main) {
     process.exit(2);
   }
   const accepted = [];
-  const seen = new Map();
   const files = readdirSync(dir)
     .filter((file) => /^variant-\d+\.png$/.test(file))
     .sort();
   for (const file of files) {
     const n = Number(file.slice('variant-'.length, -'.png'.length));
-    const raw = readFileSync(join(dir, file));
-    // Two parallel runs that copied the same output look like two variants.
-    const hash = createHash('sha256').update(raw).digest('hex');
-    if (seen.has(hash)) {
-      console.log(`variant ${n}: rejected, same file as variant ${seen.get(hash)}`);
-      continue;
-    }
-    seen.set(hash, n);
     try {
-      const cover = await normalize(raw);
+      const cover = await normalize(readFileSync(join(dir, file)));
       writeFileSync(join(dir, `variant-${n}.cover.png`), cover);
       writeFileSync(join(dir, `variant-${n}.og.jpg`), await socialImage(cover));
       writeFileSync(join(dir, `variant-${n}.light.png`), await flatten(cover, LIGHT));

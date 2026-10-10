@@ -58,7 +58,7 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
    the fallback.
 6. **Prepare.** `node .claude/skills/illustrate-post/prepare.mjs "$RUN"`. A
    variant rejected for transparency is regenerated once and dropped if it
-   fails again. A duplicate is regenerated.
+   fails again.
 7. **Self-check by eye,** on `variant-N.light.png` and `variant-N.dark.png`:
    every object filled (white or a palette pastel, never a hollow outline),
    colors only from the palette and two or three of them, most of the drawing

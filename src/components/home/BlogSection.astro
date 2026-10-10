@@ -10,6 +10,8 @@ type Props = {
 };
 
 const { latestPosts } = Astro.props;
+const buttonClass =
+  'inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40';
 ---
 
 <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
@@ -29,7 +31,7 @@ const { latestPosts } = Astro.props;
         <div class="hidden gap-2 md:flex">
           <button
             type="button"
-            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40"
+            class={buttonClass}
             data-step="-1"
             aria-label="Scroll to newer posts"
             disabled
@@ -38,7 +40,7 @@ const { latestPosts } = Astro.props;
           </button>
           <button
             type="button"
-            class="inline-flex size-9 items-center justify-center rounded-full border border-foreground-tertiary bg-surface text-foreground transition-colors enabled:hover:border-foreground-secondary enabled:hover:bg-background-subtle disabled:cursor-default disabled:opacity-40"
+            class={buttonClass}
             data-step="1"
             aria-label="Scroll to older posts"
           >
@@ -75,19 +77,18 @@ const { latestPosts } = Astro.props;
   // the listeners follow the element through ClientRouter navigation.
   class PostRowElement extends HTMLElement {
     #row: HTMLElement | null = null;
-    #buttons: HTMLButtonElement[] = [];
     #edges: IntersectionObserver | null = null;
 
     connectedCallback() {
       this.#row = this.querySelector<HTMLElement>('[data-row]');
-      this.#buttons = [...this.querySelectorAll<HTMLButtonElement>('button[data-step]')];
-      this.#buttons.forEach((button) => button.addEventListener('click', this.#scroll));
+      // One delegated listener on the element: it goes away with it.
+      this.addEventListener('click', this.#scroll);
 
       // A button is disabled while the card at its end is fully in the row:
       // nothing is left to scroll that way. Watching the two end cards needs no
       // scroll listener, and it disables both when every card fits. The row
       // opens at its start, so the markup ships "newer" already disabled.
-      const [prev, next] = this.#buttons;
+      const [prev, next] = this.querySelectorAll<HTMLButtonElement>('button[data-step]');
       const first = this.#row?.firstElementChild;
       const last = this.#row?.lastElementChild;
       if (!this.#row || !prev || !next || !first || !last) return;
@@ -105,17 +106,16 @@ const { latestPosts } = Astro.props;
     }
 
     disconnectedCallback() {
-      this.#buttons.forEach((button) => button.removeEventListener('click', this.#scroll));
       this.#edges?.disconnect();
     }
 
     #scroll = (event: Event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button[data-step]');
       const card = this.#row?.firstElementChild as HTMLElement | null;
-      if (!this.#row || !card) return;
-      const step = card.offsetWidth + parseFloat(getComputedStyle(this.#row).columnGap || '0');
-      const direction = Number((event.currentTarget as HTMLButtonElement).dataset.step);
+      if (!button || !this.#row || !card) return;
+      // One card width; mandatory snap carries it over the gap to the next card.
       this.#row.scrollBy({
-        left: direction * step,
+        left: Number(button.dataset.step) * card.offsetWidth,
         behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       });
     };
