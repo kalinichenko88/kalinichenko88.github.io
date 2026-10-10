@@ -309,7 +309,10 @@ Motion coverage is declarative:
 - `data-reveal` opts a major structural block into IntersectionObserver reveal.
   The value (`hero`, `heading`, `card`, `content`) is a label for the reader:
   no selector matches it and every value animates identically. Don't expect
-  changing it to change anything.
+  changing it to change anything. A block scrolled into view reveals once 18%
+  of it shows above the bottom 8% of the viewport, so the motion plays where it
+  is seen; a block already on screen when the page opens reveals at once,
+  however little shows, so a masonry card peeking in is never a blank band.
 - inline `--motion-index` gives sibling blocks a stable sequence. It is the
   only source: a `data-stagger-index` attribute used to set the same value
   from CSS and the two disagreed above index 4.
