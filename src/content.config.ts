@@ -17,7 +17,7 @@ const posts = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.yml', base: './content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './content/projects' }),
   schema: z.object({
     name: z.string(),
     // `slug` is the GitHub repo name; the repo URL is derived from it.

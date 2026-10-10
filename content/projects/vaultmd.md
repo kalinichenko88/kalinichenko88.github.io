@@ -1,3 +1,4 @@
+---
 name: VaultMD
 slug: vaultmd
 order: 1
@@ -6,3 +7,4 @@ tagline: 'Headless Markdown-vault data layer for Bun with note CRUD and a derive
 tech: ['TypeScript', 'Bun', 'SQLite']
 homepage: 'https://vaultmd.kalinichenko.dev/'
 tags: [obsidian]
+---

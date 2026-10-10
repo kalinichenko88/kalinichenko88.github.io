@@ -1,3 +1,4 @@
+---
 name: AI Digest
 slug: ai-digest
 order: 3
@@ -6,3 +7,4 @@ tagline: 'Personalized Markdown tech digest that collects, deduplicates, and sum
 tech: ['Claude Code', 'MCP', 'Markdown']
 stars: 1
 tags: [claude-code, ai]
+---

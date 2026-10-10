@@ -1,3 +1,4 @@
+---
 name: Telegram Agent Kit
 slug: telegram-agent-kit
 order: 2
@@ -5,3 +6,4 @@ featured: true
 tagline: 'Runtime-agnostic ESM toolkit with a zero-dependency core, Markdown-to-HTML rendering, and live draft streaming for Telegram agents.'
 tech: ['TypeScript', 'LLM agents', 'Telegram']
 tags: [ai]
+---

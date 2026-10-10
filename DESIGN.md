@@ -314,6 +314,12 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.
+- **Projects have no illustrations.** On the homepage Selected work sits
+  right above the Writing row, so a drawing reads as "a post"; covers on
+  project cards would blur that and make two illustrated blocks in a row. Most
+  projects are headless libraries with no idea to draw, and a project's page
+  already shows its related posts' covers. A real screenshot of a project
+  with a UI may go in its page's body, never on the card.
 
 ## Interaction
 
@@ -436,7 +442,9 @@ moves, and nothing else can tell it.
 
   - Sections that should let the field through use `bg-background-subtle/85`
     rather than the flat token (the Writing section, the About page's Expertise
-    band). New subtle sections should follow suit.
+    band, a project's body on `/projects/<slug>`). New subtle sections should
+    follow suit. Prose on a band adds `.prose-on-subtle`: the inline-code chip
+    is `bg-subtle` and would vanish into the band, so it steps up to `bg-muted`.
   - The footer keeps `bg-background` so the field stops there and the page
     closes on a plain band.
   - Cards stay opaque: they are meant to read as surfaces sitting on top of the

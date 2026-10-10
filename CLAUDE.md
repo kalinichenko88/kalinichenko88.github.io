@@ -23,13 +23,13 @@ A Husky pre-commit hook runs lint-staged (`eslint --fix` + `prettier --write`) o
 
 ## Environment Setup
 
-No environment variables are required. Besides font fetching, the build makes one GitHub API call per project for its star count (see below). `astro dev` skips it and shows the YAML counts, since dev renders `/` on every request. The call is unauthenticated unless `GITHUB_TOKEN` is set; CI sets the workflow's built-in one for the higher rate limit, and no personal token is ever needed. A stale `GITHUB_TOKEN` in your shell makes GitHub answer 401, so the counts fall back to YAML with a warning.
+No environment variables are required. Besides font fetching, the build makes one GitHub API call per project for its star count (see below). `astro dev` skips it and shows the frontmatter counts, since dev renders `/` on every request. The call is unauthenticated unless `GITHUB_TOKEN` is set; CI sets the workflow's built-in one for the higher rate limit, and no personal token is ever needed. A stale `GITHUB_TOKEN` in your shell makes GitHub answer 401, so the counts fall back to the frontmatter with a warning.
 
 ## Architecture
 
 This is an Astro 7 personal portfolio site with:
 
-- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (YAML). Project cards are fully described by their YAML: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage`, a fallback `stars` and post `tags`. Every page that shows projects (the homepage's featured cards, `/projects` and `/projects/<slug>`) loads them through `getProjects()` in `src/lib/projects.ts`, which reads each repo's live star count at build time (`src/lib/github-stars.ts`, plain `fetch`, no dependency, asked once per repo per build) and falls back to the YAML `stars` on any failure, so a GitHub rate limit or outage never fails the build. The deploy workflow also runs weekly on a `schedule:` so counts refresh between pushes.
+- **Content Collections** (`src/content.config.ts`): Two collections - `posts` (markdown blog) and `projects` (Markdown: the card's fields in the frontmatter, an optional body for the project's page). Project cards are fully described by their frontmatter: `slug` doubles as the GitHub repo name (the repo URL is derived from it), with optional `homepage`, a fallback `stars` and post `tags`. Every page that shows projects (the homepage's featured cards, `/projects` and `/projects/<slug>`) loads them through `getProjects()` in `src/lib/projects.ts`, which reads each repo's live star count at build time (`src/lib/github-stars.ts`, plain `fetch`, no dependency, asked once per repo per build) and falls back to the frontmatter `stars` on any failure, so a GitHub rate limit or outage never fails the build. The deploy workflow also runs weekly on a `schedule:` so counts refresh between pushes.
 - **Theme System** (`src/config/themes.ts`, `src/styles/global.css`): Two themes (cloud light, cloud-dark), selectable as Light, Dark, or Auto (follows system preference), controlled via `data-theme` attribute on `<html>`. Theme CSS uses CSS custom properties with Tailwind 4's `@theme` directive for integration
 - **Layout** (`src/components/Layout.astro`): Single layout with theme initialization script (inline to prevent flash), Header, Footer, and slot for content
 - **Global Styles** (`src/styles/global.css`): Design tokens, theme definitions, Tailwind extensions, and utility classes (`.card`, `.btn-primary`, `.prose-custom`, etc.)
@@ -37,7 +37,7 @@ This is an Astro 7 personal portfolio site with:
 ## Content Structure
 
 - `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`, `cover` (see Post covers)
-- `content/projects/*.yml` - Projects with: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins), optional `tags[]` (from the post-tag vocabulary; the project's page `/projects/<slug>` lists every post sharing one as its related posts, and shows no related section when none does). Project cards render through `src/components/ProjectCard.astro` on the homepage and `/projects`, and link to the project's page, which carries the website and repo links
+- `content/projects/*.{md,mdx}` - Projects, frontmatter: `name`, `slug` (GitHub repo name), `order`, `tagline` (required), `featured`, `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins), optional `tags[]` (from the post-tag vocabulary; the project's page `/projects/<slug>` lists every post sharing one as its related posts, and shows no related section when none does). Project cards render through `src/components/ProjectCard.astro` on the homepage and `/projects`, and link to the project's page, which carries the website and repo links. The body under the frontmatter is optional: it renders on `/projects/<slug>` as prose, like a post, in a translucent subtle band between the header and the related posts, and a project without one shows no band. Use it to say in plain words what the project is for; code blocks, images (same relative `src/assets/images/` path as in posts) and, in an `.mdx` file, `<YouTube>` all work
 
 ### Tags
 
@@ -57,6 +57,10 @@ Put them in `src/assets/images/` and reference them with a relative path from th
 Every post has a cover illustration: `cover: ../../src/assets/images/covers/<post-id>.png` in its frontmatter. Make one with the `illustrate-post` project skill (`.claude/skills/illustrate-post/`), which generates three variants through Codex and lets the author pick; never hand-edit a cover file. The schema keeps `cover` optional so a draft renders, and `tests/post-covers.test.ts` requires exactly one cover per post and checks every cover went through the skill's `prepare.mjs` (palette-compressed, transparent, trimmed to its drawing, named after the post, with its social image next to it). How covers are shown is in the Illustrations section of [`DESIGN.md`](./DESIGN.md). Each cover has a 1200×630 `<post-id>.og.jpg` beside it, written by the skill; the post page picks it up by name for `og:image`, `twitter:image` and JSON-LD `image`, passing it through `Layout` to `Head` as `image`; pages without one keep the author photo.
 
 ## Components
+
+### YouTube (`src/components/YouTube.astro`)
+
+A YouTube embed for `.mdx` content: `<YouTube id="<v= part of the URL>" title="What the video shows" />` (both required; `title` names the player for screen readers). It loads from `youtube-nocookie.com` lazily, at 16:9, capped at 820px and centred like a post image.
 
 ### VideoPlayer (`src/components/VideoPlayer.astro`)
 
@@ -99,7 +103,7 @@ Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` 
 
 ## Section Backgrounds
 
-Homepage sections no longer strictly alternate. Only the Writing section carries the subtle background, and it is translucent (`bg-background-subtle/85`) so the pixel field shows through; the others use the default background. The same applies to the About page's Expertise band. Any new subtle section should use `/85` too, or it will punch a rectangular hole in the field. When adding or reordering sections, don't assume alternation — check each section's intent instead. The Footer keeps an opaque `bg-background` on purpose: it stops the pixel field so the page closes on a plain band. The Header is `bg-background/80` with a blur, so the field shows through it blurred.
+Homepage sections no longer strictly alternate. Only the Writing section carries the subtle background, and it is translucent (`bg-background-subtle/85`) so the pixel field shows through; the others use the default background. The same applies to the About page's Expertise band and to a project's body on `/projects/<slug>`. Any new subtle section should use `/85` too, or it will punch a rectangular hole in the field. When adding or reordering sections, don't assume alternation — check each section's intent instead. The Footer keeps an opaque `bg-background` on purpose: it stops the pixel field so the page closes on a plain band. The Header is `bg-background/80` with a blur, so the field shows through it blurred.
 
 Current order: Hero(default) → Selected work/Projects(default) → Writing(subtle, translucent) → Contact(default) → Footer(bg-background).
 

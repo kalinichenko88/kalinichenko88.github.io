@@ -421,6 +421,12 @@
     color: var(--color-text);
   }
 
+  /* On a subtle band (a project's body) the bg-subtle chip matches the band and
+     disappears; take the next step up instead. */
+  .prose-on-subtle code {
+    background-color: var(--color-bg-muted);
+  }
+
   .prose-custom pre {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);

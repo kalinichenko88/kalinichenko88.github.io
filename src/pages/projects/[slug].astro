@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
@@ -22,10 +22,16 @@ export async function getStaticPaths() {
 }
 
 const { project, related } = Astro.props;
+// The text under the frontmatter. Optional: a project without one shows no block.
+const { Content } = await render(project.entry);
+const hasBody = Boolean(project.entry.body?.trim());
+// With no body the header and the related posts are two default sections side
+// by side, so a divider separates them and its own margins make the gap.
+const dividerNext = !hasBody && related.length > 0;
 ---
 
 <Layout title={project.name} description={project.tagline}>
-  <section class="py-14 md:py-20">
+  <section class:list={['pt-14 md:pt-20', !dividerNext && 'pb-14 md:pb-20']}>
     <div class="container">
       <div data-reveal="heading">
         <a
@@ -66,25 +72,37 @@ const { project, related } = Astro.props;
           )}
         </div>
       </div>
-
-      {related.length > 0 && (
-        <>
-          <hr class="divider" data-reveal />
-          <div class="flex flex-wrap items-center gap-3 mb-8" data-reveal="heading">
-            <h2 class="text-foreground mr-1">Related posts</h2>
-            {project.tags.map((tag) => (
-              <a href={`/tags/${tag}`} class="tag">
-                {tag}
-              </a>
-            ))}
-          </div>
-          <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
-            {related.map((post, index) => (
-              <PostCard post={post} heading="h3" motionIndex={index + 1} />
-            ))}
-          </div>
-        </>
-      )}
     </div>
   </section>
+
+  {hasBody && (
+    <section class="py-14 md:py-20 bg-background-subtle/85">
+      <div class="container">
+        <div class="prose prose-custom prose-on-subtle max-w-none">
+          <Content />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class:list={['pb-14 md:pb-20', !dividerNext && 'pt-14 md:pt-20']}>
+      <div class="container">
+        {dividerNext && <hr class="divider" data-reveal />}
+        <div class="flex flex-wrap items-center gap-3 mb-8" data-reveal="heading">
+          <h2 class="text-foreground mr-1">Related posts</h2>
+          {project.tags.map((tag) => (
+            <a href={`/tags/${tag}`} class="tag">
+              {tag}
+            </a>
+          ))}
+        </div>
+        <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
+          {related.map((post, index) => (
+            <PostCard post={post} heading="h3" motionIndex={index + 1} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </Layout>

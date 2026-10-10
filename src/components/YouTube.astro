@@ -1,0 +1,23 @@
+---
+type Props = {
+  /** The video id: the `v=` part of a youtube.com/watch URL. */
+  id: string;
+  /** Names the player for screen readers. */
+  title: string;
+};
+
+const { id, title } = Astro.props;
+---
+
+<!-- Capped and centred like a post image (`.prose-custom p > img`), so a video
+     reads as a figure in the text, not a banner. youtube-nocookie sets no
+     cookies until the reader presses play. -->
+<iframe
+  src={`https://www.youtube-nocookie.com/embed/${id}`}
+  title={title}
+  loading="lazy"
+  allow="encrypted-media; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+  class="mx-auto my-8 block aspect-video w-full max-w-[820px] rounded-lg border border-line"
+></iframe>

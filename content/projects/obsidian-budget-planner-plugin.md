@@ -1,3 +1,4 @@
+---
 name: Obsidian Budget Planner Plugin
 slug: obsidian-budget-planner-plugin
 order: 4
@@ -6,3 +7,4 @@ tagline: 'Minimalist budget planning for Obsidian, managed directly inside markd
 tech: ['Obsidian', 'TypeScript', 'Markdown']
 stars: 11
 tags: [obsidian, personal-finance]
+---
