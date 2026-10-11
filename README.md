@@ -10,7 +10,7 @@ Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 - **Styling** — Tailwind CSS 4 via Vite plugin + Typography plugin
 - **Themes** — Light, Dark (+ Auto based on system preference)
 - **Content** — Astro Content Collections (Markdown blog posts and projects)
-- **Projects** — Markdown content collection listed on `/projects`, each with a page of its own (`/projects/<slug>`) that shows the file's optional body and lists the posts sharing its tags; star counts are read from GitHub at build time, with the frontmatter value as fallback
+- **Projects** — MDX content collection shown in a sideways row on the homepage and listed on `/projects`, each with a page of its own (`/projects/<slug>`) that shows the file's optional body and lists the posts sharing its tags; star counts are read from GitHub at build time, with the frontmatter value as fallback
 - **Comments** — Giscus (GitHub Discussions)
 - **Fonts** — DM Sans, JetBrains Mono (via Astro's built-in font optimization)
 - **Linting** — ESLint + Prettier with Husky pre-commit hooks
@@ -56,7 +56,7 @@ npm run verify     # everything CI runs: lint, check, format:check, test, build
 ```
 ├── content/
 │   ├── posts/          # Markdown/MDX blog posts
-│   └── projects/       # Project definitions (Markdown)
+│   └── projects/       # Project definitions and page bodies (MDX)
 ├── src/
 │   ├── assets/         # Icons and post images (optimized by Astro)
 │   ├── components/     # Astro components
@@ -65,7 +65,7 @@ npm run verify     # everything CI runs: lint, check, format:check, test, build
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
 │   ├── lib/            # Motion controller and small helpers
-│   ├── pages/          # Routes (index, blog, tags, about, RSS, 404)
+│   ├── pages/          # Routes (index, blog, tags, projects, about, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
 ├── tests/              # node:test suite
 └── public/             # Static assets
