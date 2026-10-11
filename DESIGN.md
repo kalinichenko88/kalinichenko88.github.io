@@ -209,7 +209,7 @@ for AA; light primary buttons use white on `--color-accent-text`.
 Two container tracks, applied by responsibility:
 
 - `.container` — wide track, `--container-wide` ~1100px. The default. Header,
-  footer, the homepage Selected-work grid, the blog index and tag pages
+  footer, the homepage Selected-work and Writing rows, the blog index and tag pages
   (`/blog`, `/tags`, `/tags/<tag>`), `/projects` and `/projects/<slug>`, the blog
   post article, and any full-width block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
@@ -311,6 +311,9 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   so at the start only → works, at the end only ←, and neither when every card
   fits; an IntersectionObserver on the two end cards drives it, not a scroll
   listener. Keyboard focus on a card scrolls the row to it.
+- **Selected work above it is the same row** (`CardRow.astro`), holding every
+  project card in `order`. The cards are equal height too, with the tech chips
+  and stars at the bottom, and skip their own reveal and scroll depth.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.

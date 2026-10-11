@@ -5,28 +5,40 @@ type Props = {
   project: Project;
   /** Title level: h2 on /projects, h3 inside the homepage section. */
   heading?: 'h2' | 'h3';
+  /**
+   * The card sits in the homepage's sideways row (CardRow): its tech and stars
+   * drop to the bottom so they line up across the row, and it skips its own
+   * reveal and scroll depth, because the row reveals as one block and a card
+   * clipped by the row would stay a blank peek at the edge.
+   */
+  row?: boolean;
   /** Stable sequence position for profile-based entry motion. */
   motionIndex?: number;
 };
 
-const { project, heading: Heading = 'h2', motionIndex = 0 } = Astro.props;
+const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
 
 // The depth offset needs an element of its own: the card's `translate` is the
-// reveal's, and one property cannot carry two motion sources.
+// reveal's, and one property cannot carry two motion sources. The wrapper has
+// no height of its own: grid and the row both stretch it, and an explicit
+// `h-full` would stop the row's flex stretch and leave the cards uneven.
 ---
 
-<div class="h-full" data-scroll-depth>
+<div data-scroll-depth={row ? undefined : ''}>
   <article
     class="card card-hover group h-full"
-    data-reveal="card"
-    style={`--motion-index: ${motionIndex}`}
+    data-reveal={row ? undefined : 'card'}
+    style={row ? undefined : `--motion-index: ${motionIndex}`}
   >
-    <a href={`/projects/${project.slug}`} class="block p-6">
+    <a
+      href={`/projects/${project.slug}`}
+      class:list={['p-6', row ? 'flex h-full flex-col' : 'block']}
+    >
       <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
         {project.name}
       </Heading>
       <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-      <div class="flex flex-wrap gap-2 mb-4">
+      <div class:list={['flex flex-wrap gap-2 mb-4', row && 'mt-auto']}>
         {project.tech.map((t) => (
           <span class="tag">{t}</span>
         ))}

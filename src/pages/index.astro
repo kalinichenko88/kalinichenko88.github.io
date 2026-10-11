@@ -32,14 +32,13 @@ const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 8);
 
-// The full list lives on /projects; the homepage shows the featured ones.
-const featured = (await getProjects()).filter((project) => project.featured);
+const projects = await getProjects();
 ---
 
 <Layout>
   <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
   <HeroSection />
-  <ProjectsSection projects={featured} />
+  <ProjectsSection projects={projects} />
   {allPosts.length > 0 && <BlogSection latestPosts={latestPosts} />}
   <ContactSection mailProfileLink={MAIL_PROFILE_LINK} linkedinProfileLink={LINKEDIN_PROFILE_LINK} />
 </Layout>

@@ -23,7 +23,6 @@ const projects = defineCollection({
     // `slug` is the GitHub repo name; the repo URL is derived from it.
     slug: z.string(),
     order: z.number(),
-    featured: z.boolean().default(false),
     // Required: with the GitHub description gone, this is the only card copy.
     tagline: z.string(),
     tech: z.array(z.string()).default([]),
