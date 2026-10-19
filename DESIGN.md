@@ -263,6 +263,9 @@ new one-off styles.
 - `.nav-link` — header nav item with an animated underline indicator.
 - `.prose-custom` — blog article prose (DM Sans headings, 19px/1.75 body,
   accent-text links, tinted code blocks).
+- `.reading-veil` — the translucent, feathered veil behind a post's table of
+  contents and text (see Interaction). Its parent needs `overflow-x-clip`, since
+  the veil reaches past the container.
 
 ## Illustrations
 
@@ -445,6 +448,12 @@ moves, and nothing else can tell it.
     closes on a plain band.
   - Cards stay opaque: they are meant to read as surfaces sitting on top of the
     field.
+  - A post's table of contents and text sit on `.reading-veil`: the page colour
+    at 80% behind the words, its edge fading over 96px (32px on a phone) into
+    the open field. The dots stay faintly visible under the text, so its tone is
+    even with no panel outline, and they are at full strength around it. A flat
+    fill there read as a grey slab, and a blur turned the dots into haze; both
+    were tried. The post header with its cover stays on the open field.
   - Post covers are transparent: their empty parts are bare background, so the
     lattice and the glow show through them on the page and the Writing band.
     That is intended; a cover is not text and does not drop the glow.
