@@ -484,7 +484,6 @@
      section around it needs overflow-x-clip (tests/reading-veil.test.ts). */
   .reading-veil {
     position: relative;
-    isolation: isolate;
     --veil-x: var(--space-6);
     --veil-y: 2rem;
     --veil-feather: 2rem;
@@ -505,21 +504,10 @@
     z-index: -1;
     pointer-events: none;
     background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    --veil-fade:
+      transparent, #000 var(--veil-feather), #000 calc(100% - var(--veil-feather)), transparent;
     mask-image:
-      linear-gradient(
-        to right,
-        transparent,
-        #000 var(--veil-feather),
-        #000 calc(100% - var(--veil-feather)),
-        transparent
-      ),
-      linear-gradient(
-        to bottom,
-        transparent,
-        #000 var(--veil-feather),
-        #000 calc(100% - var(--veil-feather)),
-        transparent
-      );
+      linear-gradient(to right, var(--veil-fade)), linear-gradient(to bottom, var(--veil-fade));
     mask-composite: intersect;
   }
 
