@@ -140,14 +140,16 @@ const blogPostSchema = {
         </div>
       </header>
 
-      {tocHeadings.length > 0 && (
-        <div class="mb-10">
-          <TableOfContents headings={headings} />
-        </div>
-      )}
+      <div class="reading-veil">
+        {tocHeadings.length > 0 && (
+          <div class="mb-10">
+            <TableOfContents headings={headings} />
+          </div>
+        )}
 
-      <div class="prose prose-custom max-w-none">
-        <Content />
+        <div class="prose prose-custom max-w-none">
+          <Content />
+        </div>
       </div>
 
       <!-- Comments -->

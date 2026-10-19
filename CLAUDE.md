@@ -101,6 +101,8 @@ Auto-generated from markdown headings (h2/h3) via Astro's `render()` `headings` 
 
 Homepage sections no longer strictly alternate. Only the Writing section carries the subtle background, and it is translucent (`bg-background-subtle/85`) so the pixel field shows through; the others use the default background. The same applies to the About page's Expertise band. Any new subtle section should use `/85` too, or it will punch a rectangular hole in the field. When adding or reordering sections, don't assume alternation — check each section's intent instead. The Footer keeps an opaque `bg-background` on purpose: it stops the pixel field so the page closes on a plain band. The Header is `bg-background/80` with a blur, so the field shows through it blurred.
 
+Running text on the open field sits on `.reading-veil` (`global.css`): the page colour at 80% with an edge that fades into the open field, so the dots show faintly under the words and at full strength around them. Put the class on the block that holds the text, and add the file to the list in `tests/reading-veil.test.ts`, the one record of where the veil is used. Cards, the `/85` bands, the post header with its cover and a heading with only a count or chips under it (`/tags`, `/tags/<tag>`) take no veil. The veil reaches past the container, so `<main>` in `Layout.astro` carries `overflow-x-clip`; the test checks that too.
+
 Current order: Hero(default) → Selected work/Projects(default) → Writing(subtle, translucent) → Contact(default) → Footer(bg-background).
 
 ## Containers & Fonts

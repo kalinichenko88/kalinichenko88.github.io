@@ -476,6 +476,43 @@
     margin-inline: auto;
   }
 
+  /* Running text on the open field sits on a veil of the page colour: the
+     pixel field still shows under the words, faintly, so their tone is even,
+     and at full strength around them. The edge fades over --veil-feather into
+     the open field, so there is no panel outline. Translucent, so PixelSpotlight
+     still drops the glow over the text. 80% and 96px were picked by eye. It
+     reaches past the viewport on a narrow window: <main> clips that. Its colour
+     follows the body's theme fade, or a theme switch shows it as a slab. */
+  .reading-veil {
+    position: relative;
+    --veil-x: var(--space-6);
+    --veil-y: 2rem;
+    --veil-feather: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .reading-veil {
+      --veil-x: 4.5rem;
+      --veil-y: 3.5rem;
+      --veil-feather: 6rem;
+    }
+  }
+
+  .reading-veil::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--veil-y)) calc(-1 * var(--veil-x));
+    z-index: -1;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    transition: background-color var(--transition-slow);
+    --veil-fade:
+      transparent, #000 var(--veil-feather), #000 calc(100% - var(--veil-feather)), transparent;
+    mask-image:
+      linear-gradient(to right, var(--veil-fade)), linear-gradient(to bottom, var(--veil-fade));
+    mask-composite: intersect;
+  }
+
   .prose-custom hr {
     border: none;
     border-top: 1px solid var(--color-border);
