@@ -21,13 +21,11 @@ type FakeNode = { backgroundColor: string; parentElement: FakeNode | null };
 // An element and its ancestors, innermost first and ending at <body>, as the
 // computed backgroundColor of each, recorded in Chrome on the built site.
 function chain(...fills: string[]): Element {
-  const body: FakeNode = { backgroundColor: fills.at(-1)!, parentElement: null };
-  let node = body;
-  for (const backgroundColor of fills.slice(0, -1).reverse()) {
-    node = { backgroundColor, parentElement: node };
-  }
+  const nodes: FakeNode[] = fills.map((bg) => ({ backgroundColor: bg, parentElement: null }));
+  nodes.forEach((node, i) => (node.parentElement = nodes[i + 1] ?? null));
+  const body = nodes.at(-1);
   Object.assign(globalThis, { document: { body }, getComputedStyle: (n: FakeNode) => n });
-  return node as unknown as Element;
+  return nodes[0] as unknown as Element;
 }
 
 const NONE = 'rgba(0, 0, 0, 0)';
