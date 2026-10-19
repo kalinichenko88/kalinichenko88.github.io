@@ -13,22 +13,25 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.
   title="Blog"
   description="AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way."
 >
-  <section class="py-14 md:py-20">
+  <section class="py-14 md:py-20 overflow-x-clip">
     <div class="container">
-      <div class="flex items-center gap-3 mb-3" data-reveal="heading">
-        <h1 class="text-foreground">Writing</h1>
-        <a
-          href="/rss.xml"
-          class="p-2 text-foreground-tertiary hover:text-accent transition-colors"
-          aria-label="RSS Feed"
-          title="Subscribe via RSS"
-        >
-          <RssIcon class="w-5 h-5" />
-        </a>
+      <div class="reading-veil max-w-prose">
+        <div class="flex items-center gap-3 mb-3" data-reveal="heading">
+          <h1 class="text-foreground">Writing</h1>
+          <a
+            href="/rss.xml"
+            class="p-2 text-foreground-tertiary hover:text-accent transition-colors"
+            aria-label="RSS Feed"
+            title="Subscribe via RSS"
+          >
+            <RssIcon class="w-5 h-5" />
+          </a>
+        </div>
+        <p class="text-foreground-secondary mb-10" data-reveal="content">
+          AI experiments, dev tools, frontend architecture, and things I'm figuring out along the
+          way.
+        </p>
       </div>
-      <p class="text-foreground-secondary mb-10 max-w-prose" data-reveal="content">
-        AI experiments, dev tools, frontend architecture, and things I'm figuring out along the way.
-      </p>
 
       {posts.length > 0 ? (
         <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">

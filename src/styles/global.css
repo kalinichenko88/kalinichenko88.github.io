@@ -476,11 +476,12 @@
     margin-inline: auto;
   }
 
-  /* The post body sits on a veil of the page colour: the pixel field still
-     shows under the words, faintly, so their tone is even, and at full strength
-     around them. The edge fades over --veil-feather into the open field, so
-     there is no panel outline. Translucent, so PixelSpotlight still drops the
-     glow over the text. 80% and 96px were picked by eye in both themes. */
+  /* Running text on the open field sits on a veil of the page colour: the
+     pixel field still shows under the words, faintly, so their tone is even,
+     and at full strength around them. The edge fades over --veil-feather into
+     the open field, so there is no panel outline. Translucent, so PixelSpotlight
+     still drops the glow over the text. 80% and 96px were picked by eye. The
+     section around it needs overflow-x-clip (tests/reading-veil.test.ts). */
   .reading-veil {
     position: relative;
     isolation: isolate;
