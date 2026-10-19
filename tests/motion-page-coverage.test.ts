@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const files = [
   'src/pages/about.astro',
+  'src/pages/projects/index.astro',
+  'src/pages/projects/[slug].astro',
   'src/pages/blog/index.astro',
   'src/pages/blog/[...id].astro',
   'src/pages/tags/index.astro',
@@ -18,11 +20,10 @@ test('every content page opts major blocks into motion', async () => {
   }
 });
 
-test('article prose is not annotated for reveal', async () => {
-  const article = await readFile(
-    new URL('../src/pages/blog/[...id].astro', import.meta.url),
-    'utf8'
-  );
-  assert.doesNotMatch(article, /class="prose[^>]+data-reveal/);
-  assert.doesNotMatch(article, /data-reveal[^>]+class="prose/);
+test('rendered prose is not annotated for reveal', async () => {
+  for (const file of ['src/pages/blog/[...id].astro', 'src/pages/projects/[slug].astro']) {
+    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.doesNotMatch(source, /class="prose[^>]+data-reveal/, file);
+    assert.doesNotMatch(source, /data-reveal[^>]+class="prose/, file);
+  }
 });

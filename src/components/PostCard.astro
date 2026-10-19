@@ -23,7 +23,7 @@ const { post, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.pr
 ---
 
 <article
-  class:list={['card card-lift group relative p-6', row && 'flex flex-col']}
+  class:list={['card card-hover group relative p-6', row && 'flex flex-col']}
   data-reveal={row ? undefined : 'card'}
   style={row ? undefined : `--motion-index: ${motionIndex}`}
 >

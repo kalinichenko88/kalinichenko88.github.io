@@ -17,16 +17,18 @@ const posts = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.yml', base: './content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './content/projects' }),
   schema: z.object({
     name: z.string(),
     // `slug` is the GitHub repo name; the repo URL is derived from it.
     slug: z.string(),
     order: z.number(),
-    featured: z.boolean().default(false),
     // Required: with the GitHub description gone, this is the only card copy.
     tagline: z.string(),
     tech: z.array(z.string()).default([]),
+    // Post tags (tests/post-tags.test.ts holds the vocabulary). /projects lists
+    // every post sharing one of them as the project's related posts.
+    tags: z.array(z.string()).default([]),
     // Live site, when the project has one. Falls back to the repo URL.
     homepage: z.url().optional(),
     // Fallback only: the build reads the live count from GitHub and uses this

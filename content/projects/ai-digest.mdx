@@ -1,0 +1,55 @@
+---
+name: AI Digest
+slug: ai-digest
+order: 3
+tagline: 'A morning Markdown digest of RSS feeds and GitHub releases, summarized by Claude.'
+tech: ['Claude Code', 'MCP', 'Markdown']
+stars: 1
+tags: [claude-code, ai]
+---
+
+AI Digest builds a tech news digest every morning. It collects fresh posts from RSS feeds and GitHub releases, drops anything the last few digests already covered, and has Claude sum up the rest in a single Markdown file, in the language you choose.
+
+The digest opens with the few stories of the day you should not miss, then groups the rest: AI, frontend, developer tools and releases. One more section is personal: you describe your stack and projects in a `CLAUDE.md` file, and the digest picks out the news that touches them, with a note on why.
+
+## Sources are a plain list
+
+```yaml
+rss:
+  - name: hackernews
+    url: https://hnrss.org/frontpage?points=100
+    limit: 30
+  - name: simonwillison-blog
+    url: https://simonwillison.net/atom/everything/
+    limit: 15
+
+github_releases:
+  repos:
+    - anthropics/claude-code
+    - vitejs/vite
+```
+
+You can edit `config/sources.yml` by hand, or run `/add-source` in Claude Code and let it add one for you.
+
+## Get started
+
+You need Docker and the Claude Code CLI with a Max subscription. Then:
+
+```bash
+curl -sL https://github.com/kalinichenko88/ai-digest/releases/latest/download/install.sh | bash
+```
+
+Where the digest goes is set in `config/delivery.yml`. Point `output_path` at a folder in your Obsidian vault, and the digest shows up there every morning:
+
+```yaml
+language: en
+output_path: ~/digests
+notification: true
+```
+
+AI Digest runs once and exits, so you schedule it yourself, with a macOS Shortcuts automation or a cron line:
+
+```bash
+# Every day at 8:00
+0 8 * * * /path/to/ai-digest/run.sh
+```

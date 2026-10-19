@@ -1,8 +1,17 @@
+const cache = new Map<string, Promise<number>>();
+
 /**
  * Live star count from GitHub, or `fallback` (the YAML value) on any failure,
- * so a rate limit or outage never fails the build.
+ * so a rate limit or outage never fails the build. Asked once per repo per
+ * build, however many pages show the count.
  */
-export async function githubStars(repoUrl: string, fallback: number): Promise<number> {
+export function githubStars(repoUrl: string, fallback: number): Promise<number> {
+  let stars = cache.get(repoUrl);
+  if (!stars) cache.set(repoUrl, (stars = fetchStars(repoUrl, fallback)));
+  return stars;
+}
+
+async function fetchStars(repoUrl: string, fallback: number): Promise<number> {
   const token = process.env.GITHUB_TOKEN;
   try {
     const res = await fetch(
