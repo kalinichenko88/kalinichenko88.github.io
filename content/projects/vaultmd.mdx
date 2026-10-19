@@ -8,11 +8,11 @@ homepage: 'https://vaultmd.kalinichenko.dev/'
 tags: [obsidian]
 ---
 
-A folder of Markdown notes is easy to edit, sync and keep in git, but hard to query from code. Which notes are tagged `project` and still open? What links to this page? Where did a word come up? VaultMD answers those questions for a Bun app, with no Obsidian or any other editor running.
+A folder of Markdown notes is easy to edit, sync and keep in git, but hard to query from code. VaultMD lets a Bun app ask a vault which notes are tagged `project` and still open, what links to a page, or where a word comes up, with no Obsidian or any other editor running.
 
 The files on disk stay the only source of truth. Next to them VaultMD keeps a SQLite index that it can rebuild from the files at any time, so deleting it loses nothing. Every write updates the file and the index together, so the two never disagree.
 
-## A quick look
+## Querying a vault
 
 ```ts
 import { createVault } from 'vaultmd';

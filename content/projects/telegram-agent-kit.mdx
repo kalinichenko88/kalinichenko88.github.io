@@ -7,15 +7,15 @@ tech: ['TypeScript', 'LLM agents', 'Telegram']
 tags: [ai]
 ---
 
-Hooking an AI agent up to a Telegram bot looks like a weekend job. Then the edge cases arrive:
+Hooking an AI agent up to a Telegram bot has a few hard parts:
 
 - Models write Markdown, but Telegram accepts only a small, strict subset of HTML. One unclosed tag and the whole message is rejected.
 - Streaming a reply into a live draft means rendering half-finished Markdown several times a second.
 - When a turn fails, the conversation has to roll back cleanly, or the agent's memory drifts away from what really happened.
 
-Telegram Agent Kit solves these once. Its core has no runtime dependencies and runs on Node 20+, Bun and Deno, and the formatting part in the browser too. It makes no network calls of its own: you give it a few small functions that call the Bot API, and it handles everything around them.
+Telegram Agent Kit handles these cases, so your bot code does not have to. Its core has no runtime dependencies and runs on Node 20+, Bun and Deno, and the formatting part in the browser too. It makes no network calls of its own: you give it a few small functions that call the Bot API, and it handles everything around them.
 
-## Markdown that never breaks a message
+## Markdown to Telegram HTML
 
 `mdToTelegramHtml` turns whatever the model wrote into HTML that Telegram accepts, and it never throws:
 
