@@ -98,14 +98,13 @@ const {
     <Font cssVariable="--font-jetbrains-mono" preload />
   </head>
   <body class="min-h-screen flex flex-col bg-background text-foreground antialiased">
-    <!-- Scroll progress indicator: CSS scroll-driven, decorative (see global.css) -->
-    <div class="scroll-progress" aria-hidden="true"></div>
-
     <PixelSpotlight />
 
     <Header />
 
-    <main class:list={['flex-1', className]}>
+    <!-- overflow-x-clip: .reading-veil reaches past its text, and on a narrow
+         window past the viewport; clip, unlike hidden, adds no scroll box -->
+    <main class:list={['flex-1 overflow-x-clip', className]}>
       <slot />
     </main>
 

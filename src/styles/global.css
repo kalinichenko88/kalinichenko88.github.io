@@ -476,6 +476,43 @@
     margin-inline: auto;
   }
 
+  /* Running text on the open field sits on a veil of the page colour: the
+     pixel field still shows under the words, faintly, so their tone is even,
+     and at full strength around them. The edge fades over --veil-feather into
+     the open field, so there is no panel outline. Translucent, so PixelSpotlight
+     still drops the glow over the text. 80% and 96px were picked by eye. It
+     reaches past the viewport on a narrow window: <main> clips that. Its colour
+     follows the body's theme fade, or a theme switch shows it as a slab. */
+  .reading-veil {
+    position: relative;
+    --veil-x: var(--space-6);
+    --veil-y: 2rem;
+    --veil-feather: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .reading-veil {
+      --veil-x: 4.5rem;
+      --veil-y: 3.5rem;
+      --veil-feather: 6rem;
+    }
+  }
+
+  .reading-veil::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--veil-y)) calc(-1 * var(--veil-x));
+    z-index: -1;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    transition: background-color var(--transition-slow);
+    --veil-fade:
+      transparent, #000 var(--veil-feather), #000 calc(100% - var(--veil-feather)), transparent;
+    mask-image:
+      linear-gradient(to right, var(--veil-fade)), linear-gradient(to bottom, var(--veil-fade));
+    mask-composite: intersect;
+  }
+
   .prose-custom hr {
     border: none;
     border-top: 1px solid var(--color-border);
@@ -624,39 +661,6 @@
   box-shadow: 0 12px 40px rgba(194, 90, 52, 0.15);
 }
 
-/* Scroll progress indicator: driven by the root scroller, no JS.
-   Browsers without scroll-driven animations keep the bar at scaleX(0), so it
-   is simply not shown.
-
-   The @supports guard is load-bearing beyond feature detection: it keeps the
-   minifier from folding `animation-timeline` into the `animation` shorthand,
-   which browsers reject outright (it silently killed the animation). */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--color-accent);
-  z-index: 100;
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-@supports (animation-timeline: scroll()) {
-  .scroll-progress {
-    animation-name: scroll-progress;
-    animation-timing-function: linear;
-    animation-timeline: scroll(root block);
-  }
-}
-
-@keyframes scroll-progress {
-  to {
-    transform: scaleX(1);
-  }
-}
-
 /* ============================================
    Motion
    ============================================ */
@@ -757,7 +761,7 @@
   transition: transform var(--motion-reveal-duration) var(--motion-ease);
 }
 
-/* Longhands only, like .scroll-progress above. The `animation` shorthand lets
+/* Longhands only. The `animation` shorthand lets
    the minifier fold `animation-timeline` into it, which browsers reject: the
    built CSS shipped `animation: linear both motion-scroll-depth view()` and
    the depth effect was dead in production. The @supports guard does not
@@ -801,11 +805,6 @@
     transform: scaleX(1);
     transition: none;
   }
-
-  .scroll-progress {
-    animation: none;
-    transform: scaleX(0);
-  }
 }
 
 /* Reveals clear only when the observer fires, and it never fires for content
@@ -833,8 +832,7 @@
     transform: scaleX(1);
   }
 
-  .pixel-fx,
-  .scroll-progress {
+  .pixel-fx {
     display: none;
   }
 }

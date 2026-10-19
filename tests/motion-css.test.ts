@@ -44,7 +44,6 @@ test('reduced motion overrides every reveal', () => {
   const reducedMotion = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
   assert.match(reducedMotion, /\[data-motion-ready\] \[data-reveal\]/);
   assert.match(reducedMotion, /\.divider::after/);
-  assert.match(reducedMotion, /\.scroll-progress/);
 });
 
 // A card that moves under the cursor jitters: lifted off a pointer resting on
