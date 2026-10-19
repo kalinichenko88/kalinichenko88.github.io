@@ -404,7 +404,7 @@ accepted trade, not a bug to fix by annotating the prose.
 
 The system uses native CSS, IntersectionObserver, and one rAF-throttled pointer
 pipeline. Do not add a third-party animation dependency for it, and keep
-reveal, depth and progress off JavaScript scroll listeners — those are CSS
+reveal and depth off JavaScript scroll listeners — those are CSS
 or observer driven. The one scroll listener that exists is the spotlight's,
 passive and rAF-throttled: what sits under a still cursor changes as the page
 moves, and nothing else can tell it.
