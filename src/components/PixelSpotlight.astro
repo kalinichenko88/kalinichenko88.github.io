@@ -50,6 +50,8 @@
 </style>
 
 <script>
+  import { isOpaque } from '../lib/opaque-color';
+
   // Written to <html>, not to the layer: custom properties inherit, and
   // ClientRouter replaces the layer on every swap while the root survives.
   // The glow sits behind the page, so over a text block it tints the very thing
@@ -92,11 +94,7 @@
   // it. Anything translucent (a /85 section) still lets the field through.
   function onOpaqueFill(el: Element | null): boolean {
     for (let node = el; node && node !== document.body; node = node.parentElement) {
-      const color = getComputedStyle(node).backgroundColor;
-      const alpha = /^rgba\(.*,\s*([\d.]+)\)$/.exec(color)?.[1];
-      if (color && color !== 'transparent' && (alpha === undefined || Number(alpha) >= 1)) {
-        return true;
-      }
+      if (isOpaque(getComputedStyle(node).backgroundColor)) return true;
     }
     return false;
   }
