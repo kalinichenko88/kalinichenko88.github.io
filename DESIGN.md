@@ -264,8 +264,8 @@ new one-off styles.
 - `.prose-custom` — blog article prose (DM Sans headings, 19px/1.75 body,
   accent-text links, tinted code blocks).
 - `.reading-veil` — the translucent, feathered veil behind running text on the
-  open field (see Interaction). Put it on the block that holds the text, and
-  `overflow-x-clip` on its section, since the veil reaches past the container.
+  open field (see Interaction). Put it on the block that holds the text. It
+  reaches past the container; `<main>` clips what passes the viewport.
 
 ## Illustrations
 
@@ -453,9 +453,8 @@ moves, and nothing else can tell it.
     into the open field. The dots stay faintly visible under the text, so its
     tone is even with no panel outline, and they are at full strength around
     it. A flat fill there read as a grey slab, and a blur turned the dots into
-    haze; both were tried. Today that is a post's table of contents and text,
-    the About bio and work history, the homepage intro and contact block, the
-    `/blog` heading and description, and the 404 message. Cards and the `/85`
+    haze; both were tried. Its colour fades with the body on a theme switch.
+    `tests/reading-veil.test.ts` lists where it is used. Cards and the `/85`
     bands already tone what is under them and take no veil; neither does the
     post header, whose transparent cover stays on the open field, nor a heading
     with only a count or chips under it (`/tags`, `/tags/<tag>`).
@@ -488,8 +487,7 @@ scripts — no React/Motion in this project.
 - Reuse the component classes above; extend `global.css` rather than inlining
   bespoke styles.
 - Put running text that sits on the open field (paragraphs, a list a reader
-  reads) on `.reading-veil`, with `overflow-x-clip` on its section.
-  `tests/reading-veil.test.ts` lists the surfaces and checks the clip.
+  reads) on `.reading-veil`, and list the file in `tests/reading-veil.test.ts`.
 - Separate adjacent default-bg sections with `<hr class="divider" data-reveal />`.
   The accent mark draws itself on reveal, so a divider without `data-reveal`
   keeps the hairline and simply never draws the mark.
@@ -529,8 +527,7 @@ scripts — no React/Motion in this project.
    translucent `bg-background-subtle/85` (keep at most one subtle section per
    view).
 6. If it holds running text on the default background, put that text block on
-   `.reading-veil`, give the section `overflow-x-clip`, and add the file to the
-   surface list in `tests/reading-veil.test.ts`.
+   `.reading-veil` and add the file to the list in `tests/reading-veil.test.ts`.
 7. For any interaction, add a `prefers-reduced-motion` guard and keep it to one
    motivated effect. Add `data-reveal` only to a major structural block, and
    leave article paragraphs unannotated.

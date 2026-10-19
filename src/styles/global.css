@@ -480,8 +480,9 @@
      pixel field still shows under the words, faintly, so their tone is even,
      and at full strength around them. The edge fades over --veil-feather into
      the open field, so there is no panel outline. Translucent, so PixelSpotlight
-     still drops the glow over the text. 80% and 96px were picked by eye. The
-     section around it needs overflow-x-clip (tests/reading-veil.test.ts). */
+     still drops the glow over the text. 80% and 96px were picked by eye. It
+     reaches past the viewport on a narrow window: <main> clips that. Its colour
+     follows the body's theme fade, or a theme switch shows it as a slab. */
   .reading-veil {
     position: relative;
     --veil-x: var(--space-6);
@@ -504,6 +505,7 @@
     z-index: -1;
     pointer-events: none;
     background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    transition: background-color var(--transition-slow);
     --veil-fade:
       transparent, #000 var(--veil-feather), #000 calc(100% - var(--veil-feather)), transparent;
     mask-image:
