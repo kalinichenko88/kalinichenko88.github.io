@@ -50,13 +50,12 @@
 </style>
 
 <script>
-  import { onOpaqueFill } from '../lib/opaque-color';
+  import { TEXT, onOpaqueFill } from '../lib/opaque-color';
 
   // Written to <html>, not to the layer: custom properties inherit, and
   // ClientRouter replaces the layer on every swap while the root survives.
   // The glow sits behind the page, so over a text block it tints the very thing
   // being read. Light it only when the cursor is on bare background.
-  const TEXT = 'p, h1, h2, h3, h4, h5, h6, li, a, button, code, pre, blockquote, figure, table';
   // The gap between two paragraphs is their margin, not background. Without
   // this the glow blinks on in every gap while reading down a page. Probing
   // only vertically: a paragraph's side margins are the gutter, and the glow

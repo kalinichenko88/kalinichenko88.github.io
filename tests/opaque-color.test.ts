@@ -16,28 +16,42 @@ test('counts translucent fills as translucent and solid ones as opaque', () => {
   assert.equal(isOpaque('rgb(35, 35, 38)'), true); // a card
 });
 
-type FakeNode = { backgroundColor: string; parentElement: FakeNode | null };
+type FakeNode = {
+  backgroundColor: string;
+  parentElement: FakeNode | null;
+  matches: (selector: string) => boolean;
+};
 
-// An element and its ancestors, innermost first and ending at <body>, as the
-// computed backgroundColor of each, recorded in Chrome on the built site.
-function chain(...fills: string[]): Element {
-  const nodes: FakeNode[] = fills.map((bg) => ({ backgroundColor: bg, parentElement: null }));
-  nodes.forEach((node, i) => (node.parentElement = nodes[i + 1] ?? null));
-  const body = nodes.at(-1);
+// An element and its ancestors, innermost first and ending at <body>, each as
+// `tag` or `tag:backgroundColor` (no colour is no fill), recorded in Chrome on
+// the built site.
+function chain(...nodes: string[]): Element {
+  const fakes: FakeNode[] = nodes.map((node) => {
+    const [tag, backgroundColor = 'rgba(0, 0, 0, 0)'] = node.split(':');
+    return { backgroundColor, parentElement: null, matches: (s) => s.split(', ').includes(tag) };
+  });
+  fakes.forEach((node, i) => (node.parentElement = fakes[i + 1] ?? null));
+  const body = fakes.at(-1);
   Object.assign(globalThis, { document: { body }, getComputedStyle: (n: FakeNode) => n });
-  return nodes[0] as unknown as Element;
+  return fakes[0] as unknown as Element;
 }
 
-const NONE = 'rgba(0, 0, 0, 0)';
+const BODY = 'body:rgb(244, 242, 238)';
 
 test('does not count the fill of inline code as covering its paragraph', () => {
-  // code < p < .prose < .container < article < main < body, on a post
-  const code = chain('rgb(236, 235, 229)', NONE, NONE, NONE, NONE, NONE, 'rgb(244, 242, 238)');
+  // inline code in a post paragraph: code < p < .prose < .container < article < main
+  const code = chain('code:rgb(236, 235, 229)', 'p', 'div', 'div', 'article', 'main', BODY);
+  assert.equal(onOpaqueFill(code), false);
+});
+
+test('does not count a code block as covering the code in it', () => {
+  // the cursor on code text hits `code`, inside the opaque shiki `pre`
+  const code = chain('code', 'pre:rgb(36, 41, 46)', 'div', 'div', 'article', 'main', BODY);
   assert.equal(onOpaqueFill(code), false);
 });
 
 test('counts the fill of a card as covering the link on it', () => {
-  // overlay a < article.card < .columns < .container < section < main < body, on /blog
-  const link = chain(NONE, 'rgb(255, 255, 255)', NONE, NONE, NONE, NONE, 'rgb(244, 242, 238)');
+  // the overlay link on a /blog card: a < article.card < .columns < .container < section < main
+  const link = chain('a', 'article:rgb(255, 255, 255)', 'div', 'div', 'section', 'main', BODY);
   assert.equal(onOpaqueFill(link), true);
 });
