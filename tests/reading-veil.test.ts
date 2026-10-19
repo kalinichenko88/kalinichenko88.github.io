@@ -9,6 +9,8 @@ const surfaces = [
   'src/pages/blog/index.astro',
   'src/pages/about.astro',
   'src/pages/404.astro',
+  'src/pages/projects/index.astro',
+  'src/pages/projects/[slug].astro',
   'src/components/home/HeroSection.astro',
   'src/components/home/ContactSection.astro',
 ];

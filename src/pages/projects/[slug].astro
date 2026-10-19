@@ -33,43 +33,45 @@ const dividerNext = !hasBody && related.length > 0;
 <Layout title={project.name} description={project.tagline}>
   <section class:list={['pt-14 md:pt-20', !dividerNext && 'pb-14 md:pb-20']}>
     <div class="container">
-      <div data-reveal="heading">
-        <a
-          href="/projects"
-          class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeftIcon class="w-4 h-4" />
-          Back to projects
-        </a>
-        <h1 class="text-foreground mb-4">{project.name}</h1>
-        <p class="text-lg text-foreground-secondary max-w-prose">{project.tagline}</p>
-      </div>
-
-      <div data-reveal="content" style="--motion-index: 1">
-        <div class="flex flex-wrap gap-2 mt-6">
-          {project.tech.map((t) => (
-            <span class="tag">{t}</span>
-          ))}
-        </div>
-        <div class="flex flex-wrap items-center gap-3 mt-8">
+      <div class="reading-veil">
+        <div data-reveal="heading">
           <a
-            href={project.homepage ?? project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-primary"
+            href="/projects"
+            class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
           >
-            {project.homepage ? 'Visit website' : 'View on GitHub'}
+            <ArrowLeftIcon class="w-4 h-4" />
+            Back to projects
           </a>
-          {project.homepage && (
-            <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn-secondary">
-              View on GitHub
+          <h1 class="text-foreground mb-4">{project.name}</h1>
+          <p class="text-lg text-foreground-secondary max-w-prose">{project.tagline}</p>
+        </div>
+
+        <div data-reveal="content" style="--motion-index: 1">
+          <div class="flex flex-wrap gap-2 mt-6">
+            {project.tech.map((t) => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+          <div class="flex flex-wrap items-center gap-3 mt-8">
+            <a
+              href={project.homepage ?? project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-primary"
+            >
+              {project.homepage ? 'Visit website' : 'View on GitHub'}
             </a>
-          )}
-          {project.stars > 0 && (
-            <span class="font-mono text-xs text-foreground-tertiary ml-2">
-              {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-            </span>
-          )}
+            {project.homepage && (
+              <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                View on GitHub
+              </a>
+            )}
+            {project.stars > 0 && (
+              <span class="font-mono text-xs text-foreground-tertiary ml-2">
+                {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
