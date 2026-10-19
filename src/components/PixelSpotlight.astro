@@ -50,7 +50,7 @@
 </style>
 
 <script>
-  import { isOpaque } from '../lib/opaque-color';
+  import { onOpaqueFill } from '../lib/opaque-color';
 
   // Written to <html>, not to the layer: custom properties inherit, and
   // ClientRouter replaces the layer on every swap while the root survives.
@@ -86,17 +86,6 @@
       cy >= rect.top - Number.parseFloat(styles.marginTop) &&
       cy <= rect.bottom + Number.parseFloat(styles.marginBottom)
     );
-  }
-
-  // An opaque fill already covers the glow, so text on top of one cannot be
-  // tinted and there is nothing to suppress. Without this, a card's full-bleed
-  // overlay link darkens the glow across the whole card and the gutters around
-  // it. Anything translucent (a /85 section) still lets the field through.
-  function onOpaqueFill(el: Element | null): boolean {
-    for (let node = el; node && node !== document.body; node = node.parentElement) {
-      if (isOpaque(getComputedStyle(node).backgroundColor)) return true;
-    }
-    return false;
   }
 
   function overText(cx: number, cy: number): boolean {
