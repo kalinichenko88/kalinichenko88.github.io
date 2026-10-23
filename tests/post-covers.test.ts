@@ -47,6 +47,13 @@ test('every cover went through prepare.mjs and has its social image', async () =
   }
 });
 
+// Head.astro falls back to it on every page without a post cover.
+test('the site social image is a 1200x630 JPEG', async () => {
+  const path = fileURLToPath(new URL('../src/assets/images/site.og.jpg', import.meta.url));
+  const { format, width, height } = await sharp(path).metadata();
+  assert.deepEqual([format, width, height], ['jpeg', 1200, 630]);
+});
+
 // /blog, /tags and the homepage Writing row all render covers through PostCard.
 const surfaces = ['src/components/PostCard.astro', 'src/pages/blog/[...id].astro'];
 

@@ -86,6 +86,17 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
     frontmatter, after `tags:`. If a `cover:` line exists, replace it; a post
     has exactly one. Then run `npm test`.
 
+## Site image
+
+Pages without a post cover (home, `/about`, `/blog`, `/projects`, `/tags`)
+share `src/assets/images/site.og.jpg` as their link preview. To redo it, run
+the workflow with `site` in place of a post id: the metaphors stand for the
+whole site, and `Asset type:` in the prompt is `website social preview
+illustration`. Save only `cp "$RUN/variant-N.og.jpg"
+src/assets/images/site.og.jpg`, update the `alt` in
+`src/components/Head.astro` to describe the new drawing, and run `npm test`.
+Nothing goes into `covers/`, which holds post covers only.
+
 ## Prompt template
 
 ```text

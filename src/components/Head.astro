@@ -1,8 +1,8 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
-import { AUTHOR_NAME, ROLE } from '../consts';
-import personImage from '../assets/images/me.png';
+import { AUTHOR_NAME } from '../consts';
+import siteImage from '../assets/images/site.og.jpg';
 
 type Props = {
   title: string;
@@ -10,15 +10,15 @@ type Props = {
   type?: 'website' | 'article';
   publishedTime?: string;
   tags?: string[];
-  /** Social image: an absolute URL. Falls back to the author photo. */
+  /** Social image: an absolute URL. Falls back to the site illustration. */
   image?: { src: string; alt: string };
 };
 
 const { title, description, type = 'website', publishedTime, tags, image } = Astro.props;
 
 const socialImage = image ?? {
-  src: new URL(personImage.src, Astro.url).href,
-  alt: `${AUTHOR_NAME} - ${ROLE}`,
+  src: new URL(siteImage.src, Astro.url).href,
+  alt: 'A pencil sketch of an open notebook, a cup of coffee and a keyboard',
 };
 ---
 
