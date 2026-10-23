@@ -9,15 +9,9 @@ export function initPage(): void {
 
   // data-motion-ready is owned by the inline head script in Layout.astro, so
   // the hidden state applies from the first paint instead of after a flash.
+  // Reduced motion needs no branch here: global.css shows every reveal target
+  // at its final state under prefers-reduced-motion.
   const elements = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
-
-  if (
-    matchMedia('(prefers-reduced-motion: reduce)').matches ||
-    !('IntersectionObserver' in window)
-  ) {
-    elements.forEach((element) => element.classList.add('is-revealed'));
-    return;
-  }
 
   observer = new IntersectionObserver(
     (entries) =>
