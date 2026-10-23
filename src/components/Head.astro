@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
-import { AUTHOR_NAME } from '../consts';
+import { AUTHOR_NAME, SITE_NAME } from '../consts';
 import siteImage from '../assets/images/site.og.jpg';
 
 type Props = {
@@ -54,6 +54,7 @@ const socialImage = image ?? {
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_NAME} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
