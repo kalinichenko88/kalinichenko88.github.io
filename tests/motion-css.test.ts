@@ -43,7 +43,10 @@ test('does not add a JavaScript scroll listener', async () => {
 test('reduced motion overrides every reveal', () => {
   const reducedMotion = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
   assert.match(reducedMotion, /\[data-motion-ready\] \[data-reveal\]/);
-  assert.match(reducedMotion, /\.divider::after/);
+  // Scoped like the rules that hide and animate the mark, or those win on
+  // specificity and the divider still scales in.
+  assert.match(reducedMotion, /\[data-motion-ready\] \.divider\[data-reveal\]::after/);
+  assert.match(reducedMotion, /\[data-motion-ready\] \.divider\[data-reveal\]\.is-revealed::after/);
 });
 
 // A card that moves under the cursor jitters: lifted off a pointer resting on
@@ -78,6 +81,19 @@ test('gates the hidden state before first paint and drops it if the bundle dies'
     head,
     /astro:before-swap[\s\S]{0,200}newDocument\.documentElement\.dataset\.motionReady/,
     'gate must be carried across view transitions'
+  );
+});
+
+// The failsafe stands down once the flag is set, so a flag set before
+// initPage() leaves every reveal hidden when initPage() throws.
+test('flags the motion bundle as started only after initPage() runs', async () => {
+  const script = await readFile(
+    new URL('../src/components/MotionController.astro', import.meta.url),
+    'utf8'
+  );
+  assert.ok(
+    script.indexOf('initPage();') < script.indexOf('__motionStarted = true'),
+    'set __motionStarted after initPage()'
   );
 });
 

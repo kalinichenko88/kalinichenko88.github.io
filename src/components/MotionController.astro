@@ -8,8 +8,9 @@
   }
 
   // A module script runs once, also across ClientRouter swaps. The flag tells
-  // the failsafe in Layout.astro that the bundle loaded.
-  window.__motionStarted = true;
+  // the failsafe in Layout.astro that the reveals work. It is set after
+  // initPage(), so a throw there still lets the failsafe show the page.
   initPage();
+  window.__motionStarted = true;
   document.addEventListener('astro:after-swap', initPage);
 </script>
