@@ -36,7 +36,7 @@ This is an Astro 7 personal portfolio site with:
 
 ## Content Structure
 
-- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description`, `pubDate`, `tags[]`, `cover` (see Post covers)
+- `content/posts/*.{md,mdx}` - Blog posts with frontmatter: `title`, `description` (125 characters at most, so a social preview shows all of it; `tests/meta-tags.test.ts` checks it and `SITE_DESCRIPTION`), `pubDate`, `tags[]`, `cover` (see Post covers)
 - `content/projects/*.{md,mdx}` - Projects, frontmatter: `name`, `slug` (GitHub repo name), `order` (also the order in the homepage row), `tagline` (required), `tech[]`, optional `homepage`, optional `stars` (fallback only; the live GitHub count wins), optional `tags[]` (from the post-tag vocabulary; the project's page `/projects/<slug>` lists every post sharing one as its related posts, and shows no related section when none does). Project cards render through `src/components/ProjectCard.astro`, every project on both the homepage (`row`) and `/projects`, and link to the project's page, which carries the website and repo links. The body under the frontmatter is optional: it renders on `/projects/<slug>` as prose, like a post, in a translucent subtle band between the header and the related posts, and a project without one shows no band. Use it to say in plain words what the project is for; code blocks, images (same relative `src/assets/images/` path as in posts) and, in an `.mdx` file, `<YouTube>` all work
 
 ### Tags
