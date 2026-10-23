@@ -49,7 +49,6 @@ const socialImage = image ?? {
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
-<meta name="title" content={title} />
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
@@ -70,12 +69,8 @@ const socialImage = image ?? {
   </>
 )}
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={socialImage.src} />
+<!-- X reads title, description and image from the og:* tags above -->
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@joker_bsg" />
 <meta name="twitter:creator" content="@joker_bsg" />
 

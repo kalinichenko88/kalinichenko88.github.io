@@ -797,7 +797,8 @@
     animation: none;
   }
 
-  [data-motion-ready] .divider::after {
+  [data-motion-ready] .divider[data-reveal]::after,
+  [data-motion-ready] .divider[data-reveal].is-revealed::after {
     transform: scaleX(1);
     transition: none;
   }

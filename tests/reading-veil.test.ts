@@ -26,5 +26,5 @@ test('running text on the open field sits on the reading veil', async () => {
 // viewport; without the clip the page scrolls sideways.
 test('the page clips what the veil pushes past the viewport', async () => {
   const layout = await readFile(new URL('../src/components/Layout.astro', import.meta.url), 'utf8');
-  assert.match(layout, /<main class:list=\{\['[^']*\boverflow-x-clip\b/);
+  assert.match(layout, /<main class="[^"]*\boverflow-x-clip\b/);
 });

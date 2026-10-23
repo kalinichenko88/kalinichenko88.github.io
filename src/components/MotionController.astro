@@ -1,12 +1,16 @@
 <script>
-  import { MotionController } from '../lib/motion-controller';
+  import { initPage } from '../lib/motion-controller';
 
   declare global {
     interface Window {
-      __motionController?: MotionController;
+      __motionStarted?: boolean;
     }
   }
 
-  window.__motionController ??= new MotionController();
-  window.__motionController.start();
+  // A module script runs once, also across ClientRouter swaps. The flag tells
+  // the failsafe in Layout.astro that the reveals work. It is set after
+  // initPage(), so a throw there still lets the failsafe show the page.
+  initPage();
+  window.__motionStarted = true;
+  document.addEventListener('astro:after-swap', initPage);
 </script>
