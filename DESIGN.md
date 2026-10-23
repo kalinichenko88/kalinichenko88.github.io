@@ -248,8 +248,9 @@ separate themselves, so `.divider` is available but currently unused.
 Reusable classes live in `global.css` (`@layer utilities`). Prefer them over
 new one-off styles.
 
-- `.card` / `.card-hover` — surface panel with border; `.card-hover` adds the
-  tinted hover shadow. Neither moves the card.
+- `.card` / `.card-hover` — surface panel with border; `.card-hover` eases in the
+  tinted hover shadow that the per-theme `.card:hover` rules set. Neither
+  moves the card.
 - `.btn-primary` — pill, accent fill, AA-correct text per theme (see Colors).
 - `.btn-secondary` — pill on a surface fill with a `text-tertiary` border;
   hover darkens the fill to `bg-subtle` and strengthens the border to

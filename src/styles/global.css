@@ -648,17 +648,13 @@
   transform: rotate(6deg) scale(1.15);
 }
 
-/* Card glow on hover. It does not move: a card lifted off a pointer resting
-   on its bottom edge loses the hover, drops back and lifts again. */
+/* Eases in the hover glow, which the per-theme `.card:hover` rules set. It
+   does not move: a card lifted off a pointer resting on its bottom edge loses
+   the hover, drops back and lifts again. */
 .card-hover {
   transition:
     box-shadow var(--transition-base),
     border-color var(--transition-base);
-}
-
-[data-theme='cloud'] .card-hover:hover,
-[data-theme='cloud-dark'] .card-hover:hover {
-  box-shadow: 0 12px 40px rgba(194, 90, 52, 0.15);
 }
 
 /* ============================================
