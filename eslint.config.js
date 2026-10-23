@@ -28,21 +28,6 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs'],
-    languageOptions: {
-      sourceType: 'commonjs',
-      globals: {
-        require: 'readonly',
-        module: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-      },
-    },
-    rules: {
-      '@typescript-eslint/no-require-imports': 'off',
-    },
-  },
-  {
-    ignores: ['dist/**', 'node_modules/**', '.astro/**'],
+    ignores: ['dist/**', '.astro/**'],
   },
 ];

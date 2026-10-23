@@ -1,12 +1,15 @@
 <script>
-  import { MotionController } from '../lib/motion-controller';
+  import { initPage } from '../lib/motion-controller';
 
   declare global {
     interface Window {
-      __motionController?: MotionController;
+      __motionStarted?: boolean;
     }
   }
 
-  window.__motionController ??= new MotionController();
-  window.__motionController.start();
+  // A module script runs once, also across ClientRouter swaps. The flag tells
+  // the failsafe in Layout.astro that the bundle loaded.
+  window.__motionStarted = true;
+  initPage();
+  document.addEventListener('astro:after-swap', initPage);
 </script>

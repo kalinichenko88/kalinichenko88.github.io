@@ -1,13 +1,7 @@
 ---
 import EmailIcon from '../../assets/icons/email.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
-
-type Props = {
-  mailProfileLink: string;
-  linkedinProfileLink: string;
-};
-
-const { mailProfileLink, linkedinProfileLink } = Astro.props;
+import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../../consts';
 ---
 
 <section id="contact" class="py-14 md:py-20">
@@ -17,12 +11,12 @@ const { mailProfileLink, linkedinProfileLink } = Astro.props;
       <p class="text-foreground-secondary mb-6">Interested in collaboration? Get in touch.</p>
 
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <a href={`mailto:${mailProfileLink}`} class="btn-primary">
+        <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
           <EmailIcon class="w-4 h-4" />
           Send me an email
         </a>
         <a
-          href={linkedinProfileLink}
+          href={LINKEDIN_PROFILE_LINK}
           target="_blank"
           rel="noopener noreferrer"
           class="btn-secondary"
