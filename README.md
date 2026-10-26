@@ -61,11 +61,11 @@ npm run verify     # everything CI runs: lint, check, format:check, test, build
 │   ├── assets/         # Icons and post images (optimized by Astro)
 │   ├── components/     # Astro components
 │   │   └── home/       # Homepage sections
-│   ├── config/         # Theme, navigation and resume data
+│   ├── config/         # Theme, navigation, contact channels and resume data
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
 │   ├── lib/            # Motion controller and small helpers
-│   ├── pages/          # Routes (index, blog, tags, projects, about, RSS, 404)
+│   ├── pages/          # Routes (index, blog, tags, projects, about, contact, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
 ├── tests/              # node:test suite
 └── public/             # Static assets
