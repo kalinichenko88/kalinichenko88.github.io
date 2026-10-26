@@ -181,6 +181,9 @@ export const IMAGE_PALETTES = {
 
 export type ImageTheme = keyof typeof IMAGE_PALETTES;
 
+/** Every theme the image is rendered in: one route and one card image each. */
+export const IMAGE_THEMES = Object.keys(IMAGE_PALETTES) as ImageTheme[];
+
 // Paths from GitHub's Octicons (MIT), drawn on a 16x16 grid.
 const STATS = [
   {

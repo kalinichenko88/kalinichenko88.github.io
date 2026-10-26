@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 
 import { renderOgImage } from '../../../lib/og-image';
-import { IMAGE_PALETTES, projectImage, type ImageTheme } from '../../../lib/project-image';
+import { IMAGE_THEMES, projectImage, type ImageTheme } from '../../../lib/project-image';
 import { getProjects, type Project } from '../../../lib/projects';
 
 // /projects/<slug>/light.png and /projects/<slug>/dark.png, rendered on every
@@ -10,7 +10,7 @@ import { getProjects, type Project } from '../../../lib/projects';
 // the one that matches the theme.
 export const getStaticPaths = (async () => {
   return (await getProjects()).flatMap((project) => {
-    return Object.keys(IMAGE_PALETTES).map((theme) => {
+    return IMAGE_THEMES.map((theme) => {
       return { params: { slug: project.slug, theme }, props: { project, theme } };
     });
   });

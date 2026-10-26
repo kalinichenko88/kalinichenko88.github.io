@@ -7,6 +7,7 @@ import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
 import {
   IMAGE_PALETTES,
+  IMAGE_THEMES,
   projectImage,
   projectImageSrc,
   projectStats,
@@ -57,10 +58,9 @@ test('the widest numbers row stays inside the safe area', async () => {
   };
   const languages = ['TypeScript', 'Jupyter Notebook', 'A Language Name Far Longer Than Any'];
   for (const language of languages) {
-    for (const [theme, palette] of Object.entries(IMAGE_PALETTES)) {
-      const png = await renderOgImage(
-        projectImage({ ...project, language }, theme as keyof typeof IMAGE_PALETTES)
-      );
+    for (const theme of IMAGE_THEMES) {
+      const palette = IMAGE_PALETTES[theme];
+      const png = await renderOgImage(projectImage({ ...project, language }, theme));
       // Raw pixels: sharp's stats() reads the whole input and ignores extract().
       const { data, info } = await sharp(png)
         .extract({ left: 1080, top: 0, width: 120, height: 616 })
@@ -93,6 +93,8 @@ test('the image URL changes with the image', async () => {
   const [project] = (await projects()).sort((a, b) => a.file.localeCompare(b.file));
   const src = await projectImageSrc(project, 'light');
   assert.match(src, /^\/projects\/[\w-]+\/light\.png\?v=[0-9a-f]{8}$/);
+  // One render per tree, so the page that links an image and the route that
+  // serves it hash the same bytes.
   assert.equal(await projectImageSrc({ ...project }, 'light'), src);
   const changed = await projectImageSrc({ ...project, tagline: `${project.tagline}!` }, 'light');
   assert.notEqual(changed, src);
@@ -108,7 +110,7 @@ test('every project renders a 1200x630 PNG in both themes, with or without GitHu
     assert.ok(project.name && project.slug && project.tagline, `${project.file}: frontmatter`);
     const variants = { full: {}, offline: offlineNumbers(project.stars) };
     for (const [variant, numbers] of Object.entries(variants)) {
-      for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
+      for (const theme of IMAGE_THEMES) {
         const png = await renderOgImage(projectImage({ ...project, ...numbers }, theme));
         const { format, width, height, isPalette } = await sharp(png).metadata();
         const where = `${project.file}: ${variant} numbers, ${theme}`;
@@ -175,7 +177,7 @@ test('the /projects card links each image by its versioned URL', async () => {
     'utf8'
   );
   assert.match(card, /projectImageSrc\(project, theme\)/);
-  assert.doesNotMatch(card, /\.png`/, 'a bare image path in the card');
+  assert.doesNotMatch(card, /\.png['"`]/, 'a bare image path in the card');
 });
 
 // The homepage card and the project page write their star count the way the

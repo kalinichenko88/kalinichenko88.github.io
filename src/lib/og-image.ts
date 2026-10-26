@@ -15,7 +15,11 @@ import sharp from 'sharp';
 export function renderOgImage(element: OgElement): Promise<Buffer> {
   const key = JSON.stringify(element);
   let png = rendered.get(key);
-  if (!png) rendered.set(key, (png = render(element)));
+  if (!png) {
+    rendered.set(key, (png = render(element)));
+    // A failed render is not kept, so the next request (in dev) tries again.
+    png.catch(() => rendered.delete(key));
+  }
   return png;
 }
 
