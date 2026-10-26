@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { SITE_NAME } from '../consts.ts';
 import type { RepoNumbers } from './github-repo';
-import type { OgElement } from './og-image';
+import { renderOgImage, type OgElement } from './og-image.ts';
 
 type ImageProject = RepoNumbers & { name: string; tagline: string; url: string };
 
@@ -81,9 +81,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
         return stat(icon(color['text-tertiary']), label);
       }),
       project.language !== null &&
-        el(
-          'div',
-          { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 1, minWidth: 0 },
+        stat(
           el('div', {
             flexShrink: 0,
             width: 18,
@@ -91,17 +89,8 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
             borderRadius: 9,
             backgroundColor: color.accent,
           }),
-          el(
-            'div',
-            {
-              display: 'block',
-              minWidth: 0,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-            },
-            project.language
-          )
+          project.language,
+          { shrink: true }
         ),
       el(
         'div',
@@ -145,14 +134,18 @@ export function starLabel(stars: number): string | null {
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact' });
 
 /**
- * A short hash of everything the light image draws, for its URL: platforms
- * cache a link preview by its URL, so a new text, number or style needs a new
- * one, and an unchanged image keeps its old one.
+ * The image's path, with a hash of its PNG: browsers and link previews cache an
+ * image by its URL, so any change to the bytes, from a number to a font file or
+ * a library update, needs a new one, and an unchanged image keeps its old one.
  */
-export function projectImageVersion(project: ImageProject): string {
-  const drawn = JSON.stringify(projectImage(project, 'light'));
+export async function projectImageSrc(
+  project: ImageProject & { slug: string },
+  theme: ImageTheme
+): Promise<string> {
+  const png = await renderOgImage(projectImage(project, theme));
+  const version = createHash('sha1').update(png).digest('hex').slice(0, 8);
 
-  return createHash('sha1').update(drawn).digest('hex').slice(0, 8);
+  return `/projects/${project.slug}/${theme}.png?v=${version}`;
 }
 
 /** What the image says after the name, for its alt text. */
@@ -234,12 +227,23 @@ function octicon(...paths: string[]) {
   };
 }
 
-function stat(icon: OgElement, label: string): OgElement {
+/** An icon and its label. With `shrink` the label gives way, cut with an ellipsis. */
+function stat(icon: OgElement, label: string, { shrink = false } = {}): OgElement {
   return el(
     'div',
-    { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, whiteSpace: 'nowrap' },
+    { display: 'flex', alignItems: 'center', gap: 10, flexShrink: shrink ? 1 : 0, minWidth: 0 },
     icon,
-    label
+    el(
+      'div',
+      {
+        display: 'block',
+        minWidth: 0,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+      },
+      label
+    )
   );
 }
 

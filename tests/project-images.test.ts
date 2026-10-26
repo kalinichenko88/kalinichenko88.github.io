@@ -8,7 +8,7 @@ import { renderOgImage } from '../src/lib/og-image.ts';
 import {
   IMAGE_PALETTES,
   projectImage,
-  projectImageVersion,
+  projectImageSrc,
   projectStats,
   starLabel,
 } from '../src/lib/project-image.ts';
@@ -79,18 +79,23 @@ test('the widest numbers row stays inside the safe area', async () => {
 // as nothing, with no error. So the text the image draws must stay inside it.
 test('every project name and tagline is in the image font subset', async () => {
   for (const { file, name, tagline } of await projects()) {
-    assert.match(`${name}${tagline}`, /^[\u0020-\u007e\u00a0-\u00ff\u2000-\u206f]*$/, file);
+    assert.match(
+      `${name}${tagline}`,
+      /^[\u0020-\u007e\u00a0-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d\u2026]*$/,
+      file
+    );
   }
 });
 
-// Platforms cache a preview by its URL, so the URL changes with the image.
-test('the image version changes with what the image draws', async () => {
-  const [project] = await projects();
-  const version = projectImageVersion(project);
-  assert.match(version, /^[0-9a-f]{8}$/);
-  assert.equal(projectImageVersion({ ...project }), version);
-  assert.notEqual(projectImageVersion({ ...project, stars: project.stars + 1 }), version);
-  assert.notEqual(projectImageVersion({ ...project, tagline: `${project.tagline}!` }), version);
+// Browsers and link previews cache an image by its URL, so the URL changes
+// with the image's bytes and stays when they do not.
+test('the image URL changes with the image', async () => {
+  const [project] = (await projects()).sort((a, b) => a.file.localeCompare(b.file));
+  const src = await projectImageSrc(project, 'light');
+  assert.match(src, /^\/projects\/[\w-]+\/light\.png\?v=[0-9a-f]{8}$/);
+  assert.equal(await projectImageSrc({ ...project }, 'light'), src);
+  const changed = await projectImageSrc({ ...project, tagline: `${project.tagline}!` }, 'light');
+  assert.notEqual(changed, src);
 });
 
 // A full set of numbers, and the ones dev and a failed GitHub call give: the YAML stars,
@@ -157,10 +162,7 @@ test('a project page passes its light image to og:image', async () => {
     'utf8'
   );
   assert.match(page, /image=\{/);
-  assert.match(
-    page,
-    /`\/projects\/\$\{project\.slug\}\/light\.png\?v=\$\{projectImageVersion\(project\)\}`/
-  );
+  assert.match(page, /projectImageSrc\(project, 'light'\)/);
 });
 
 // The homepage card and the project page write their star count the way the

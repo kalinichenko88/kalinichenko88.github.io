@@ -1,6 +1,6 @@
 ---
 import type { Project } from '../lib/projects';
-import { projectImageAlt, starLabel } from '../lib/project-image';
+import { projectImageAlt, projectImageSrc, starLabel } from '../lib/project-image';
 
 type Props = {
   project: Project;
@@ -21,6 +21,14 @@ type Props = {
 
 const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
 const starText = starLabel(project.stars);
+// Only the /projects card shows the image, so only it pays for the hash.
+const images = row
+  ? []
+  : await Promise.all(
+      (['light', 'dark'] as const).map(async (theme) => {
+        return { theme, src: await projectImageSrc(project, theme) };
+      })
+    );
 
 // The depth offset needs an element of its own: the card's `translate` is the
 // reveal's, and one property cannot carry two motion sources. The wrapper has
@@ -59,9 +67,9 @@ const starText = starLabel(project.stars);
         <Heading class="sr-only">{project.name}</Heading>
         {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per
               theme; global.css hides the other, and a hidden lazy image never loads. */}
-        {['light', 'dark'].map((theme) => (
+        {images.map(({ theme, src }) => (
           <img
-            src={`/projects/${project.slug}/${theme}.png`}
+            src={src}
             alt={projectImageAlt(project)}
             width="1200"
             height="630"

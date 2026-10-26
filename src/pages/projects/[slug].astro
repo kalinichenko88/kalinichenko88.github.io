@@ -5,7 +5,7 @@ import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import { getProjects } from '../../lib/projects';
-import { projectImageAlt, projectImageVersion, starLabel } from '../../lib/project-image';
+import { projectImageAlt, projectImageSrc, starLabel } from '../../lib/project-image';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).sort(
@@ -33,8 +33,7 @@ const starText = starLabel(project.stars);
 // Rendered by ./[slug]/[theme].png.ts. Only link previews show it: on the page
 // it would repeat the header above.
 const socialImage = {
-  src: new URL(`/projects/${project.slug}/light.png?v=${projectImageVersion(project)}`, Astro.url)
-    .href,
+  src: new URL(await projectImageSrc(project, 'light'), Astro.url).href,
   alt: `${project.name}. ${projectImageAlt(project)}`,
 };
 ---

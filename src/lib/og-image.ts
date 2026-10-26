@@ -37,9 +37,10 @@ let loaded: Promise<Font[]> | undefined;
 // variable font only at its default weight, so every heading would be 400.
 //
 // ponytail: the latin subset only, so a glyph outside it (an arrow, Cyrillic,
-// an emoji) draws as nothing. tests/project-images.test.ts fails on a project
-// name or tagline outside it; load another subset, or pass Satori a
-// loadAdditionalAsset, before one needs it.
+// an emoji) draws as nothing. tests/project-images.test.ts holds the project
+// names and taglines, as the frontmatter writes them, to ASCII, Latin-1 and the
+// usual dashes and quotes; the GitHub language is not checked. Load another
+// subset, or pass Satori a loadAdditionalAsset, before the text needs more.
 function fonts() {
   return (loaded ??= Promise.all([
     font('dm-sans', 'DM Sans', 400),
