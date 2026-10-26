@@ -11,7 +11,8 @@ import sharp from 'sharp';
  */
 export async function renderOgImage(element: OgElement): Promise<Buffer> {
   const svg = await satori(element, { width: 1200, height: 630, fonts: await fonts() });
-  return sharp(Buffer.from(svg)).png().toBuffer();
+  // Flat colours and text: a palette PNG looks the same at under half the size.
+  return sharp(Buffer.from(svg)).png({ palette: true }).toBuffer();
 }
 
 /** React's element shape, which Satori reads, without React. */

@@ -29,7 +29,7 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
 
 <div data-scroll-depth={row ? undefined : ''}>
   <article
-    class:list={['card card-hover group h-full', !row && 'overflow-hidden']}
+    class="card card-hover group h-full"
     data-reveal={row ? undefined : 'card'}
     style={row ? undefined : `--motion-index: ${motionIndex}`}
   >
@@ -51,7 +51,9 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
         )}
       </a>
     ) : (
-      <a href={`/projects/${project.slug}`} class="block">
+      <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">
+        {/* The link, not the card, clips the image to the card's corners: a
+              card that clipped would also cut off the link's focus ring. */}
         {/* The image holds the name, so the heading is for screen readers. */}
         <Heading class="sr-only">{project.name}</Heading>
         {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per

@@ -88,16 +88,16 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
 
 ## Site image
 
-Pages without a post cover (home, `/about`, `/blog`, `/projects`, `/tags`)
-share `src/assets/images/site.og.jpg` as their link preview. A project page
-(`/projects/<slug>`) has its own image, rendered at build time, not by this
-skill. To redo it, run
-the workflow with `site` in place of a post id: the metaphors stand for the
+The pages without an image of their own (home, `/about`, `/blog`, `/projects`,
+`/tags`) share `src/assets/images/site.og.jpg` as their link preview. To redo
+it, run the workflow with `site` in place of a post id: the metaphors stand for the
 whole site, and `Asset type:` in the prompt is `website social preview
 illustration`. Save only `cp "$RUN/variant-N.og.jpg"
 src/assets/images/site.og.jpg`, update the `alt` in
 `src/components/Head.astro` to describe the new drawing, and run `npm test`.
-Nothing goes into `covers/`, which holds post covers only.
+Nothing goes into `covers/`, which holds post covers only. A project page
+(`/projects/<slug>`) has its own image, rendered at build time, not by this
+skill.
 
 ## Prompt template
 

@@ -32,7 +32,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
     el(
       'div',
       { fontFamily: 'JetBrains Mono', fontSize: 26, color: color['text-tertiary'] },
-      project.url.replace('https://github.com/', '').replace('/', ' / ')
+      new URL(project.url).pathname.slice(1).replace('/', ' / ')
     ),
     el(
       'div',
@@ -59,8 +59,9 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       },
       project.tagline
     ),
-    // ponytail: the row does not shrink. With every number at four digits the
-    // site name reaches into the right margin; drop the gap or the name then.
+    // ponytail: the row does not shrink. Compact numbers cap each count at four
+    // characters ("1.2K"), but with all three that long and a long language
+    // name the site name reaches into the right margin; drop the gap then.
     el(
       'div',
       {
@@ -100,9 +101,13 @@ export function projectStats(numbers: Pick<RepoNumbers, 'stars' | 'issues' | 'fo
   return STATS.filter(({ key }) => numbers[key] > 0).map(({ key, one, many, icon }) => {
     const count = numbers[key];
 
-    return { icon, label: `${count} ${count === 1 ? one : many}` };
+    return { icon, label: `${compact.format(count)} ${count === 1 ? one : many}` };
   });
 }
+
+// "12K stars", as GitHub writes it: a count grows on its own between builds,
+// and a five-digit one would push the site name off the image.
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact' });
 
 /** What the image says after the name, for its alt text. */
 export function projectImageAlt(project: ImageProject): string {

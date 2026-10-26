@@ -3,6 +3,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import sharp from 'sharp';
 
+import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
 import { IMAGE_PALETTES, projectImage, projectStats } from '../src/lib/project-image.ts';
 
@@ -33,15 +34,24 @@ async function projects() {
   return found;
 }
 
-test('every project renders a 1200x630 PNG in both themes', async () => {
+// Live numbers, and the ones dev and a failed GitHub call give: the YAML stars,
+// no other count and no language, so the numbers row can be all but empty.
+test('every project renders a 1200x630 PNG in both themes, with or without GitHub', async () => {
   for (const project of await projects()) {
     assert.ok(project.name && project.slug && project.tagline, `${project.file}: frontmatter`);
-    for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
-      const png = await renderOgImage(projectImage(project, theme));
-      const { format, width, height } = await sharp(png).metadata();
-      assert.deepEqual([format, width, height], ['png', 1200, 630], `${project.file}: ${theme}`);
+    for (const numbers of [{}, offlineNumbers(project.stars)]) {
+      for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
+        const png = await renderOgImage(projectImage({ ...project, ...numbers }, theme));
+        const { format, width, height } = await sharp(png).metadata();
+        assert.deepEqual([format, width, height], ['png', 1200, 630], `${project.file}: ${theme}`);
+      }
     }
   }
+});
+
+test('a count reads the way GitHub writes it', () => {
+  const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => label);
+  assert.deepEqual(labels, ['12K stars', '1 issue']);
 });
 
 // "0 stars" says nothing, so the image drops a number at zero, as the card
