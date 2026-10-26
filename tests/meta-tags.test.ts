@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -21,6 +21,15 @@ test('the recorded post page passes', async () => {
   assert.deepEqual(await check({ [POST]: head }), []);
 });
 
+// CI builds with the --site of GitHub Pages: the github.io address when the
+// custom domain is gone.
+test('the same page under another site passes', async () => {
+  const root = 'https://kalinichenko88.github.io/';
+  const page = head.replaceAll(`${SITE}/`, root);
+
+  assert.deepEqual(await check({ [POST]: page }, undefined, root), []);
+});
+
 // What the post page passed as its title before #84.
 test('a post title with SITE_TITLE after it fails', async () => {
   const branded = `Disabling commit and PR attribution in Claude Code - ${SITE_TITLE}`;
@@ -33,6 +42,15 @@ test('a post title with SITE_TITLE after it fails', async () => {
     `/${POST}/: og:title is 97 characters, 60 at most`,
     `/${POST}/: og:title names the site, which og:site_name does`,
   ]);
+});
+
+test('a post about the site may name it in its title', async () => {
+  const topic = 'Rebuilding kalinichenko.dev with Astro 7';
+  const page = head
+    .replace(/<title>[^<]*/, `<title>${topic} - Ivan Kalinichenko`)
+    .replace(/(og:title" content=")[^"]*/, `$1${topic}`);
+
+  assert.deepEqual(await check({ [POST]: page }), []);
 });
 
 test('a missing or doubled tag fails', async () => {
@@ -85,10 +103,11 @@ test('a repeated title or description, or a canonical URL elsewhere, fails', asy
   ]);
 });
 
-/** Writes each page and its 1200x630 og:image to a temporary build. */
+/** Writes each page and its 1200x630 og:image to a temporary build, and checks it. */
 async function check(
   pages: Record<string, string>,
-  image = { width: 1200, height: 630 }
+  image = { width: 1200, height: 630 },
+  root = `${SITE}/`
 ): Promise<string[]> {
   const dir = await mkdtemp(join(tmpdir(), 'meta-tags-'));
   const png = await sharp({
@@ -96,12 +115,18 @@ async function check(
   })
     .png()
     .toBuffer();
+  const files: URL[] = [];
 
-  for (const [path, html] of Object.entries(pages)) {
-    await mkdir(join(dir, path), { recursive: true });
-    await writeFile(join(dir, path, 'index.html'), html);
+  try {
+    for (const [path, html] of Object.entries(pages)) {
+      await mkdir(join(dir, path), { recursive: true });
+      await writeFile(join(dir, path, 'index.html'), html);
+      files.push(pathToFileURL(join(dir, path, 'index.html')));
+    }
+    await writeFile(join(dir, `${POST}.png`), png);
+
+    return await checkMetaTags(pathToFileURL(`${dir}/`), root, files);
+  } finally {
+    await rm(dir, { recursive: true });
   }
-  await writeFile(join(dir, `${POST}.png`), png);
-
-  return checkMetaTags(pathToFileURL(`${dir}/`), SITE);
 }

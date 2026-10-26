@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
@@ -7,10 +8,8 @@ import rehypeExternalLinks from 'rehype-external-links';
 
 import { checkMetaTags } from './src/lib/check-meta-tags.ts';
 
-const site = 'https://kalinichenko.dev';
-
 export default defineConfig({
-  site,
+  site: 'https://kalinichenko.dev',
   integrations: [
     mdx(),
     sitemap({
@@ -19,18 +18,7 @@ export default defineConfig({
       priority: 0.7,
       lastmod: new Date(),
     }),
-    {
-      name: 'meta-tags',
-      hooks: {
-        // A page whose link preview breaks a rule fails the build, so it never deploys.
-        'astro:build:done': async ({ dir }) => {
-          const problems = await checkMetaTags(dir, site);
-          if (problems.length > 0) {
-            throw new Error(`Meta tags break ${problems.length} rules:\n${problems.join('\n')}`);
-          }
-        },
-      },
-    },
+    metaTags(),
   ],
   markdown: {
     // Astro 7 deprecates the flat `rehypePlugins` option; pass plugins to unified() instead.
@@ -73,3 +61,30 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 });
+
+/** Fails the build when a page's link-preview tags break a rule (src/lib/check-meta-tags.ts). */
+function metaTags() {
+  // The address the build resolves: CI passes its own --site and --base.
+  let root = '';
+
+  return {
+    name: 'meta-tags',
+    hooks: {
+      'astro:config:done': ({ config }) => {
+        root = new URL(config.base.replace(/\/?$/, '/'), config.site).href;
+      },
+      'astro:build:done': async ({ dir, assets }) => {
+        // Only the pages Astro rendered, not HTML copied from public/. 404.html
+        // answers every missing address, so it has no address of its own.
+        const pages = [...assets]
+          .filter(([route]) => route !== '/404')
+          .flatMap(([, files]) => files)
+          .filter((file) => file.pathname.endsWith('.html'));
+        const problems = await checkMetaTags(dir, root, pages);
+        if (problems.length > 0) {
+          throw new Error(`Meta tags break ${problems.length} rules:\n${problems.join('\n')}`);
+        }
+      },
+    },
+  };
+}
