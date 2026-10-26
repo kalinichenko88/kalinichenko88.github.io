@@ -10,6 +10,7 @@ const files = [
   'src/pages/blog/[...id].astro',
   'src/pages/tags/index.astro',
   'src/pages/tags/[tag].astro',
+  'src/pages/contact.astro',
   'src/pages/404.astro',
 ];
 

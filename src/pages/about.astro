@@ -33,7 +33,11 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
           </p>
         </div>
 
-        <div class="flex flex-wrap gap-3 mt-8" data-reveal="content" style="--motion-index: 1">
+        <div
+          class="flex flex-wrap items-center gap-3 mt-8"
+          data-reveal="content"
+          style="--motion-index: 1"
+        >
           <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
             Get in touch
           </a>
@@ -44,6 +48,9 @@ import { WORK_HISTORY, EXPERTISE, LOCATION } from '../config/resume';
             class="btn-secondary"
           >
             Connect on LinkedIn
+          </a>
+          <a href="/contact" class="link-underline text-sm ml-2">
+            More ways to reach me
           </a>
         </div>
       </div>

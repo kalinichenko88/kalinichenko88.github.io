@@ -111,7 +111,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 
 ## Containers & Fonts
 
-- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, `/projects/<slug>` and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
+- Two container tracks in `global.css`: `.container` (wide, `--container-wide: 1100px`) is the default and covers header/footer, all sections, the post index pages (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, `/projects/<slug>`, `/contact` and the blog post article; `.container-prose` (tight reading column, `--container-prose: 680px`) wraps only the `/about` bio and work history; the homepage intro reuses the same measure through `--container-prose` on its `.intro` block. The wide post body is a deliberate owner choice — don't narrow it back. (`.container-content`, the old 820px track, was removed once nothing used it.)
 - Post images are capped at 820px and centred inside the wide text column (`.prose-custom p > img` in `global.css`) so a screenshot stays a figure rather than a full-bleed banner.
 - Posts in a list render through `src/components/PostCard.astro`: on `/blog`, `/tags/<tag>` and a project's related posts (`/projects/<slug>`) packed into a CSS-columns masonry (`columns-1 md:columns-2 lg:columns-3`), on the homepage Writing section as one sideways scroll-snap row of the latest eight (`heading="h3"` and `row`: equal-height cards with one cover box height, and no per-card reveal, since the row reveals as one block). The row is `src/components/home/CardRow.astro`, shared with Selected work, which shows every project the same way through `ProjectCard`'s `row` prop. It hides its scrollbar on every system, and its `card-row` custom element drives the ← → buttons. There is no featured lead card. The container owns the layout classes through `*:` children utilities — don't hand-roll a second card.
 - Font stack (configured via Astro's top-level `fonts` config in `astro.config.js`): DM Sans (headings and body, via both `--font-display` and `--font-body`), JetBrains Mono (code/mono accents). Only two families load; headings separate from body by size, weight and tracking, not by a second face.
@@ -126,6 +126,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - ESLint with TypeScript and Astro plugins (`eslint.config.js`)
 - External links in markdown open in new tabs (`rehype-external-links` in `astro.config.js`)
 - Site constants in `src/consts.ts`
+- Contact channels in `src/config/contacts.ts` (`CONTACT_LINKS`, with label, handle and icon). The footer's icon row and `/contact` both render from it, so a new channel goes there once. The homepage Contact section and `/about` keep a short email + LinkedIn pair and link to `/contact` for the rest
 
 ## Dependency Updates
 
