@@ -29,6 +29,9 @@ export type OgElement = {
 
 type OgChild = OgElement | string | false;
 
+// ponytail: the latin subset only, so a glyph outside it (an arrow, Cyrillic,
+// an emoji) draws as nothing. Every project name and tagline is ASCII; load
+// another subset, or pass Satori a loadAdditionalAsset, before one is not.
 // Static weights from Fontsource, not the files Astro's `fonts` config gets
 // from Google: Google serves DM Sans as a variable font, and Satori draws a
 // variable font only at its default weight, so every heading would be 400.

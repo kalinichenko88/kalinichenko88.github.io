@@ -34,6 +34,36 @@ async function projects() {
   return found;
 }
 
+// Platforms crop the edges of a link preview, so nothing may be drawn in the
+// 10% right margin, above the accent bar that runs the full width. The case:
+// the longest name and tagline, every count at its widest compact form, and a
+// ten-letter language. Satori always fills the canvas, so only pixels can tell
+// a row that runs off it.
+test('the widest numbers row stays inside the safe area', async () => {
+  const project = {
+    name: 'Obsidian Budget Planner Plugin',
+    tagline:
+      "Turns an AI agent's Markdown into HTML that Telegram accepts and streams its reply into a live draft.",
+    url: 'https://github.com/kalinichenko88/obsidian-budget-planner-plugin',
+    stars: 1234,
+    issues: 1234,
+    forks: 1234,
+    language: 'TypeScript',
+  };
+  for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
+    // Raw pixels: sharp's stats() reads the whole input and ignores extract().
+    const { data, info } = await sharp(await renderOgImage(projectImage(project, theme)))
+      .extract({ left: 1081, top: 0, width: 119, height: 616 })
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const background = data.subarray(0, info.channels);
+    for (let i = 0; i < data.length; i += info.channels) {
+      const pixel = data.subarray(i, i + info.channels);
+      assert.ok(pixel.equals(background), `${theme}: something is drawn in the right margin`);
+    }
+  }
+});
+
 // A full set of numbers, and the ones dev and a failed GitHub call give: the YAML stars,
 // no other count and no language, so the numbers row can be all but empty.
 test('every project renders a 1200x630 PNG in both themes, with or without GitHub', async () => {
@@ -98,7 +128,7 @@ test('a project page passes its light image to og:image', async () => {
     'utf8'
   );
   assert.match(page, /image=\{/);
-  assert.match(page, /`\/projects\/\$\{project\.slug\}\/light\.png`/);
+  assert.match(page, /`\/projects\/\$\{project\.slug\}\/light\.png\?v=\$\{imageVersion\}`/);
 });
 
 // The homepage card and the project page write their star count the way the

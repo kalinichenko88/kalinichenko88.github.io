@@ -59,17 +59,18 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       },
       project.tagline
     ),
-    // ponytail: the row does not shrink. Compact numbers cap each count at four
-    // characters ("1.2K"), but with all three that long and a long language
-    // name the site name reaches into the right margin; drop the gap then.
+    // ponytail: the row does not shrink. Sized so every count at its widest
+    // compact form ("1.2K") and a ten-letter language fit inside the margin
+    // (tests/project-images.test.ts checks the pixels); a longer language name
+    // such as "Jupyter Notebook" would need a smaller gap.
     el(
       'div',
       {
         display: 'flex',
         alignItems: 'center',
-        gap: 44,
+        gap: 32,
         marginTop: 'auto',
-        fontSize: 28,
+        fontSize: 24,
         color: color['text-secondary'],
       },
       ...projectStats(project).map(({ icon, label }) => {
@@ -77,7 +78,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       }),
       project.language !== null &&
         stat(
-          el('div', { width: 22, height: 22, borderRadius: 11, backgroundColor: color.accent }),
+          el('div', { width: 18, height: 18, borderRadius: 9, backgroundColor: color.accent }),
           project.language
         ),
       el('div', { marginLeft: 'auto', fontWeight: 600, color: color['accent-text'] }, SITE_NAME)
@@ -184,8 +185,8 @@ function octicon(...paths: string[]) {
     return {
       type: 'svg',
       props: {
-        width: 30,
-        height: 30,
+        width: 26,
+        height: 26,
         viewBox: '0 0 16 16',
         fill,
         children: paths.map((d) => {
@@ -199,7 +200,7 @@ function octicon(...paths: string[]) {
 function stat(icon: OgElement, label: string): OgElement {
   return el(
     'div',
-    { display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, whiteSpace: 'nowrap' },
+    { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, whiteSpace: 'nowrap' },
     icon,
     label
   );
