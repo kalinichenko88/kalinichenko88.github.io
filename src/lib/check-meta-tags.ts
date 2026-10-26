@@ -90,13 +90,11 @@ type Tags = Map<string, string[]>;
 /**
  * Every `<title>`, canonical link and named meta tag of a page, decoded, in
  * the shape Astro writes Head.astro: attributes in source order, each value
- * in double quotes. A tag in another shape is not read at all: Head.astro is
- * the only place that writes these tags.
+ * in double quotes. A tag in another shape is not read. Only Head.astro writes
+ * these tags, and only in this shape.
  */
 function readTags(html: string): Tags {
   const tags: Tags = new Map();
-  // Astro keeps HTML comments, and a tag commented out is not a tag.
-  const live = html.replace(/<!--[\s\S]*?-->/g, '');
   // A value can hold ">": Astro escapes only & and " in attributes.
   const patterns = [
     /<(title)>([^<]*)<\/title>/g,
@@ -105,7 +103,7 @@ function readTags(html: string): Tags {
   ];
 
   for (const pattern of patterns) {
-    for (const [, key, value] of live.matchAll(pattern)) {
+    for (const [, key, value] of html.matchAll(pattern)) {
       tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
     }
   }

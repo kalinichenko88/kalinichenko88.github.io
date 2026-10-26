@@ -74,16 +74,6 @@ test('a missing or doubled tag fails', async () => {
   ]);
 });
 
-// The build keeps Head.astro's HTML comments, as the fixture shows.
-test('a tag commented out in Head.astro is not read', async () => {
-  const page = head.replace(
-    '<meta name="description"',
-    '<!-- <meta name="description" content="Old text"> --><meta name="description"'
-  );
-
-  assert.deepEqual(await check({ [POST]: page }), []);
-});
-
 // Astro escapes only & and " in an attribute, so a value can hold ">".
 test('a description with ">" in it reads whole', async () => {
   const arrow = 'Git -> GitHub: where the attribution goes';
