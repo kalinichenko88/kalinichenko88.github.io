@@ -65,9 +65,14 @@ test('every post renders a 1200x630 palette PNG', async () => {
 // to the widest and the tallest cover. Satori always fills the canvas, so
 // only the pixels can tell.
 test('the longest text and every cover shape stay inside the safe area', async () => {
-  // A space every four characters, so the text wraps as words do.
+  // A space every four characters, so the text wraps as words do, and a
+  // capital at the end, so the length is exact.
   const wide = (length: number) => {
-    return 'WMW '.repeat(length).slice(0, length).trimEnd();
+    return `${'WMW '.repeat(length).slice(0, length - 1)}W`;
+  };
+  const covers = {
+    wide: await cover('budget-planner-obsidian-community-plugins'),
+    tall: await cover('hello-world'),
   };
   const bg = Buffer.from(IMAGE_PALETTES.light.bg.slice(1), 'hex');
   const margins = {
@@ -75,13 +80,13 @@ test('the longest text and every cover shape stay inside the safe area', async (
     bottom: { left: 0, top: 560, width: 1200, height: 56 },
   };
   for (const title of [wide(40), wide(60), wide(200)]) {
-    for (const id of ['budget-planner-obsidian-community-plugins', 'hello-world']) {
+    for (const [shape, cover] of Object.entries(covers)) {
       const post = {
         title,
         description: wide(125),
         pubDate: new Date('2026-09-30'),
         minutesRead: 12,
-        cover: await cover(id),
+        cover,
       };
       const png = await renderOgImage(postImage(post));
       for (const [name, region] of Object.entries(margins)) {
@@ -90,7 +95,7 @@ test('the longest text and every cover shape stay inside the safe area', async (
           .extract(region)
           .raw()
           .toBuffer({ resolveWithObject: true });
-        const where = `${title.length}-character title, ${id}`;
+        const where = `${title.length}-character title, ${shape} cover`;
         for (let i = 0; i < data.length; i += info.channels) {
           assert.ok(data.subarray(i, i + 3).equals(bg), `${where}: drawn in the ${name} margin`);
         }
