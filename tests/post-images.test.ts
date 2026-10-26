@@ -80,13 +80,13 @@ test('the longest text and every cover shape stay inside the safe area', async (
     bottom: { left: 0, top: 560, width: 1200, height: 56 },
   };
   for (const title of [wide(40), wide(60), wide(200)]) {
-    for (const [shape, cover] of Object.entries(covers)) {
+    for (const [shape, image] of Object.entries(covers)) {
       const post = {
         title,
         description: wide(125),
         pubDate: new Date('2026-09-30'),
         minutesRead: 12,
-        cover,
+        cover: image,
       };
       const png = await renderOgImage(postImage(post));
       for (const [name, region] of Object.entries(margins)) {

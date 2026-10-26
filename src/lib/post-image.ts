@@ -142,7 +142,7 @@ const DRAWING_WIDTH = 360;
 
 // Steps down with length, so every title so far (57 characters at most) fits
 // in three lines. The clamp cuts any title after four lines, which at these
-// sizes takes wide capitals or more than about 90 characters.
+// sizes takes wide capitals or about twice the longest title so far.
 function titleSize(title: string): number {
   if (title.length <= 40) {
     return 54;
