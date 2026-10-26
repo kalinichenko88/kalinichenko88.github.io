@@ -3,7 +3,6 @@ import type { RepoNumbers } from './github-repo';
 import type { OgElement } from './og-image';
 
 type ImageProject = RepoNumbers & { name: string; tagline: string; url: string };
-type Numbers = Pick<RepoNumbers, 'stars' | 'issues' | 'forks'>;
 
 /**
  * A project's 1200x630 image, like the social preview GitHub makes for a repo:
@@ -97,7 +96,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
  * The numbers the image shows, each with its icon. A zero is left out: "0
  * stars" says nothing, and the text card always hid zero stars too.
  */
-export function projectStats(numbers: Numbers) {
+export function projectStats(numbers: Pick<RepoNumbers, 'stars' | 'issues' | 'forks'>) {
   return STATS.filter(({ key }) => numbers[key] > 0).map(({ key, one, many, icon }) => {
     const count = numbers[key];
 

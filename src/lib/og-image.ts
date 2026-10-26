@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import satori from 'satori';
+import satori, { type Font } from 'satori';
 import sharp from 'sharp';
 
 /**
@@ -29,43 +29,20 @@ type OgChild = OgElement | string | false;
 // Static weights from Fontsource, not the files Astro's `fonts` config gets
 // from Google: Google serves DM Sans as a variable font, and Satori draws a
 // variable font only at its default weight, so every heading would be 400.
-const FONT_FILES = [
-  {
-    name: 'DM Sans',
-    weight: 400,
-    file: '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2',
-  },
-  {
-    name: 'DM Sans',
-    weight: 600,
-    file: '@fontsource/dm-sans/files/dm-sans-latin-600-normal.woff2',
-  },
-  {
-    name: 'DM Sans',
-    weight: 700,
-    file: '@fontsource/dm-sans/files/dm-sans-latin-700-normal.woff2',
-  },
-  {
-    name: 'JetBrains Mono',
-    weight: 400,
-    file: '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2',
-  },
-] as const;
-
 const require = createRequire(import.meta.url);
-let loaded: ReturnType<typeof loadFonts> | undefined;
+let loaded: Promise<Font[]> | undefined;
 
 function fonts() {
-  return (loaded ??= loadFonts());
+  return (loaded ??= Promise.all([
+    font('dm-sans', 'DM Sans', 400),
+    font('dm-sans', 'DM Sans', 600),
+    font('dm-sans', 'DM Sans', 700),
+    font('jetbrains-mono', 'JetBrains Mono', 400),
+  ]));
 }
 
-function loadFonts() {
-  return Promise.all(
-    FONT_FILES.map(async ({ name, weight, file }) => ({
-      name,
-      weight,
-      style: 'normal' as const,
-      data: await readFile(require.resolve(file)),
-    }))
-  );
+async function font(slug: string, name: string, weight: Font['weight']): Promise<Font> {
+  const file = require.resolve(`@fontsource/${slug}/files/${slug}-latin-${weight}-normal.woff2`);
+
+  return { name, weight, style: 'normal', data: await readFile(file) };
 }
