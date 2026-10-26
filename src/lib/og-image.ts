@@ -84,7 +84,6 @@ export const IMAGE_PALETTES = {
     'accent-text': '#a94a29',
   },
   dark: {
-    bg: '#1a1a1c',
     surface: '#232326',
     text: '#ececed',
     'text-secondary': '#a6a6ac',

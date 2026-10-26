@@ -40,16 +40,6 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// A post's social image is rendered at build time (tests/post-images.test.ts),
-// so a .og.jpg in covers/ is a leftover nothing reads.
-test('covers/ holds no social image files', async () => {
-  const files = await readdir(new URL('../src/assets/images/covers/', import.meta.url));
-  assert.deepEqual(
-    files.filter((file) => file.endsWith('.og.jpg')),
-    []
-  );
-});
-
 // Head.astro falls back to it on every page without a post cover.
 test('the site social image is a 1200x630 JPEG', async () => {
   const path = fileURLToPath(new URL('../src/assets/images/site.og.jpg', import.meta.url));

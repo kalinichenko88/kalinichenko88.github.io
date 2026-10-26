@@ -5,6 +5,7 @@ import sharp from 'sharp';
 
 import { IMAGE_PALETTES, renderOgImage } from '../src/lib/og-image.ts';
 import { postImage, postImageSrc, type ImagePost } from '../src/lib/post-image.ts';
+import { readingTime } from '../src/lib/reading-time.ts';
 
 // Every post with a cover gets a 1200x630 image, rendered at build time by
 // src/pages/blog/[id].png.ts: its og:image and its JSON-LD image.
@@ -26,7 +27,7 @@ async function posts() {
       title: field('title'),
       description: field('description'),
       pubDate: new Date(field('pubDate')),
-      minutesRead: Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 200)),
+      minutesRead: readingTime(body),
       cover: await cover(id),
     });
   }
