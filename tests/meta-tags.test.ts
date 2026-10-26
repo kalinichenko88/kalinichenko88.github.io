@@ -53,13 +53,12 @@ test('a post about the site may name it in its title', async () => {
   assert.deepEqual(await check({ [POST]: page }), []);
 });
 
-// A second copy counts in any attribute order.
 test('a missing or doubled tag fails', async () => {
   const page = head
     .replace(/<meta property="og:image:alt"[^>]*>/, '')
     .replace(
       '<meta name="twitter:card"',
-      '<meta content="x" name="twitter:card"><meta name="twitter:card"'
+      '<meta name="twitter:card" content="x"><meta name="twitter:card"'
     )
     .replace(
       '<meta property="article:author"',
@@ -70,9 +69,28 @@ test('a missing or doubled tag fails', async () => {
   assert.deepEqual(await check({ [POST]: page }), [
     `/${POST}/: og:image:alt is missing`,
     `/${POST}/: twitter:card appears 2 times`,
-    `/${POST}/: an article needs one valid article:published_time`,
+    `/${POST}/: article:published_time appears 2 times`,
     `/${POST}/: twitter:card is not summary_large_image`,
   ]);
+});
+
+test('an article:published_time that is not ISO 8601 fails', async () => {
+  const page = head.replace(/(published_time" content=")[^"]*/, '$1Aug 11 2026');
+
+  assert.deepEqual(await check({ [POST]: page }), [
+    `/${POST}/: article:published_time is "Aug 11 2026", not an ISO 8601 date`,
+  ]);
+});
+
+// Astro escapes only & and " in an attribute, so a value can hold ">".
+test('a description with ">" in it reads whole', async () => {
+  const arrow = 'Git -> GitHub: where the attribution goes';
+  const page = head.replace(
+    /(name="description" content=")[^"]*([\s\S]*og:description" content=")[^"]*/,
+    `$1${arrow}$2${arrow}`
+  );
+
+  assert.deepEqual(await check({ [POST]: page }), []);
 });
 
 // The build writes a quote as &quot;, which a preview shows as one character.

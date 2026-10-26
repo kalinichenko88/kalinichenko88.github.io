@@ -61,6 +61,8 @@ export async function checkMetaTags(
   return problems;
 }
 
+// ogp.me wants an ISO 8601 datetime; Date.parse() alone takes "Sep 1 2026".
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/;
 // X's limit for image alt text.
 const MAX_ALT = 420;
 // WhatsApp shows no image above about 300 KB.
@@ -89,26 +91,21 @@ type Tags = Map<string, string[]>;
 
 /**
  * Every `<title>`, canonical link and named meta tag of a page, decoded, in
- * any attribute order. Astro writes each attribute as `name="value"`.
+ * the shape Astro writes Head.astro: attributes in source order, each value
+ * in double quotes. A tag in another shape reads as missing, so it fails.
  */
 function readTags(html: string): Tags {
   const tags: Tags = new Map();
-  const add = (key: string, value: string): void => {
-    tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
-  };
+  // A value can hold ">": Astro escapes only & and " in attributes.
+  const patterns = [
+    /<(title)>([^<]*)<\/title>/g,
+    /<link rel="(canonical)" href="([^"]*)"/g,
+    /<meta (?:name|property)="([^"]+)" content="([^"]*)"/g,
+  ];
 
-  for (const [, title] of html.matchAll(/<title>([^<]*)<\/title>/g)) {
-    add('title', title);
-  }
-  for (const [tag] of html.matchAll(/<(?:meta|link)\s[^>]*>/g)) {
-    const attribute = (name: string): string | undefined => {
-      return tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];
-    };
-    const canonical = attribute('rel') === 'canonical' ? 'canonical' : undefined;
-    const key = attribute('property') ?? attribute('name') ?? canonical;
-    const value = attribute('content') ?? attribute('href');
-    if (key !== undefined && value !== undefined) {
-      add(key, value);
+  for (const pattern of patterns) {
+    for (const [, key, value] of html.matchAll(pattern)) {
+      tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
     }
   }
 
@@ -121,7 +118,11 @@ function tagProblems(tags: Tags, url: string): string[] {
     return tags.get(key)?.[0] ?? '';
   };
 
-  for (const key of REQUIRED) {
+  // ogp.me: an article carries the time it was first published.
+  const isArticle = value('og:type') === 'article';
+  const required = isArticle ? [...REQUIRED, 'article:published_time'] : REQUIRED;
+
+  for (const key of required) {
     const count = tags.get(key)?.length ?? 0;
     if (count !== 1) {
       problems.push(count === 0 ? `${key} is missing` : `${key} appears ${count} times`);
@@ -170,11 +171,10 @@ function tagProblems(tags: Tags, url: string): string[] {
   if (tags.has('og:type') && type !== 'website' && type !== 'article') {
     problems.push(`og:type is "${type}", not website or article`);
   }
-  const publishedTimes = tags.get('article:published_time') ?? [];
-  const onePublishedTime =
-    publishedTimes.length === 1 && !Number.isNaN(Date.parse(publishedTimes[0]));
-  if (type === 'article' && !onePublishedTime) {
-    problems.push('an article needs one valid article:published_time');
+  const publishedTime = value('article:published_time');
+  const isIsoDate = ISO_DATE.test(publishedTime) && !Number.isNaN(Date.parse(publishedTime));
+  if (isArticle && tags.has('article:published_time') && !isIsoDate) {
+    problems.push(`article:published_time is "${publishedTime}", not an ISO 8601 date`);
   }
   if (isNot('og:site_name', SITE_NAME)) {
     problems.push(`og:site_name is not ${SITE_NAME}`);
@@ -275,7 +275,7 @@ const ENTITIES: Record<string, string> = {
 };
 
 function decode(text: string): string {
-  return text.replace(/&#?\w+;/g, (entity) => {
-    return ENTITIES[entity] ?? entity;
+  return text.replace(/&(?:amp|quot|#39|lt|gt);/g, (entity) => {
+    return ENTITIES[entity];
   });
 }
