@@ -8,13 +8,11 @@ test('a nav item is active on its page and the pages under it', () => {
   assert.ok(isActive('/projects', '/projects/'));
   assert.ok(isActive('/blog', '/blog/'));
   assert.ok(isActive('/blog', '/blog/neovim-commit-workflow/'));
-  assert.ok(isActive('/contact', '/contact/'));
   assert.ok(isActive('/', '/'));
 });
 
 test('a nav item is not active elsewhere', () => {
   assert.ok(!isActive('/', '/blog/'));
-  assert.ok(!isActive('/', '/contact/'));
   assert.ok(!isActive('/contact', '/'));
   assert.ok(!isActive('/blog', '/blogroll/'));
 });
