@@ -58,12 +58,19 @@ let loaded: Promise<Font[]> | undefined;
 // usual dashes and quotes; the GitHub language is not checked. Load another
 // subset, or pass Satori a loadAdditionalAsset, before the text needs more.
 function fonts() {
-  return (loaded ??= Promise.all([
-    font('dm-sans', 'DM Sans', 400),
-    font('dm-sans', 'DM Sans', 600),
-    font('dm-sans', 'DM Sans', 700),
-    font('jetbrains-mono', 'JetBrains Mono', 400),
-  ]));
+  if (!loaded) {
+    loaded = Promise.all([
+      font('dm-sans', 'DM Sans', 400),
+      font('dm-sans', 'DM Sans', 600),
+      font('dm-sans', 'DM Sans', 700),
+      font('jetbrains-mono', 'JetBrains Mono', 400),
+    ]);
+    // As with a render: a failed load is not kept, so the next render retries.
+    loaded.catch(() => {
+      loaded = undefined;
+    });
+  }
+  return loaded;
 }
 
 async function font(slug: string, name: string, weight: Font['weight']): Promise<Font> {

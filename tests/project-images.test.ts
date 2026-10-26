@@ -12,6 +12,7 @@ import {
   projectImageSrc,
   projectStats,
   starLabel,
+  type ImageTheme,
 } from '../src/lib/project-image.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
@@ -93,8 +94,7 @@ test('the image URL changes with the image', async () => {
   const [project] = (await projects()).sort((a, b) => a.file.localeCompare(b.file));
   const src = await projectImageSrc(project, 'light');
   assert.match(src, /^\/projects\/[\w-]+\/light\.png\?v=[0-9a-f]{8}$/);
-  // One render per tree, so the page that links an image and the route that
-  // serves it hash the same bytes.
+  // The same project gives the same URL, so an unchanged image keeps its cache.
   assert.equal(await projectImageSrc({ ...project }, 'light'), src);
   const changed = await projectImageSrc({ ...project, tagline: `${project.tagline}!` }, 'light');
   assert.notEqual(changed, src);
@@ -146,19 +146,29 @@ test('the image shows only the numbers above zero', () => {
 // theme tokens. This keeps the copy in step with global.css.
 test('the image palettes match the theme tokens', async () => {
   const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
-  const blocks = {
+  const blocks: Record<ImageTheme, string> = {
     light: css.match(/\[data-theme='cloud'\] \{([^}]*)\}/)?.[1] ?? '',
     dark: css.match(/\[data-theme='cloud-dark'\] \{([^}]*)\}/)?.[1] ?? '',
   };
-  for (const [theme, palette] of Object.entries(IMAGE_PALETTES)) {
-    for (const [token, value] of Object.entries(palette)) {
-      assert.match(
-        blocks[theme as keyof typeof blocks],
-        new RegExp(`--color-${token}: ${value};`),
-        `${theme}: --color-${token}`
-      );
+  for (const theme of IMAGE_THEMES) {
+    for (const [token, value] of Object.entries(IMAGE_PALETTES[theme])) {
+      assert.match(blocks[theme], new RegExp(`--color-${token}: ${value};`), `${theme}: ${token}`);
     }
   }
+});
+
+// A failed render must not stay in the memo, or dev would serve the failure
+// until a restart. A broken data: image fails with no network.
+test('a failed render is tried again', async () => {
+  const broken = {
+    type: 'img',
+    props: { src: 'data:image/png;base64,not-a-png', width: 10, height: 10 },
+  };
+  const first = renderOgImage(broken);
+  await assert.rejects(first);
+  const second = renderOgImage(broken);
+  assert.notEqual(second, first, 'the failed render came back from the memo');
+  await assert.rejects(second);
 });
 
 test('a project page passes its light image to og:image', async () => {
