@@ -10,7 +10,7 @@ import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../../consts';
       <h2 class="text-foreground mb-4">Let's work together</h2>
       <p class="text-foreground-secondary mb-6">Interested in collaboration? Get in touch.</p>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
           <EmailIcon class="w-4 h-4" />
           Send me an email
@@ -24,7 +24,7 @@ import { MAIL_PROFILE_LINK, LINKEDIN_PROFILE_LINK } from '../../consts';
           <LinkedinIcon class="w-4 h-4" />
           Connect on LinkedIn
         </a>
-        <a href="/contact" class="link-underline text-sm sm:ml-2">
+        <a href="/contact" class="link-underline text-sm">
           More ways to reach me
         </a>
       </div>
