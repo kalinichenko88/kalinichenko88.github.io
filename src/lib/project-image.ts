@@ -1,8 +1,6 @@
-import { createHash } from 'node:crypto';
-
 import { SITE_NAME } from '../consts.ts';
 import type { RepoNumbers } from './github-repo';
-import { renderOgImage, type OgElement } from './og-image.ts';
+import { el, IMAGE_PALETTES, ogImageSrc, type OgElement } from './og-image.ts';
 
 type ImageProject = RepoNumbers & { name: string; tagline: string; url: string };
 
@@ -22,7 +20,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      // A 10% margin, as on the post social images: platforms crop the edges.
+      // A 10% margin, as on the post images: platforms crop the edges.
       // Satori sizes boxes as content-box, so without border-box the padding
       // would grow the root past the canvas and push the bottom row off it.
       padding: '72px 120px',
@@ -133,19 +131,12 @@ export function starLabel(stars: number): string | null {
 // builds, and a six-digit one would push the site name off the image.
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact' });
 
-/**
- * The image's path, with a hash of its PNG: browsers and link previews cache an
- * image by its URL, so any change to the bytes, from a number to a font file or
- * a library update, needs a new one, and an unchanged image keeps its old one.
- */
-export async function projectImageSrc(
+/** The image's path, versioned by its bytes (see ogImageSrc). */
+export function projectImageSrc(
   project: ImageProject & { slug: string },
   theme: ImageTheme
 ): Promise<string> {
-  const png = await renderOgImage(projectImage(project, theme));
-  const version = createHash('sha1').update(png).digest('hex').slice(0, 8);
-
-  return `/projects/${project.slug}/${theme}.png?v=${version}`;
+  return ogImageSrc(`/projects/${project.slug}/${theme}.png`, projectImage(project, theme));
 }
 
 /** What the image says after the name, for its alt text. */
@@ -155,29 +146,6 @@ export function projectImageAlt(project: ImageProject): string {
 
   return shown.length > 0 ? `${project.tagline} ${shown.join(', ')}.` : project.tagline;
 }
-
-/**
- * The theme tokens the image uses, copied from global.css because Satori cannot
- * read CSS variables. tests/project-images.test.ts keeps the copies in step.
- */
-export const IMAGE_PALETTES = {
-  light: {
-    surface: '#ffffff',
-    text: '#232326',
-    'text-secondary': '#55555b',
-    'text-tertiary': '#68686e',
-    accent: '#c25a34',
-    'accent-text': '#a94a29',
-  },
-  dark: {
-    surface: '#232326',
-    text: '#ececed',
-    'text-secondary': '#a6a6ac',
-    'text-tertiary': '#8f8f95',
-    accent: '#e07a52',
-    'accent-text': '#e07a52',
-  },
-};
 
 export type ImageTheme = keyof typeof IMAGE_PALETTES;
 
@@ -248,12 +216,4 @@ function stat(icon: OgElement, label: string, { shrink = false } = {}): OgElemen
       label
     )
   );
-}
-
-function el(
-  type: string,
-  style: Record<string, string | number>,
-  ...children: (OgElement | string | false)[]
-): OgElement {
-  return { type, props: { style, children } };
 }

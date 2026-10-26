@@ -318,9 +318,18 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
 - **Selected work above it is the same row** (`CardRow.astro`), holding every
   project card in `order`. The cards are equal height too, with the tech chips
   and stars at the bottom, and skip their own reveal and scroll depth.
-- **Social image:** a separate 1200×630 JPEG the skill writes next to each
-  cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
-  `#f4f2ee`, so no platform crop reaches it.
+- **Social image:** a 1200×630 PNG rendered on every build
+  (`src/lib/post-image.ts`, served at `/blog/<post-id>.png`), the project
+  image's sibling: `kalinichenko.dev / blog` in mono, the title, the
+  description, the date and reading time in mono at the bottom, the whole
+  drawing on the right and a 14px accent bar along the bottom, on the page
+  colour `#f4f2ee`, all inside a 10% margin so no platform crop reaches it.
+  The title steps down from 54 to 48 to 42px as it grows and stops at four
+  lines (every title so far takes three); the description (125 characters at
+  most) takes three, with room for a fourth. The no-text
+  rule above is about the drawing: here the text sits next to it, not in it.
+  The site image (`site.og.jpg`) stays the drawing alone, written by the
+  skill.
 - **Projects have no drawn illustrations.** On the homepage Selected work sits
   right above the Writing row, so a drawing reads as "a post"; covers on
   project cards would blur that and make two illustrated blocks in a row. Most
