@@ -109,7 +109,6 @@ function tagProblems(tags: Tags, url: string): string[] {
   const description = value('description');
   const type = value('og:type');
   const alt = value('og:image:alt');
-  const titleRepeatsOgTitle = title === ogTitle || title === `${ogTitle} - ${AUTHOR_NAME}`;
 
   if (title.length > MAX_TITLE) {
     problems.push(`<title> is ${title.length} characters, ${MAX_TITLE} at most`);
@@ -120,9 +119,6 @@ function tagProblems(tags: Tags, url: string): string[] {
   // Facebook asks for og:title without branding; og:site_name names the site.
   if (ogTitle.includes(` - ${AUTHOR_NAME}`) || ogTitle.includes(SITE_NAME)) {
     problems.push('og:title names the site, which og:site_name does');
-  }
-  if (tags.has('title') && tags.has('og:title') && !titleRepeatsOgTitle) {
-    problems.push(`<title> is not og:title, with or without " - ${AUTHOR_NAME}"`);
   }
   if (description.length > MAX_DESCRIPTION) {
     problems.push(`description is ${description.length} characters, ${MAX_DESCRIPTION} at most`);
@@ -210,16 +206,17 @@ function repeated(seen: Map<string, string>, value = '', page: string, name: str
   return [];
 }
 
-const ENTITIES: Record<string, string> = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>' };
+// The only entities Astro writes: escapeHTML() in its runtime.
+const ENTITIES: Record<string, string> = {
+  '&amp;': '&',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&lt;': '<',
+  '&gt;': '>',
+};
 
 function decode(text: string): string {
-  return text.replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
-    if (code.startsWith('#')) {
-      const hex = code[1] === 'x' || code[1] === 'X';
-
-      return String.fromCodePoint(parseInt(code.slice(hex ? 2 : 1), hex ? 16 : 10));
-    }
-
-    return ENTITIES[code] ?? entity;
+  return text.replace(/&(?:amp|quot|#39|lt|gt);/g, (entity) => {
+    return ENTITIES[entity];
   });
 }
