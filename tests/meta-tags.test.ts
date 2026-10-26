@@ -83,7 +83,7 @@ test('a description over 125 characters fails, an entity counted as one', async 
 });
 
 test('an og:image file that is not 1200x630, or not an image, fails', async () => {
-  const src = `${SITE}/${POST}.png?v=b38eea6e`;
+  const src = head.match(/og:image" content="([^"]*)/)?.[1];
 
   assert.deepEqual(await check({ [POST]: head }, { image: await png(1200, 600) }), [
     `/${POST}/: og:image is 1200x600, not 1200x630`,
@@ -99,9 +99,12 @@ test('an SVG <title> in the body is not a second <title>', async () => {
   assert.deepEqual(await check({ [POST]: page }), []);
 });
 
-// The 404 page is left out, so a build of it alone has nothing to check.
-test('the 404 page is not checked, and a build with no pages fails', async () => {
-  assert.deepEqual(await check({ '404': '<head></head>' }), ['the build has no pages to check']);
+test('the 404 page is not checked', async () => {
+  assert.deepEqual(await check({ [POST]: head, '404': '<head></head>' }), []);
+});
+
+test('a build with no pages to check fails', async () => {
+  assert.deepEqual(await check({}), ['the build has no pages to check']);
 });
 
 test('a repeated title or description, or a canonical URL elsewhere, fails', async () => {
@@ -144,7 +147,7 @@ async function check(
       await writeFile(file, html);
       assets.set(`/${path}`, [pathToFileURL(file)]);
     }
-    await mkdir(join(dir, 'blog'), { recursive: true });
+    await mkdir(join(dir, POST, '..'), { recursive: true });
     await writeFile(join(dir, `${POST}.png`), image ?? (await png(1200, 630)));
 
     return await checkMetaTags(pathToFileURL(`${dir}/`), site, assets);
