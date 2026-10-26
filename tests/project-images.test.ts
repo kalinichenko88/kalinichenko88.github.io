@@ -44,7 +44,7 @@ async function projects() {
 test('every project renders a 1200x630 PNG in both themes, with or without GitHub', async () => {
   for (const project of await projects()) {
     assert.ok(project.name && project.slug && project.tagline, `${project.file}: frontmatter`);
-    const variants = { live: {}, offline: offlineNumbers(project.stars) };
+    const variants = { full: {}, offline: offlineNumbers(project.stars) };
     for (const [variant, numbers] of Object.entries(variants)) {
       for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
         const png = await renderOgImage(projectImage({ ...project, ...numbers }, theme));
@@ -104,4 +104,14 @@ test('a project page passes its light image to og:image', async () => {
   );
   assert.match(page, /image=\{/);
   assert.match(page, /`\/projects\/\$\{project\.slug\}\/light\.png`/);
+});
+
+// The text cards write their star count the way the image does, so the two
+// never show one project with different numbers.
+test('every text surface writes the star count through countLabel()', async () => {
+  for (const file of ['src/components/ProjectCard.astro', 'src/pages/projects/[slug].astro']) {
+    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.match(source, /countLabel\(project\.stars, 'star', 'stars'\)/, file);
+    assert.doesNotMatch(source, /\{project\.stars\} \{/, `${file}: a raw star count`);
+  }
 });
