@@ -1,6 +1,6 @@
 ---
 import type { Project } from '../lib/projects';
-import { countLabel, projectImageAlt } from '../lib/project-image';
+import { projectImageAlt, starLabel } from '../lib/project-image';
 
 type Props = {
   project: Project;
@@ -20,6 +20,7 @@ type Props = {
 };
 
 const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
+const stars = starLabel(project.stars);
 
 // The depth offset needs an element of its own: the card's `translate` is the
 // reveal's, and one property cannot carry two motion sources. The wrapper has
@@ -44,11 +45,7 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
             <span class="tag">{t}</span>
           ))}
         </div>
-        {project.stars > 0 && (
-          <span class="font-mono text-xs text-foreground-tertiary">
-            {countLabel(project.stars, 'star', 'stars')}
-          </span>
-        )}
+        {stars && <span class="font-mono text-xs text-foreground-tertiary">{stars}</span>}
       </a>
     ) : (
       <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">

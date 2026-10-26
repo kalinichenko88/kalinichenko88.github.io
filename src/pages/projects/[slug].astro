@@ -5,7 +5,7 @@ import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import { getProjects } from '../../lib/projects';
-import { countLabel, projectImageAlt } from '../../lib/project-image';
+import { projectImageAlt, starLabel } from '../../lib/project-image';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).sort(
@@ -29,6 +29,7 @@ const hasBody = Boolean(project.entry.body?.trim());
 // With no body the header and the related posts are two default sections side
 // by side, so a divider separates them and its own margins make the gap.
 const dividerNext = !hasBody && related.length > 0;
+const stars = starLabel(project.stars);
 // Rendered by ./[slug]/[theme].png.ts. Only link previews show it: on the page
 // it would repeat the header above.
 const socialImage = {
@@ -73,11 +74,7 @@ const socialImage = {
                 View on GitHub
               </a>
             )}
-            {project.stars > 0 && (
-              <span class="font-mono text-xs text-foreground-tertiary ml-2">
-                {countLabel(project.stars, 'star', 'stars')}
-              </span>
-            )}
+            {stars && <span class="font-mono text-xs text-foreground-tertiary ml-2">{stars}</span>}
           </div>
         </div>
       </div>

@@ -5,12 +5,7 @@ import sharp from 'sharp';
 
 import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
-import {
-  IMAGE_PALETTES,
-  countLabel,
-  projectImage,
-  projectStats,
-} from '../src/lib/project-image.ts';
+import { IMAGE_PALETTES, projectImage, projectStats, starLabel } from '../src/lib/project-image.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and
@@ -58,13 +53,12 @@ test('every project renders a 1200x630 PNG in both themes, with or without GitHu
   }
 });
 
-// The same label on the image and the text cards, short enough that a growing
-// count cannot push the site name off the image.
+// Short enough that a growing count cannot push the site name off the image,
+// and the same words on the text cards as on the image.
 test('a count is written in compact form', () => {
-  assert.equal(countLabel(1, 'star', 'stars'), '1 star');
-  assert.equal(countLabel(11, 'star', 'stars'), '11 stars');
   const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => label);
   assert.deepEqual(labels, ['12K stars', '1 issue']);
+  assert.deepEqual([0, 1, 11, 12345].map(starLabel), [null, '1 star', '11 stars', '12K stars']);
 });
 
 // "0 stars" says nothing, so the image drops a number at zero, as the card
@@ -107,13 +101,14 @@ test('a project page passes its light image to og:image', async () => {
 });
 
 // The homepage card and the project page write their star count the way the
-// image does, so the two
-// never show one project with different numbers.
-test('every text surface writes the star count through countLabel()', async () => {
+// image does, so one project never shows two numbers. They read the count
+// only through starLabel(): any other use of project.stars fails here.
+test('every text surface reads the star count only through starLabel()', async () => {
   for (const file of ['src/components/ProjectCard.astro', 'src/pages/projects/[slug].astro']) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
-    assert.match(source, /countLabel\(\s*project\.stars,/, file);
-    // `{project.stars}` or `{project.stars.toLocaleString()}` as text.
-    assert.doesNotMatch(source, /\{project\.stars[}.]/, `${file}: a raw star count`);
+    const reads = source.match(/project\.stars\b/g) ?? [];
+    const throughLabel = source.match(/starLabel\(project\.stars\)/g) ?? [];
+    assert.ok(throughLabel.length > 0, `${file}: no starLabel(project.stars)`);
+    assert.equal(reads.length, throughLabel.length, `${file}: project.stars read directly`);
   }
 });
