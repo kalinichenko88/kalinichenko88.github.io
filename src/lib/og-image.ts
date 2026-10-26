@@ -15,7 +15,9 @@ import sharp from 'sharp';
  * is not kept: the next call renders again.
  */
 export function renderOgImage(element: OgElement): Promise<Buffer> {
-  const key = JSON.stringify(element);
+  // A hash, not the JSON: a post's tree holds its whole cover as a data: URL,
+  // about 700 KB, and dev keeps one entry for each edit of the text.
+  const key = createHash('sha1').update(JSON.stringify(element)).digest('hex');
   let png = rendered.get(key);
   if (!png) {
     rendered.set(key, (png = render(element)));

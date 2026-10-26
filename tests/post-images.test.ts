@@ -16,6 +16,10 @@ async function posts() {
   const found: (ImagePost & { file: string; id: string })[] = [];
   for (const file of await readdir(postsDir)) {
     const source = await readFile(new URL(file, postsDir), 'utf8');
+    // A draft with no cover gets no image, as in the route.
+    if (!/^cover: /m.test(source)) {
+      continue;
+    }
     const field = (name: string) => {
       return source.match(new RegExp(`^${name}: *(['"]?)(.*)\\1$`, 'm'))?.[2] ?? '';
     };
@@ -56,33 +60,40 @@ test('every post renders a 1200x630 palette PNG', async () => {
 // Platforms crop the edges of a link preview, so nothing may be drawn in the
 // 10% right margin (x 1080 on) or in the bottom margin above the accent bar
 // (y 560 to 616), where text that does not fit would spill. The case: a title
-// far longer than any so far and a description at the 125 limit, next to the
-// widest and the tallest cover. Satori always fills the canvas, so only the
-// pixels can tell.
+// at the limit of each size step and one far past it, and a description at
+// the 125 limit, all in wide capitals so each takes every line it may, next
+// to the widest and the tallest cover. Satori always fills the canvas, so
+// only the pixels can tell.
 test('the longest text and every cover shape stay inside the safe area', async () => {
-  const longest = {
-    title: 'Automating monorepo dependency updates and tool upgrades with Claude Code commands',
-    description:
-      'A Neovim setup that uses Copilot Chat to generate commit messages with the right format, branch names, repo rules, and tests.',
-    pubDate: new Date('2026-09-30'),
-    minutesRead: 12,
+  // A space every four characters, so the text wraps as words do.
+  const wide = (length: number) => {
+    return 'WMW '.repeat(length).slice(0, length).trimEnd();
   };
-  assert.equal(longest.description.length, 125);
   const bg = Buffer.from(IMAGE_PALETTES.light.bg.slice(1), 'hex');
   const margins = {
     right: { left: 1080, top: 0, width: 120, height: 616 },
     bottom: { left: 0, top: 560, width: 1200, height: 56 },
   };
-  for (const id of ['budget-planner-obsidian-community-plugins', 'hello-world']) {
-    const png = await renderOgImage(postImage({ ...longest, cover: await cover(id) }));
-    for (const [name, region] of Object.entries(margins)) {
-      // Raw pixels: sharp's stats() reads the whole input and ignores extract().
-      const { data, info } = await sharp(png)
-        .extract(region)
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      for (let i = 0; i < data.length; i += info.channels) {
-        assert.ok(data.subarray(i, i + 3).equals(bg), `${id}: drawn in the ${name} margin`);
+  for (const title of [wide(40), wide(60), wide(200)]) {
+    for (const id of ['budget-planner-obsidian-community-plugins', 'hello-world']) {
+      const post = {
+        title,
+        description: wide(125),
+        pubDate: new Date('2026-09-30'),
+        minutesRead: 12,
+        cover: await cover(id),
+      };
+      const png = await renderOgImage(postImage(post));
+      for (const [name, region] of Object.entries(margins)) {
+        // Raw pixels: sharp's stats() reads the whole input and ignores extract().
+        const { data, info } = await sharp(png)
+          .extract(region)
+          .raw()
+          .toBuffer({ resolveWithObject: true });
+        const where = `${title.length}-character title, ${id}`;
+        for (let i = 0; i < data.length; i += info.channels) {
+          assert.ok(data.subarray(i, i + 3).equals(bg), `${where}: drawn in the ${name} margin`);
+        }
       }
     }
   }

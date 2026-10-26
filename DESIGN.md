@@ -324,8 +324,9 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   description, the date and reading time in mono at the bottom, the whole
   drawing on the right and a 14px accent bar along the bottom, on the page
   colour `#f4f2ee`, all inside a 10% margin so no platform crop reaches it.
-  The title steps down from 54 to 48 to 42px as it grows and stops at three
-  lines; the description (125 characters at most) takes three. The no-text
+  The title steps down from 54 to 48 to 42px as it grows and stops at four
+  lines (every title so far takes three); the description (125 characters at
+  most) takes three, with room for a fourth. The no-text
   rule above is about the drawing: here the text sits next to it, not in it.
   The site image (`site.og.jpg`) stays the drawing alone, written by the
   skill.

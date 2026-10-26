@@ -52,7 +52,7 @@ export function postImage(post: ImagePost): OgElement {
           'div',
           {
             display: 'block',
-            lineClamp: 3,
+            lineClamp: 4,
             fontSize: titleSize(post.title),
             fontWeight: 700,
             lineHeight: 1.1,
@@ -60,7 +60,8 @@ export function postImage(post: ImagePost): OgElement {
           },
           post.title
         ),
-        // 125 characters at most (tests/meta-tags.test.ts) take three lines.
+        // 125 characters at most (tests/meta-tags.test.ts) take three lines;
+        // the fourth is room for wide letters.
         el(
           'div',
           {
@@ -120,17 +121,18 @@ export function toImagePost(post: CollectionEntry<'posts'>): ImagePost | undefin
     import: 'default',
     eager: true,
   });
+  const src = covers[`../assets/images/covers/${post.id}.png`];
+  // Satori's own error names no post: "Image source is not provided".
+  if (!src) {
+    throw new Error(`${post.id}: no cover at src/assets/images/covers/${post.id}.png`);
+  }
 
   return {
     title: post.data.title,
     description: post.data.description,
     pubDate: post.data.pubDate,
     minutesRead: readingTime(post.body ?? ''),
-    cover: {
-      src: covers[`../assets/images/covers/${post.id}.png`],
-      width: cover.width,
-      height: cover.height,
-    },
+    cover: { src, width: cover.width, height: cover.height },
   };
 }
 
@@ -139,7 +141,7 @@ const PADDING_Y = 72;
 const DRAWING_WIDTH = 360;
 
 // Steps down with length, so every title so far (57 characters at most) fits
-// in three lines. A longer one gets the smallest size and is cut after three.
+// in three lines. A longer one gets the smallest size and is cut after four.
 function titleSize(title: string): number {
   if (title.length <= 40) {
     return 54;
