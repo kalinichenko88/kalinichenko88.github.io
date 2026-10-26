@@ -1,15 +1,18 @@
 ---
 import type { Project } from '../lib/projects';
+import { projectImageAlt } from '../lib/project-image';
 
 type Props = {
   project: Project;
   /** Title level: h2 on /projects, h3 inside the homepage section. */
   heading?: 'h2' | 'h3';
   /**
-   * The card sits in the homepage's sideways row (CardRow): its tech and stars
-   * drop to the bottom so they line up across the row, and it skips its own
-   * reveal and scroll depth, because the row reveals as one block and a card
-   * clipped by the row would stay a blank peek at the edge.
+   * The card sits in the homepage's sideways row (CardRow) and stays text: at
+   * the row's 18rem the image's tagline would be too small to read. Its tech
+   * and stars drop to the bottom so they line up across the row, and it skips
+   * its own reveal and scroll depth, because the row reveals as one block and
+   * a card clipped by the row would stay a blank peek at the edge. Without
+   * `row` (on /projects) the card is the project's image alone.
    */
   row?: boolean;
   /** Stable sequence position for profile-based entry motion. */
@@ -26,28 +29,45 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
 
 <div data-scroll-depth={row ? undefined : ''}>
   <article
-    class="card card-hover group h-full"
+    class:list={['card card-hover group h-full', !row && 'overflow-hidden']}
     data-reveal={row ? undefined : 'card'}
     style={row ? undefined : `--motion-index: ${motionIndex}`}
   >
-    <a
-      href={`/projects/${project.slug}`}
-      class:list={['p-6', row ? 'flex h-full flex-col' : 'block']}
-    >
-      <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
-        {project.name}
-      </Heading>
-      <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-      <div class:list={['flex flex-wrap gap-2 mb-4', row && 'mt-auto']}>
-        {project.tech.map((t) => (
-          <span class="tag">{t}</span>
+    {row ? (
+      <a href={`/projects/${project.slug}`} class="flex h-full flex-col p-6">
+        <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+          {project.name}
+        </Heading>
+        <p class="text-foreground-secondary mb-4">{project.tagline}</p>
+        <div class="flex flex-wrap gap-2 mb-4 mt-auto">
+          {project.tech.map((t) => (
+            <span class="tag">{t}</span>
+          ))}
+        </div>
+        {project.stars > 0 && (
+          <span class="font-mono text-xs text-foreground-tertiary">
+            {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+          </span>
+        )}
+      </a>
+    ) : (
+      <a href={`/projects/${project.slug}`} class="block">
+        {/* The image holds the name, so the heading is for screen readers. */}
+        <Heading class="sr-only">{project.name}</Heading>
+        {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per
+              theme; global.css hides the other, and a hidden lazy image never loads. */}
+        {['light', 'dark'].map((theme) => (
+          <img
+            src={`/projects/${project.slug}/${theme}.png`}
+            alt={projectImageAlt(project)}
+            width="1200"
+            height="630"
+            loading="lazy"
+            decoding="async"
+            class={`theme-${theme}-only block h-auto w-full`}
+          />
         ))}
-      </div>
-      {project.stars > 0 && (
-        <span class="font-mono text-xs text-foreground-tertiary">
-          {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-        </span>
-      )}
-    </a>
+      </a>
+    )}
   </article>
 </div>
