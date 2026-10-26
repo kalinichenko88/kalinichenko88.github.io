@@ -321,12 +321,33 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
 - **Social image:** a separate 1200×630 JPEG the skill writes next to each
   cover (`<post-id>.og.jpg`): the whole drawing inside a 10% margin on
   `#f4f2ee`, so no platform crop reaches it.
-- **Projects have no illustrations.** On the homepage Selected work sits
+- **Projects have no drawn illustrations.** On the homepage Selected work sits
   right above the Writing row, so a drawing reads as "a post"; covers on
   project cards would blur that and make two illustrated blocks in a row. Most
   projects are headless libraries with no idea to draw, and a project's page
   already shows its related posts' covers. A real screenshot of a project
   with a UI may go in its page's body, never on the card.
+- **A project has an image of type, not a drawing.** Like the social preview
+  GitHub makes for a repo: 1200×630, the repo path in mono, the name, the
+  tagline, the numbers from GitHub (stars, open issues, forks, main language),
+  `kalinichenko.dev` and a 14px accent bar along the bottom, inside the same
+  10% margin as the post social image. Rendered on every build
+  (`src/lib/project-image.ts`), so the numbers are always that build's (in
+  dev, the YAML stars only). A number at zero is left out, and a count is
+  written in compact form ("1.2K stars"). The text cards and the project
+  page write their star count through `starLabel()`, so one project never
+  shows two numbers. It uses the theme tokens (fills `accent`, small
+  text `accent-text`), and the language dot is the accent, not GitHub's
+  language colour, so the one-accent rule holds. Its background is the card
+  `surface`, not the page `bg`: on `/projects` the image is the whole card,
+  and on the page colour it melted into the page. Where it shows:
+  - the project page's `og:image`, the light render;
+  - the card on `/projects`, which is the image alone, in the render that
+    matches the theme (light and dark are two files); the heading stays for
+    screen readers;
+  - not on the homepage row, where at 18rem its tagline is too small to read,
+    so those cards stay text;
+  - not on the project page itself, where it would repeat the header.
 
 ## Interaction
 

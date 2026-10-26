@@ -862,6 +862,14 @@
   border-color: var(--color-accent);
 }
 
+/* An image rendered once per theme, as on a /projects card: only the current
+   theme's one shows. Unlayered, so it beats a `block` utility on the image.
+   With no data-theme (scripts off) the light one shows. */
+:root:not([data-theme='cloud-dark']) .theme-dark-only,
+[data-theme='cloud-dark'] .theme-light-only {
+  display: none;
+}
+
 [data-theme='cloud'] .btn-primary,
 [data-theme='cloud-dark'] .btn-primary {
   border-radius: 9999px;

@@ -1,9 +1,9 @@
 import { getCollection } from 'astro:content';
 
 import { GITHUB_PROFILE_LINK } from '../consts';
-import { githubStars } from './github-stars';
+import { githubRepo, offlineNumbers } from './github-repo';
 
-/** Every project in `order`, with its repo URL and star count. */
+/** Every project in `order`, with its repo URL and its numbers from GitHub. */
 export async function getProjects() {
   return Promise.all(
     (await getCollection('projects'))
@@ -12,9 +12,11 @@ export async function getProjects() {
         const { data } = entry;
         const url = `${GITHUB_PROFILE_LINK}/${data.slug}`;
         // Dev renders per request: live counts would burn the 60 req/h anonymous limit.
-        const stars = import.meta.env.DEV ? data.stars : await githubStars(url, data.stars);
+        const numbers = import.meta.env.DEV
+          ? offlineNumbers(data.stars)
+          : await githubRepo(url, data.stars);
         // `entry` is for the project's page, which renders the Markdown body.
-        return { ...data, url, stars, entry };
+        return { ...data, url, ...numbers, entry };
       })
   );
 }

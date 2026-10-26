@@ -1,15 +1,18 @@
 ---
 import type { Project } from '../lib/projects';
+import { IMAGE_THEMES, projectImageAlt, projectImageSrc, starLabel } from '../lib/project-image';
 
 type Props = {
   project: Project;
   /** Title level: h2 on /projects, h3 inside the homepage section. */
   heading?: 'h2' | 'h3';
   /**
-   * The card sits in the homepage's sideways row (CardRow): its tech and stars
-   * drop to the bottom so they line up across the row, and it skips its own
-   * reveal and scroll depth, because the row reveals as one block and a card
-   * clipped by the row would stay a blank peek at the edge.
+   * The card sits in the homepage's sideways row (CardRow) and stays text: at
+   * the row's 18rem the image's tagline would be too small to read. Its tech
+   * and stars drop to the bottom so they line up across the row, and it skips
+   * its own reveal and scroll depth, because the row reveals as one block and
+   * a card clipped by the row would stay a blank peek at the edge. Without
+   * `row` (on /projects) the card is the project's image alone.
    */
   row?: boolean;
   /** Stable sequence position for profile-based entry motion. */
@@ -17,6 +20,15 @@ type Props = {
 };
 
 const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
+const starText = starLabel(project.stars);
+// Only the /projects card shows the image, so only it pays for the hash.
+const images = row
+  ? []
+  : await Promise.all(
+      IMAGE_THEMES.map(async (theme) => {
+        return { theme, src: await projectImageSrc(project, theme) };
+      })
+    );
 
 // The depth offset needs an element of its own: the card's `translate` is the
 // reveal's, and one property cannot carry two motion sources. The wrapper has
@@ -30,24 +42,43 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
     data-reveal={row ? undefined : 'card'}
     style={row ? undefined : `--motion-index: ${motionIndex}`}
   >
-    <a
-      href={`/projects/${project.slug}`}
-      class:list={['p-6', row ? 'flex h-full flex-col' : 'block']}
-    >
-      <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
-        {project.name}
-      </Heading>
-      <p class="text-foreground-secondary mb-4">{project.tagline}</p>
-      <div class:list={['flex flex-wrap gap-2 mb-4', row && 'mt-auto']}>
-        {project.tech.map((t) => (
-          <span class="tag">{t}</span>
+    {row ? (
+      <a href={`/projects/${project.slug}`} class="flex h-full flex-col p-6">
+        <Heading class="font-display font-semibold text-xl text-foreground mb-2 group-hover:text-accent transition-colors">
+          {project.name}
+        </Heading>
+        <p class="text-foreground-secondary mb-4">{project.tagline}</p>
+        <div class="flex flex-wrap gap-2 mb-4 mt-auto">
+          {project.tech.map((t) => (
+            <span class="tag">{t}</span>
+          ))}
+        </div>
+        {starText && <span class="font-mono text-xs text-foreground-tertiary">{starText}</span>}
+      </a>
+    ) : (
+      <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">
+        {/* The link, not the card, clips the image to the card's corners: a
+              card that clipped would also cut off the link's focus ring. It
+              inherits the card's radius, which each theme sets, so it follows
+              a theme change. Inside the 1px border the exact radius is 1px
+              less, but on the corner diagonal that differs by 0.4px between
+              two near-equal colours, which does not show. */}
+        {/* The image holds the name, so the heading is for screen readers. */}
+        <Heading class="sr-only">{project.name}</Heading>
+        {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per
+              theme; global.css hides the other, and a hidden lazy image never loads. */}
+        {images.map(({ theme, src }) => (
+          <img
+            src={src}
+            alt={projectImageAlt(project)}
+            width="1200"
+            height="630"
+            loading="lazy"
+            decoding="async"
+            class={`theme-${theme}-only block h-auto w-full`}
+          />
         ))}
-      </div>
-      {project.stars > 0 && (
-        <span class="font-mono text-xs text-foreground-tertiary">
-          {project.stars} {project.stars === 1 ? 'star' : 'stars'}
-        </span>
-      )}
-    </a>
+      </a>
+    )}
   </article>
 </div>

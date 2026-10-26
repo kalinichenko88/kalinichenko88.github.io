@@ -32,7 +32,7 @@ const projects = defineCollection({
     // Live site, when the project has one. Falls back to the repo URL.
     homepage: z.url().optional(),
     // Fallback only: the build reads the live count from GitHub and uses this
-    // when the API cannot answer (see src/lib/github-stars.ts).
+    // when the API cannot answer (see src/lib/github-repo.ts).
     stars: z.number().default(0),
   }),
 });
