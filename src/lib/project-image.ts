@@ -99,14 +99,19 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
  */
 export function projectStats(numbers: Pick<RepoNumbers, 'stars' | 'issues' | 'forks'>) {
   return STATS.filter(({ key }) => numbers[key] > 0).map(({ key, one, many, icon }) => {
-    const count = numbers[key];
-
-    return { icon, label: `${compact.format(count)} ${count === 1 ? one : many}` };
+    return { icon, label: countLabel(numbers[key], one, many) };
   });
 }
 
-// "12K stars", as GitHub writes it: a count grows on its own between builds,
-// and a five-digit one would push the site name off the image.
+/**
+ * "11 stars", "1.2K stars": the one way the site writes a count, on the image
+ * and the text cards alike. Compact, because a count grows on its own between
+ * builds, and a five-digit one would push the site name off the image.
+ */
+export function countLabel(count: number, one: string, many: string): string {
+  return `${compact.format(count)} ${count === 1 ? one : many}`;
+}
+
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact' });
 
 /** What the image says after the name, for its alt text. */

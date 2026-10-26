@@ -11,7 +11,9 @@ import sharp from 'sharp';
  */
 export async function renderOgImage(element: OgElement): Promise<Buffer> {
   const svg = await satori(element, { width: 1200, height: 630, fonts: await fonts() });
-  // Flat colours and text: a palette PNG looks the same at under half the size.
+  // ponytail: always a 256-colour palette PNG, which looks the same as
+  // truecolour on flat colours and text at under half the size. A caller with
+  // a gradient, a photo or a drawing needs an option for truecolour first.
   return sharp(Buffer.from(svg)).png({ palette: true }).toBuffer();
 }
 

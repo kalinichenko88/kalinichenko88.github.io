@@ -5,7 +5,12 @@ import sharp from 'sharp';
 
 import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
-import { IMAGE_PALETTES, projectImage, projectStats } from '../src/lib/project-image.ts';
+import {
+  IMAGE_PALETTES,
+  countLabel,
+  projectImage,
+  projectStats,
+} from '../src/lib/project-image.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and
@@ -39,17 +44,25 @@ async function projects() {
 test('every project renders a 1200x630 PNG in both themes, with or without GitHub', async () => {
   for (const project of await projects()) {
     assert.ok(project.name && project.slug && project.tagline, `${project.file}: frontmatter`);
-    for (const numbers of [{}, offlineNumbers(project.stars)]) {
+    const variants = { live: {}, offline: offlineNumbers(project.stars) };
+    for (const [variant, numbers] of Object.entries(variants)) {
       for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
         const png = await renderOgImage(projectImage({ ...project, ...numbers }, theme));
-        const { format, width, height } = await sharp(png).metadata();
-        assert.deepEqual([format, width, height], ['png', 1200, 630], `${project.file}: ${theme}`);
+        const { format, width, height, isPalette } = await sharp(png).metadata();
+        const where = `${project.file}: ${variant} numbers, ${theme}`;
+        assert.deepEqual([format, width, height], ['png', 1200, 630], where);
+        // A palette PNG is under half the size of a truecolour one here.
+        assert.ok(isPalette, `${where}: not a palette PNG`);
       }
     }
   }
 });
 
-test('a count reads the way GitHub writes it', () => {
+// The same label on the image and the text cards, short enough that a growing
+// count cannot push the site name off the image.
+test('a count is written in compact form', () => {
+  assert.equal(countLabel(1, 'star', 'stars'), '1 star');
+  assert.equal(countLabel(11, 'star', 'stars'), '11 stars');
   const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => label);
   assert.deepEqual(labels, ['12K stars', '1 issue']);
 });

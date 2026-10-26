@@ -333,7 +333,9 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   `kalinichenko.dev` and a 14px accent bar along the bottom, inside the same
   10% margin as the post social image. Rendered on every build
   (`src/lib/project-image.ts`), so the numbers are always that build's (in
-  dev, the YAML stars only). A number at zero is left out. It uses the theme tokens (fills `accent`, small
+  dev, the YAML stars only). A number at zero is left out, and a count is
+  written in compact form ("1.2K stars") by `countLabel()`, which the text
+  cards and the project page use for their star count too. It uses the theme tokens (fills `accent`, small
   text `accent-text`), and the language dot is the accent, not GitHub's
   language colour, so the one-accent rule holds. Where it shows:
   - the project page's `og:image`, the light render;

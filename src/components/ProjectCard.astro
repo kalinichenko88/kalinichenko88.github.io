@@ -1,6 +1,6 @@
 ---
 import type { Project } from '../lib/projects';
-import { projectImageAlt } from '../lib/project-image';
+import { countLabel, projectImageAlt } from '../lib/project-image';
 
 type Props = {
   project: Project;
@@ -46,12 +46,15 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
         </div>
         {project.stars > 0 && (
           <span class="font-mono text-xs text-foreground-tertiary">
-            {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+            {countLabel(project.stars, 'star', 'stars')}
           </span>
         )}
       </a>
     ) : (
-      <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">
+      <a
+        href={`/projects/${project.slug}`}
+        class="block overflow-hidden rounded-[calc(var(--radius-xl)-1px)]"
+      >
         {/* The link, not the card, clips the image to the card's corners: a
               card that clipped would also cut off the link's focus ring. */}
         {/* The image holds the name, so the heading is for screen readers. */}

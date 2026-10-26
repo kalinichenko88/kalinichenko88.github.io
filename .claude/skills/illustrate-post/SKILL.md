@@ -88,9 +88,10 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
 
 ## Site image
 
-The pages without an image of their own (home, `/about`, `/blog`, `/projects`,
-`/tags`) share `src/assets/images/site.og.jpg` as their link preview. To redo
-it, run the workflow with `site` in place of a post id: the metaphors stand for the
+Every page that passes no `image` to `Layout` (home, `/about`, `/blog`,
+`/projects`, `/tags`, `/contact`, the 404 page) shares
+`src/assets/images/site.og.jpg` as its link preview. To redo the site image,
+run the workflow with `site` in place of a post id: the metaphors stand for the
 whole site, and `Asset type:` in the prompt is `website social preview
 illustration`. Save only `cp "$RUN/variant-N.og.jpg"
 src/assets/images/site.og.jpg`, update the `alt` in

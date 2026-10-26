@@ -5,7 +5,7 @@ import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import { getProjects } from '../../lib/projects';
-import { projectImageAlt } from '../../lib/project-image';
+import { countLabel, projectImageAlt } from '../../lib/project-image';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).sort(
@@ -75,7 +75,7 @@ const socialImage = {
             )}
             {project.stars > 0 && (
               <span class="font-mono text-xs text-foreground-tertiary ml-2">
-                {project.stars} {project.stars === 1 ? 'star' : 'stars'}
+                {countLabel(project.stars, 'star', 'stars')}
               </span>
             )}
           </div>
