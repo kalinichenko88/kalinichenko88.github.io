@@ -96,6 +96,9 @@ test('the image URL changes with the image', async () => {
   assert.equal(await projectImageSrc({ ...project }, 'light'), src);
   const changed = await projectImageSrc({ ...project, tagline: `${project.tagline}!` }, 'light');
   assert.notEqual(changed, src);
+  // The numbers change between builds with no commit at all.
+  const oneStar = await projectImageSrc({ ...project, stars: 1 }, 'light');
+  assert.notEqual(await projectImageSrc({ ...project, stars: 2 }, 'light'), oneStar);
 });
 
 // A full set of numbers, and the ones dev and a failed GitHub call give: the YAML stars,
@@ -163,6 +166,16 @@ test('a project page passes its light image to og:image', async () => {
   );
   assert.match(page, /image=\{/);
   assert.match(page, /projectImageSrc\(project, 'light'\)/);
+});
+
+// A card that linked the bare path would keep a browser's cached old image.
+test('the /projects card links each image by its versioned URL', async () => {
+  const card = await readFile(
+    new URL('../src/components/ProjectCard.astro', import.meta.url),
+    'utf8'
+  );
+  assert.match(card, /projectImageSrc\(project, theme\)/);
+  assert.doesNotMatch(card, /\.png`/, 'a bare image path in the card');
 });
 
 // The homepage card and the project page write their star count the way the

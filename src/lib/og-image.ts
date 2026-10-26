@@ -8,8 +8,20 @@ import sharp from 'sharp';
  * the site's fonts. Satori lays the tree out with flexbox and draws the text
  * as paths, so sharp needs no fonts installed to turn it into a PNG: the CI
  * runner has none. Not tied to projects, so other social images can use it.
+ *
+ * Rendered once per tree per process: the PNG route and the pages that put a
+ * hash of it in their URL get the same bytes from one render.
  */
-export async function renderOgImage(element: OgElement): Promise<Buffer> {
+export function renderOgImage(element: OgElement): Promise<Buffer> {
+  const key = JSON.stringify(element);
+  let png = rendered.get(key);
+  if (!png) rendered.set(key, (png = render(element)));
+  return png;
+}
+
+const rendered = new Map<string, Promise<Buffer>>();
+
+async function render(element: OgElement): Promise<Buffer> {
   const svg = await satori(element, { width: 1200, height: 630, fonts: await fonts() });
   // ponytail: always a 256-colour palette PNG, which looks the same as
   // truecolour on flat colours and text at under half the size. A caller with

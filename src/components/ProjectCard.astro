@@ -1,6 +1,12 @@
 ---
 import type { Project } from '../lib/projects';
-import { projectImageAlt, projectImageSrc, starLabel } from '../lib/project-image';
+import {
+  IMAGE_PALETTES,
+  projectImageAlt,
+  projectImageSrc,
+  starLabel,
+  type ImageTheme,
+} from '../lib/project-image';
 
 type Props = {
   project: Project;
@@ -25,7 +31,7 @@ const starText = starLabel(project.stars);
 const images = row
   ? []
   : await Promise.all(
-      (['light', 'dark'] as const).map(async (theme) => {
+      (Object.keys(IMAGE_PALETTES) as ImageTheme[]).map(async (theme) => {
         return { theme, src: await projectImageSrc(project, theme) };
       })
     );
