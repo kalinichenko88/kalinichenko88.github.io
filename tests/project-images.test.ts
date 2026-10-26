@@ -5,9 +5,8 @@ import sharp from 'sharp';
 
 import { DARK_THEME, LIGHT_THEME } from '../src/config/themes.ts';
 import { offlineNumbers } from '../src/lib/github-repo.ts';
-import { renderOgImage } from '../src/lib/og-image.ts';
+import { IMAGE_PALETTES, renderOgImage } from '../src/lib/og-image.ts';
 import {
-  IMAGE_PALETTES,
   IMAGE_THEMES,
   projectImage,
   projectImageSrc,

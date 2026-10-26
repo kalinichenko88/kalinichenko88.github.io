@@ -76,12 +76,12 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
 
     ```bash
     cp "$RUN/variant-N.cover.png" src/assets/images/covers/<post-id>.png
-    cp "$RUN/variant-N.og.jpg" src/assets/images/covers/<post-id>.og.jpg
     ```
 
     The cover is trimmed to its drawing, so it has the drawing's own
-    proportions; the `.og.jpg` is its 1200×630 social image, which the post
-    page finds by the same name. Set
+    proportions. Do not copy the `.og.jpg`: the post's social image is
+    rendered on every build from the cover, the title and the description
+    (`src/lib/post-image.ts`), and it finds the cover by this name. Set
     `cover: ../../src/assets/images/covers/<post-id>.png` in the post's
     frontmatter, after `tags:`. If a `cover:` line exists, replace it; a post
     has exactly one. Then run `npm test`.

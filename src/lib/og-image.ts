@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import satori, { type Font } from 'satori';
@@ -7,7 +8,7 @@ import sharp from 'sharp';
  * Renders an element tree to a 1200x630 PNG, the size link previews use, in
  * the site's fonts. Satori lays the tree out with flexbox and draws the text
  * as paths, so sharp needs no fonts installed to turn it into a PNG: the CI
- * runner has none. Not tied to projects, so other social images can use it.
+ * runner has none. The project and post images both render through it.
  *
  * Rendered once per tree per process, so the PNG route and the pages that put
  * a hash of it in their URL get the same bytes from one render. A failed render
@@ -26,11 +27,24 @@ export function renderOgImage(element: OgElement): Promise<Buffer> {
 
 const rendered = new Map<string, Promise<Buffer>>();
 
+/**
+ * The image's path, with a hash of its PNG: browsers and link previews cache an
+ * image by its URL, so any change to the bytes, from a number to a font file or
+ * a library update, needs a new one, and an unchanged image keeps its old one.
+ */
+export async function ogImageSrc(path: string, element: OgElement): Promise<string> {
+  const png = await renderOgImage(element);
+  const version = createHash('sha1').update(png).digest('hex').slice(0, 8);
+
+  return `${path}?v=${version}`;
+}
+
 async function render(element: OgElement): Promise<Buffer> {
   const svg = await satori(element, { width: 1200, height: 630, fonts: await fonts() });
   // ponytail: always a 256-colour palette PNG, which looks the same as
-  // truecolour on flat colours and text at under half the size. A caller with
-  // a gradient, a photo or a drawing needs an option for truecolour first.
+  // truecolour on flat colours, text and the post covers (themselves 256-colour
+  // drawings) at under half the size. A caller with a gradient or a photo needs
+  // an option for truecolour first.
   return sharp(Buffer.from(svg)).png({ palette: true }).toBuffer();
 }
 
@@ -45,6 +59,40 @@ export type OgElement = {
 };
 
 type OgChild = OgElement | string | false;
+
+/** An element with a style and children, the one shape both images build from. */
+export function el(
+  type: string,
+  style: Record<string, string | number>,
+  ...children: OgChild[]
+): OgElement {
+  return { type, props: { style, children } };
+}
+
+/**
+ * The theme tokens the images use, copied from global.css because Satori cannot
+ * read CSS variables. tests/project-images.test.ts keeps the copies in step.
+ */
+export const IMAGE_PALETTES = {
+  light: {
+    bg: '#f4f2ee',
+    surface: '#ffffff',
+    text: '#232326',
+    'text-secondary': '#55555b',
+    'text-tertiary': '#68686e',
+    accent: '#c25a34',
+    'accent-text': '#a94a29',
+  },
+  dark: {
+    bg: '#1a1a1c',
+    surface: '#232326',
+    text: '#ececed',
+    'text-secondary': '#a6a6ac',
+    'text-tertiary': '#8f8f95',
+    accent: '#e07a52',
+    'accent-text': '#e07a52',
+  },
+};
 
 const require = createRequire(import.meta.url);
 

@@ -5,9 +5,9 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 // Covers come from the illustrate-post skill, whose prepare.mjs trims every
-// cover to its drawing, palette-compresses it and writes its social image.
-// This catches a file that skipped it, such as a hand download from ChatGPT
-// (truecolor, no social image), and a re-run that added a second line.
+// cover to its drawing and palette-compresses it. This catches a file that
+// skipped it, such as a hand download from ChatGPT (truecolor), and a re-run
+// that added a second line.
 const postsDir = new URL('../content/posts/', import.meta.url);
 
 async function coverLines() {
@@ -25,26 +25,29 @@ test('every post declares exactly one cover', async () => {
   }
 });
 
-test('every cover went through prepare.mjs and has its social image', async () => {
+test('every cover went through prepare.mjs', async () => {
   for (const { file, lines } of await coverLines()) {
     if (lines.length === 0) continue;
     const id = file.replace(/\.mdx?$/, '');
     const relative = lines[0].slice('cover: '.length).trim();
-    // The post page finds the social image by this name.
+    // The post image (src/lib/post-image.ts) finds the cover by this name.
     assert.equal(relative, `../../src/assets/images/covers/${id}.png`, `${file}: cover path`);
     const path = fileURLToPath(new URL(relative, new URL(file, postsDir)));
 
     const meta = await sharp(path).metadata();
     assert.ok(meta.isPalette, `${file}: cover is not palette-compressed; run prepare.mjs`);
     assert.equal((await sharp(path).stats()).isOpaque, false, `${file}: cover is opaque`);
-
-    const social = await sharp(path.replace(/\.png$/, '.og.jpg')).metadata();
-    assert.deepEqual(
-      [social.format, social.width, social.height],
-      ['jpeg', 1200, 630],
-      `${file}: social image`
-    );
   }
+});
+
+// A post's social image is rendered at build time (tests/post-images.test.ts),
+// so a .og.jpg in covers/ is a leftover nothing reads.
+test('covers/ holds no social image files', async () => {
+  const files = await readdir(new URL('../src/assets/images/covers/', import.meta.url));
+  assert.deepEqual(
+    files.filter((file) => file.endsWith('.og.jpg')),
+    []
+  );
 });
 
 // Head.astro falls back to it on every page without a post cover.
