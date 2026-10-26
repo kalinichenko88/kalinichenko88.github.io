@@ -1,12 +1,11 @@
 ---
-import { createHash } from 'node:crypto';
 import { getCollection, render } from 'astro:content';
 
 import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import { getProjects } from '../../lib/projects';
-import { projectImageAlt, starLabel } from '../../lib/project-image';
+import { projectImageAlt, projectImageVersion, starLabel } from '../../lib/project-image';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).sort(
@@ -32,13 +31,11 @@ const hasBody = Boolean(project.entry.body?.trim());
 const dividerNext = !hasBody && related.length > 0;
 const starText = starLabel(project.stars);
 // Rendered by ./[slug]/[theme].png.ts. Only link previews show it: on the page
-// it would repeat the header above. Platforms cache a preview image by its URL,
-// so `v` changes whenever the text or a number on the image does.
-const imageAlt = `${project.name}. ${projectImageAlt(project)}`;
-const imageVersion = createHash('sha1').update(imageAlt).digest('hex').slice(0, 8);
+// it would repeat the header above.
 const socialImage = {
-  src: new URL(`/projects/${project.slug}/light.png?v=${imageVersion}`, Astro.url).href,
-  alt: imageAlt,
+  src: new URL(`/projects/${project.slug}/light.png?v=${projectImageVersion(project)}`, Astro.url)
+    .href,
+  alt: `${project.name}. ${projectImageAlt(project)}`,
 };
 ---
 

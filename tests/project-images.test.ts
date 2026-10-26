@@ -5,7 +5,13 @@ import sharp from 'sharp';
 
 import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
-import { IMAGE_PALETTES, projectImage, projectStats, starLabel } from '../src/lib/project-image.ts';
+import {
+  IMAGE_PALETTES,
+  projectImage,
+  projectImageVersion,
+  projectStats,
+  starLabel,
+} from '../src/lib/project-image.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and
@@ -35,33 +41,56 @@ async function projects() {
 }
 
 // Platforms crop the edges of a link preview, so nothing may be drawn in the
-// 10% right margin, above the accent bar that runs the full width. The case:
-// the longest name and tagline, every count at its widest compact form, and a
-// ten-letter language. Satori always fills the canvas, so only pixels can tell
-// a row that runs off it.
+// 10% right margin (x 1080 on), above the accent bar that runs the full width.
+// The case: the longest name and tagline, every count at its widest compact
+// form, and languages from short to far too long. Satori always fills the
+// canvas, so only pixels can tell a row that runs off it.
 test('the widest numbers row stays inside the safe area', async () => {
   const project = {
     name: 'Obsidian Budget Planner Plugin',
     tagline:
       "Turns an AI agent's Markdown into HTML that Telegram accepts and streams its reply into a live draft.",
     url: 'https://github.com/kalinichenko88/obsidian-budget-planner-plugin',
-    stars: 1234,
-    issues: 1234,
-    forks: 1234,
-    language: 'TypeScript',
+    stars: 987654,
+    issues: 987654,
+    forks: 987654,
   };
-  for (const theme of Object.keys(IMAGE_PALETTES) as (keyof typeof IMAGE_PALETTES)[]) {
-    // Raw pixels: sharp's stats() reads the whole input and ignores extract().
-    const { data, info } = await sharp(await renderOgImage(projectImage(project, theme)))
-      .extract({ left: 1081, top: 0, width: 119, height: 616 })
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const background = data.subarray(0, info.channels);
-    for (let i = 0; i < data.length; i += info.channels) {
-      const pixel = data.subarray(i, i + info.channels);
-      assert.ok(pixel.equals(background), `${theme}: something is drawn in the right margin`);
+  const languages = ['TypeScript', 'Jupyter Notebook', 'A Language Name Far Longer Than Any'];
+  for (const language of languages) {
+    for (const [theme, palette] of Object.entries(IMAGE_PALETTES)) {
+      const png = await renderOgImage(
+        projectImage({ ...project, language }, theme as keyof typeof IMAGE_PALETTES)
+      );
+      // Raw pixels: sharp's stats() reads the whole input and ignores extract().
+      const { data, info } = await sharp(png)
+        .extract({ left: 1080, top: 0, width: 120, height: 616 })
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const surface = Buffer.from(palette.surface.slice(1), 'hex');
+      for (let i = 0; i < data.length; i += info.channels) {
+        const pixel = data.subarray(i, i + 3);
+        assert.ok(pixel.equals(surface), `${language}, ${theme}: drawn in the right margin`);
+      }
     }
   }
+});
+
+// The fonts carry the latin subset only, and Satori draws a glyph outside it
+// as nothing, with no error. So the text the image draws must stay inside it.
+test('every project name and tagline is in the image font subset', async () => {
+  for (const { file, name, tagline } of await projects()) {
+    assert.match(`${name}${tagline}`, /^[\u0020-\u007e\u00a0-\u00ff\u2000-\u206f]*$/, file);
+  }
+});
+
+// Platforms cache a preview by its URL, so the URL changes with the image.
+test('the image version changes with what the image draws', async () => {
+  const [project] = await projects();
+  const version = projectImageVersion(project);
+  assert.match(version, /^[0-9a-f]{8}$/);
+  assert.equal(projectImageVersion({ ...project }), version);
+  assert.notEqual(projectImageVersion({ ...project, stars: project.stars + 1 }), version);
+  assert.notEqual(projectImageVersion({ ...project, tagline: `${project.tagline}!` }), version);
 });
 
 // A full set of numbers, and the ones dev and a failed GitHub call give: the YAML stars,
@@ -128,7 +157,10 @@ test('a project page passes its light image to og:image', async () => {
     'utf8'
   );
   assert.match(page, /image=\{/);
-  assert.match(page, /`\/projects\/\$\{project\.slug\}\/light\.png\?v=\$\{imageVersion\}`/);
+  assert.match(
+    page,
+    /`\/projects\/\$\{project\.slug\}\/light\.png\?v=\$\{projectImageVersion\(project\)\}`/
+  );
 });
 
 // The homepage card and the project page write their star count the way the

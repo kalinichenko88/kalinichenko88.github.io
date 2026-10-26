@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { SITE_NAME } from '../consts.ts';
 import type { RepoNumbers } from './github-repo';
 import type { OgElement } from './og-image';
@@ -61,10 +63,10 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       },
       project.tagline
     ),
-    // ponytail: the row does not shrink. Sized so every count at its widest
-    // compact form ("1.2K") and a ten-letter language fit inside the margin
-    // (tests/project-images.test.ts checks the pixels); a longer language name
-    // such as "Jupyter Notebook" would need a smaller gap.
+    // Sized so every count at its widest compact form ("988K") fits. The
+    // language is the one value of any length, so it gives way, cut with an
+    // ellipsis, and the site name keeps its place inside the margin.
+    // tests/project-images.test.ts checks the margin's pixels.
     el(
       'div',
       {
@@ -79,11 +81,33 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
         return stat(icon(color['text-tertiary']), label);
       }),
       project.language !== null &&
-        stat(
-          el('div', { width: 18, height: 18, borderRadius: 9, backgroundColor: color.accent }),
-          project.language
+        el(
+          'div',
+          { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 1, minWidth: 0 },
+          el('div', {
+            flexShrink: 0,
+            width: 18,
+            height: 18,
+            borderRadius: 9,
+            backgroundColor: color.accent,
+          }),
+          el(
+            'div',
+            {
+              display: 'block',
+              minWidth: 0,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            },
+            project.language
+          )
         ),
-      el('div', { marginLeft: 'auto', fontWeight: 600, color: color['accent-text'] }, SITE_NAME)
+      el(
+        'div',
+        { marginLeft: 'auto', flexShrink: 0, fontWeight: 600, color: color['accent-text'] },
+        SITE_NAME
+      )
     ),
     el('div', {
       position: 'absolute',
@@ -116,9 +140,20 @@ export function starLabel(stars: number): string | null {
   return projectStats({ stars, issues: 0, forks: 0 })[0]?.label ?? null;
 }
 
-// "1.2K": a count grows on its own between builds, and a five-digit one would
-// push the site name off the image.
+// At most four characters ("988K", "1.2M"): a count grows on its own between
+// builds, and a six-digit one would push the site name off the image.
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact' });
+
+/**
+ * A short hash of everything the light image draws, for its URL: platforms
+ * cache a link preview by its URL, so a new text, number or style needs a new
+ * one, and an unchanged image keeps its old one.
+ */
+export function projectImageVersion(project: ImageProject): string {
+  const drawn = JSON.stringify(projectImage(project, 'light'));
+
+  return createHash('sha1').update(drawn).digest('hex').slice(0, 8);
+}
 
 /** What the image says after the name, for its alt text. */
 export function projectImageAlt(project: ImageProject): string {
