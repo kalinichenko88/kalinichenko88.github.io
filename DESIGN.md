@@ -338,7 +338,9 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   page write their star count through `starLabel()`, so one project never
   shows two numbers. It uses the theme tokens (fills `accent`, small
   text `accent-text`), and the language dot is the accent, not GitHub's
-  language colour, so the one-accent rule holds. Where it shows:
+  language colour, so the one-accent rule holds. Its background is the card
+  `surface`, not the page `bg`: on `/projects` the image is the whole card,
+  and on the page colour it melted into the page. Where it shows:
   - the project page's `og:image`, the light render;
   - the card on `/projects`, which is the image alone, in the render that
     matches the theme (light and dark are two files); the heading stays for

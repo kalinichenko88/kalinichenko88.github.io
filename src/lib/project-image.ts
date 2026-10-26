@@ -25,7 +25,9 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       // would grow the root past the canvas and push the bottom row off it.
       padding: '72px 120px',
       boxSizing: 'border-box',
-      backgroundColor: color.bg,
+      // The card surface, not the page colour: on /projects the image is the
+      // whole card, and on the page colour it would melt into the page.
+      backgroundColor: color.surface,
       color: color.text,
       fontFamily: 'DM Sans',
     },
@@ -132,7 +134,7 @@ export function projectImageAlt(project: ImageProject): string {
  */
 export const IMAGE_PALETTES = {
   light: {
-    bg: '#f4f2ee',
+    surface: '#ffffff',
     text: '#232326',
     'text-secondary': '#55555b',
     'text-tertiary': '#68686e',
@@ -140,7 +142,7 @@ export const IMAGE_PALETTES = {
     'accent-text': '#a94a29',
   },
   dark: {
-    bg: '#1a1a1c',
+    surface: '#232326',
     text: '#ececed',
     'text-secondary': '#a6a6ac',
     'text-tertiary': '#8f8f95',
