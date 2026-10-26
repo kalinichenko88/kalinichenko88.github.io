@@ -24,10 +24,10 @@ test('the recorded post page passes', async () => {
 // CI builds with the --site of GitHub Pages: the github.io address when the
 // custom domain is gone.
 test('the same page under another site passes', async () => {
-  const root = 'https://kalinichenko88.github.io/';
-  const page = head.replaceAll(`${SITE}/`, root);
+  const site = 'https://kalinichenko88.github.io/';
+  const page = head.replaceAll(`${SITE}/`, site);
 
-  assert.deepEqual(await check({ [POST]: page }, undefined, root), []);
+  assert.deepEqual(await check({ [POST]: page }, { site }), []);
 });
 
 // What the post page passed as its title before #84.
@@ -82,10 +82,26 @@ test('a description over 125 characters fails, an entity counted as one', async 
   ]);
 });
 
-test('an og:image file that is not 1200x630 fails', async () => {
-  assert.deepEqual(await check({ [POST]: head }, { width: 1200, height: 600 }), [
+test('an og:image file that is not 1200x630, or not an image, fails', async () => {
+  const src = `${SITE}/${POST}.png?v=b38eea6e`;
+
+  assert.deepEqual(await check({ [POST]: head }, { image: await png(1200, 600) }), [
     `/${POST}/: og:image is 1200x600, not 1200x630`,
   ]);
+  assert.deepEqual(await check({ [POST]: head }, { image: Buffer.from('not a PNG') }), [
+    `/${POST}/: og:image ${src} is not an image`,
+  ]);
+});
+
+test('an SVG <title> in the body is not a second <title>', async () => {
+  const page = `${head}<body><svg><title>Arrow</title></svg></body>`;
+
+  assert.deepEqual(await check({ [POST]: page }), []);
+});
+
+// The 404 page is left out, so a build of it alone has nothing to check.
+test('the 404 page is not checked, and a build with no pages fails', async () => {
+  assert.deepEqual(await check({ '404': '<head></head>' }), ['the build has no pages to check']);
 });
 
 test('a repeated title or description, or a canonical URL elsewhere, fails', async () => {
@@ -103,30 +119,42 @@ test('a repeated title or description, or a canonical URL elsewhere, fails', asy
   ]);
 });
 
-/** Writes each page and its 1200x630 og:image to a temporary build, and checks it. */
+type Build = {
+  /** The post's og:image file; a 1200x630 PNG by default. */
+  image?: Buffer;
+  site?: string;
+};
+
+/**
+ * Writes each page, by its path, and the post's og:image to a temporary
+ * build, and checks it. Each page is its own route, as Astro's `assets` lists
+ * it; the path "404" is the 404 route.
+ */
 async function check(
   pages: Record<string, string>,
-  image = { width: 1200, height: 630 },
-  root = `${SITE}/`
+  { image, site = `${SITE}/` }: Build = {}
 ): Promise<string[]> {
   const dir = await mkdtemp(join(tmpdir(), 'meta-tags-'));
-  const png = await sharp({
-    create: { ...image, channels: 3, background: '#f4f2ee' },
-  })
-    .png()
-    .toBuffer();
-  const files: URL[] = [];
+  const assets = new Map<string, URL[]>();
 
   try {
     for (const [path, html] of Object.entries(pages)) {
-      await mkdir(join(dir, path), { recursive: true });
-      await writeFile(join(dir, path, 'index.html'), html);
-      files.push(pathToFileURL(join(dir, path, 'index.html')));
+      const file = path === '404' ? join(dir, '404.html') : join(dir, path, 'index.html');
+      await mkdir(join(file, '..'), { recursive: true });
+      await writeFile(file, html);
+      assets.set(`/${path}`, [pathToFileURL(file)]);
     }
-    await writeFile(join(dir, `${POST}.png`), png);
+    await mkdir(join(dir, 'blog'), { recursive: true });
+    await writeFile(join(dir, `${POST}.png`), image ?? (await png(1200, 630)));
 
-    return await checkMetaTags(pathToFileURL(`${dir}/`), root, files);
+    return await checkMetaTags(pathToFileURL(`${dir}/`), site, assets);
   } finally {
     await rm(dir, { recursive: true });
   }
+}
+
+function png(width: number, height: number): Promise<Buffer> {
+  return sharp({ create: { width, height, channels: 3, background: '#f4f2ee' } })
+    .png()
+    .toBuffer();
 }

@@ -64,23 +64,18 @@ export default defineConfig({
 
 /** Fails the build when a page's link-preview tags break a rule (src/lib/check-meta-tags.ts). */
 function metaTags() {
-  // The address the build resolves: CI passes its own --site and --base.
-  let root = '';
+  // The site the build resolves: CI passes its own --site. A user site on
+  // GitHub Pages has no base path, and the site's links assume none.
+  let site = '';
 
   return {
     name: 'meta-tags',
     hooks: {
       'astro:config:done': ({ config }) => {
-        root = new URL(config.base.replace(/\/?$/, '/'), config.site).href;
+        site = new URL('/', config.site).href;
       },
       'astro:build:done': async ({ dir, assets }) => {
-        // Only the pages Astro rendered, not HTML copied from public/. 404.html
-        // answers every missing address, so it has no address of its own.
-        const pages = [...assets]
-          .filter(([route]) => route !== '/404')
-          .flatMap(([, files]) => files)
-          .filter((file) => file.pathname.endsWith('.html'));
-        const problems = await checkMetaTags(dir, root, pages);
+        const problems = await checkMetaTags(dir, site, assets);
         if (problems.length > 0) {
           throw new Error(`Meta tags break ${problems.length} rules:\n${problems.join('\n')}`);
         }
