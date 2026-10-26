@@ -87,18 +87,28 @@ const REQUIRED = [
 
 type Tags = Map<string, string[]>;
 
-/** Every `<title>`, canonical link and named meta tag of a page, decoded. */
+/**
+ * Every `<title>`, canonical link and named meta tag of a page, decoded, in
+ * any attribute order. Astro writes each attribute as `name="value"`.
+ */
 function readTags(html: string): Tags {
   const tags: Tags = new Map();
-  const patterns = [
-    /<(title)>([^<]*)<\/title>/g,
-    /<link rel="(canonical)" href="([^"]*)"/g,
-    /<meta (?:name|property)="([^"]+)" content="([^"]*)"/g,
-  ];
+  const add = (key: string, value: string): void => {
+    tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
+  };
 
-  for (const pattern of patterns) {
-    for (const [, key, value] of html.matchAll(pattern)) {
-      tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
+  for (const [, title] of html.matchAll(/<title>([^<]*)<\/title>/g)) {
+    add('title', title);
+  }
+  for (const [tag] of html.matchAll(/<(?:meta|link)\s[^>]*>/g)) {
+    const attribute = (name: string): string | undefined => {
+      return tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];
+    };
+    const canonical = attribute('rel') === 'canonical' ? 'canonical' : undefined;
+    const key = attribute('property') ?? attribute('name') ?? canonical;
+    const value = attribute('content') ?? attribute('href');
+    if (key !== undefined && value !== undefined) {
+      add(key, value);
     }
   }
 
@@ -160,8 +170,11 @@ function tagProblems(tags: Tags, url: string): string[] {
   if (tags.has('og:type') && type !== 'website' && type !== 'article') {
     problems.push(`og:type is "${type}", not website or article`);
   }
-  if (type === 'article' && Number.isNaN(Date.parse(value('article:published_time')))) {
-    problems.push('an article needs a valid article:published_time');
+  const publishedTimes = tags.get('article:published_time') ?? [];
+  const onePublishedTime =
+    publishedTimes.length === 1 && !Number.isNaN(Date.parse(publishedTimes[0]));
+  if (type === 'article' && !onePublishedTime) {
+    problems.push('an article needs one valid article:published_time');
   }
   if (isNot('og:site_name', SITE_NAME)) {
     problems.push(`og:site_name is not ${SITE_NAME}`);
@@ -262,7 +275,7 @@ const ENTITIES: Record<string, string> = {
 };
 
 function decode(text: string): string {
-  return text.replace(/&(?:amp|quot|#39|lt|gt);/g, (entity) => {
-    return ENTITIES[entity];
+  return text.replace(/&#?\w+;/g, (entity) => {
+    return ENTITIES[entity] ?? entity;
   });
 }

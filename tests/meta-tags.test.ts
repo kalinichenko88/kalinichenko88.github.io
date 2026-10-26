@@ -53,18 +53,24 @@ test('a post about the site may name it in its title', async () => {
   assert.deepEqual(await check({ [POST]: page }), []);
 });
 
+// A second copy counts in any attribute order.
 test('a missing or doubled tag fails', async () => {
   const page = head
     .replace(/<meta property="og:image:alt"[^>]*>/, '')
     .replace(
       '<meta name="twitter:card"',
-      '<meta name="twitter:card" content="x"><meta name="twitter:card"'
+      '<meta content="x" name="twitter:card"><meta name="twitter:card"'
+    )
+    .replace(
+      '<meta property="article:author"',
+      '<meta property="article:published_time" content="2026-09-01"><meta property="article:author"'
     );
 
   // The first twitter:card is the one a preview reads.
   assert.deepEqual(await check({ [POST]: page }), [
     `/${POST}/: og:image:alt is missing`,
     `/${POST}/: twitter:card appears 2 times`,
+    `/${POST}/: an article needs one valid article:published_time`,
     `/${POST}/: twitter:card is not summary_large_image`,
   ]);
 });
