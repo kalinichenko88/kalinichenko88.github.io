@@ -126,7 +126,7 @@ Current order: Hero(default) → Selected work/Projects(default) → Writing(sub
 - ESLint with TypeScript and Astro plugins (`eslint.config.js`)
 - External links in markdown open in new tabs (`rehype-external-links` in `astro.config.js`)
 - Site constants in `src/consts.ts`
-- Contact channels in `src/config/contacts.ts` (`CONTACT_LINKS`, with label, handle and icon). The footer's icon row and `/contact` both render from it, so a new channel shows in both once added there. `/contact` shows the `mailto:` entry as its email button and every other entry as a card. The homepage JSON-LD `sameAs` (`src/pages/index.astro`) is a separate, hand-picked list of profile URLs, and the homepage Contact section and `/about` keep a short email + LinkedIn pair and link to `/contact` for the rest
+- Contact channels in `src/config/contacts.ts` (`CONTACT_LINKS`, with label, handle and icon). The footer's icon row renders every entry. `/contact` renders every entry except the `mailto:` one as a card, and builds its email button from `MAIL_PROFILE_LINK`. So a new non-email channel goes into the list once and shows in both. The homepage JSON-LD `sameAs` (`src/pages/index.astro`) is a separate, hand-picked list of profile URLs, and the homepage Contact section and `/about` keep a short email + LinkedIn pair and link to `/contact` for the rest
 
 ## Dependency Updates
 
