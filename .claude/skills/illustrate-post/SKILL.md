@@ -1,6 +1,6 @@
 ---
 name: illustrate-post
-description: Use when a blog post in this repo (kalinichenko.dev) needs a cover illustration - a new post from create-post, a post without `cover:` in its frontmatter, or a request to redo a post's cover.
+description: Use when a blog post in this repo (kalinichenko.dev) needs a cover illustration - a new post, a post without `cover:` in its frontmatter, or a request to redo a post's cover.
 ---
 
 # illustrate-post
