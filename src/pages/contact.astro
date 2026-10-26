@@ -1,0 +1,54 @@
+---
+import Layout from '../components/Layout.astro';
+import EmailIcon from '../assets/icons/email.svg';
+import { CONTACT_LINKS } from '../config/contacts';
+import { MAIL_PROFILE_LINK } from '../consts';
+
+// Email leads the page as the call to action; the cards hold the rest.
+const channels = CONTACT_LINKS.filter((link) => !link.href.startsWith('mailto:'));
+---
+
+<Layout
+  title="Contact"
+  description="How to reach Ivan Kalinichenko: email first, then every other channel."
+>
+  <section class="py-14 md:py-20">
+    <div class="container">
+      <div class="reading-veil max-w-prose">
+        <h1 class="text-foreground mb-4" data-reveal="heading">
+          Contact
+        </h1>
+        <div data-reveal="content" style="--motion-index: 1">
+          <p class="text-lg text-foreground-secondary mb-8">
+            Write me an email, or find me on any of the channels below.
+          </p>
+          <a href={`mailto:${MAIL_PROFILE_LINK}`} class="btn-primary">
+            <EmailIcon class="w-4 h-4" />
+            {MAIL_PROFILE_LINK}
+          </a>
+        </div>
+      </div>
+
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
+        {channels.map((link, index) => (
+          <li data-reveal="card" style={`--motion-index: ${index + 2}`}>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card card-hover group flex items-center gap-4 p-5"
+            >
+              <link.Icon class="w-6 h-6 shrink-0 text-foreground-secondary" />
+              <span>
+                <span class="block font-display font-semibold text-foreground group-hover:text-accent-text transition-colors">
+                  {link.label}
+                </span>
+                <span class="block font-mono text-sm text-foreground-tertiary">{link.handle}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

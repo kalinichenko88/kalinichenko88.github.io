@@ -1,29 +1,9 @@
 ---
-import {
-  AUTHOR_NAME,
-  GITHUB_PROFILE_LINK,
-  LINKEDIN_PROFILE_LINK,
-  TWITTER_PROFILE_LINK,
-  TELEGRAM_PROFILE_LINK,
-  MAIL_PROFILE_LINK,
-} from '../consts';
+import { AUTHOR_NAME } from '../consts';
+import { CONTACT_LINKS } from '../config/contacts';
 import { NAV_LINKS } from '../config/navigation';
 
-import GithubIcon from '../assets/icons/github.svg';
-import LinkedinIcon from '../assets/icons/linkedin.svg';
-import TwitterIcon from '../assets/icons/twitter.svg';
-import TelegramIcon from '../assets/icons/telegram.svg';
-import EmailIcon from '../assets/icons/email.svg';
-
 const currentYear = new Date().getFullYear();
-
-const socialLinks = [
-  { href: GITHUB_PROFILE_LINK, label: 'GitHub', Icon: GithubIcon },
-  { href: LINKEDIN_PROFILE_LINK, label: 'LinkedIn', Icon: LinkedinIcon },
-  { href: TWITTER_PROFILE_LINK, label: 'Twitter', Icon: TwitterIcon },
-  { href: TELEGRAM_PROFILE_LINK, label: 'Telegram', Icon: TelegramIcon },
-  { href: `mailto:${MAIL_PROFILE_LINK}`, label: 'Email', Icon: EmailIcon },
-];
 ---
 
 <!-- opaque on purpose: it hides the pixel field, so the footer reads as a plain close to the page -->
@@ -69,7 +49,7 @@ const socialLinks = [
           Connect
         </h4>
         <div class="flex flex-wrap gap-2">
-          {socialLinks.map((link) => (
+          {CONTACT_LINKS.map((link) => (
             <a
               href={link.href}
               target="_blank"

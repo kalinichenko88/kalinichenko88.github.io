@@ -13,6 +13,6 @@ test('a nav item is active on its page and the pages under it', () => {
 
 test('a nav item is not active elsewhere', () => {
   assert.ok(!isActive('/', '/blog/'));
-  assert.ok(!isActive('/#contact', '/'));
+  assert.ok(!isActive('/contact', '/'));
   assert.ok(!isActive('/blog', '/blogroll/'));
 });

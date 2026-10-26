@@ -210,8 +210,8 @@ Two container tracks, applied by responsibility:
 
 - `.container` — wide track, `--container-wide` ~1100px. The default. Header,
   footer, the homepage Selected-work and Writing rows, the blog index and tag pages
-  (`/blog`, `/tags`, `/tags/<tag>`), `/projects` and `/projects/<slug>`, the blog
-  post article, and any full-width block.
+  (`/blog`, `/tags`, `/tags/<tag>`), `/projects`, `/projects/<slug>` and `/contact`,
+  the blog post article, and any full-width block.
 - `.container-prose` — reading track, `--container-prose` ~680px. The tightest,
   most comfortable measure: the `/about` bio and work history. The homepage
   intro reuses the measure through `--container-prose` on its `.intro` block.
