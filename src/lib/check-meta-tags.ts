@@ -92,6 +92,11 @@ type Tags = Map<string, string[]>;
  * the shape Astro writes Head.astro: attributes in source order, each value
  * in double quotes. A tag in another shape is not read. Only Head.astro writes
  * these tags, and only in this shape.
+ *
+ * ponytail: patterns over the raw head, so a tag in an HTML comment or a
+ * script string counts as live, and a "</head>" there ends the head early.
+ * No page has one. Parse the head with an HTML parser if Head.astro ever
+ * comments a tag out.
  */
 function readTags(html: string): Tags {
   const tags: Tags = new Map();
