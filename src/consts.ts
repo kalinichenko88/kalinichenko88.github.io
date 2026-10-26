@@ -2,6 +2,8 @@ export const AUTHOR_NAME = 'Ivan Kalinichenko';
 export const ROLE = 'Senior Frontend Engineer';
 
 export const SITE_TITLE = `${AUTHOR_NAME} - ${ROLE}`;
+// Google, X and LinkedIn cut a title at about 60 characters.
+export const MAX_TITLE = 60;
 export const SITE_NAME = 'kalinichenko.dev';
 export const SITE_DESCRIPTION = `${ROLE}. 10+ years with React, TypeScript, and Node.js. Building a self-hosted product with AI tools.`;
 

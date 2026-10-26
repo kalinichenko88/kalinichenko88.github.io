@@ -5,8 +5,12 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeExternalLinks from 'rehype-external-links';
 
+import { checkMetaTags } from './src/lib/check-meta-tags.ts';
+
+const site = 'https://kalinichenko.dev';
+
 export default defineConfig({
-  site: 'https://kalinichenko.dev',
+  site,
   integrations: [
     mdx(),
     sitemap({
@@ -15,6 +19,18 @@ export default defineConfig({
       priority: 0.7,
       lastmod: new Date(),
     }),
+    {
+      name: 'meta-tags',
+      hooks: {
+        // A page whose link preview breaks a rule fails the build, so it never deploys.
+        'astro:build:done': async ({ dir }) => {
+          const problems = await checkMetaTags(dir, site);
+          if (problems.length > 0) {
+            throw new Error(`Meta tags break ${problems.length} rules:\n${problems.join('\n')}`);
+          }
+        },
+      },
+    },
   ],
   markdown: {
     // Astro 7 deprecates the flat `rehypePlugins` option; pass plugins to unified() instead.
