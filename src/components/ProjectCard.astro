@@ -20,7 +20,7 @@ type Props = {
 };
 
 const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
-const stars = starLabel(project.stars);
+const starText = starLabel(project.stars);
 
 // The depth offset needs an element of its own: the card's `translate` is the
 // reveal's, and one property cannot carry two motion sources. The wrapper has
@@ -45,7 +45,7 @@ const stars = starLabel(project.stars);
             <span class="tag">{t}</span>
           ))}
         </div>
-        {stars && <span class="font-mono text-xs text-foreground-tertiary">{stars}</span>}
+        {starText && <span class="font-mono text-xs text-foreground-tertiary">{starText}</span>}
       </a>
     ) : (
       <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">

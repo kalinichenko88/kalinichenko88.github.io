@@ -29,7 +29,7 @@ const hasBody = Boolean(project.entry.body?.trim());
 // With no body the header and the related posts are two default sections side
 // by side, so a divider separates them and its own margins make the gap.
 const dividerNext = !hasBody && related.length > 0;
-const stars = starLabel(project.stars);
+const starText = starLabel(project.stars);
 // Rendered by ./[slug]/[theme].png.ts. Only link previews show it: on the page
 // it would repeat the header above.
 const socialImage = {
@@ -74,7 +74,9 @@ const socialImage = {
                 View on GitHub
               </a>
             )}
-            {stars && <span class="font-mono text-xs text-foreground-tertiary ml-2">{stars}</span>}
+            {starText && (
+              <span class="font-mono text-xs text-foreground-tertiary ml-2">{starText}</span>
+            )}
           </div>
         </div>
       </div>

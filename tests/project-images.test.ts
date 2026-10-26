@@ -68,6 +68,7 @@ test('the image shows only the numbers above zero', () => {
     return projectStats(numbers).map(({ label }) => label);
   };
   assert.deepEqual(labels({ stars: 0, issues: 1, forks: 2 }), ['1 issue', '2 forks']);
+  assert.deepEqual(labels({ stars: 2, issues: 2, forks: 1 }), ['2 stars', '2 issues', '1 fork']);
   assert.deepEqual(labels({ stars: 1, issues: 0, forks: 0 }), ['1 star']);
   assert.deepEqual(labels({ stars: 0, issues: 0, forks: 0 }), []);
 });
