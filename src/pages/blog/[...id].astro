@@ -15,7 +15,6 @@ import LinkedInIcon from '../../assets/icons/linkedin.svg';
 
 import {
   AUTHOR_NAME,
-  SITE_TITLE,
   GISCUS_REPO,
   GISCUS_REPO_ID,
   GISCUS_CATEGORY,
@@ -76,7 +75,7 @@ const blogPostSchema = {
 ---
 
 <Layout
-  title={`${post.data.title} - ${SITE_TITLE}`}
+  title={post.data.title}
   description={post.data.description}
   type="article"
   publishedTime={post.data.pubDate.toISOString()}

@@ -36,7 +36,7 @@ No environment variables or API tokens are required.
 
 ```bash
 npm run dev        # Start dev server on localhost:3000
-npm run build      # Production build
+npm run build      # Production build; fails when a page's link-preview meta tags break a rule
 npm run preview    # Preview production build
 ```
 

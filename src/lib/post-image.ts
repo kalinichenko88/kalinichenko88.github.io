@@ -60,7 +60,7 @@ export function postImage(post: ImagePost): OgElement {
           },
           post.title
         ),
-        // 125 characters at most (tests/meta-tags.test.ts) take three lines;
+        // 125 characters at most (MAX_DESCRIPTION) take three lines;
         // the fourth is room for wide letters.
         el(
           'div',

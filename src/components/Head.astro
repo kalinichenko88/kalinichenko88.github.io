@@ -1,10 +1,11 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
-import { AUTHOR_NAME, SITE_NAME } from '../consts';
+import { AUTHOR_NAME, MAX_TITLE, SITE_NAME, SITE_TITLE } from '../consts';
 import siteImage from '../assets/images/site.og.jpg';
 
 type Props = {
+  /** The page's own title, without the site name. */
   title: string;
   description: string;
   type?: 'website' | 'article';
@@ -20,6 +21,12 @@ const socialImage = image ?? {
   src: new URL(siteImage.src, Astro.url).href,
   alt: 'A pencil sketch of an open notebook, a cup of coffee and a keyboard',
 };
+
+// og:title stays bare, as Facebook asks. The tab and search title add the name
+// only when the result still fits, so search results never cut it off.
+const branded = `${title} - ${AUTHOR_NAME}`;
+const nameFits = !title.includes(AUTHOR_NAME) && branded.length <= MAX_TITLE;
+const documentTitle = nameFits ? branded : title;
 ---
 
 <!-- Theme color -->
@@ -40,7 +47,7 @@ const socialImage = image ?? {
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={title}
+  title={SITE_TITLE}
   href={new URL('rss.xml', Astro.site)}
 />
 
@@ -48,7 +55,7 @@ const socialImage = image ?? {
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- Primary Meta Tags -->
-<title>{title}</title>
+<title>{documentTitle}</title>
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
@@ -58,6 +65,10 @@ const socialImage = image ?? {
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={socialImage.src} />
+<!-- Every social image is 1200x630: the rendered ones and site.og.jpg.
+     Facebook needs the size to show the image on the first share. -->
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={socialImage.alt} />
 {type === 'article' && publishedTime && (
   <>
@@ -69,8 +80,9 @@ const socialImage = image ?? {
   </>
 )}
 
-<!-- X reads title, description and image from the og:* tags above -->
+<!-- X reads title, description and image from the og:* tags above, but not the alt -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image:alt" content={socialImage.alt} />
 <meta name="twitter:site" content="@joker_bsg" />
 <meta name="twitter:creator" content="@joker_bsg" />
 
