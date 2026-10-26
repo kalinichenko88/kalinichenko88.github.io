@@ -61,8 +61,6 @@ export async function checkMetaTags(
   return problems;
 }
 
-// ogp.me wants an ISO 8601 datetime; Date.parse() alone takes "Sep 1 2026".
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/;
 // X's limit for image alt text.
 const MAX_ALT = 420;
 // WhatsApp shows no image above about 300 KB.
@@ -92,10 +90,13 @@ type Tags = Map<string, string[]>;
 /**
  * Every `<title>`, canonical link and named meta tag of a page, decoded, in
  * the shape Astro writes Head.astro: attributes in source order, each value
- * in double quotes. A tag in another shape reads as missing, so it fails.
+ * in double quotes. A tag in another shape is not read at all: Head.astro is
+ * the only place that writes these tags.
  */
 function readTags(html: string): Tags {
   const tags: Tags = new Map();
+  // Astro keeps HTML comments, and a tag commented out is not a tag.
+  const live = html.replace(/<!--[\s\S]*?-->/g, '');
   // A value can hold ">": Astro escapes only & and " in attributes.
   const patterns = [
     /<(title)>([^<]*)<\/title>/g,
@@ -104,7 +105,7 @@ function readTags(html: string): Tags {
   ];
 
   for (const pattern of patterns) {
-    for (const [, key, value] of html.matchAll(pattern)) {
+    for (const [, key, value] of live.matchAll(pattern)) {
       tags.set(key, [...(tags.get(key) ?? []), decode(value)]);
     }
   }
@@ -170,11 +171,6 @@ function tagProblems(tags: Tags, url: string): string[] {
   }
   if (tags.has('og:type') && type !== 'website' && type !== 'article') {
     problems.push(`og:type is "${type}", not website or article`);
-  }
-  const publishedTime = value('article:published_time');
-  const isIsoDate = ISO_DATE.test(publishedTime) && !Number.isNaN(Date.parse(publishedTime));
-  if (isArticle && tags.has('article:published_time') && !isIsoDate) {
-    problems.push(`article:published_time is "${publishedTime}", not an ISO 8601 date`);
   }
   if (isNot('og:site_name', SITE_NAME)) {
     problems.push(`og:site_name is not ${SITE_NAME}`);

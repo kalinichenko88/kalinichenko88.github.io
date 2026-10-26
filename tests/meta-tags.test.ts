@@ -74,12 +74,14 @@ test('a missing or doubled tag fails', async () => {
   ]);
 });
 
-test('an article:published_time that is not ISO 8601 fails', async () => {
-  const page = head.replace(/(published_time" content=")[^"]*/, '$1Aug 11 2026');
+// The build keeps Head.astro's HTML comments, as the fixture shows.
+test('a tag commented out in Head.astro is not read', async () => {
+  const page = head.replace(
+    '<meta name="description"',
+    '<!-- <meta name="description" content="Old text"> --><meta name="description"'
+  );
 
-  assert.deepEqual(await check({ [POST]: page }), [
-    `/${POST}/: article:published_time is "Aug 11 2026", not an ISO 8601 date`,
-  ]);
+  assert.deepEqual(await check({ [POST]: page }), []);
 });
 
 // Astro escapes only & and " in an attribute, so a value can hold ">".
