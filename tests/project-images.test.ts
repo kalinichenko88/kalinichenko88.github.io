@@ -39,7 +39,7 @@ async function projects() {
   return found;
 }
 
-// Live numbers, and the ones dev and a failed GitHub call give: the YAML stars,
+// A full set of numbers, and the ones dev and a failed GitHub call give: the YAML stars,
 // no other count and no language, so the numbers row can be all but empty.
 test('every project renders a 1200x630 PNG in both themes, with or without GitHub', async () => {
   for (const project of await projects()) {
@@ -106,12 +106,14 @@ test('a project page passes its light image to og:image', async () => {
   assert.match(page, /`\/projects\/\$\{project\.slug\}\/light\.png`/);
 });
 
-// The text cards write their star count the way the image does, so the two
+// The homepage card and the project page write their star count the way the
+// image does, so the two
 // never show one project with different numbers.
 test('every text surface writes the star count through countLabel()', async () => {
   for (const file of ['src/components/ProjectCard.astro', 'src/pages/projects/[slug].astro']) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
-    assert.match(source, /countLabel\(project\.stars, 'star', 'stars'\)/, file);
-    assert.doesNotMatch(source, /\{project\.stars\} \{/, `${file}: a raw star count`);
+    assert.match(source, /countLabel\(\s*project\.stars,/, file);
+    // `{project.stars}` or `{project.stars.toLocaleString()}` as text.
+    assert.doesNotMatch(source, /\{project\.stars[}.]/, `${file}: a raw star count`);
   }
 });

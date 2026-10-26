@@ -54,8 +54,10 @@ const { project, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro
       <a href={`/projects/${project.slug}`} class="block overflow-hidden rounded-[inherit]">
         {/* The link, not the card, clips the image to the card's corners: a
               card that clipped would also cut off the link's focus ring. It
-              inherits the card's radius, which each theme sets, so the two
-              cannot drift apart. */}
+              inherits the card's radius, which each theme sets, so it follows
+              a theme change. Inside the 1px border the exact radius is 1px
+              less, but on the corner diagonal that differs by 0.4px between
+              two near-equal colours, which does not show. */}
         {/* The image holds the name, so the heading is for screen readers. */}
         <Heading class="sr-only">{project.name}</Heading>
         {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per
