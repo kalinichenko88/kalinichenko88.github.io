@@ -3,6 +3,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import sharp from 'sharp';
 
+import { DARK_THEME, LIGHT_THEME } from '../src/config/themes.ts';
 import { offlineNumbers } from '../src/lib/github-repo.ts';
 import { renderOgImage } from '../src/lib/og-image.ts';
 import {
@@ -146,13 +147,19 @@ test('the image shows only the numbers above zero', () => {
 // theme tokens. This keeps the copy in step with global.css.
 test('the image palettes match the theme tokens', async () => {
   const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
+  const block = (id: string) => css.split(`[data-theme='${id}'] {`)[1]?.split('}')[0] ?? '';
   const blocks: Record<ImageTheme, string> = {
-    light: css.match(/\[data-theme='cloud'\] \{([^}]*)\}/)?.[1] ?? '',
-    dark: css.match(/\[data-theme='cloud-dark'\] \{([^}]*)\}/)?.[1] ?? '',
+    light: block(LIGHT_THEME),
+    dark: block(DARK_THEME),
   };
   for (const theme of IMAGE_THEMES) {
+    assert.ok(blocks[theme], `${theme}: no theme block in global.css`);
     for (const [token, value] of Object.entries(IMAGE_PALETTES[theme])) {
-      assert.match(blocks[theme], new RegExp(`--color-${token}: ${value};`), `${theme}: ${token}`);
+      const declaration = `--color-${token}: ${value};`;
+      const declared = blocks[theme]
+        .split('\n')
+        .some((line) => line.trim().startsWith(declaration));
+      assert.ok(declared, `${theme}: ${declaration} is not in global.css`);
     }
   }
 });

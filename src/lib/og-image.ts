@@ -9,8 +9,9 @@ import sharp from 'sharp';
  * as paths, so sharp needs no fonts installed to turn it into a PNG: the CI
  * runner has none. Not tied to projects, so other social images can use it.
  *
- * Rendered once per tree per process: the PNG route and the pages that put a
- * hash of it in their URL get the same bytes from one render.
+ * Rendered once per tree per process, so the PNG route and the pages that put
+ * a hash of it in their URL get the same bytes from one render. A failed render
+ * is not kept: the next call renders again.
  */
 export function renderOgImage(element: OgElement): Promise<Buffer> {
   const key = JSON.stringify(element);
@@ -46,8 +47,10 @@ export type OgElement = {
 type OgChild = OgElement | string | false;
 
 const require = createRequire(import.meta.url);
-let loaded: Promise<Font[]> | undefined;
 
+// Read for each render, with no cache: four small local files cost nothing,
+// and a cache would keep a failed read until a restart.
+//
 // Static weights from Fontsource, not the files Astro's `fonts` config gets
 // from Google: Google serves DM Sans as a variable font, and Satori draws a
 // variable font only at its default weight, so every heading would be 400.
@@ -58,19 +61,12 @@ let loaded: Promise<Font[]> | undefined;
 // usual dashes and quotes; the GitHub language is not checked. Load another
 // subset, or pass Satori a loadAdditionalAsset, before the text needs more.
 function fonts() {
-  if (!loaded) {
-    loaded = Promise.all([
-      font('dm-sans', 'DM Sans', 400),
-      font('dm-sans', 'DM Sans', 600),
-      font('dm-sans', 'DM Sans', 700),
-      font('jetbrains-mono', 'JetBrains Mono', 400),
-    ]);
-    // As with a render: a failed load is not kept, so the next render retries.
-    loaded.catch(() => {
-      loaded = undefined;
-    });
-  }
-  return loaded;
+  return Promise.all([
+    font('dm-sans', 'DM Sans', 400),
+    font('dm-sans', 'DM Sans', 600),
+    font('dm-sans', 'DM Sans', 700),
+    font('jetbrains-mono', 'JetBrains Mono', 400),
+  ]);
 }
 
 async function font(slug: string, name: string, weight: Font['weight']): Promise<Font> {
