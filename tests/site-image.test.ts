@@ -112,8 +112,9 @@ test('every channel draws its icon, in the tertiary text colour', async () => {
     assert.doesNotMatch(svg, /currentColor/);
     assert.ok(svg.includes(IMAGE_PALETTES.light['text-tertiary']), 'not the tertiary colour');
   }
-  // An icon that draws nothing, as one Satori could not read would, leaves the
-  // pixels as they are with that icon blank. So each one is blanked in turn.
+  // An icon that draws nothing, as one that sharp's SVG renderer could not
+  // read would, leaves the pixels as they are with that icon blank. So each
+  // one is blanked in turn.
   const pixels = async (input: ImageSite) => {
     return sharp(await renderOgImage(siteImage(input)))
       .raw()
