@@ -57,20 +57,19 @@ The folders are Astro's, by technology. The modules are by area, and each
 one spans the folders. There is no `index.ts`: a module's API is the exports
 of its `src/lib/` files, and a page imports them by file.
 
-| Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                          | Data                                                                   | Entry point                           |
-| ------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------- |
-| Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getCollection('posts')` in each page |
-| Projects      | `projects/`; `ProjectCard`                                                              | `projects`, `project-image`                 | `content/projects/`, `github-repo` (the GitHub API)                    | `getProjects()`                       |
-| Link previews | `Head`, `site.png.ts`                                                                   | `og-image`, `site-image`, `check-meta-tags` | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()`     |
-| Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `motion-controller`, `opaque-color`         | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                              |
-| Home          | `index.astro`; `components/home/`                                                       |                                             |                                                                        |                                       |
-| Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                             | `src/config/resume.ts`, `contacts.ts`                                  |                                       |
-| Authoring     | `.claude/skills/*/`, `tests/`                                                           |                                             |                                                                        | each skill's `SKILL.md`               |
+| Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                                   | Data                                                                   | Entry point                       |
+| ------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `posts`, `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getPosts()`                      |
+| Projects      | `projects/`; `ProjectCard`                                                              | `projects`, `project-image`                          | `content/projects/`, `github-repo` (the GitHub API)                    | `getProjects()`                   |
+| Link previews | `Head`, `site.png.ts`                                                                   | `og-image`, `site-image`, `check-meta-tags`          | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()` |
+| Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
+| Home          | `index.astro`; `components/home/`                                                       |                                                      |                                                                        |                                   |
+| Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                                      | `src/config/resume.ts`, `contacts.ts`                                  |                                   |
+| Authoring     | `.claude/skills/*/`, `tests/`                                                           |                                                      |                                                                        | each skill's `SKILL.md`           |
 
-Posts and projects differ at the entry point. Each page calls
-`getCollection('posts')`, and a page that lists posts sorts them by date
-itself. Projects go through
-`getProjects()`, which adds the GitHub numbers once per build (I-3).
+Each collection has one entry point. Pages read posts through `getPosts()`,
+which sorts them newest first (I-13), and projects through `getProjects()`,
+which adds the GitHub numbers once per build (I-3).
 
 ## Layers
 
@@ -115,8 +114,9 @@ Only the ones that the code keeps everywhere and that are not obvious.
 - **`src/lib/` runs under plain node.** `npm test` loads it with
   `--experimental-strip-types` and no bundler. So a file there writes `.ts`
   on each local import it needs at run time, and imports from `astro:*` only
-  as a type. `projects.ts` is the one exception: it reads the collection, and
-  only pages call it (`ProjectCard` imports its type).
+  as a type. `projects.ts` and `posts.ts` are the exceptions: each reads its
+  collection, and only pages call them (`ProjectCard` imports a type from
+  `projects.ts`).
 - **Browser code splits by testability.** DOM wiring stays in the component's
   `<script>` (`Header`, `CardRow`, `VideoPlayer`, `PixelSpotlight`, the TOC
   observer in the post page). The part that a node test can run without a DOM
@@ -162,8 +162,10 @@ no `Check:` line names the test that keeps it.
   `src/lib/og-image.ts` imports Satori and the font files.
   Check: grep `from 'satori'|@fontsource` in `src/` except `src/lib/og-image.ts`.
 - **I-5.** `src/lib/` runs under plain node: a file there imports a value
-  from `astro:*` only in `projects.ts`.
-  Check: grep `^import (\{|[a-zA-Z_]+ from|\* as).*'astro:` in `src/lib/` except `src/lib/projects.ts`.
+  from `astro:*` only in `projects.ts` and `posts.ts`, the two collection
+  readers.
+  Check: grep `^import (\{|[a-zA-Z_]+ from|\* as).*'astro:` in `src/lib/` except `src/lib/projects.ts` `src/lib/posts.ts`.
+  ADR: 0002.
 - **I-6.** An object shape is a `type`. `interface` appears only inside a
   `declare global` block, as in `MotionController.astro`.
   The pattern allows two spaces of indent, the indent of a component's
@@ -198,6 +200,10 @@ no `Check:` line names the test that keeps it.
   type stays in the file that exports its values.
   Check: grep `from '[^']*/(models|schemas)/` in `src/` `tests/`.
   ADR: 0001.
+- **I-13.** Pages read posts only through `getPosts()`, so every list,
+  feed and image sees the same posts in the same order.
+  Check: grep `get(Collection|Entry|Entries)\(['"]posts` in `src/` except `src/lib/posts.ts`.
+  ADR: 0002.
 
 ## Limits
 
@@ -218,6 +224,8 @@ post and four projects) count in the numbers below, and no check reads them.
   `src/lib/site-image.ts` (192 lines) and an eleventh file in `src/lib/`, so
   both start on the `debt` lists too. On that tree the 90th percentiles are
   192 lines and 11 files.
+- `getPosts()` (ADR 0002) added `src/lib/posts.ts`, a twelfth file in
+  `src/lib/`. #98 plans the split of the folder.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The
@@ -252,3 +260,6 @@ accepted one gets a line here.
 
 - [0001](adr/0001-types-stay-with-their-producer.md) A shared type stays in
   the file that produces it; the zod schemas stay in `src/content.config.ts`.
+- [0002](adr/0002-posts-have-one-entry-point.md) Pages read posts through
+  `getPosts()` in `src/lib/posts.ts`, the second collection reader in
+  `src/lib/`.

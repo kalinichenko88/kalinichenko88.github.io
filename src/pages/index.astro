@@ -1,12 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
-
 import Layout from '../components/Layout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import CardRow from '../components/home/CardRow.astro';
 import ContactSection from '../components/home/ContactSection.astro';
 import PostCard from '../components/PostCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { getPosts } from '../lib/posts';
 import { getProjects } from '../lib/projects';
 
 import {
@@ -22,17 +21,12 @@ const personSchema = {
   '@type': 'Person',
   name: AUTHOR_NAME,
   jobTitle: ROLE,
-  url: 'https://kalinichenko.dev',
+  url: Astro.site!.href,
   sameAs: [GITHUB_PROFILE_LINK, LINKEDIN_PROFILE_LINK, TWITTER_PROFILE_LINK],
   knowsAbout: ['React', 'TypeScript', 'JavaScript', 'Frontend Architecture', 'Web Performance'],
 };
 
-const allPosts = await getCollection('posts');
-const latestPosts = allPosts
-  .sort((a, b) => {
-    return b.data.pubDate.getTime() - a.data.pubDate.getTime();
-  })
-  .slice(0, 8);
+const latestPosts = (await getPosts()).slice(0, 8);
 
 const projects = await getProjects();
 ---
@@ -53,7 +47,7 @@ const projects = await getProjects();
       })}
     </CardRow>
   </section>
-  {allPosts.length > 0 && (
+  {latestPosts.length > 0 && (
     <section id="writing" class="py-14 md:py-20 bg-background-subtle/85">
       <CardRow
         title="Writing"
