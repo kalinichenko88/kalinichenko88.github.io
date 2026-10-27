@@ -59,6 +59,7 @@ npm run verify     # everything CI runs: lint, check, format:check, test, build
 ├── content/
 │   ├── posts/          # Markdown/MDX blog posts
 │   └── projects/       # Project definitions and page bodies (MDX)
+├── docs/               # ARCHITECTURE.md (modules, layers, invariants) and ADRs
 ├── src/
 │   ├── assets/         # Icons and post images (optimized by Astro)
 │   ├── components/     # Astro components
