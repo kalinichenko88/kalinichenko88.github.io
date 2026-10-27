@@ -1,4 +1,5 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
+
 import { renderOgImage } from '../../lib/og-image';
 import { getPosts } from '../../lib/posts';
 import { postImage, toImagePost, type ImagePost } from '../../lib/post-image';
