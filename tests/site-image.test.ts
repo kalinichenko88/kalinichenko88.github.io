@@ -112,16 +112,21 @@ test('every channel draws its icon, in the tertiary text colour', async () => {
     assert.doesNotMatch(svg, /currentColor/);
     assert.ok(svg.includes(IMAGE_PALETTES.light['text-tertiary']), 'not the tertiary colour');
   }
-  // The icon files have no xmlns, and Satori draws them all the same. Should
-  // an update stop drawing them, the image is the one it is with blank icons.
-  const blank = value.contacts.map((contact) => {
-    return { ...contact, svg: '<svg viewBox="0 0 24 24"></svg>' };
-  });
-  const [drawn, empty] = await Promise.all([
-    renderOgImage(siteImage(value)),
-    renderOgImage(siteImage({ ...value, contacts: blank })),
-  ]);
-  assert.ok(!drawn.equals(empty), 'the icons draw nothing');
+  // An icon that draws nothing, as one Satori could not read would, leaves the
+  // pixels as they are with that icon blank. So each one is blanked in turn.
+  const pixels = async (input: ImageSite) => {
+    return sharp(await renderOgImage(siteImage(input)))
+      .raw()
+      .toBuffer();
+  };
+  const drawn = await pixels(value);
+  for (const [i, { label }] of value.contacts.entries()) {
+    const contacts = value.contacts.map((contact, j) => {
+      return j === i ? { ...contact, svg: '<svg viewBox="0 0 24 24"></svg>' } : contact;
+    });
+    const blank = await pixels({ ...value, contacts });
+    assert.ok(!blank.equals(drawn), `the ${label} icon draws nothing`);
+  }
 });
 
 // Link previews cache an image by its URL, so a changed channel needs a new
