@@ -33,6 +33,12 @@ The zod schemas are in `src/content.config.ts`. Astro loads the collections
 from that file, so the schemas must be there or be imported into it. A
 collection's type comes from its schema through Astro's `CollectionEntry`.
 
+By the convention, `Project` would go to `src/models/`, `RepoNumbers` and
+`OgElement` to `src/lib/models/`, and `ImagePost` and `ImageTheme`, which
+tests also use, to a `models/` folder at the root. The schemas would go to
+`schemas/`. `Project` and `ImageTheme` are derived from values, so their
+model files would import back from `src/lib/`.
+
 The convention itself says that a codebase that keeps another way everywhere
 wins. The architecture skill says that only an accepted ADR overrides a
 convention. This ADR is that record.
@@ -42,11 +48,8 @@ convention. This ADR is that record.
 - Keep each type in the file that exports its values, and the schemas in
   `src/content.config.ts`: no move; the import names the file that makes the
   value.
-- Move them as the convention says: `Project` to `src/models/`, `RepoNumbers`
-  and `OgElement` to `src/lib/models/`, and `ImagePost` and `ImageTheme`,
-  which tests also use, to a `models/` folder at the root. The schemas go to
-  `schemas/`. Seven moves into four new folders, and `Project` and
-  `ImageTheme`, which are derived from values, import back from `src/lib/`.
+- Move them as the convention says: seven moves into four new folders, and
+  the derived types import back from `src/lib/`.
 - A line in `CLAUDE.md` and no ADR: cheaper, but a line in `CLAUDE.md` does
   not override a conventions skill.
 
@@ -76,9 +79,10 @@ one place. An agent that loads the convention and not this ADR will make a
 
 ## Invariants
 
-None.
+I-12, added.
 
 ## Confirmation
 
-Review only: the import of a shared type names the file that exports its
-values, and no `models/` or `schemas/` folder appears.
+I-12's `Check:` line finds an import from a `models/` or `schemas/` folder.
+Review checks the rest: the import of a shared type names the file that
+exports its values.

@@ -24,7 +24,8 @@ There is no server, no database and no user account.
 In the browser, a few scripts run on top of the static HTML: the theme
 switch, the reveal on scroll, the pixel glow under the cursor, the card rows
 and the giscus comments. Pages change through Astro's `ClientRouter` (View
-Transitions), so each script starts again after a swap.
+Transitions), so each script must set itself up again after a swap (see
+Patterns).
 
 CI runs lint, `astro check`, Prettier, the tests and the build on each pull
 request, and deploys `main`. A weekly run rebuilds the site so the GitHub
@@ -37,14 +38,14 @@ content/              Markdown: posts/ and projects/, one file per entry
 src/
   pages/              one file per route: .astro renders HTML, .ts is an endpoint (PNG, RSS)
   components/         UI; home/ holds the homepage sections
-  lib/                build-time logic; runs under plain node
+  lib/                logic for the build and the browser; loads under plain node
   config/             typed lists: navigation, contacts, themes, resume
   consts.ts           site-wide constants
   content.config.ts   the two collections and their schemas
   styles/global.css   tokens, the two themes, the component classes
   assets/             icons and images, through Astro's pipeline
 public/               served as is
-tests/                node:test; most tests read source files as text
+tests/                node:test; several tests read source files as text
 .claude/skills/       author tools: design-check, illustrate-post
 .github/workflows/    CI: quality, build, deploy
 astro.config.js       Astro config and the meta-tags build gate
@@ -59,7 +60,7 @@ of its `src/lib/` files, and a page imports them by file.
 | Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                          | Data                                                                   | Entry point                           |
 | ------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------- |
 | Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getCollection('posts')` in each page |
-| Projects      | `projects/`; `ProjectCard`                                                              | `projects`, `project-image`, `github-repo`  | `content/projects/`, the GitHub API                                    | `getProjects()`                       |
+| Projects      | `projects/`; `ProjectCard`                                                              | `projects`, `project-image`                 | `content/projects/`, `github-repo` (the GitHub API)                    | `getProjects()`                       |
 | Link previews | `Head`                                                                                  | `og-image`, `check-meta-tags`               | the `@fontsource` files, `src/assets/images/site.og.jpg`               | `renderOgImage()`, `ogImageSrc()`     |
 | Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `motion-controller`, `opaque-color`         | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                              |
 | Home          | `index.astro`; `components/home/`                                                       |                                             |                                                                        |                                       |
@@ -67,7 +68,8 @@ of its `src/lib/` files, and a page imports them by file.
 | Authoring     | `.claude/skills/*/`, `tests/`                                                           |                                             |                                                                        | each skill's `SKILL.md`               |
 
 Posts and projects differ at the entry point. Each page calls
-`getCollection('posts')` and sorts by date itself. Projects go through
+`getCollection('posts')`, and a page that lists posts sorts them by date
+itself. Projects go through
 `getProjects()`, which adds the GitHub numbers once per build (I-3).
 
 ## Layers
@@ -83,18 +85,21 @@ By role, as the architecture skill defines them:
   page sees typed data. The GitHub response is checked in `github-repo.ts`,
   where it enters. The build's own output is checked after the fact by
   `src/lib/check-meta-tags.ts`.
-- **Logic:** `src/lib/`. Functions that take data and return an element tree,
-  a path, a label or a number. They import no component and no page (I-2),
-  and they run under plain node (I-5).
+- **Logic:** `src/lib/`. Most files are build-time functions that take data
+  and return an element tree, a path, a label or a number.
+  `motion-controller.ts` and `opaque-color.ts` run in the browser, imported
+  by a component's `<script>`. No file there imports a component or a page
+  (I-2), and each one loads under plain node (I-5).
 - **Data:** `content/` (Markdown, through `astro:content`); `src/config/` and
   `src/consts.ts` (static data as typed TypeScript); `src/lib/github-repo.ts`
   (the one network client, I-1); `src/assets/` (through Astro's image
   pipeline) and `public/` (served as is).
 
 Dependencies point down: `src/pages/` to `src/components/` to `src/lib/` to
-`src/config/` and `src/consts.ts`. Components import components and lib. Lib
-imports lib and consts. Config imports consts and icons. Nothing imports
-upward (I-2). `tests/` imports `src/lib/`, `src/config/`, `src/consts.ts`
+`src/config/` and `src/consts.ts`. Components import components, lib,
+config and consts. Lib imports lib and consts. Config imports consts and
+icons. Nothing imports upward; I-2 checks it for lib, config and the two root
+files. `tests/` imports `src/lib/`, `src/config/`, `src/consts.ts`
 and the skills' `.mjs` files, and reads `.astro` and `.css` files as text.
 
 ## Patterns
@@ -103,7 +108,7 @@ Only the ones that the code keeps everywhere and that are not obvious.
 
 - **A build-time image is a pair.** The layout is a function in
   `src/lib/<kind>-image.ts` that returns an element tree. The route is a
-  `[...].png.ts` file in `src/pages/`, which calls `renderOgImage()` on that
+  `[<param>].png.ts` file in `src/pages/`, which calls `renderOgImage()` on that
   tree. A page links the image only through the same lib file's
   `<kind>ImageSrc()`, which adds `?v=<hash>`. The detail is in `CLAUDE.md`,
   under Project images and Post covers.
@@ -111,25 +116,29 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `--experimental-strip-types` and no bundler. So a file there writes `.ts`
   on each local import it needs at run time, and imports from `astro:*` only
   as a type. `projects.ts` is the one exception: it reads the collection, and
-  only pages use it.
+  only pages call it (`ProjectCard` imports its type).
 - **Browser code splits by testability.** DOM wiring stays in the component's
   `<script>` (`Header`, `CardRow`, `VideoPlayer`, `PixelSpotlight`, the TOC
   observer in the post page). The part that a node test can run without a DOM
-  goes to `src/lib/` (`motion-controller.ts`, `opaque-color.ts`).
+  goes to `src/lib/` (`opaque-color.ts`). `motion-controller.ts` is the
+  exception: it holds the reveal's DOM wiring too, and only its `onScreen()`
+  is DOM-free.
 - **Every browser script survives a page swap.** A module `<script>` runs
   once, so it runs its init again on `astro:after-swap`. A custom element
   (`card-row`, `video-player`) carries its listeners with the element instead.
+  `PixelSpotlight` needs neither: its listeners are on `window` and
+  `document`, and it writes only to `<html>`.
   The `is:inline` scripts in `Layout` set root attributes again on
   `astro:before-swap`. An `is:inline` script cannot import, so it reads its
   constants from `data-*` attributes.
 - **A rule about markup or CSS is a text test.** A test in `tests/` reads an
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
-  `motion-css`, `motion-page-coverage`, `post-tags`, `post-covers`). A new
+  `motion-css`, `motion-page-coverage`, `post-covers`). A new
   rule of that kind goes there, not into a lint plugin or a browser test.
   `tests/design-check.test.ts` runs the design-check script the same way.
-- **One list, every surface.** A list that more than one surface shows is a
-  typed array in `src/config/` (`NAV_LINKS`, `CONTACT_LINKS`,
-  `THEME_OPTIONS`, `WORK_HISTORY`), and each surface renders it. See
+- **One list, every surface.** A list that the site renders is a typed array
+  in `src/config/` (`NAV_LINKS`, `CONTACT_LINKS`, `THEME_OPTIONS`,
+  `WORK_HISTORY`), and each surface that shows it renders it from there. See
   `CLAUDE.md`, Key Patterns, Contact channels.
 
 ## Invariants
@@ -138,14 +147,17 @@ Each one has a statement and, when a grep or a count says it, a `Check:`
 line that `invariants.sh` of the architecture skill runs. An invariant with
 no `Check:` line names the test that keeps it.
 
-- **I-1.** Only `src/lib/github-repo.ts` calls the network.
+- **I-1.** Only `src/lib/github-repo.ts` calls `fetch`: it is the build's one
+  network client. The browser loads giscus, YouTube and the analytics beacon
+  by URL, not through `fetch`.
   Check: grep `fetch\(` in `src/` `tests/` `.claude/` `astro.config.js` except `src/lib/github-repo.ts`.
 - **I-2.** Dependencies point down: nothing in `src/lib/`, `src/config/`,
-  `src/consts.ts` or `src/content.config.ts` imports a component or a page.
-  Check: grep `from '\.{1,2}/(components|pages)/` in `src/lib/` `src/config/` `src/consts.ts` `src/content.config.ts`.
+  `src/consts.ts` or `src/content.config.ts` imports a component or a page,
+  and nothing in the last three imports from `src/lib/`.
+  Check: grep `from '\.{1,2}/(components|pages|lib)/` in `src/lib/` `src/config/` `src/consts.ts` `src/content.config.ts`.
 - **I-3.** Pages read projects only through `getProjects()`, so every project
   card and image carries the same GitHub numbers.
-  Check: grep `getCollection\('projects'` in `src/` except `src/lib/projects.ts`.
+  Check: grep `get(Collection|Entry|Entries)\(['"]projects` in `src/` except `src/lib/projects.ts`.
 - **I-4.** One renderer makes the link-preview images: only
   `src/lib/og-image.ts` imports Satori and the font files.
   Check: grep `from 'satori'|@fontsource` in `src/` except `src/lib/og-image.ts`.
@@ -154,14 +166,17 @@ no `Check:` line names the test that keeps it.
   Check: grep `^import (\{|[a-zA-Z_]+ from|\* as).*'astro:` in `src/lib/` except `src/lib/projects.ts`.
 - **I-6.** An object shape is a `type`. `interface` appears only inside a
   `declare global` block, as in `MotionController.astro`.
-  Check: grep `^(export )?interface ` in `src/` `tests/` `.claude/`.
+  The pattern allows two spaces of indent, the indent of a component's
+  `<script>`.
+  Check: grep `^ {0,2}(export )?interface ` in `src/` `tests/` `.claude/`.
 - **I-7.** The theme ids are written once, in `src/config/themes.ts`. The
   selectors in `global.css` and the design-check script, which verifies that
   the ids stay, are the only other literals. The giscus script in the post
   page still holds them and is known debt.
   Check: grep `['"]cloud(-dark)?['"]` in `src/` `tests/` `.claude/` except `src/config/themes.ts` `src/styles/global.css` `.claude/skills/design-check/check-design.mjs` debt `src/pages/blog/[...id].astro`.
-- **I-8.** No code file has more than 180 lines.
-  `global.css` is out: tokens and component classes do not split like code.
+- **I-8.** No code file in `src/`, `tests/`, `.claude/` or the two root
+  config files has more than 180 lines. `global.css` is out: tokens and
+  component classes do not split like code.
   Check: lines 180 in `src/` `tests/` `.claude/` `astro.config.js` `eslint.config.js` except `src/styles/global.css`.
   debt `src/lib/check-meta-tags.ts`
   debt `src/pages/blog/[...id].astro`
@@ -169,7 +184,8 @@ no `Check:` line names the test that keeps it.
   debt `.claude/skills/design-check/check-design.mjs`
   debt `src/lib/project-image.ts`
   debt `tests/project-images.test.ts`
-- **I-9.** No folder holds more than 10 code files of its own.
+- **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
+  code files of its own. `src/lib/` holds 10 now.
   Check: files 10 in `src/` `tests/` `.claude/` debt `src/components/` `tests/`.
 - **I-10.** Running text on the open field sits on `.reading-veil`.
   `tests/reading-veil.test.ts` holds the list of surfaces and fails without
@@ -177,6 +193,10 @@ no `Check:` line names the test that keeps it.
 - **I-11.** Every content page opts its major blocks into reveal with
   `data-reveal`, and rendered prose never carries it.
   `tests/motion-page-coverage.test.ts` keeps both.
+- **I-12.** No code imports from a `models/` or a `schemas/` folder: a shared
+  type stays in the file that exports its values.
+  Check: grep `from '[^']*/(models|schemas)/` in `src/` `tests/`.
+  ADR: 0001.
 
 ## Limits
 
@@ -184,7 +204,8 @@ The numbers come from the tree at the time of writing, by the rule of the
 architecture skill: the size that 90% of the code files, and 90% of the
 folders, stay under, rounded up. Code is every tracked text file that the
 debt skill's `data.ere` does not match. Markdown, JSON, YAML, SVG and
-fixtures are not code.
+fixtures are not code. MDX is code by that rule: the five `.mdx` posts count
+in the numbers below, and no check reads them.
 
 - Lines per file: 72 code files. The 90th percentile is 179 lines; the limit
   is 180 (I-8). Seven files are over it. `global.css` (909 lines) is out of
