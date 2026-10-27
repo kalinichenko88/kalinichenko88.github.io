@@ -61,7 +61,7 @@ of its `src/lib/` files, and a page imports them by file.
 | ------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------- |
 | Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getCollection('posts')` in each page |
 | Projects      | `projects/`; `ProjectCard`                                                              | `projects`, `project-image`                 | `content/projects/`, `github-repo` (the GitHub API)                    | `getProjects()`                       |
-| Link previews | `Head`                                                                                  | `og-image`, `check-meta-tags`               | the `@fontsource` files, `src/assets/images/site.og.jpg`               | `renderOgImage()`, `ogImageSrc()`     |
+| Link previews | `Head`, `site.png.ts`                                                                   | `og-image`, `site-image`, `check-meta-tags` | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()`     |
 | Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `motion-controller`, `opaque-color`         | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                              |
 | Home          | `index.astro`; `components/home/`                                                       |                                             |                                                                        |                                       |
 | Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                             | `src/config/resume.ts`, `contacts.ts`                                  |                                       |
@@ -108,7 +108,7 @@ Only the ones that the code keeps everywhere and that are not obvious.
 
 - **A build-time image is a pair.** The layout is a function in
   `src/lib/<kind>-image.ts` that returns an element tree. The route is a
-  `[<param>].png.ts` file in `src/pages/`, which calls `renderOgImage()` on that
+  `.png.ts` file in `src/pages/`, which calls `renderOgImage()` on that
   tree. A page links the image only through the same lib file's
   `<kind>ImageSrc()`, which adds `?v=<hash>`. The detail is in `CLAUDE.md`,
   under Project images and Post covers.
@@ -184,9 +184,10 @@ no `Check:` line names the test that keeps it.
   debt `.claude/skills/design-check/check-design.mjs`
   debt `src/lib/project-image.ts`
   debt `tests/project-images.test.ts`
+  debt `src/lib/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
-  code files of its own. `src/lib/` holds 10 now.
-  Check: files 10 in `src/` `tests/` `.claude/` debt `src/components/` `tests/`.
+  code files of its own.
+  Check: files 10 in `src/` `tests/` `.claude/` debt `src/components/` `tests/` `src/lib/`.
 - **I-10.** Running text on the open field sits on `.reading-veil`.
   `tests/reading-veil.test.ts` holds the list of surfaces and fails without
   the class.
@@ -200,7 +201,7 @@ no `Check:` line names the test that keeps it.
 
 ## Limits
 
-The numbers come from the tree at the time of writing, by the rule of the
+The numbers come from the tree at commit `1ad6125`, by the rule of the
 architecture skill: the size that 90% of the code files, and 90% of the
 folders, stay under, rounded up. Code is every tracked text file that the
 debt skill's `data.ere` does not match. Markdown, JSON, YAML, SVG and
@@ -213,6 +214,10 @@ post and four projects) count in the numbers below, and no check reads them.
 - Code files per folder: 20 folders hold code files of their own. The 90th
   percentile is 10; the limit is 10 (I-9). `src/components/` (11) and
   `tests/` (14) start on the `debt` list.
+- The site image (#91) came in while this file was in review. It added
+  `src/lib/site-image.ts` (192 lines) and an eleventh file in `src/lib/`, so
+  both start on the `debt` lists too. On that tree the 90th percentiles are
+  192 lines and 11 files.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The

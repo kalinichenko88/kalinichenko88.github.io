@@ -13,13 +13,16 @@ it.
 This project does not. Each shared type sits in the file that produces its
 values, and the files that use it import it from there. This follows the
 Modules rule in `docs/ARCHITECTURE.md`: a module's API is the exports of its
-`src/lib/` files. The five shared types:
+`src/lib/` files. The six shared types:
 
 - `Project` in `src/lib/projects.ts`, inferred from `getProjects()`. Used by
   `ProjectCard.astro` and the project image route.
 - `RepoNumbers` in `src/lib/github-repo.ts`. Used by `project-image.ts`.
-- `OgElement` in `src/lib/og-image.ts`. Used by `post-image.ts` and
-  `project-image.ts`.
+- `OgElement` in `src/lib/og-image.ts`. Used by the three image layouts
+  (`post-image.ts`, `project-image.ts`, `site-image.ts`) and
+  `tests/site-image.test.ts`.
+- `OgDrawing` in `src/lib/og-image.ts`. Used by `post-image.ts` and
+  `site-image.ts`.
 - `ImagePost` in `src/lib/post-image.ts`. Used by the post image route and
   `tests/post-images.test.ts`.
 - `ImageTheme` in `src/lib/project-image.ts`, beside `IMAGE_THEMES`, the list
@@ -34,8 +37,8 @@ from that file, so the schemas must be there or be imported into it. A
 collection's type comes from its schema through Astro's `CollectionEntry`.
 
 By the convention, `Project` would go to `src/models/`, `RepoNumbers` and
-`OgElement` to `src/lib/models/`, and `ImagePost` and `ImageTheme`, which
-tests also use, to a `models/` folder at the root. The schemas would go to
+`OgDrawing` to `src/lib/models/`, and `OgElement`, `ImagePost` and
+`ImageTheme`, which tests also use, to a `models/` folder at the root. The schemas would go to
 `schemas/`. `Project` and `ImageTheme` are derived from values, so their
 model files would import back from `src/lib/`.
 
@@ -48,7 +51,7 @@ convention. This ADR is that record.
 - Keep each type in the file that exports its values, and the schemas in
   `src/content.config.ts`: no move; the import names the file that makes the
   value.
-- Move them as the convention says: seven moves into four new folders, and
+- Move them as the convention says: eight moves into four new folders, and
   the derived types import back from `src/lib/`.
 - A line in `CLAUDE.md` and no ADR: cheaper, but a line in `CLAUDE.md` does
   not override a conventions skill.
