@@ -12,6 +12,7 @@ Live at **[kalinichenko.dev](https://kalinichenko.dev)**
 - **Content** — Astro Content Collections (Markdown blog posts and projects)
 - **Posts** — each post has a pencil-sketch cover, and a 1200×630 link preview rendered at build time from its title, description, date, reading time and cover
 - **Projects** — MDX content collection shown in a sideways row on the homepage and listed on `/projects`, each with a page of its own (`/projects/<slug>`) that shows the file's optional body and lists the posts sharing its tags; star counts, open issues, forks and language are read from GitHub at build time, with the frontmatter stars as fallback; each project gets a 1200×630 image rendered at build time, shown on its `/projects` card and as its link preview
+- **Link preview** — every other page shares a 1200×630 image rendered at build time: the name, the role and every contact channel next to the site drawing
 - **Comments** — Giscus (GitHub Discussions)
 - **Fonts** — DM Sans, JetBrains Mono (via Astro's built-in font optimization)
 - **Linting** — ESLint + Prettier with Husky pre-commit hooks
