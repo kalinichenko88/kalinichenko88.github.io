@@ -204,8 +204,8 @@ The numbers come from the tree at the time of writing, by the rule of the
 architecture skill: the size that 90% of the code files, and 90% of the
 folders, stay under, rounded up. Code is every tracked text file that the
 debt skill's `data.ere` does not match. Markdown, JSON, YAML, SVG and
-fixtures are not code. MDX is code by that rule: the five `.mdx` posts count
-in the numbers below, and no check reads them.
+fixtures are not code. MDX is code by that rule: the five `.mdx` files (one
+post and four projects) count in the numbers below, and no check reads them.
 
 - Lines per file: 72 code files. The 90th percentile is 179 lines; the limit
   is 180 (I-8). Seven files are over it. `global.css` (909 lines) is out of
@@ -232,9 +232,10 @@ rules for a split are in the architecture skill, under Decomposition.
 - **Fonts, twice.** The CSS gets DM Sans and JetBrains Mono from Google
   through Astro's `fonts` config. Satori gets the static files from
   `@fontsource`, because it draws a variable font at one weight only.
-- **Formatting.** Prettier runs on each file an agent writes
-  (`.claude/hooks/format.sh`) and on each commit (`lint-staged`), so a diff
-  never carries formatting.
+- **Formatting.** Prettier runs on each file that Claude Code writes or edits
+  (`.claude/hooks/format.sh`), and on commit for the file types that
+  `lint-staged` in `package.json` lists. CI's `format:check` reads every
+  file, so a format error that both miss fails CI.
 - **CI.** `.github/workflows/astro.yml`. The quality job runs lint, check,
   format and the tests; the build job runs with the workflow's GitHub token;
   the deploy job runs only from `main`.
