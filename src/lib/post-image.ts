@@ -2,7 +2,15 @@ import type { CollectionEntry } from 'astro:content';
 
 import { SITE_NAME } from '../consts.ts';
 import { formatDate } from './format-date.ts';
-import { el, IMAGE_PALETTES, ogImageSrc, type OgElement } from './og-image.ts';
+import {
+  accentBar,
+  drawingBox,
+  el,
+  IMAGE_PALETTES,
+  ogImageSrc,
+  type OgDrawing,
+  type OgElement,
+} from './og-image.ts';
 import { readingTime } from './reading-time.ts';
 
 /** What a post's image draws: its text, and its cover as a data: URL. */
@@ -11,7 +19,7 @@ export type ImagePost = {
   description: string;
   pubDate: Date;
   minutesRead: number;
-  cover: { src: string; width: number; height: number };
+  cover: OgDrawing;
 };
 
 /**
@@ -88,15 +96,9 @@ export function postImage(post: ImagePost): OgElement {
         el('div', {}, `${post.minutesRead} min read`)
       )
     ),
-    drawing(post.cover),
-    el('div', {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: 14,
-      backgroundColor: color.accent,
-    })
+    // The cover, whole, in a box on the right that ends at the right margin.
+    drawingBox(post.cover, DRAWING_WIDTH, 630 - 2 * PADDING_Y),
+    accentBar(color.accent)
   );
 }
 
@@ -149,31 +151,4 @@ function titleSize(title: string): number {
   }
 
   return title.length <= 60 ? 48 : 42;
-}
-
-/** The cover, whole, in a box on the right that ends at the right margin. */
-function drawing(cover: ImagePost['cover']): OgElement {
-  const height = 630 - 2 * PADDING_Y;
-  const scale = Math.min(DRAWING_WIDTH / cover.width, height / cover.height);
-
-  return el(
-    'div',
-    {
-      display: 'flex',
-      flexShrink: 0,
-      width: DRAWING_WIDTH,
-      height,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    {
-      type: 'img',
-      props: {
-        src: cover.src,
-        // Rounded down, so the drawing never spills a pixel past its box.
-        width: Math.floor(cover.width * scale),
-        height: Math.floor(cover.height * scale),
-      },
-    }
-  );
 }

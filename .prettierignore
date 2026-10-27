@@ -6,3 +6,5 @@ package-lock.json
 .superpowers/
 # Recorded API responses and built pages, kept byte-for-byte as the source sent them
 tests/fixtures/
+# Agent worktrees: other checkouts of this repo, with their own fixtures
+.claude/worktrees/

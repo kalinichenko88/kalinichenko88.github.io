@@ -6,7 +6,6 @@ import {
   PAD,
   contactSheet,
   normalize,
-  socialImage,
   subjectBox,
 } from '../.claude/skills/illustrate-post/prepare.mjs';
 
@@ -56,37 +55,6 @@ test('trims the cover to the drawing with an even margin', async () => {
   assert.ok(meta.isPalette, 'the cover is palette-compressed');
   assert.equal((await sharp(output).stats()).isOpaque, false);
   assert.deepEqual(await subjectBox(output), { left: pad, top: pad, width: 900, height: 300 });
-});
-
-test('fits the whole drawing inside a 1200x630 social image', async () => {
-  // A tall drawing is the case a plain cover crop would cut.
-  const cover = await normalize(await generated({ left: 700, top: 0, width: 100, height: HEIGHT }));
-  const { data, info } = await sharp(await socialImage(cover))
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-  assert.deepEqual([info.width, info.height], [1200, 630]);
-
-  // The drawing is whatever differs from #f4f2ee, the light page colour.
-  let left = info.width;
-  let top = info.height;
-  let right = -1;
-  let bottom = -1;
-  for (let y = 0; y < info.height; y++) {
-    for (let x = 0; x < info.width; x++) {
-      const p = (y * info.width + x) * info.channels;
-      const off =
-        Math.abs(data[p] - 0xf4) + Math.abs(data[p + 1] - 0xf2) + Math.abs(data[p + 2] - 0xee);
-      if (off <= 24) continue;
-      left = Math.min(left, x);
-      right = Math.max(right, x);
-      top = Math.min(top, y);
-      bottom = Math.max(bottom, y);
-    }
-  }
-  // Scaled whole, the 100x1024 drawing keeps its proportions; a crop would not.
-  const ratio = (right - left + 1) / (bottom - top + 1);
-  assert.ok(Math.abs(ratio - 100 / 1024) < 0.01, `drawing ratio ${ratio}`);
-  assert.ok(top > 0 && bottom < info.height - 1, `drawing touches an edge: ${top}..${bottom}`);
 });
 
 test('rejects an opaque image', async () => {

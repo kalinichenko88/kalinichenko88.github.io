@@ -1,6 +1,6 @@
 import { SITE_NAME } from '../consts.ts';
 import type { RepoNumbers } from './github-repo';
-import { el, IMAGE_PALETTES, ogImageSrc, type OgElement } from './og-image.ts';
+import { accentBar, el, IMAGE_PALETTES, ogImageSrc, type OgElement } from './og-image.ts';
 
 type ImageProject = RepoNumbers & { name: string; tagline: string; url: string };
 
@@ -96,14 +96,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
         SITE_NAME
       )
     ),
-    el('div', {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: 14,
-      backgroundColor: color.accent,
-    })
+    accentBar(color.accent)
   );
 }
 
