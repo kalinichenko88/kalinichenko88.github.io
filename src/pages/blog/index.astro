@@ -6,7 +6,9 @@ import PostCard from '../../components/PostCard.astro';
 import RssIcon from '../../assets/icons/rss.svg';
 
 const allPosts = await getCollection('posts');
-const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const posts = allPosts.sort((a, b) => {
+  return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+});
 ---
 
 <Layout
@@ -35,9 +37,9 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.
 
       {posts.length > 0 ? (
         <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
-          {posts.map((post, index) => (
-            <PostCard post={post} motionIndex={index + 1} />
-          ))}
+          {posts.map((post, index) => {
+            return <PostCard post={post} motionIndex={index + 1} />;
+          })}
         </div>
       ) : (
         <p class="text-foreground-secondary">Articles coming soon.</p>

@@ -32,19 +32,21 @@ const currentPath = Astro.url.pathname;
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center gap-1">
-        {NAV_LINKS.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              'nav-link px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
-              isActive(link.href, currentPath)
-                ? 'text-foreground active'
-                : 'text-foreground-secondary hover:text-foreground',
-            ]}
-          >
-            {link.label}
-          </a>
-        ))}
+        {NAV_LINKS.map((link) => {
+          return (
+            <a
+              href={link.href}
+              class:list={[
+                'nav-link px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
+                isActive(link.href, currentPath)
+                  ? 'text-foreground active'
+                  : 'text-foreground-secondary hover:text-foreground',
+              ]}
+            >
+              {link.label}
+            </a>
+          );
+        })}
       </div>
 
       <!-- Right Side: Theme Switcher + GitHub -->
@@ -83,6 +85,7 @@ const currentPath = Astro.url.pathname;
           >
             {THEME_OPTIONS.map((theme) => {
               const IconComponent = themeIcons[theme.iconId];
+
               return (
                 <button
                   type="button"
@@ -121,19 +124,21 @@ const currentPath = Astro.url.pathname;
     aria-label="Mobile navigation"
   >
     <div class="container py-4 space-y-1">
-      {NAV_LINKS.map((link) => (
-        <a
-          href={link.href}
-          class:list={[
-            'block px-4 py-2.5 text-sm font-medium rounded-md transition-colors duration-150',
-            isActive(link.href, currentPath)
-              ? 'text-foreground bg-background-subtle'
-              : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
-          ]}
-        >
-          {link.label}
-        </a>
-      ))}
+      {NAV_LINKS.map((link) => {
+        return (
+          <a
+            href={link.href}
+            class:list={[
+              'block px-4 py-2.5 text-sm font-medium rounded-md transition-colors duration-150',
+              isActive(link.href, currentPath)
+                ? 'text-foreground bg-background-subtle'
+                : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
+            ]}
+          >
+            {link.label}
+          </a>
+        );
+      })}
     </div>
   </div>
 </header>
@@ -144,13 +149,22 @@ const currentPath = Astro.url.pathname;
 <script>
   import { THEME_OPTIONS, resolveTheme } from '../config/themes';
 
-  const $ = (id: string) => document.getElementById(id);
+  const $ = (id: string) => {
+    return document.getElementById(id);
+  };
 
-  const OPTION_IDS = THEME_OPTIONS.map((t) => t.id);
-  const ICON_BY_ID = Object.fromEntries(THEME_OPTIONS.map((t) => [t.id, t.iconId]));
+  const OPTION_IDS = THEME_OPTIONS.map((t) => {
+    return t.id;
+  });
+  const ICON_BY_ID = Object.fromEntries(
+    THEME_OPTIONS.map((t) => {
+      return [t.id, t.iconId];
+    })
+  );
 
   function storedPreference(): string {
     const pref = localStorage.getItem('theme');
+
     return pref && OPTION_IDS.includes(pref) ? pref : 'auto';
   }
 
@@ -182,13 +196,17 @@ const currentPath = Astro.url.pathname;
 
   // Keep `auto` in sync when the OS preference flips
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (storedPreference() === 'auto') applyTheme('auto');
+    if (storedPreference() === 'auto') {
+      applyTheme('auto');
+    }
   });
 
   function toggleDropdown(show: boolean) {
     const dropdown = $('theme-dropdown');
     const toggle = $('theme-toggle');
-    if (!dropdown || !toggle) return;
+    if (!dropdown || !toggle) {
+      return;
+    }
 
     dropdown.classList.toggle('opacity-0', !show);
     dropdown.classList.toggle('invisible', !show);
@@ -199,17 +217,24 @@ const currentPath = Astro.url.pathname;
   function setMobileMenu(open: boolean, returnFocus = true) {
     const menu = $('mobile-menu');
     const toggle = $('mobile-menu-toggle');
-    if (!menu || !toggle) return;
+    if (!menu || !toggle) {
+      return;
+    }
 
     menu.classList.toggle('hidden', !open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 
-    if (open) menu.querySelector('a')?.focus();
-    else if (returnFocus) toggle.focus();
+    if (open) {
+      menu.querySelector('a')?.focus();
+    } else if (returnFocus) {
+      toggle.focus();
+    }
   }
 
-  const isMobileMenuOpen = () => $('mobile-menu')?.classList.contains('hidden') === false;
+  const isMobileMenuOpen = () => {
+    return $('mobile-menu')?.classList.contains('hidden') === false;
+  };
 
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
@@ -217,6 +242,7 @@ const currentPath = Astro.url.pathname;
     if (target.closest('#theme-toggle')) {
       e.preventDefault();
       toggleDropdown($('theme-toggle')?.getAttribute('aria-expanded') !== 'true');
+
       return;
     }
 
@@ -224,12 +250,19 @@ const currentPath = Astro.url.pathname;
     if (option?.dataset.theme) {
       applyTheme(option.dataset.theme);
       toggleDropdown(false);
+
       return;
     }
 
-    if (!target.closest('#theme-dropdown')) toggleDropdown(false);
-    if (target.closest('#mobile-menu-toggle')) setMobileMenu(!isMobileMenuOpen());
-    if (target.closest('#mobile-menu a')) setMobileMenu(false);
+    if (!target.closest('#theme-dropdown')) {
+      toggleDropdown(false);
+    }
+    if (target.closest('#mobile-menu-toggle')) {
+      setMobileMenu(!isMobileMenuOpen());
+    }
+    if (target.closest('#mobile-menu a')) {
+      setMobileMenu(false);
+    }
   });
 
   document.addEventListener('keydown', (e) => {
@@ -237,19 +270,24 @@ const currentPath = Astro.url.pathname;
     if ((e.metaKey || e.ctrlKey) && e.key === '/') {
       e.preventDefault();
       cycleTheme();
+
       return;
     }
 
     if (e.key === 'Escape') {
       toggleDropdown(false);
-      if (isMobileMenuOpen()) setMobileMenu(false);
+      if (isMobileMenuOpen()) {
+        setMobileMenu(false);
+      }
     }
 
     // Focus trap for the open mobile menu
     if (e.key === 'Tab' && isMobileMenuOpen()) {
       const menu = $('mobile-menu');
       const toggle = $('mobile-menu-toggle');
-      if (!menu || !toggle) return;
+      if (!menu || !toggle) {
+        return;
+      }
 
       const focusable = [toggle, ...menu.querySelectorAll<HTMLElement>('a, button')];
       const edge = e.shiftKey ? focusable[0] : focusable[focusable.length - 1];

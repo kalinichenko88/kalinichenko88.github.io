@@ -15,7 +15,10 @@ const cache = new Map<string, Promise<RepoNumbers>>();
  */
 export function githubRepo(repoUrl: string, fallbackStars: number): Promise<RepoNumbers> {
   let numbers = cache.get(repoUrl);
-  if (!numbers) cache.set(repoUrl, (numbers = fetchNumbers(repoUrl, fallbackStars)));
+  if (!numbers) {
+    cache.set(repoUrl, (numbers = fetchNumbers(repoUrl, fallbackStars)));
+  }
+
   return numbers;
 }
 
@@ -36,7 +39,14 @@ async function fetchNumbers(repoUrl: string, fallbackStars: number): Promise<Rep
     );
     const { stargazers_count, open_issues_count, forks_count, language } = await res.json();
     const counts = [stargazers_count, open_issues_count, forks_count];
-    if (!counts.every((count) => typeof count === 'number')) throw new Error(`HTTP ${res.status}`);
+    if (
+      !counts.every((count) => {
+        return typeof count === 'number';
+      })
+    ) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
     return {
       stars: stargazers_count,
       issues: open_issues_count,
@@ -47,6 +57,7 @@ async function fetchNumbers(repoUrl: string, fallbackStars: number): Promise<Rep
     console.warn(
       `[github-repo] ${repoUrl}: ${(error as Error).message}; using ${fallbackStars} stars from YAML`
     );
+
     return offlineNumbers(fallbackStars);
   }
 }

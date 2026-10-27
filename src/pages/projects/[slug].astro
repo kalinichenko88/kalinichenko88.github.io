@@ -8,18 +8,24 @@ import { getProjects } from '../../lib/projects';
 import { projectImageAlt, projectImageSrc, starLabel } from '../../lib/project-image';
 
 export async function getStaticPaths() {
-  const posts = (await getCollection('posts')).sort(
-    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
-  );
+  const posts = (await getCollection('posts')).sort((a, b) => {
+    return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+  });
 
-  return (await getProjects()).map((project) => ({
-    params: { slug: project.slug },
-    props: {
-      project,
-      // Posts on the project's topic: any post sharing one of its tags.
-      related: posts.filter((post) => post.data.tags.some((tag) => project.tags.includes(tag))),
-    },
-  }));
+  return (await getProjects()).map((project) => {
+    return {
+      params: { slug: project.slug },
+      props: {
+        project,
+        // Posts on the project's topic: any post sharing one of its tags.
+        related: posts.filter((post) => {
+          return post.data.tags.some((tag) => {
+            return project.tags.includes(tag);
+          });
+        }),
+      },
+    };
+  });
 }
 
 const { project, related } = Astro.props;
@@ -56,9 +62,9 @@ const socialImage = {
 
         <div data-reveal="content" style="--motion-index: 1">
           <div class="flex flex-wrap gap-2 mt-6">
-            {project.tech.map((t) => (
-              <span class="tag">{t}</span>
-            ))}
+            {project.tech.map((t) => {
+              return <span class="tag">{t}</span>;
+            })}
           </div>
           <div class="flex flex-wrap items-center gap-3 mt-8">
             <a
@@ -99,16 +105,18 @@ const socialImage = {
         {dividerNext && <hr class="divider" data-reveal />}
         <div class="flex flex-wrap items-center gap-3 mb-8" data-reveal="heading">
           <h2 class="text-foreground mr-1">Related posts</h2>
-          {project.tags.map((tag) => (
-            <a href={`/tags/${tag}`} class="tag">
-              {tag}
-            </a>
-          ))}
+          {project.tags.map((tag) => {
+            return (
+              <a href={`/tags/${tag}`} class="tag">
+                {tag}
+              </a>
+            );
+          })}
         </div>
         <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
-          {related.map((post, index) => (
-            <PostCard post={post} heading="h3" motionIndex={index + 1} />
-          ))}
+          {related.map((post, index) => {
+            return <PostCard post={post} heading="h3" motionIndex={index + 1} />;
+          })}
         </div>
       </div>
     </section>

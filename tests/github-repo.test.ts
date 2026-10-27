@@ -10,7 +10,9 @@ const REPO = 'https://github.com/kalinichenko88/obsidian-budget-planner-plugin';
 const recorded = readFileSync(new URL('./fixtures/github-repo.json', import.meta.url), 'utf8');
 
 test('reads the live numbers from the repo API', async (t) => {
-  const fetch = t.mock.method(globalThis, 'fetch', async () => new Response(recorded));
+  const fetch = t.mock.method(globalThis, 'fetch', async () => {
+    return new Response(recorded);
+  });
 
   assert.deepEqual(await githubRepo(REPO, 3), {
     stars: 11,
@@ -26,7 +28,9 @@ test('reads the live numbers from the repo API', async (t) => {
 
 test('falls back to the YAML stars and no other numbers when GitHub refuses', async (t) => {
   t.mock.method(console, 'warn', () => {});
-  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 403 }));
+  t.mock.method(globalThis, 'fetch', async () => {
+    return new Response('{}', { status: 403 });
+  });
 
   assert.deepEqual(await githubRepo('https://github.com/kalinichenko88/vaultmd', 3), {
     stars: 3,
@@ -38,7 +42,9 @@ test('falls back to the YAML stars and no other numbers when GitHub refuses', as
 
 // The homepage, /projects and every project image read the numbers in one build.
 test('asks GitHub once per repo, however many pages read it', async (t) => {
-  const fetch = t.mock.method(globalThis, 'fetch', async () => new Response(recorded));
+  const fetch = t.mock.method(globalThis, 'fetch', async () => {
+    return new Response(recorded);
+  });
   const repo = 'https://github.com/kalinichenko88/ai-digest';
 
   assert.equal((await githubRepo(repo, 1)).stars, 11);

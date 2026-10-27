@@ -76,9 +76,9 @@ const documentTitle = nameFits ? branded : title;
   <>
     <meta property="article:published_time" content={publishedTime} />
     <meta property="article:author" content={AUTHOR_NAME} />
-    {tags?.map((tag) => (
-      <meta property="article:tag" content={tag} />
-    ))}
+    {tags?.map((tag) => {
+      return <meta property="article:tag" content={tag} />;
+    })}
   </>
 )}
 

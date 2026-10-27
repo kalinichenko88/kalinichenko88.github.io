@@ -30,15 +30,20 @@ const giscusConfig = JSON.stringify({
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+
+  return posts.map((post) => {
+    return {
+      params: { id: post.id },
+      props: { post },
+    };
+  });
 }
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const tocHeadings = headings.filter((h) => {
+  return h.depth >= 2 && h.depth <= 3;
+});
 
 const minutesRead = readingTime(post.body ?? '');
 
@@ -110,11 +115,13 @@ const blogPostSchema = {
           <div class="min-w-0 flex-1">
             <!-- Tags -->
             <div class="flex flex-wrap gap-2 mb-4">
-              {post.data.tags.map((tag: string) => (
-                <a href={`/tags/${tag}`} class="tag">
-                  {tag}
-                </a>
-              ))}
+              {post.data.tags.map((tag: string) => {
+                return (
+                  <a href={`/tags/${tag}`} class="tag">
+                    {tag}
+                  </a>
+                );
+              })}
             </div>
 
             <!-- Title -->
@@ -160,12 +167,15 @@ const blogPostSchema = {
 
             function getGiscusTheme() {
               const theme = document.documentElement.getAttribute('data-theme') || 'cloud';
+
               return giscusThemes[theme] || 'light';
             }
 
             function loadGiscus() {
               const container = document.querySelector('.giscus');
-              if (!container) return;
+              if (!container) {
+                return;
+              }
               container.innerHTML = '';
 
               const script = document.createElement('script');
@@ -249,7 +259,9 @@ const blogPostSchema = {
       const headings = Array.from(
         document.querySelectorAll('.prose h2[id], .prose h3[id]')
       ) as HTMLElement[];
-      if (!headings.length) return;
+      if (!headings.length) {
+        return;
+      }
 
       let currentActiveId = '';
       headingObserverRef = new IntersectionObserver(
@@ -266,7 +278,9 @@ const blogPostSchema = {
         { rootMargin: '0px 0px -70% 0px', threshold: 0 }
       );
 
-      headings.forEach((h) => headingObserverRef!.observe(h));
+      headings.forEach((h) => {
+        headingObserverRef!.observe(h);
+      });
     }
 
     initTocObserver();

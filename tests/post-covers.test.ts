@@ -16,6 +16,7 @@ async function coverLines() {
     const source = await readFile(new URL(file, postsDir), 'utf8');
     posts.push({ file, lines: source.match(/^cover: .+$/gm) ?? [] });
   }
+
   return posts;
 }
 
@@ -27,7 +28,9 @@ test('every post declares exactly one cover', async () => {
 
 test('every cover went through prepare.mjs', async () => {
   for (const { file, lines } of await coverLines()) {
-    if (lines.length === 0) continue;
+    if (lines.length === 0) {
+      continue;
+    }
     const id = file.replace(/\.mdx?$/, '');
     const relative = lines[0].slice('cover: '.length).trim();
     // The post image (src/lib/post-image.ts) finds the cover by this name.

@@ -36,6 +36,7 @@ async function generated(subject?: Box): Promise<Buffer> {
       }
     }
   }
+
   return sharp(data, { raw: { width: WIDTH, height: HEIGHT, channels: 4 } })
     .png()
     .toBuffer();

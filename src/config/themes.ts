@@ -20,6 +20,9 @@ export const THEME_OPTIONS: Theme[] = [
 
 /** Map a stored preference to the `data-theme` value to apply. */
 export function resolveTheme(preference: string | null): string {
-  if (preference === LIGHT_THEME || preference === DARK_THEME) return preference;
+  if (preference === LIGHT_THEME || preference === DARK_THEME) {
+    return preference;
+  }
+
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME;
 }

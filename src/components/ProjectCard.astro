@@ -49,9 +49,9 @@ const images = row
         </Heading>
         <p class="text-foreground-secondary mb-4">{project.tagline}</p>
         <div class="flex flex-wrap gap-2 mb-4 mt-auto">
-          {project.tech.map((t) => (
-            <span class="tag">{t}</span>
-          ))}
+          {project.tech.map((t) => {
+            return <span class="tag">{t}</span>;
+          })}
         </div>
         {starText && <span class="font-mono text-xs text-foreground-tertiary">{starText}</span>}
       </a>
@@ -67,17 +67,19 @@ const images = row
         <Heading class="sr-only">{project.name}</Heading>
         {/* Rendered by src/pages/projects/[slug]/[theme].png.ts. One render per
               theme; global.css hides the other, and a hidden lazy image never loads. */}
-        {images.map(({ theme, src }) => (
-          <img
-            src={src}
-            alt={projectImageAlt(project)}
-            width="1200"
-            height="630"
-            loading="lazy"
-            decoding="async"
-            class={`theme-${theme}-only block h-auto w-full`}
-          />
-        ))}
+        {images.map(({ theme, src }) => {
+          return (
+            <img
+              src={src}
+              alt={projectImageAlt(project)}
+              width="1200"
+              height="630"
+              loading="lazy"
+              decoding="async"
+              class={`theme-${theme}-only block h-auto w-full`}
+            />
+          );
+        })}
       </a>
     )}
   </article>

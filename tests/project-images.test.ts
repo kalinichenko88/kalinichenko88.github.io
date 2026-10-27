@@ -39,6 +39,7 @@ async function projects() {
       language: 'TypeScript',
     });
   }
+
   return found;
 }
 
@@ -91,7 +92,9 @@ test('every project name and tagline is in the image font subset', async () => {
 // Browsers and link previews cache an image by its URL, so the URL changes
 // with the image's bytes and stays when they do not.
 test('the image URL changes with the image', async () => {
-  const [project] = (await projects()).sort((a, b) => a.file.localeCompare(b.file));
+  const [project] = (await projects()).sort((a, b) => {
+    return a.file.localeCompare(b.file);
+  });
   const src = await projectImageSrc(project, 'light');
   assert.match(src, /^\/projects\/[\w-]+\/light\.png\?v=[0-9a-f]{8}$/);
   // The same project gives the same URL, so an unchanged image keeps its cache.
@@ -125,7 +128,9 @@ test('every project renders a 1200x630 PNG in both themes, with or without GitHu
 // Short enough that a growing count cannot push the site name off the image,
 // and the same words on the text cards as on the image.
 test('a count is written in compact form', () => {
-  const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => label);
+  const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => {
+    return label;
+  });
   assert.deepEqual(labels, ['12K stars', '1 issue']);
   assert.deepEqual([0, 1, 11, 12345].map(starLabel), [null, '1 star', '11 stars', '12K stars']);
 });
@@ -134,7 +139,9 @@ test('a count is written in compact form', () => {
 // already did for stars.
 test('the image shows only the numbers above zero', () => {
   const labels = (numbers: Parameters<typeof projectStats>[0]) => {
-    return projectStats(numbers).map(({ label }) => label);
+    return projectStats(numbers).map(({ label }) => {
+      return label;
+    });
   };
   assert.deepEqual(labels({ stars: 0, issues: 1, forks: 2 }), ['1 issue', '2 forks']);
   assert.deepEqual(labels({ stars: 2, issues: 2, forks: 1 }), ['2 stars', '2 issues', '1 fork']);
@@ -146,7 +153,9 @@ test('the image shows only the numbers above zero', () => {
 // theme tokens. This keeps the copy in step with global.css.
 test('the image palettes match the theme tokens', async () => {
   const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
-  const block = (id: string) => css.split(`[data-theme='${id}'] {`)[1]?.split('}')[0] ?? '';
+  const block = (id: string) => {
+    return css.split(`[data-theme='${id}'] {`)[1]?.split('}')[0] ?? '';
+  };
   const blocks: Record<ImageTheme, string> = {
     light: block(LIGHT_THEME),
     dark: block(DARK_THEME),
@@ -155,9 +164,9 @@ test('the image palettes match the theme tokens', async () => {
     assert.ok(blocks[theme], `${theme}: no theme block in global.css`);
     for (const [token, value] of Object.entries(IMAGE_PALETTES[theme])) {
       const declaration = `--color-${token}: ${value};`;
-      const declared = blocks[theme]
-        .split('\n')
-        .some((line) => line.trim().startsWith(declaration));
+      const declared = blocks[theme].split('\n').some((line) => {
+        return line.trim().startsWith(declaration);
+      });
       assert.ok(declared, `${theme}: ${declaration} is not in global.css`);
     }
   }

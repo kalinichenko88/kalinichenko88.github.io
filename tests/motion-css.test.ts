@@ -57,7 +57,9 @@ test('cards stay put on hover', async () => {
   }
   const components = new URL('../src/components/', import.meta.url);
   for (const file of await readdir(components, { recursive: true })) {
-    if (!file.endsWith('.astro')) continue;
+    if (!file.endsWith('.astro')) {
+      continue;
+    }
     const source = await readFile(new URL(file, components), 'utf8');
     assert.doesNotMatch(source, /data-reactive|card-lift/, `${file} still moves on hover`);
   }
@@ -104,10 +106,13 @@ const bare = css.replace(/\/\*[\s\S]*?\*\//g, '');
 function rule(selector: RegExp) {
   const found = bare.match(selector);
   assert.ok(found, `no rule matching ${selector}`);
+
   return found[0];
 }
 
-const hidden = () => rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
+const hidden = () => {
+  return rule(/\[data-motion-ready\] \[data-reveal\] {[^}]*}/s);
+};
 
 test('declares the reveal transition only on the revealed state', () => {
   // Nodes swapped in by ClientRouter arrive from an unstyled document at

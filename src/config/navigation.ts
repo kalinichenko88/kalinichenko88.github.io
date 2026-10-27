@@ -13,6 +13,9 @@ export const NAV_LINKS: NavLink[] = [
 
 /** Whether the nav item `href` is the page at `path`, or a page under it. */
 export function isActive(href: string, path: string): boolean {
-  if (href === '/') return path === '/';
+  if (href === '/') {
+    return path === '/';
+  }
+
   return path === href || path.startsWith(href + '/');
 }

@@ -15,17 +15,23 @@ test('every post follows the tag policy', async () => {
     const source = await readFile(new URL(file, postsDir), 'utf8');
     const line = source.match(/^tags: \[(.*)\]$/m);
     assert.ok(line, `${file} has no flow-style tags line`);
-    const tags = line[1].split(',').map((tag) => tag.trim());
+    const tags = line[1].split(',').map((tag) => {
+      return tag.trim();
+    });
 
     // A post about the site itself has no tool to name.
-    if (tags.length === 1 && tags[0] === 'meta') continue;
+    if (tags.length === 1 && tags[0] === 'meta') {
+      continue;
+    }
 
     assert.ok(tags.length >= 2 && tags.length <= 3, `${file} has ${tags.length} tags`);
     for (const tag of tags) {
       assert.ok([...TOOL_TAGS, ...TOPIC_TAGS].includes(tag), `${file}: unknown tag ${tag}`);
     }
     assert.equal(
-      tags.filter((tag) => TOOL_TAGS.includes(tag)).length,
+      tags.filter((tag) => {
+        return TOOL_TAGS.includes(tag);
+      }).length,
       1,
       `${file} needs exactly one tool tag`
     );
@@ -38,8 +44,12 @@ test('every project tag comes from the post vocabulary', async () => {
   for (const file of await readdir(projectsDir)) {
     const source = await readFile(new URL(file, projectsDir), 'utf8');
     const line = source.match(/^tags: \[(.*)\]$/m);
-    if (!line) continue;
-    for (const tag of line[1].split(',').map((tag) => tag.trim().replace(/^'|'$/g, ''))) {
+    if (!line) {
+      continue;
+    }
+    for (const tag of line[1].split(',').map((tag) => {
+      return tag.trim().replace(/^'|'$/g, '');
+    })) {
       assert.ok([...TOOL_TAGS, ...TOPIC_TAGS].includes(tag), `${file}: unknown tag ${tag}`);
     }
   }

@@ -11,14 +11,18 @@ export async function GET(context: APIContext) {
     description: SITE_DESCRIPTION,
     site: context.site!,
     items: posts
-      .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-      .map((post) => ({
-        title: post.data.title,
-        description: post.data.description,
-        pubDate: post.data.pubDate,
-        link: `/blog/${post.id}/`,
-        categories: post.data.tags,
-      })),
+      .sort((a, b) => {
+        return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+      })
+      .map((post) => {
+        return {
+          title: post.data.title,
+          description: post.data.description,
+          pubDate: post.data.pubDate,
+          link: `/blog/${post.id}/`,
+          categories: post.data.tags,
+        };
+      }),
     customData: `<language>en-us</language>`,
   });
 }
