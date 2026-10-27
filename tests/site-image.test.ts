@@ -5,7 +5,7 @@ import sharp from 'sharp';
 
 import * as consts from '../src/consts.ts';
 import { IMAGE_PALETTES, renderOgImage } from '../src/lib/og-image.ts';
-import { siteImage, siteImageAlt, type ImageSite } from '../src/lib/site-image.ts';
+import { inlinedDrawing, siteImage, siteImageAlt, type ImageSite } from '../src/lib/site-image.ts';
 
 // The site image, rendered at build time by src/pages/site.png.ts: the
 // og:image of every page without one of its own.
@@ -18,7 +18,11 @@ async function site(): Promise<ImageSite> {
 // text is read here instead.
 async function contacts(): Promise<ImageSite['contacts']> {
   const source = await readFile(new URL('../src/config/contacts.ts', import.meta.url), 'utf8');
-  const entries = [...source.matchAll(/label: '([^']+)',\s*handle: (?:'([^']+)'|(\w+))/g)];
+  // A handle is a quoted string or a constant from consts.ts, and nothing after
+  // it: `CONST.trim()` is no match, as the value drawn is not the constant's.
+  const entries = [
+    ...source.matchAll(/label: '([^']+)',\s*handle: (?:'([^']+)'|(\w+))(?=\s*[,}])/g),
+  ];
   // Every entry has an Icon, so a count below theirs is an entry written in a
   // shape the pattern misses, which the image would draw and this test not.
   const icons = source.match(/\bIcon: [A-Z]\w*/g) ?? [];
@@ -36,12 +40,20 @@ async function contacts(): Promise<ImageSite['contacts']> {
   );
 }
 
-async function drawing(): Promise<ImageSite['drawing']> {
-  const png = await readFile(new URL('../src/assets/images/site.png', import.meta.url));
-  const { width = 0, height = 0 } = await sharp(png).metadata();
+const drawingFile = new URL('../src/assets/images/site.png', import.meta.url);
 
-  return { src: `data:image/png;base64,${png.toString('base64')}`, width, height };
+// The drawing as toImageSite() gives it, from the file as Vite inlines it.
+async function drawing(): Promise<ImageSite['drawing']> {
+  const png = await readFile(drawingFile);
+
+  return inlinedDrawing(`data:image/png;base64,${png.toString('base64')}`);
 }
+
+test('the drawing size read from the inlined PNG is the file size', async () => {
+  const { width, height } = await sharp(drawingFile.pathname).metadata();
+  const value = await drawing();
+  assert.deepEqual([value.width, value.height], [width, height]);
+});
 
 test('the site image renders as a 1200x630 palette PNG', async () => {
   const png = await renderOgImage(siteImage(await site()));

@@ -26,10 +26,10 @@ export function siteImage(site: ImageSite): OgElement {
   const color = IMAGE_PALETTES.light;
   // The profiles in the first column, the ways to write in the second.
   // ponytail: split by position, as the first two in CONTACT_LINKS are the
-  // profiles. A new order there moves a channel to the other column, and a
-  // channel more makes the second column a row taller, which pushes the
-  // bottom row into the margin, so tests/site-image.test.ts fails. Give each
-  // channel a kind when the list stops fitting this split.
+  // profiles. A new order there moves a channel to the other column, and no
+  // test sees that. A channel more makes the second column a row taller and
+  // pushes the bottom row into the margin, which tests/site-image.test.ts
+  // sees. Give each channel a kind when the list stops fitting this split.
   const columns = [site.contacts.slice(0, 2), site.contacts.slice(2)];
 
   return el(
@@ -131,9 +131,9 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
       eager: true,
     })
   );
-  // A PNG opens with its IHDR chunk, which holds the width at byte 16 and the
-  // height at byte 20.
-  const png = Buffer.from(src.slice(src.indexOf(',') + 1), 'base64');
+  if (!src) {
+    throw new Error('no site drawing at src/assets/images/site.png');
+  }
 
   return {
     contacts: contacts.map(({ label, handle }) => {
@@ -146,8 +146,17 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
 
       return { label, handle, svg };
     }),
-    drawing: { src, width: png.readUInt32BE(16), height: png.readUInt32BE(20) },
+    drawing: inlinedDrawing(src),
   };
+}
+
+/** The drawing as an image takes it, from its PNG as a base64 data: URL. */
+export function inlinedDrawing(src: string): OgDrawing {
+  // A PNG opens with its IHDR chunk, which holds the width at byte 16 and the
+  // height at byte 20.
+  const png = Buffer.from(src.slice(src.indexOf(',') + 1), 'base64');
+
+  return { src, width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
 }
 
 const PADDING_X = 120;
