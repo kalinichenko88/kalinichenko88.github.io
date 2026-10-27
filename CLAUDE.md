@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 > **Design system:** before building or changing any page, section, or UI component, read [`DESIGN.md`](./DESIGN.md) at the repo root. It holds the authoritative tokens (palette with the `accent` vs `accent-text` AA rule, typography scale, container tracks), the component classes, interaction patterns, the Do's/Don'ts (em-dash ban in copy, one accent, reading vs wide track, no eyebrows), and a "how to add a new page/section" playbook.
 
+> **Architecture:** before a spec, a plan or the first edit of a new feature, read [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). At the start of a new feature, and for a decision, load `kalinichenko:architecture`.
+
 ## Build & Development Commands
 
 ```bash
