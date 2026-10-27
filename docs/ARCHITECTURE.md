@@ -224,6 +224,8 @@ post and four projects) count in the numbers below, and no check reads them.
   `src/lib/site-image.ts` (192 lines) and an eleventh file in `src/lib/`, so
   both start on the `debt` lists too. On that tree the 90th percentiles are
   192 lines and 11 files.
+- `getPosts()` (ADR 0002) added `src/lib/posts.ts`, a twelfth file in
+  `src/lib/`. #98 plans the split of the folder.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The
