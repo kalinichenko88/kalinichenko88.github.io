@@ -26,6 +26,18 @@ export default [
         'error',
         { blankLine: 'always', prev: '*', next: 'return' },
       ],
+      // arrow-body-style's fix writes `return` into callbacks whose value nobody reads.
+      'no-restricted-syntax': [
+        'error',
+        ...[
+          "CallExpression[callee.property.name='forEach'] > ArrowFunctionExpression > BlockStatement > ReturnStatement[argument]",
+          "CallExpression[callee.property.name='addEventListener'] > ArrowFunctionExpression > BlockStatement > ReturnStatement[argument]",
+          "CallExpression[callee.name='addEventListener'] > ArrowFunctionExpression > BlockStatement > ReturnStatement[argument]",
+          "ReturnStatement > CallExpression[callee.property.name='forEach']",
+        ].map((selector) => {
+          return { selector, message: 'Nobody reads this value: delete the `return`.' };
+        }),
+      ],
     },
   },
   {

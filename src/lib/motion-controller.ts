@@ -15,7 +15,7 @@ export function initPage(): void {
 
   observer = new IntersectionObserver(
     (entries) => {
-      return entries.forEach((entry) => {
+      entries.forEach((entry) => {
         if (!entry.isIntersecting) {
           return;
         }
