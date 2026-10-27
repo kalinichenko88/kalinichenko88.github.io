@@ -5,7 +5,9 @@ import { CONTACT_LINKS } from '../config/contacts';
 import { MAIL_PROFILE_LINK } from '../consts';
 
 // Email leads the page as the call to action; the cards hold the rest.
-const channels = CONTACT_LINKS.filter((link) => !link.href.startsWith('mailto:'));
+const channels = CONTACT_LINKS.filter((link) => {
+  return !link.href.startsWith('mailto:');
+});
 ---
 
 <Layout
@@ -30,24 +32,28 @@ const channels = CONTACT_LINKS.filter((link) => !link.href.startsWith('mailto:')
       </div>
 
       <ul class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
-        {channels.map((link, index) => (
-          <li data-reveal="card" style={`--motion-index: ${index + 2}`}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="card card-hover group flex items-center gap-4 p-5"
-            >
-              <link.Icon class="w-6 h-6 shrink-0 text-foreground-secondary" />
-              <span>
-                <span class="block font-display font-semibold text-foreground group-hover:text-accent-text transition-colors">
-                  {link.label}
+        {channels.map((link, index) => {
+          return (
+            <li data-reveal="card" style={`--motion-index: ${index + 2}`}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="card card-hover group flex items-center gap-4 p-5"
+              >
+                <link.Icon class="w-6 h-6 shrink-0 text-foreground-secondary" />
+                <span>
+                  <span class="block font-display font-semibold text-foreground group-hover:text-accent-text transition-colors">
+                    {link.label}
+                  </span>
+                  <span class="block font-mono text-sm text-foreground-tertiary">
+                    {link.handle}
+                  </span>
                 </span>
-                <span class="block font-mono text-sm text-foreground-tertiary">{link.handle}</span>
-              </span>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   </section>

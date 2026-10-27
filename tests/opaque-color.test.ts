@@ -28,11 +28,26 @@ type FakeNode = {
 function chain(...nodes: string[]): Element {
   const fakes: FakeNode[] = nodes.map((node) => {
     const [tag, backgroundColor = 'rgba(0, 0, 0, 0)'] = node.split(':');
-    return { backgroundColor, parentElement: null, matches: (s) => s.split(', ').includes(tag) };
+
+    return {
+      backgroundColor,
+      parentElement: null,
+      matches: (s) => {
+        return s.split(', ').includes(tag);
+      },
+    };
   });
-  fakes.forEach((node, i) => (node.parentElement = fakes[i + 1] ?? null));
+  fakes.forEach((node, i) => {
+    node.parentElement = fakes[i + 1] ?? null;
+  });
   const body = fakes.at(-1);
-  Object.assign(globalThis, { document: { body }, getComputedStyle: (n: FakeNode) => n });
+  Object.assign(globalThis, {
+    document: { body },
+    getComputedStyle: (n: FakeNode) => {
+      return n;
+    },
+  });
+
   return fakes[0] as unknown as Element;
 }
 

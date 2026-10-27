@@ -20,7 +20,10 @@ export const TEXT =
 // article, which is not text, so text on a card stays covered.
 export function onOpaqueFill(el: Element | null): boolean {
   for (let node = el; node && node !== document.body; node = node.parentElement) {
-    if (!node.matches(TEXT) && isOpaque(getComputedStyle(node).backgroundColor)) return true;
+    if (!node.matches(TEXT) && isOpaque(getComputedStyle(node).backgroundColor)) {
+      return true;
+    }
   }
+
   return false;
 }

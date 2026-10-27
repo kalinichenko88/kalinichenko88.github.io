@@ -7,12 +7,23 @@ import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  const tags = [
+    ...new Set(
+      posts.flatMap((post) => {
+        return post.data.tags;
+      })
+    ),
+  ];
 
   return tags.map((tag) => {
     const filteredPosts = posts
-      .filter((post) => post.data.tags.includes(tag))
-      .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+      .filter((post) => {
+        return post.data.tags.includes(tag);
+      })
+      .sort((a, b) => {
+        return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+      });
+
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -44,9 +55,9 @@ const { posts } = Astro.props;
       </div>
 
       <div class="columns-1 gap-6 md:columns-2 lg:columns-3 mt-8 *:mb-6 *:break-inside-avoid">
-        {posts.map((post, index) => (
-          <PostCard post={post} motionIndex={index + 1} />
-        ))}
+        {posts.map((post, index) => {
+          return <PostCard post={post} motionIndex={index + 1} />;
+        })}
       </div>
     </div>
   </section>

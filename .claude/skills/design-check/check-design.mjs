@@ -27,34 +27,46 @@ function toRgb(hex) {
     h.length === 3
       ? h
           .split('')
-          .map((c) => c + c)
+          .map((c) => {
+            return c + c;
+          })
           .join('')
       : h;
-  return [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255);
+
+  return [0, 2, 4].map((i) => {
+    return parseInt(n.slice(i, i + 2), 16) / 255;
+  });
 }
 function relLum(hex) {
-  const [r, g, b] = toRgb(hex).map((c) =>
-    c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-  );
+  const [r, g, b] = toRgb(hex).map((c) => {
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 function contrast(a, b) {
-  const [l1, l2] = [relLum(a), relLum(b)].sort((x, y) => y - x);
+  const [l1, l2] = [relLum(a), relLum(b)].sort((x, y) => {
+    return y - x;
+  });
+
   return (l1 + 0.05) / (l2 + 0.05);
 }
 // `color-mix(in srgb, top weight, under)`; with `transparent` as `under` it is
 // also `top` at that alpha painted over `under`.
 function mix(top, weight, under) {
-  if (!top || !under) return undefined;
+  if (!top || !under) {
+    return undefined;
+  }
   const [a, b] = [toRgb(top), toRgb(under)];
+
   return (
     '#' +
     a
-      .map((c, i) =>
-        Math.round((c * weight + b[i] * (1 - weight)) * 255)
+      .map((c, i) => {
+        return Math.round((c * weight + b[i] * (1 - weight)) * 255)
           .toString(16)
-          .padStart(2, '0')
-      )
+          .padStart(2, '0');
+      })
       .join('')
   );
 }
@@ -62,7 +74,9 @@ function mix(top, weight, under) {
 // ---------- token parsing ----------
 function themeBlock(css, selector) {
   const start = css.indexOf(selector);
-  if (start === -1) return {};
+  if (start === -1) {
+    return {};
+  }
   const open = css.indexOf('{', start);
   const close = css.indexOf('}', open);
   const body = css.slice(open + 1, close);
@@ -70,6 +84,7 @@ function themeBlock(css, selector) {
   for (const m of body.matchAll(/--color-([\w-]+):\s*(#[0-9a-fA-F]+)/g)) {
     tokens[m[1]] = m[2];
   }
+
   return tokens;
 }
 
@@ -78,15 +93,25 @@ function walk(dir, exts) {
   const out = [];
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, e.name);
-    if (e.isDirectory()) out.push(...walk(p, exts));
-    else if (exts.some((x) => e.name.endsWith(x))) out.push(p);
+    if (e.isDirectory()) {
+      out.push(...walk(p, exts));
+    } else if (
+      exts.some((x) => {
+        return e.name.endsWith(x);
+      })
+    ) {
+      out.push(p);
+    }
   }
+
   return out;
 }
 
 const AA = 4.5;
 let hardFail = 0;
-const line = (ok, msg) => console.log(`  ${ok ? '✓' : '✗'} ${msg}`);
+const line = (ok, msg) => {
+  console.log(`  ${ok ? '✓' : '✗'} ${msg}`);
+};
 
 // ---------- self-test ----------
 if (process.argv.includes('--selftest')) {
@@ -102,7 +127,9 @@ if (process.argv.includes('--selftest')) {
     const c = contrast(a, b);
     const pass = c >= thr;
     const ok = pass === shouldPass;
-    if (!ok) bad++;
+    if (!ok) {
+      bad++;
+    }
     line(
       ok,
       `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`
@@ -110,7 +137,9 @@ if (process.argv.includes('--selftest')) {
   }
   // The weight belongs to the first color; swapped, this gives #bfbfbf.
   const m = mix('#ffffff', 0.25, '#000000');
-  if (m !== '#404040') bad++;
+  if (m !== '#404040') {
+    bad++;
+  }
   line(m === '#404040', `mix(#ffffff, 0.25, #000000) = ${m} (expected #404040)`);
   console.log(bad ? `\nSELF-TEST FAILED (${bad})` : '\nSelf-test OK');
   process.exit(bad ? 1 : 0);
@@ -160,7 +189,9 @@ for (const [label, a, b] of pairs) {
   }
   const c = contrast(a, b);
   const ok = c >= AA;
-  if (!ok) hardFail++;
+  if (!ok) {
+    hardFail++;
+  }
   line(ok, `${label}: ${c.toFixed(2)}:1`);
 }
 
@@ -180,9 +211,15 @@ for (const [label, re] of forbidden) {
   for (const f of files) {
     readFileSync(f, 'utf8')
       .split('\n')
-      .forEach((l, i) => re.test(l) && hits.push(`${f.replace(ROOT + '/', '')}:${i + 1}`));
+      .forEach((l, i) => {
+        if (re.test(l)) {
+          hits.push(`${f.replace(ROOT + '/', '')}:${i + 1}`);
+        }
+      });
   }
-  if (hits.length) hardFail++;
+  if (hits.length) {
+    hardFail++;
+  }
   line(hits.length === 0, `no ${label}${hits.length ? ' -> ' + hits.slice(0, 5).join(', ') : ''}`);
 }
 
@@ -193,11 +230,15 @@ for (const id of ['cloud', 'cloud-dark']) {
   // Matches the quoted literal anywhere in themes.ts: the ids live on the
   // LIGHT_THEME / DARK_THEME constants, not on an `id:` property.
   const ok = new RegExp(`['"]${id}['"]`).test(themes);
-  if (!ok) hardFail++;
+  if (!ok) {
+    hardFail++;
+  }
   line(ok, `id '${id}' present`);
 }
 const noTerminalId = !/id:\s*['"]terminal['"]/.test(themes);
-if (!noTerminalId) hardFail++;
+if (!noTerminalId) {
+  hardFail++;
+}
 line(noTerminalId, "no 'terminal' theme id");
 
 // ---------- 4. em-dash in UI copy (advisory) ----------
@@ -207,10 +248,19 @@ const dashHits = [];
 for (const f of astro) {
   readFileSync(f, 'utf8')
     .split('\n')
-    .forEach((l, i) => /[—–]/.test(l) && dashHits.push(`${f.replace(ROOT + '/', '')}:${i + 1}`));
+    .forEach((l, i) => {
+      if (/[—–]/.test(l)) {
+        dashHits.push(`${f.replace(ROOT + '/', '')}:${i + 1}`);
+      }
+    });
 }
-if (dashHits.length === 0) line(true, 'none found');
-else dashHits.forEach((h) => console.log(`  ! ${h}`));
+if (dashHits.length === 0) {
+  line(true, 'none found');
+} else {
+  dashHits.forEach((h) => {
+    console.log(`  ! ${h}`);
+  });
+}
 
 // ---------- verdict ----------
 console.log('');

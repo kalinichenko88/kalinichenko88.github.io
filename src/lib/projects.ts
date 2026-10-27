@@ -7,7 +7,9 @@ import { githubRepo, offlineNumbers } from './github-repo';
 export async function getProjects() {
   return Promise.all(
     (await getCollection('projects'))
-      .sort((a, b) => a.data.order - b.data.order)
+      .sort((a, b) => {
+        return a.data.order - b.data.order;
+      })
       .map(async (entry) => {
         const { data } = entry;
         const url = `${GITHUB_PROFILE_LINK}/${data.slug}`;
@@ -15,6 +17,7 @@ export async function getProjects() {
         const numbers = import.meta.env.DEV
           ? offlineNumbers(data.stars)
           : await githubRepo(url, data.stars);
+
         // `entry` is for the project's page, which renders the Markdown body.
         return { ...data, url, ...numbers, entry };
       })

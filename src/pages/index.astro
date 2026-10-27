@@ -29,7 +29,9 @@ const personSchema = {
 
 const allPosts = await getCollection('posts');
 const latestPosts = allPosts
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .sort((a, b) => {
+    return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+  })
   .slice(0, 8);
 
 const projects = await getProjects();
@@ -46,9 +48,9 @@ const projects = await getProjects();
       prevLabel="Scroll to previous projects"
       nextLabel="Scroll to more projects"
     >
-      {projects.map((project) => (
-        <ProjectCard project={project} heading="h3" row />
-      ))}
+      {projects.map((project) => {
+        return <ProjectCard project={project} heading="h3" row />;
+      })}
     </CardRow>
   </section>
   {allPosts.length > 0 && (
@@ -60,9 +62,9 @@ const projects = await getProjects();
         prevLabel="Scroll to newer posts"
         nextLabel="Scroll to older posts"
       >
-        {latestPosts.map((post) => (
-          <PostCard post={post} heading="h3" row />
-        ))}
+        {latestPosts.map((post) => {
+          return <PostCard post={post} heading="h3" row />;
+        })}
       </CardRow>
     </section>
   )}

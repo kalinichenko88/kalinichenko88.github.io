@@ -6,8 +6,8 @@ import { MAX_DESCRIPTION, MAX_TITLE } from './consts';
 
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './content/posts' }),
-  schema: ({ image }) =>
-    z.object({
+  schema: ({ image }) => {
+    return z.object({
       // The page's og:title and description. The build checks them on the
       // page too; the limits here name the file while you write it.
       title: z.string().max(MAX_TITLE),
@@ -17,7 +17,8 @@ const posts = defineCollection({
       // Written by the illustrate-post skill. Optional so a post being written
       // still renders; tests/post-covers.test.ts makes it mandatory in CI.
       cover: image().optional(),
-    }),
+    });
+  },
 });
 
 const projects = defineCollection({

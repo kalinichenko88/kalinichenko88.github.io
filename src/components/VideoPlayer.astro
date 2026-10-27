@@ -51,7 +51,9 @@ const { src, caption, poster } = Astro.props;
     connectedCallback() {
       const video = this.querySelector('video');
       const overlay = this.querySelector<HTMLButtonElement>('button');
-      if (!video || !overlay) return;
+      if (!video || !overlay) {
+        return;
+      }
 
       this.#video = video;
       this.#overlay = overlay;

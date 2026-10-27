@@ -14,9 +14,11 @@ export function initPage(): void {
   const elements = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
 
   observer = new IntersectionObserver(
-    (entries) =>
+    (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting) {
+          return;
+        }
         // A block taller than the viewport can never reach 0.18, so it would
         // stay at opacity 0 forever. Reveal those on first contact instead.
         if (entry.intersectionRatio < 0.18 && entry.boundingClientRect.height <= innerHeight) {
@@ -24,7 +26,8 @@ export function initPage(): void {
         }
         entry.target.classList.add('is-revealed');
         observer?.unobserve(entry.target);
-      }),
+      });
+    },
     { threshold: [0, 0.18], rootMargin: '0px 0px -8% 0px' }
   );
 

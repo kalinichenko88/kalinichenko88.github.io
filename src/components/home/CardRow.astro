@@ -80,14 +80,21 @@ const buttonClass =
       const [prev, next] = this.querySelectorAll<HTMLButtonElement>('button[data-step]');
       const first = this.#row?.firstElementChild;
       const last = this.#row?.lastElementChild;
-      if (!this.#row || !prev || !next || !first || !last) return;
+      if (!this.#row || !prev || !next || !first || !last) {
+        return;
+      }
       this.#edges = new IntersectionObserver(
-        (entries) =>
+        (entries) => {
           entries.forEach((entry) => {
             const atEnd = entry.intersectionRatio >= 0.98;
-            if (entry.target === first) prev.disabled = atEnd;
-            if (entry.target === last) next.disabled = atEnd;
-          }),
+            if (entry.target === first) {
+              prev.disabled = atEnd;
+            }
+            if (entry.target === last) {
+              next.disabled = atEnd;
+            }
+          });
+        },
         { root: this.#row, threshold: 0.98 }
       );
       this.#edges.observe(first);
@@ -101,7 +108,9 @@ const buttonClass =
     #scroll = (event: Event) => {
       const button = (event.target as Element).closest<HTMLButtonElement>('button[data-step]');
       const card = this.#row?.firstElementChild as HTMLElement | null;
-      if (!button || !this.#row || !card) return;
+      if (!button || !this.#row || !card) {
+        return;
+      }
       // One card width; mandatory snap carries it over the gap to the next card.
       this.#row.scrollBy({
         left: Number(button.dataset.step) * card.offsetWidth,
@@ -110,5 +119,7 @@ const buttonClass =
     };
   }
 
-  if (!customElements.get('card-row')) customElements.define('card-row', CardRowElement);
+  if (!customElements.get('card-row')) {
+    customElements.define('card-row', CardRowElement);
+  }
 </script>

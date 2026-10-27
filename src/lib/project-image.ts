@@ -105,7 +105,9 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
  * stars" says nothing, and the text card always hid zero stars too.
  */
 export function projectStats(numbers: Pick<RepoNumbers, 'stars' | 'issues' | 'forks'>) {
-  return STATS.filter(({ key }) => numbers[key] > 0).map(({ key, one, many, icon }) => {
+  return STATS.filter(({ key }) => {
+    return numbers[key] > 0;
+  }).map(({ key, one, many, icon }) => {
     const count = numbers[key];
 
     return { icon, label: `${compact.format(count)} ${count === 1 ? one : many}` };
@@ -134,8 +136,15 @@ export function projectImageSrc(
 
 /** What the image says after the name, for its alt text. */
 export function projectImageAlt(project: ImageProject): string {
-  const numbers = [...projectStats(project).map(({ label }) => label), project.language];
-  const shown = numbers.filter((value) => value !== null);
+  const numbers = [
+    ...projectStats(project).map(({ label }) => {
+      return label;
+    }),
+    project.language,
+  ];
+  const shown = numbers.filter((value) => {
+    return value !== null;
+  });
 
   return shown.length > 0 ? `${project.tagline} ${shown.join(', ')}.` : project.tagline;
 }

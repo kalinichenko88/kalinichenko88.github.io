@@ -35,13 +35,16 @@ export async function subjectBox(input) {
   let bottom = -1;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (data[(y * width + x) * channels + channels - 1] <= ALPHA_THRESHOLD) continue;
+      if (data[(y * width + x) * channels + channels - 1] <= ALPHA_THRESHOLD) {
+        continue;
+      }
       left = Math.min(left, x);
       right = Math.max(right, x);
       top = Math.min(top, y);
       bottom = Math.max(bottom, y);
     }
   }
+
   return right < 0 ? null : { left, top, width: right - left + 1, height: bottom - top + 1 };
 }
 
@@ -50,9 +53,12 @@ export async function normalize(input) {
     throw new Error('no transparency: the background is opaque');
   }
   const box = await subjectBox(input);
-  if (!box) throw new Error('no subject: nothing above the alpha threshold');
+  if (!box) {
+    throw new Error('no subject: nothing above the alpha threshold');
+  }
 
   const pad = Math.round(Math.max(box.width, box.height) * PAD);
+
   return sharp(input)
     .extract(box)
     .extend({ top: pad, bottom: pad, left: pad, right: pad, background: TRANSPARENT })
@@ -92,6 +98,7 @@ export async function contactSheet(variants) {
       });
     }
   }
+
   return sharp({
     create: {
       width: GAP + variants.length * (TILE_W + GAP),
@@ -113,7 +120,9 @@ if (import.meta.main) {
   }
   const accepted = [];
   const files = readdirSync(dir)
-    .filter((file) => /^variant-\d+\.png$/.test(file))
+    .filter((file) => {
+      return /^variant-\d+\.png$/.test(file);
+    })
     .sort();
   for (const file of files) {
     const n = Number(file.slice('variant-'.length, -'.png'.length));
@@ -128,6 +137,8 @@ if (import.meta.main) {
       console.log(`variant ${n}: rejected, ${error.message}`);
     }
   }
-  if (accepted.length > 0) writeFileSync(join(dir, 'sheet.png'), await contactSheet(accepted));
+  if (accepted.length > 0) {
+    writeFileSync(join(dir, 'sheet.png'), await contactSheet(accepted));
+  }
   process.exitCode = accepted.length > 0 ? 0 : 1;
 }

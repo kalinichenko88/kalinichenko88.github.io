@@ -35,6 +35,7 @@ async function posts() {
       cover: await cover(id),
     });
   }
+
   return found;
 }
 
@@ -119,7 +120,9 @@ test('every post title and description is in the image font subset', async () =>
 // Link previews cache an image by its URL, so a new title or description
 // needs a new URL, and an unchanged post keeps its old one.
 test('the image URL changes with the text', async () => {
-  const [post] = (await posts()).sort((a, b) => a.file.localeCompare(b.file));
+  const [post] = (await posts()).sort((a, b) => {
+    return a.file.localeCompare(b.file);
+  });
   const src = await postImageSrc(post.id, post);
   assert.match(src, /^\/blog\/[\w-]+\.png\?v=[0-9a-f]{8}$/);
   assert.equal(await postImageSrc(post.id, { ...post }), src);

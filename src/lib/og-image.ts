@@ -22,8 +22,11 @@ export function renderOgImage(element: OgElement): Promise<Buffer> {
   if (!png) {
     rendered.set(key, (png = render(element)));
     // A failed render is not kept, so the next request (in dev) tries again.
-    png.catch(() => rendered.delete(key));
+    png.catch(() => {
+      rendered.delete(key);
+    });
   }
+
   return png;
 }
 
@@ -43,6 +46,7 @@ export async function ogImageSrc(path: string, element: OgElement): Promise<stri
 
 async function render(element: OgElement): Promise<Buffer> {
   const svg = await satori(element, { width: 1200, height: 630, fonts: await fonts() });
+
   // ponytail: always a 256-colour palette PNG, which looks the same as
   // truecolour on flat colours, text and the post covers (themselves 256-colour
   // drawings) at under half the size. A caller with a gradient or a photo needs
