@@ -6,9 +6,7 @@
 //   node .claude/skills/illustrate-post/prepare.mjs <run-dir>
 //
 // Reads variant-N.png and writes variant-N.cover.png (the cover to commit,
-// trimmed to its drawing), variant-N.og.jpg (a 1200x630 social image, used
-// only for the site image: a post's is rendered at build time),
-// variant-N.light.png and variant-N.dark.png (flattened, for viewing) and
+// trimmed to its drawing), variant-N.light.png and variant-N.dark.png (flattened, for viewing) and
 // sheet.png (every accepted variant on both backgrounds). Exits 1 if none
 // passed.
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -59,18 +57,6 @@ export async function normalize(input) {
     .extract(box)
     .extend({ top: pad, bottom: pad, left: pad, right: pad, background: TRANSPARENT })
     .png({ palette: true, quality: 90 })
-    .toBuffer();
-}
-
-// Social previews want 1200x630 and no transparency. The whole drawing sits
-// inside a 10% margin on the light page colour, so no platform crop reaches it.
-// Only the site image uses it; src/lib/post-image.ts renders a post's.
-export function socialImage(cover) {
-  return sharp(cover)
-    .flatten({ background: LIGHT })
-    .resize(960, 504, { fit: 'contain', background: LIGHT })
-    .extend({ top: 63, bottom: 63, left: 120, right: 120, background: LIGHT })
-    .jpeg({ quality: 85 })
     .toBuffer();
 }
 
@@ -134,7 +120,6 @@ if (import.meta.main) {
     try {
       const cover = await normalize(readFileSync(join(dir, file)));
       writeFileSync(join(dir, `variant-${n}.cover.png`), cover);
-      writeFileSync(join(dir, `variant-${n}.og.jpg`), await socialImage(cover));
       writeFileSync(join(dir, `variant-${n}.light.png`), await flatten(cover, LIGHT));
       writeFileSync(join(dir, `variant-${n}.dark.png`), await flatten(cover, DARK));
       accepted.push({ n, cover });

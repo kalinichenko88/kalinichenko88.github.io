@@ -1,8 +1,9 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
+import { CONTACT_LINKS } from '../config/contacts';
 import { AUTHOR_NAME, MAX_TITLE, SITE_NAME, SITE_TITLE } from '../consts';
-import siteImage from '../assets/images/site.og.jpg';
+import { siteImageAlt, siteImageSrc, toImageSite } from '../lib/site-image';
 
 type Props = {
   /** The page's own title, without the site name. */
@@ -11,15 +12,16 @@ type Props = {
   type?: 'website' | 'article';
   publishedTime?: string;
   tags?: string[];
-  /** Social image: an absolute URL. Falls back to the site illustration. */
+  /** Social image: an absolute URL. Falls back to the site image. */
   image?: { src: string; alt: string };
 };
 
 const { title, description, type = 'website', publishedTime, tags, image } = Astro.props;
 
+const site = toImageSite(CONTACT_LINKS);
 const socialImage = image ?? {
-  src: new URL(siteImage.src, Astro.url).href,
-  alt: 'A pencil sketch of an open notebook, a cup of coffee and a keyboard',
+  src: new URL(await siteImageSrc(site), Astro.url).href,
+  alt: siteImageAlt(site),
 };
 
 // og:title stays bare, as Facebook asks. The tab and search title add the name
@@ -65,7 +67,7 @@ const documentTitle = nameFits ? branded : title;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={socialImage.src} />
-<!-- Every social image is 1200x630: the rendered ones and site.og.jpg.
+<!-- Every social image is 1200x630, all rendered at build time.
      Facebook needs the size to show the image on the first share. -->
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />

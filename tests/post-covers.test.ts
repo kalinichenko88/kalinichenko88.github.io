@@ -40,11 +40,12 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// Head.astro falls back to it on every page without a post cover.
-test('the site social image is a 1200x630 JPEG', async () => {
-  const path = fileURLToPath(new URL('../src/assets/images/site.og.jpg', import.meta.url));
-  const { format, width, height } = await sharp(path).metadata();
-  assert.deepEqual([format, width, height], ['jpeg', 1200, 630]);
+// The site image (src/lib/site-image.ts) draws it next to the name and the
+// channels, as a post image draws its cover.
+test('the site drawing went through prepare.mjs', async () => {
+  const path = fileURLToPath(new URL('../src/assets/images/site.png', import.meta.url));
+  assert.ok((await sharp(path).metadata()).isPalette, 'not palette-compressed; run prepare.mjs');
+  assert.equal((await sharp(path).stats()).isOpaque, false, 'the site drawing is opaque');
 });
 
 // /blog, /tags and the homepage Writing row all render covers through PostCard.

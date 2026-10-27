@@ -71,6 +71,47 @@ export function el(
   return { type, props: { style, children } };
 }
 
+/** A drawing as an image takes it: a data: URL and the file's own size. */
+export type OgDrawing = { src: string; width: number; height: number };
+
+/** The drawing, whole, scaled down into a box of this size and centred in it. */
+export function drawingBox(drawing: OgDrawing, width: number, height: number): OgElement {
+  const scale = Math.min(width / drawing.width, height / drawing.height);
+
+  return el(
+    'div',
+    {
+      display: 'flex',
+      flexShrink: 0,
+      width,
+      height,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    {
+      type: 'img',
+      props: {
+        src: drawing.src,
+        // Rounded down, so the drawing never spills a pixel past its box.
+        width: Math.floor(drawing.width * scale),
+        height: Math.floor(drawing.height * scale),
+      },
+    }
+  );
+}
+
+/** The 14px accent bar along the bottom edge, which every image ends on. */
+export function accentBar(color: string): OgElement {
+  return el('div', {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 14,
+    backgroundColor: color,
+  });
+}
+
 /**
  * The theme tokens the images use, copied from global.css because Satori cannot
  * read CSS variables. tests/project-images.test.ts keeps the copies in step.

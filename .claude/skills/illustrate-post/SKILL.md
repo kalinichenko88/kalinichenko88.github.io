@@ -79,26 +79,27 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
     ```
 
     The cover is trimmed to its drawing, so it has the drawing's own
-    proportions. Do not copy the `.og.jpg`: the post's social image is
-    rendered on every build from the cover, the title and the description
-    (`src/lib/post-image.ts`), and it finds the cover by this name. Set
+    proportions. The post's social image is rendered on every build from the
+    cover, the title and the description (`src/lib/post-image.ts`), and it
+    finds the cover by this name. Set
     `cover: ../../src/assets/images/covers/<post-id>.png` in the post's
     frontmatter, after `tags:`. If a `cover:` line exists, replace it; a post
     has exactly one. Then run `npm test`.
 
 ## Site image
 
-A page with no image of its own shares `src/assets/images/site.og.jpg` as its
-link preview: `src/components/Head.astro` falls back to it whenever `Layout`
-gets no `image`. To redo the site image,
-run the workflow with `site` in place of a post id: the metaphors stand for the
-whole site, and `Asset type:` in the prompt is `website social preview
-illustration`. Save only `cp "$RUN/variant-N.og.jpg"
-src/assets/images/site.og.jpg`, update the `alt` in
-`src/components/Head.astro` to describe the new drawing, and run `npm test`.
-Nothing goes into `covers/`, which holds post covers only. A project page
-(`/projects/<slug>`) has its own image, rendered at build time, not by this
-skill.
+A page with no image of its own shares `/site.png` as its link preview:
+`src/components/Head.astro` falls back to it whenever `Layout` gets no
+`image`. It is rendered on every build (`src/lib/site-image.ts`): the name,
+the role and every channel in `src/config/contacts.ts` next to the site
+drawing, `src/assets/images/site.png`. To redo the drawing, run the workflow
+with `site` in place of a post id: the metaphors stand for the whole site, and
+`Asset type:` in the prompt is `website social preview illustration`. Save
+only `cp "$RUN/variant-N.cover.png" src/assets/images/site.png`, update
+`DRAWING_ALT` in `src/lib/site-image.ts` to describe the new drawing, and run
+`npm test`. Nothing goes into `covers/`, which holds post covers only. A
+project page (`/projects/<slug>`) has its own image, rendered at build time,
+not by this skill.
 
 ## Prompt template
 

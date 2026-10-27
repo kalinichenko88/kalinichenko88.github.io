@@ -19,7 +19,7 @@ type ContactLink = {
   Icon: typeof EmailIcon;
 };
 
-/** Every channel, in footer order. The footer and /contact both render from it. */
+/** Every channel, in footer order. The footer, /contact and the site image render from it. */
 export const CONTACT_LINKS: ContactLink[] = [
   { href: GITHUB_PROFILE_LINK, label: 'GitHub', handle: 'kalinichenko88', Icon: GithubIcon },
   {
