@@ -334,8 +334,9 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   role, the site drawing (`src/assets/images/site.png`, made with the
   skill) on the right, and every channel from `CONTACT_LINKS` with its icon
   in mono along the bottom, under the drawing too. The profiles (GitHub,
-  LinkedIn) take the first column, the ways to write (X, Telegram, email) the
-  second. Same page colour, 10% margin and accent bar as the post image.
+  LinkedIn) take the first column, the ways to write (Twitter, Telegram,
+  email) the second. Same page colour, 10% margin and accent bar as the post
+  image.
 - **Projects have no drawn illustrations.** On the homepage Selected work sits
   right above the Writing row, so a drawing reads as "a post"; covers on
   project cards would blur that and make two illustrated blocks in a row. Most

@@ -104,7 +104,7 @@ export function siteImageSrc(site: ImageSite): Promise<string> {
   return ogImageSrc('/site.png', siteImage(site));
 }
 
-/** What the image shows, for its alt text. */
+/** The name, the role, the drawing and the channels, for the image's alt text. */
 export function siteImageAlt(site: ImageSite): string {
   const channels = site.contacts.map(({ label, handle }) => {
     return `${label} ${handle}`;
@@ -187,10 +187,6 @@ function channel({ handle, svg }: ImageSite['contacts'][number], iconColor: stri
 /** The icon file as an image: an <img> has no currentColor to paint with. */
 function iconSrc(svg: string, color: string): string {
   const painted = svg.replaceAll('currentColor', color);
-  // An SVG read as an image file needs its namespace; the files leave it out.
-  const file = painted.includes('xmlns=')
-    ? painted
-    : painted.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 
-  return `data:image/svg+xml;base64,${Buffer.from(file).toString('base64')}`;
+  return `data:image/svg+xml;base64,${Buffer.from(painted).toString('base64')}`;
 }

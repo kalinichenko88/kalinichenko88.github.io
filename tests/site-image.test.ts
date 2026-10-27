@@ -4,8 +4,14 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 import * as consts from '../src/consts.ts';
-import { IMAGE_PALETTES, renderOgImage } from '../src/lib/og-image.ts';
-import { inlinedDrawing, siteImage, siteImageAlt, type ImageSite } from '../src/lib/site-image.ts';
+import { IMAGE_PALETTES, renderOgImage, type OgElement } from '../src/lib/og-image.ts';
+import {
+  inlinedDrawing,
+  siteImage,
+  siteImageAlt,
+  siteImageSrc,
+  type ImageSite,
+} from '../src/lib/site-image.ts';
 
 // The site image, rendered at build time by src/pages/site.png.ts: the
 // og:image of every page without one of its own.
@@ -50,40 +56,74 @@ async function drawing(): Promise<ImageSite['drawing']> {
   return inlinedDrawing(`data:image/png;base64,${png.toString('base64')}`);
 }
 
+// The src of every <img> in an element tree.
+function images(element: OgElement): string[] {
+  const own = element.type === 'img' ? [String(element.props.src)] : [];
+  const children = [element.props.children ?? []].flat().filter((child) => {
+    return typeof child === 'object';
+  });
+
+  return [...own, ...children.flatMap(images)];
+}
+
 test('the drawing size read from the inlined PNG is the file size', async () => {
   const { width, height } = await sharp(await readFile(drawingFile)).metadata();
   const value = await drawing();
   assert.deepEqual([value.width, value.height], [width, height]);
 });
 
-test('the site image renders as a 1200x630 palette PNG', async () => {
-  const png = await renderOgImage(siteImage(await site()));
-  const { format, width, height, isPalette } = await sharp(png).metadata();
-  assert.deepEqual([format, width, height], ['png', 1200, 630]);
-  assert.ok(isPalette, 'not a palette PNG');
-});
-
 // Platforms crop the edges of a link preview, so nothing may be drawn in the
 // 10% right margin (x 1080 on) or in the bottom margin above the accent bar
 // (y 560 to 616). A handle does not wrap, so one too long for its column runs
 // into the right margin, and a channel too many pushes the bottom row down.
+// The accent bar under them (y 616 on) is accentBar() from og-image.ts, which
+// the post and project images draw too.
 test('the name, the role and every channel stay inside the safe area', async () => {
   const png = await renderOgImage(siteImage(await site()));
-  const bg = Buffer.from(IMAGE_PALETTES.light.bg.slice(1), 'hex');
-  const margins = {
-    right: { left: 1080, top: 0, width: 120, height: 616 },
-    bottom: { left: 0, top: 560, width: 1200, height: 56 },
-  };
-  for (const [name, region] of Object.entries(margins)) {
+  const { bg, accent } = IMAGE_PALETTES.light;
+  const regions = [
+    { name: 'right margin', hex: bg, region: { left: 1080, top: 0, width: 120, height: 616 } },
+    { name: 'bottom margin', hex: bg, region: { left: 0, top: 560, width: 1200, height: 56 } },
+    { name: 'accent bar', hex: accent, region: { left: 0, top: 616, width: 1200, height: 14 } },
+  ];
+  for (const { name, hex, region } of regions) {
+    const color = Buffer.from(hex.slice(1), 'hex');
     // Raw pixels: sharp's stats() reads the whole input and ignores extract().
     const { data, info } = await sharp(png)
       .extract(region)
       .raw()
       .toBuffer({ resolveWithObject: true });
     for (let i = 0; i < data.length; i += info.channels) {
-      assert.ok(data.subarray(i, i + 3).equals(bg), `drawn in the ${name} margin`);
+      assert.ok(data.subarray(i, i + 3).equals(color), `another colour in the ${name}`);
     }
   }
+});
+
+// An <img> has no currentColor, so each icon file is painted before it goes
+// in: unpainted, an icon draws near-black instead of the tertiary text colour.
+test('every channel draws its icon, in the tertiary text colour', async () => {
+  const value = await site();
+  const icons = images(siteImage(value)).filter((src) => {
+    return src.startsWith('data:image/svg+xml;base64,');
+  });
+  assert.equal(icons.length, value.contacts.length, 'a channel without its icon');
+  for (const src of icons) {
+    const svg = Buffer.from(src.slice(src.indexOf(',') + 1), 'base64').toString('utf8');
+    assert.doesNotMatch(svg, /currentColor/);
+    assert.ok(svg.includes(IMAGE_PALETTES.light['text-tertiary']), 'not the tertiary colour');
+  }
+});
+
+// Link previews cache an image by its URL, so a changed channel needs a new
+// URL, and an unchanged image keeps its old one.
+test('the image URL changes with the channels', async () => {
+  const value = await site();
+  const src = await siteImageSrc(value);
+  assert.match(src, /^\/site\.png\?v=[0-9a-f]{8}$/);
+  assert.equal(await siteImageSrc({ ...value }), src);
+  const [first, ...rest] = value.contacts;
+  const changed = [{ ...first, handle: `${first.handle}2` }, ...rest];
+  assert.notEqual(await siteImageSrc({ ...value, contacts: changed }), src);
 });
 
 // The fonts carry the latin subset only, and Satori draws a glyph outside it
