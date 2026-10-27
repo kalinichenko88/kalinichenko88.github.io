@@ -94,8 +94,9 @@ A page with no image of its own shares `/site.png` as its link preview:
 the role and every channel in `src/config/contacts.ts` next to the site
 drawing, `src/assets/images/site.png`. To redo the drawing, run the workflow
 with `site` in place of a post id: the metaphors stand for the whole site, and
-`Asset type:` in the prompt is `website social preview illustration`. Save
-only `cp "$RUN/variant-N.cover.png" src/assets/images/site.png`, update
+`Asset type:` in the prompt is `website cover illustration`, as the drawing
+sits next to text, like a post cover. Save only
+`cp "$RUN/variant-N.cover.png" src/assets/images/site.png`, update
 `DRAWING_ALT` in `src/lib/site-image.ts` to describe the new drawing, and run
 `npm test`. Nothing goes into `covers/`, which holds post covers only. A
 project page (`/projects/<slug>`) has its own image, rendered at build time,

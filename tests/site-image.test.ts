@@ -19,17 +19,19 @@ async function site(): Promise<ImageSite> {
 async function contacts(): Promise<ImageSite['contacts']> {
   const source = await readFile(new URL('../src/config/contacts.ts', import.meta.url), 'utf8');
   const entries = [...source.matchAll(/label: '([^']+)',\s*handle: (?:'([^']+)'|(\w+))/g)];
+  // Every entry has an Icon, so a count below theirs is an entry written in a
+  // shape the pattern misses, which the image would draw and this test not.
+  const icons = source.match(/\bIcon: [A-Z]\w*/g) ?? [];
   assert.ok(entries.length > 0, 'no channel found in src/config/contacts.ts');
+  assert.equal(entries.length, icons.length, 'a channel in contacts.ts the pattern misses');
 
   return Promise.all(
-    entries.map(async ([, label, handle, constant]) => {
+    entries.map(async ([, label, quoted, constant]) => {
+      const handle = quoted ?? consts[constant as keyof typeof consts];
+      assert.equal(typeof handle, 'string', `${label}: ${constant} is not a string in consts.ts`);
       const icon = new URL(`../src/assets/icons/${label.toLowerCase()}.svg`, import.meta.url);
 
-      return {
-        label,
-        handle: handle ?? String(consts[constant as keyof typeof consts]),
-        svg: await readFile(icon, 'utf8'),
-      };
+      return { label, handle: String(handle), svg: await readFile(icon, 'utf8') };
     })
   );
 }

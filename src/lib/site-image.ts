@@ -1,5 +1,3 @@
-import type { ImageMetadata } from 'astro';
-
 import { AUTHOR_NAME, ROLE, SITE_NAME } from '../consts.ts';
 import {
   accentBar,
@@ -28,8 +26,10 @@ export function siteImage(site: ImageSite): OgElement {
   const color = IMAGE_PALETTES.light;
   // The profiles in the first column, the ways to write in the second.
   // ponytail: split by position, as the first two in CONTACT_LINKS are the
-  // profiles. A channel more makes the second column a row taller, which
-  // pushes the bottom row into the margin, and tests/site-image.test.ts fails.
+  // profiles. A new order there moves a channel to the other column, and a
+  // channel more makes the second column a row taller, which pushes the
+  // bottom row into the margin, so tests/site-image.test.ts fails. Give each
+  // channel a kind when the list stops fitting this split.
   const columns = [site.contacts.slice(0, 2), site.contacts.slice(2)];
 
   return el(
@@ -115,9 +115,10 @@ export function siteImageAlt(site: ImageSite): string {
 
 /** What the image needs: the channels with their icons, and the site drawing. */
 export function toImageSite(contacts: { label: string; handle: string }[]): ImageSite {
-  // Inlined by Vite: each icon's markup, the drawing as a data: URL and its
-  // size. The query keeps Astro's image pipeline off the data: URL import.
-  // Inside the function, as the tests import this file outside Vite.
+  // Inlined by Vite: each icon's markup, and the drawing as a data: URL. The
+  // query keeps Astro's image pipeline off the drawing, which would otherwise
+  // ship a copy that no page links. Inside the function, as the tests import
+  // this file outside Vite.
   const icons = import.meta.glob<string>('../assets/icons/*.svg', {
     query: '?raw',
     import: 'default',
@@ -130,12 +131,9 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
       eager: true,
     })
   );
-  const [size] = Object.values(
-    import.meta.glob<ImageMetadata>('../assets/images/site.png', {
-      import: 'default',
-      eager: true,
-    })
-  );
+  // A PNG opens with its IHDR chunk, which holds the width at byte 16 and the
+  // height at byte 20.
+  const png = Buffer.from(src.slice(src.indexOf(',') + 1), 'base64');
 
   return {
     contacts: contacts.map(({ label, handle }) => {
@@ -148,7 +146,7 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
 
       return { label, handle, svg };
     }),
-    drawing: { src, width: size.width, height: size.height },
+    drawing: { src, width: png.readUInt32BE(16), height: png.readUInt32BE(20) },
   };
 }
 

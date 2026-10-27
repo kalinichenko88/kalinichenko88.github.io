@@ -8,7 +8,7 @@ import sharp from 'sharp';
  * Renders an element tree to a 1200x630 PNG, the size link previews use, in
  * the site's fonts. Satori lays the tree out with flexbox and draws the text
  * as paths, so sharp needs no fonts installed to turn it into a PNG: the CI
- * runner has none. The project and post images both render through it.
+ * runner has none. The project, post and site images all render through it.
  *
  * Rendered once per tree per process, so the PNG route and the pages that put
  * a hash of it in their URL get the same bytes from one render. A failed render
@@ -62,7 +62,7 @@ export type OgElement = {
 
 type OgChild = OgElement | string | false;
 
-/** An element with a style and children, the one shape both images build from. */
+/** An element with a style and children, the one shape every image builds from. */
 export function el(
   type: string,
   style: Record<string, string | number>,
