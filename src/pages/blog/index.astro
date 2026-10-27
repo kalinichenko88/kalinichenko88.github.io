@@ -1,14 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
-
 import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import RssIcon from '../../assets/icons/rss.svg';
+import { getPosts } from '../../lib/posts';
 
-const allPosts = await getCollection('posts');
-const posts = allPosts.sort((a, b) => {
-  return b.data.pubDate.getTime() - a.data.pubDate.getTime();
-});
+const posts = await getPosts();
 ---
 
 <Layout

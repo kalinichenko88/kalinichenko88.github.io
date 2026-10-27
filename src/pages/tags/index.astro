@@ -1,10 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
-
 import Layout from '../../components/Layout.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
+import { getPosts } from '../../lib/posts';
 
-const posts = await getCollection('posts');
+const posts = await getPosts();
 const tagCounts = new Map<string, number>();
 
 for (const post of posts) {

@@ -1,9 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import { getPosts } from '../../lib/posts';
 import { readingTime } from '../../lib/reading-time';
 import { formatDate } from '../../lib/format-date';
 import { postImageSrc, toImagePost } from '../../lib/post-image';
@@ -29,9 +30,7 @@ const giscusConfig = JSON.stringify({
 });
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-
-  return posts.map((post) => {
+  return (await getPosts()).map((post) => {
     return {
       params: { id: post.id },
       props: { post },
@@ -64,7 +63,7 @@ const blogPostSchema = {
   author: {
     '@type': 'Person',
     name: AUTHOR_NAME,
-    url: 'https://kalinichenko.dev',
+    url: Astro.site!.href,
   },
   publisher: {
     '@type': 'Person',
