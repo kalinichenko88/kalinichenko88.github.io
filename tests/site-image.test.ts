@@ -42,7 +42,8 @@ async function contacts(): Promise<ImageSite['contacts']> {
 
 const drawingFile = new URL('../src/assets/images/site.png', import.meta.url);
 
-// The drawing as toImageSite() gives it, from the file as Vite inlines it.
+// The drawing through inlinedDrawing(), as toImageSite() makes it, from the
+// file as Vite inlines it.
 async function drawing(): Promise<ImageSite['drawing']> {
   const png = await readFile(drawingFile);
 
@@ -50,7 +51,7 @@ async function drawing(): Promise<ImageSite['drawing']> {
 }
 
 test('the drawing size read from the inlined PNG is the file size', async () => {
-  const { width, height } = await sharp(drawingFile.pathname).metadata();
+  const { width, height } = await sharp(await readFile(drawingFile)).metadata();
   const value = await drawing();
   assert.deepEqual([value.width, value.height], [width, height]);
 });
