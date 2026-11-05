@@ -5,7 +5,7 @@
 
 ## Context
 
-The `kalinichenko:typescript-conventions` skill puts a type that two files
+The `craft:typescript-conventions` skill puts a type that two files
 or more use in the `models/` folder of its area, the nearest folder that holds
 every file that uses it. It puts a zod schema in a `schemas/` folder beside
 it.
@@ -61,7 +61,7 @@ convention. This ADR is that record.
 We will keep a shared type in the file that exports its values, and export
 it from there. We will keep the zod schemas in `src/content.config.ts`. This
 replaces the `models/` and `schemas/` rule of
-`kalinichenko:typescript-conventions` in this project. Its other rules on
+`craft:typescript-conventions` in this project. Its other rules on
 types stay: a one-file type stays in its file, and a type with a schema comes
 from the schema.
 
