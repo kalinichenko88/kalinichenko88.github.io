@@ -51,12 +51,13 @@ test('the post masonry keeps WebKit painting every column, flush at the top', as
   // started 24px low. A line moves whole: each card is one, and Blink must
   // not hold two of them together at a break.
   assert.ok(/\.masonry > \* {[^}]*display: inline-block/.test(css), 'a card is not a line');
-  assert.ok(/\.masonry {[^}]*orphans: 1;\s*widows: 1/.test(css), 'Blink keeps cards together');
+  assert.ok(/\.masonry {[^}]*orphans: 1/.test(css), 'Blink keeps cards together');
+  assert.ok(/\.masonry {[^}]*widows: 1/.test(css), 'Blink keeps cards together');
 });
 
 test('rendered prose is not annotated for reveal', async () => {
   for (const file of ['src/pages/blog/[...id].astro', 'src/pages/projects/[slug].astro']) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const source = await read(file);
     assert.doesNotMatch(source, /class="prose[^>]+data-reveal/, file);
     assert.doesNotMatch(source, /data-reveal[^>]+class="prose/, file);
   }

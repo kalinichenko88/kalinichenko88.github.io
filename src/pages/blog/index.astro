@@ -32,7 +32,7 @@ const posts = await getPosts();
       </div>
 
       {posts.length > 0 ? (
-        <div class="masonry" data-reveal="content">
+        <div class="masonry" data-reveal="content" style="--motion-index: 1">
           {posts.map((post) => {
             return <PostCard post={post} />;
           })}

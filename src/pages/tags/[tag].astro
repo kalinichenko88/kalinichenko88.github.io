@@ -49,7 +49,7 @@ const { posts } = Astro.props;
         </div>
       </div>
 
-      <div class="masonry mt-8" data-reveal="content">
+      <div class="masonry mt-8" data-reveal="content" style="--motion-index: 1">
         {posts.map((post) => {
           return <PostCard post={post} />;
         })}
