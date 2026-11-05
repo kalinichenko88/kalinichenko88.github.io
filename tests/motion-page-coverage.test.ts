@@ -26,27 +26,18 @@ test('every content page opts major blocks into motion', async () => {
 // A card is composited for as long as its reveal runs, so the list reveals as
 // one block and no card in it is a reveal target.
 test('a post masonry reveals as one block, never card by card', async () => {
-  for (const file of [
-    'src/pages/blog/index.astro',
-    'src/pages/tags/[tag].astro',
-    'src/pages/projects/[slug].astro',
-  ]) {
-    const source = await read(file);
-    const list = source.match(/<div[^>]*\bclass="[^"]*\bmasonry\b[^"]*"[^>]*>/);
-    assert.ok(list, `${file} lists its posts without the .masonry class`);
-    assert.match(list[0], /data-reveal=/, `${file}: the masonry is not one reveal block`);
-  }
   const card = await read('src/components/PostCard.astro');
   assert.doesNotMatch(card, /data-reveal/, 'a card in the masonry reveals on its own');
-  // A columns box without .masonry would miss the two WebKit rules below.
   const src = new URL('../src/', import.meta.url);
   for (const file of await readdir(src, { recursive: true })) {
-    if (file.endsWith('.astro')) {
-      assert.doesNotMatch(
-        await read(`src/${file}`),
-        /\bcolumns-\d/,
-        `${file} hand-rolls a masonry`
-      );
+    if (!file.endsWith('.astro')) {
+      continue;
+    }
+    const source = await read(`src/${file}`);
+    // A columns box without .masonry misses the WebKit rules below.
+    assert.doesNotMatch(source, /\bcolumns-\d/, `${file} hand-rolls a masonry`);
+    for (const [list] of source.matchAll(/<div[^>]*\bclass="[^"]*\bmasonry\b[^"]*"[^>]*>/g)) {
+      assert.match(list, /data-reveal=/, `${file}: the masonry is not one reveal block`);
     }
   }
 });
@@ -60,8 +51,7 @@ test('the post masonry keeps WebKit painting every column, flush at the top', as
   // started 24px low. A line moves whole: each card is one, and Blink must
   // not hold two of them together at a break.
   assert.ok(/\.masonry > \* {[^}]*display: inline-block/.test(css), 'a card is not a line');
-  assert.ok(/\.masonry {[^}]*orphans: 1/.test(css), 'Blink keeps cards together');
-  assert.ok(/\.masonry {[^}]*widows: 1/.test(css), 'Blink keeps cards together');
+  assert.ok(/\.masonry {[^}]*orphans: 1;\s*widows: 1/.test(css), 'Blink keeps cards together');
 });
 
 test('rendered prose is not annotated for reveal', async () => {

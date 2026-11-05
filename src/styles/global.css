@@ -285,7 +285,6 @@
     width: 100%;
     vertical-align: top;
     margin-bottom: var(--space-6);
-    break-inside: avoid;
   }
 
   @media (min-width: 768px) {

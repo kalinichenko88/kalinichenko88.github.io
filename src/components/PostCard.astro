@@ -19,11 +19,7 @@ type Props = {
 const { post, heading: Heading = 'h2', row = false } = Astro.props;
 ---
 
-<!--
-  No reveal of its own: the list around it reveals as one block. A card
-  revealed alone stays blank in the masonry's second and third columns in
-  WebKit (.masonry in global.css), and a blank peek at the row's clipped edge.
--->
+<!-- No reveal of its own: the list around it reveals as one block (.masonry in global.css). -->
 <article class:list={['card card-hover group relative p-6', row && 'flex flex-col']}>
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
   {post.data.cover && (
