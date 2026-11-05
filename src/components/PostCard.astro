@@ -10,23 +10,17 @@ type Props = {
   heading?: 'h2' | 'h3';
   /**
    * The card sits in a sideways row of equal cards (the homepage): the cover
-   * gets one box height so titles and dates line up, the date drops to the
-   * bottom, and the card skips its own reveal, because the row reveals as one
-   * block and a card clipped by the row would stay a blank peek at the edge.
+   * gets one box height so titles and dates line up, and the date drops to
+   * the bottom.
    */
   row?: boolean;
-  /** Stable sequence position for profile-based entry motion. */
-  motionIndex?: number;
 };
 
-const { post, heading: Heading = 'h2', row = false, motionIndex = 0 } = Astro.props;
+const { post, heading: Heading = 'h2', row = false } = Astro.props;
 ---
 
-<article
-  class:list={['card card-hover group relative p-6', row && 'flex flex-col']}
-  data-reveal={row ? undefined : 'card'}
-  style={row ? undefined : `--motion-index: ${motionIndex}`}
->
+<!-- No reveal of its own: the list around it reveals as one block (.masonry in global.css). -->
+<article class:list={['card card-hover group relative p-6', row && 'flex flex-col']}>
   <a href={`/blog/${post.id}`} class="absolute inset-0" aria-label={post.data.title}></a>
   {post.data.cover && (
     <Image

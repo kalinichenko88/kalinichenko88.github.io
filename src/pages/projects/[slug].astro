@@ -112,9 +112,9 @@ const socialImage = {
             );
           })}
         </div>
-        <div class="columns-1 gap-6 md:columns-2 lg:columns-3 *:mb-6 *:break-inside-avoid">
-          {related.map((post, index) => {
-            return <PostCard post={post} heading="h3" motionIndex={index + 1} />;
+        <div class="masonry" data-reveal="content" style="--motion-index: 1">
+          {related.map((post) => {
+            return <PostCard post={post} heading="h3" />;
           })}
         </div>
       </div>

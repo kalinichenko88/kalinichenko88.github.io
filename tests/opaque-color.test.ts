@@ -66,7 +66,7 @@ test('does not count a code block as covering the code in it', () => {
 });
 
 test('counts the fill of a card as covering the link on it', () => {
-  // the overlay link on a /blog card: a < article.card < .columns < .container < section < main
+  // the overlay link on a /blog card: a < article.card < .masonry < .container < section < main
   const link = chain('a', 'article:rgb(255, 255, 255)', 'div', 'div', 'section', 'main', BODY);
   assert.equal(onOpaqueFill(link), true);
 });

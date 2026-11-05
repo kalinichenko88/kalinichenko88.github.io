@@ -300,7 +300,12 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   project's related posts on `/projects/<slug>` pack cards into CSS columns (one, two, three by width), so card heights follow
   their covers. Columns read top to bottom, so on desktop the order runs down
   each column; native `display: grid-lanes` would keep row order but is not in
-  Chrome yet (checked in 155). There is no featured lead card.
+  Chrome yet (checked in 155). There is no featured lead card. The list is the
+  `.masonry` class in `global.css`, and it reveals as one block, never card by
+  card: in WebKit a card that runs its own reveal inside the columns is drawn
+  only in the first column, so the second and third flickered or stayed blank
+  in Safari (#100). The comment on `.masonry` says what else keeps WebKit
+  drawing every column and starting each one flush at the top.
 - **The homepage Writing section is one sideways row of the same cards**,
   18rem wide with native scroll snap, so about three and a half show and the
   clipped one says there is more. In the row the cards are equal height: each
@@ -382,7 +387,7 @@ Motion coverage is declarative:
   changing it to change anything. A block scrolled into view reveals once 18%
   of it shows above the bottom 8% of the viewport, so the motion plays where it
   is seen; a block already on screen when the page opens reveals at once,
-  however little shows, so a masonry card peeking in is never a blank band.
+  however little shows, so a list peeking in is never a blank band.
 - inline `--motion-index` gives sibling blocks a stable sequence. It is the
   only source: a `data-stagger-index` attribute used to set the same value
   from CSS and the two disagreed above index 4.
@@ -522,9 +527,9 @@ scripts — no React/Motion in this project.
 - Default to `.container` (~1100px), including for the blog post article; use
   `.container-prose` (~680px) only for `/about` reading text (bio, work
   history).
-- Render a post in a list with `PostCard.astro`, inside the CSS-columns
-  masonry or the homepage's sideways row, rather than hand-rolling another
-  layout. The container owns the layout classes (`*:` children utilities).
+- Render a post in a list with `PostCard.astro`, inside the `.masonry` list
+  or the homepage's sideways row, rather than hand-rolling another layout.
+  The container owns the layout and the reveal; a card has neither.
 - Use `--color-accent` for fills and `--color-accent-text` for small accent
   text/links (AA).
 - Keep the blog post body at the `prose` step (19px / 1.75); supporting text at

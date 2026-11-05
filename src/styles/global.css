@@ -259,6 +259,46 @@
     border-color: var(--color-accent);
   }
 
+  /* Post list masonry: CSS columns, one, two or three by width. WebKit draws
+     a composited child of a columns box in the first column only, and leaves
+     it blank in the others. Two things composite a card: its own reveal, for
+     as long as the transition runs, and the fixed pixel field under it, which
+     it overlaps. So the list reveals as one block, never card by card, and
+     `isolation` makes the list the layer that WebKit composites, with the
+     cards painted into it.
+     Each card is an inline-block, one per line: WebKit lets a block's margin
+     run across a column break, top or bottom alike, so a column started 24px
+     low, while a line moves to the next column whole, margin included.
+     Blink keeps two lines together at a break by default (`orphans`,
+     `widows`), which would put two cards in one column and leave the last
+     column empty. */
+  .masonry {
+    columns: 1;
+    column-gap: var(--space-6);
+    isolation: isolate;
+    orphans: 1;
+    widows: 1;
+  }
+
+  .masonry > * {
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    margin-bottom: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .masonry {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .masonry {
+      columns: 3;
+    }
+  }
+
   /* Button - Primary */
   .btn-primary {
     display: inline-flex;
