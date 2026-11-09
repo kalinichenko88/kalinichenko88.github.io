@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 > **Architecture:** before a spec, a plan or the first edit of a new feature, read [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). At the start of a new feature, and for a decision, load `craft:architecture`.
 
+> **Product decisions:** This project keeps no `PRODUCT.md`.
+
 ## Build & Development Commands
 
 ```bash
