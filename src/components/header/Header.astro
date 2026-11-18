@@ -1,0 +1,78 @@
+---
+import { AUTHOR_NAME, GITHUB_PROFILE_LINK } from '../../consts';
+import { NAV_LINKS, isActive } from '../../config/navigation';
+
+import ThemeSwitcher from './ThemeSwitcher.astro';
+import MobileMenu from './MobileMenu.astro';
+
+import GithubIcon from '../../assets/icons/github.svg';
+import MenuIcon from '../../assets/icons/menu.svg';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-line bg-background/80 backdrop-blur-xl">
+  <div class="container">
+    <nav class="flex items-center justify-between h-14" aria-label="Main navigation">
+      <a
+        href="/"
+        class="font-display font-semibold text-foreground text-lg tracking-tight"
+        aria-label={`${AUTHOR_NAME} - Home`}
+      >
+        kalinichenko.dev
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-1">
+        {NAV_LINKS.map((link) => {
+          return (
+            <a
+              href={link.href}
+              class:list={[
+                'nav-link px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150',
+                isActive(link.href, currentPath)
+                  ? 'text-foreground active'
+                  : 'text-foreground-secondary hover:text-foreground',
+              ]}
+            >
+              {link.label}
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Right Side: Theme Switcher + GitHub -->
+      <div class="flex items-center gap-1">
+        <!-- GitHub Link with icon hover effect -->
+        <a
+          href={GITHUB_PROFILE_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="p-2 text-foreground-tertiary hover:text-foreground transition-colors duration-150"
+          aria-label="GitHub Profile"
+        >
+          <GithubIcon class="w-5 h-5 icon-hover" />
+        </a>
+
+        <ThemeSwitcher />
+
+        <!-- Mobile Menu Button: MobileMenu.astro opens and closes the menu -->
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          class="md:hidden p-2 text-foreground-tertiary hover:text-foreground transition-colors duration-150 cursor-pointer"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <MenuIcon class="w-5 h-5" />
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <MobileMenu />
+</header>
+
+<!-- Spacer for fixed header -->
+<div class="h-14" aria-hidden="true"></div>
