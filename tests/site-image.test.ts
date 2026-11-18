@@ -16,6 +16,7 @@ import {
   siteImageSrc,
   type ImageSite,
 } from '../src/lib/link-previews/site-image.ts';
+import { assertSafeArea } from './safe-area.ts';
 
 // The site image, rendered at build time by src/pages/site.png.ts: the
 // og:image of every page without one of its own.
@@ -76,31 +77,12 @@ test('the drawing size read from the inlined PNG is the file size', async () => 
   assert.deepEqual([value.width, value.height], [width, height]);
 });
 
-// Platforms crop the edges of a link preview, so nothing may be drawn in the
-// 10% right margin (x 1080 on) or in the bottom margin above the accent bar
-// (y 560 to 616). A handle does not wrap, so one too long for its column runs
-// into the right margin, and a channel too many pushes the bottom row down.
-// The accent bar under them (y 616 on) is accentBar() from og-image.ts, which
-// the post and project images draw too.
+// A handle does not wrap, so one too long for its column runs into the right
+// margin, and a channel too many pushes the bottom row down.
 test('the name, the role and every channel stay inside the safe area', async () => {
   const png = await renderOgImage(siteImage(await site()));
   const { bg, accent } = IMAGE_PALETTES.light;
-  const regions = [
-    { name: 'right margin', hex: bg, region: { left: 1080, top: 0, width: 120, height: 616 } },
-    { name: 'bottom margin', hex: bg, region: { left: 0, top: 560, width: 1200, height: 56 } },
-    { name: 'accent bar', hex: accent, region: { left: 0, top: 616, width: 1200, height: 14 } },
-  ];
-  for (const { name, hex, region } of regions) {
-    const color = Buffer.from(hex.slice(1), 'hex');
-    // Raw pixels: sharp's stats() reads the whole input and ignores extract().
-    const { data, info } = await sharp(png)
-      .extract(region)
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    for (let i = 0; i < data.length; i += info.channels) {
-      assert.ok(data.subarray(i, i + 3).equals(color), `another colour in the ${name}`);
-    }
-  }
+  await assertSafeArea(png, { background: bg, accent }, 'the site image');
 });
 
 // An <img> has no currentColor, so each icon file is painted before it goes

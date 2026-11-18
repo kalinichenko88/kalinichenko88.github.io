@@ -6,6 +6,7 @@ import {
   el,
   IMAGE_PALETTES,
   ogImageSrc,
+  SAFE_MARGIN,
   type OgElement,
 } from '../link-previews/og-image.ts';
 
@@ -27,10 +28,9 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      // A 10% margin, as on the post images: platforms crop the edges.
       // Satori sizes boxes as content-box, so without border-box the padding
       // would grow the root past the canvas and push the bottom row off it.
-      padding: '72px 120px',
+      padding: `${SAFE_MARGIN.y}px ${SAFE_MARGIN.x}px`,
       boxSizing: 'border-box',
       // The card surface, not the page colour: on /projects the image is the
       // whole card, and on the page colour it would melt into the page.

@@ -5,6 +5,7 @@ import {
   el,
   IMAGE_PALETTES,
   ogImageSrc,
+  SAFE_MARGIN,
   type OgDrawing,
   type OgElement,
 } from './og-image.ts';
@@ -40,8 +41,7 @@ export function siteImage(site: ImageSite): OgElement {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      // The same 10% margin as the post image: platforms crop the edges.
-      padding: `${PADDING_Y}px ${PADDING_X}px`,
+      padding: `${SAFE_MARGIN.y}px ${SAFE_MARGIN.x}px`,
       boxSizing: 'border-box',
       backgroundColor: color.bg,
       color: color.text,
@@ -159,8 +159,6 @@ export function inlinedDrawing(src: string): OgDrawing {
   return { src, width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
 }
 
-const PADDING_X = 120;
-const PADDING_Y = 72;
 const DRAWING_WIDTH = 360;
 // What the row above the channels has room for, with three channels in the
 // second column.

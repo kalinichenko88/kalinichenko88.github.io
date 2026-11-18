@@ -190,7 +190,6 @@ no `Check:` line names the test that keeps it.
   debt `src/lib/link-previews/check-meta-tags.ts`
   debt `src/pages/blog/[...id].astro`
   debt `src/components/Header.astro`
-  debt `tests/project-images.test.ts`
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
   code files of its own.

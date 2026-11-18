@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { IMAGE_PALETTES, renderOgImage } from '../src/lib/link-previews/og-image.ts';
 import { postImage, postImageSrc, type ImagePost } from '../src/lib/posts/post-image.ts';
 import { readingTime } from '../src/lib/posts/reading-time.ts';
+import { assertSafeArea } from './safe-area.ts';
 
 // Every post with a cover gets a 1200x630 image, rendered at build time by
 // src/pages/blog/[id].png.ts: its og:image and its JSON-LD image.
@@ -58,13 +59,9 @@ test('every post renders a 1200x630 palette PNG', async () => {
   }
 });
 
-// Platforms crop the edges of a link preview, so nothing may be drawn in the
-// 10% right margin (x 1080 on) or in the bottom margin above the accent bar
-// (y 560 to 616), where text that does not fit would spill. The case: a title
-// at the limit of each size step and one far past it, and a description at
-// the 125 limit, all in wide capitals so each takes every line it may, next
-// to the widest and the tallest cover. Satori always fills the canvas, so
-// only the pixels can tell.
+// The case: a title at the limit of each size step and one far past it, and a
+// description at the 125 limit, all in wide capitals so each takes every line
+// it may, next to the widest and the tallest cover.
 test('the longest text and every cover shape stay inside the safe area', async () => {
   // A space every four characters, so the text wraps as words do, and a
   // capital at the end, so the length is exact.
@@ -75,11 +72,7 @@ test('the longest text and every cover shape stay inside the safe area', async (
     wide: await cover('budget-planner-obsidian-community-plugins'),
     tall: await cover('hello-world'),
   };
-  const bg = Buffer.from(IMAGE_PALETTES.light.bg.slice(1), 'hex');
-  const margins = {
-    right: { left: 1080, top: 0, width: 120, height: 616 },
-    bottom: { left: 0, top: 560, width: 1200, height: 56 },
-  };
+  const { bg, accent } = IMAGE_PALETTES.light;
   for (const title of [wide(40), wide(60), wide(200)]) {
     for (const [shape, image] of Object.entries(covers)) {
       const post = {
@@ -90,17 +83,8 @@ test('the longest text and every cover shape stay inside the safe area', async (
         cover: image,
       };
       const png = await renderOgImage(postImage(post));
-      for (const [name, region] of Object.entries(margins)) {
-        // Raw pixels: sharp's stats() reads the whole input and ignores extract().
-        const { data, info } = await sharp(png)
-          .extract(region)
-          .raw()
-          .toBuffer({ resolveWithObject: true });
-        const where = `${title.length}-character title, ${shape} cover`;
-        for (let i = 0; i < data.length; i += info.channels) {
-          assert.ok(data.subarray(i, i + 3).equals(bg), `${where}: drawn in the ${name} margin`);
-        }
-      }
+      const where = `${title.length}-character title, ${shape} cover`;
+      await assertSafeArea(png, { background: bg, accent }, where);
     }
   }
 });

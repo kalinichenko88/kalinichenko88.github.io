@@ -104,17 +104,26 @@ export function drawingBox(drawing: OgDrawing, width: number, height: number): O
   );
 }
 
-/** The 14px accent bar along the bottom edge, which every image ends on. */
+/** The accent bar along the bottom edge, which every image ends on. */
 export function accentBar(color: string): OgElement {
   return el('div', {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 14,
+    height: ACCENT_BAR_HEIGHT,
     backgroundColor: color,
   });
 }
+
+export const ACCENT_BAR_HEIGHT = 14;
+
+/**
+ * The margin every image keeps clear inside its edges, as its root's padding:
+ * platforms crop the edges of a link preview. 120px is 10% of the width.
+ * tests/safe-area.ts checks it from the pixels.
+ */
+export const SAFE_MARGIN = { x: 120, y: 72 };
 
 /**
  * The theme tokens the images use, copied from global.css because Satori cannot
