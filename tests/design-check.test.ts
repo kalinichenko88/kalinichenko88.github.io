@@ -17,14 +17,14 @@ test('design-check hard rules pass', () => {
 
 // The hard rules are only as good as the math they run on.
 test('design-check contrast math gives the known values', () => {
-  const cases: [string, string, number, boolean][] = [
-    ['#000000', '#ffffff', 21, true],
-    ['#ffffff', '#c25a34', AA, false], // old bright accent button -> must FAIL AA
-    ['#ffffff', '#a94a29', AA, true], // AA-safe accent-text -> must PASS
-    ['#a94a29', '#f4f2ee', AA, true], // accent-text on light bg -> PASS
+  assert.equal(contrast('#000000', '#ffffff').toFixed(2), '21.00');
+  const cases: [string, string, boolean][] = [
+    ['#ffffff', '#c25a34', false], // old bright accent button -> must FAIL AA
+    ['#ffffff', '#a94a29', true], // AA-safe accent-text -> must PASS
+    ['#a94a29', '#f4f2ee', true], // accent-text on light bg -> PASS
   ];
-  for (const [a, b, threshold, passes] of cases) {
-    assert.equal(contrast(a, b) >= threshold, passes, `contrast(${a}, ${b})`);
+  for (const [a, b, passesAA] of cases) {
+    assert.equal(contrast(a, b) >= AA, passesAA, `contrast(${a}, ${b})`);
   }
   // The weight belongs to the first color; swapped, this gives #bfbfbf.
   assert.equal(mix('#ffffff', 0.25, '#000000'), '#404040');
