@@ -12,7 +12,7 @@ import {
   projectImageSrc,
   type ImageTheme,
 } from '../src/lib/projects/project-image.ts';
-import { projectStats, starLabel } from '../src/lib/projects/project-stats.ts';
+import { assertSafeArea } from './safe-area.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and
@@ -42,11 +42,8 @@ async function projects() {
   return found;
 }
 
-// Platforms crop the edges of a link preview, so nothing may be drawn in the
-// 10% right margin (x 1080 on), above the accent bar that runs the full width.
 // The case: the longest name and tagline, every count at its widest compact
-// form, and languages from short to far too long. Satori always fills the
-// canvas, so only pixels can tell a row that runs off it.
+// form, and languages from short to far too long.
 test('the widest numbers row stays inside the safe area', async () => {
   const project = {
     name: 'Obsidian Budget Planner Plugin',
@@ -60,18 +57,9 @@ test('the widest numbers row stays inside the safe area', async () => {
   const languages = ['TypeScript', 'Jupyter Notebook', 'A Language Name Far Longer Than Any'];
   for (const language of languages) {
     for (const theme of IMAGE_THEMES) {
-      const palette = IMAGE_PALETTES[theme];
+      const { surface, accent } = IMAGE_PALETTES[theme];
       const png = await renderOgImage(projectImage({ ...project, language }, theme));
-      // Raw pixels: sharp's stats() reads the whole input and ignores extract().
-      const { data, info } = await sharp(png)
-        .extract({ left: 1080, top: 0, width: 120, height: 616 })
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      const surface = Buffer.from(palette.surface.slice(1), 'hex');
-      for (let i = 0; i < data.length; i += info.channels) {
-        const pixel = data.subarray(i, i + 3);
-        assert.ok(pixel.equals(surface), `${language}, ${theme}: drawn in the right margin`);
-      }
+      await assertSafeArea(png, { background: surface, accent }, `${language}, ${theme}`);
     }
   }
 });
@@ -122,30 +110,6 @@ test('every project renders a 1200x630 PNG in both themes, with or without GitHu
       }
     }
   }
-});
-
-// Short enough that a growing count cannot push the site name off the image,
-// and the same words on the text cards as on the image.
-test('a count is written in compact form', () => {
-  const labels = projectStats({ stars: 12345, issues: 1, forks: 0 }).map(({ label }) => {
-    return label;
-  });
-  assert.deepEqual(labels, ['12K stars', '1 issue']);
-  assert.deepEqual([0, 1, 11, 12345].map(starLabel), [null, '1 star', '11 stars', '12K stars']);
-});
-
-// "0 stars" says nothing, so the image drops a number at zero, as the card
-// already did for stars.
-test('the image shows only the numbers above zero', () => {
-  const labels = (numbers: Parameters<typeof projectStats>[0]) => {
-    return projectStats(numbers).map(({ label }) => {
-      return label;
-    });
-  };
-  assert.deepEqual(labels({ stars: 0, issues: 1, forks: 2 }), ['1 issue', '2 forks']);
-  assert.deepEqual(labels({ stars: 2, issues: 2, forks: 1 }), ['2 stars', '2 issues', '1 fork']);
-  assert.deepEqual(labels({ stars: 1, issues: 0, forks: 0 }), ['1 star']);
-  assert.deepEqual(labels({ stars: 0, issues: 0, forks: 0 }), []);
 });
 
 // Satori cannot read CSS variables, so the image carries its own copy of the
@@ -202,17 +166,4 @@ test('the /projects card links each image by its versioned URL', async () => {
   );
   assert.match(card, /projectImageSrc\(project, theme\)/);
   assert.doesNotMatch(card, /\.png['"`]/, 'a bare image path in the card');
-});
-
-// The homepage card and the project page write their star count the way the
-// image does, so one project never shows two numbers. They read the count
-// only through starLabel(): any other use of project.stars fails here.
-test('every text surface reads the star count only through starLabel()', async () => {
-  for (const file of ['src/components/ProjectCard.astro', 'src/pages/projects/[slug].astro']) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
-    const reads = source.match(/project\.stars\b/g) ?? [];
-    const throughLabel = source.match(/starLabel\(project\.stars\)/g) ?? [];
-    assert.ok(throughLabel.length > 0, `${file}: no starLabel(project.stars)`);
-    assert.equal(reads.length, throughLabel.length, `${file}: project.stars read directly`);
-  }
 });

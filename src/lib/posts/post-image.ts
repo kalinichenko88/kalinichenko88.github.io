@@ -8,6 +8,7 @@ import {
   el,
   IMAGE_PALETTES,
   ogImageSrc,
+  SAFE_MARGIN,
   type OgDrawing,
   type OgElement,
 } from '../link-previews/og-image.ts';
@@ -38,8 +39,7 @@ export function postImage(post: ImagePost): OgElement {
       width: '100%',
       height: '100%',
       display: 'flex',
-      // The same 10% margin as the project image: platforms crop the edges.
-      padding: `${PADDING_Y}px ${PADDING_X}px`,
+      padding: `${SAFE_MARGIN.y}px ${SAFE_MARGIN.x}px`,
       boxSizing: 'border-box',
       backgroundColor: color.bg,
       color: color.text,
@@ -97,7 +97,7 @@ export function postImage(post: ImagePost): OgElement {
       )
     ),
     // The cover, whole, in a box on the right that ends at the right margin.
-    drawingBox(post.cover, DRAWING_WIDTH, 630 - 2 * PADDING_Y),
+    drawingBox(post.cover, DRAWING_WIDTH, 630 - 2 * SAFE_MARGIN.y),
     accentBar(color.accent)
   );
 }
@@ -138,8 +138,6 @@ export function toImagePost(post: CollectionEntry<'posts'>): ImagePost | undefin
   };
 }
 
-const PADDING_X = 120;
-const PADDING_Y = 72;
 const DRAWING_WIDTH = 360;
 
 // Steps down with length, so every title so far (57 characters at most) fits
