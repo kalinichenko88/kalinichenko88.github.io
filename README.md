@@ -67,7 +67,7 @@ npm run verify     # everything CI runs: lint, check, format:check, test, build
 │   ├── config/         # Theme, navigation, contact channels and resume data
 │   ├── content.config.ts
 │   ├── consts.ts       # Site-wide constants
-│   ├── lib/            # Motion controller and small helpers
+│   ├── lib/            # Logic, one folder per module: posts, projects, link-previews, shell
 │   ├── pages/          # Routes (index, blog, tags, projects, about, contact, RSS, 404)
 │   └── styles/         # Global CSS and theme definitions
 ├── tests/              # node:test suite
