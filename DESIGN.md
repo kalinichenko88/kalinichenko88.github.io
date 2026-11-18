@@ -324,7 +324,7 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   project card in `order`. The cards are equal height too, with the tech chips
   and stars at the bottom, and skip their own reveal and scroll depth.
 - **Social image:** a 1200×630 PNG rendered on every build
-  (`src/lib/post-image.ts`, served at `/blog/<post-id>.png`), the project
+  (`src/lib/posts/post-image.ts`, served at `/blog/<post-id>.png`), the project
   image's sibling: `kalinichenko.dev / blog` in mono, the title, the
   description, the date and reading time in mono at the bottom, the whole
   drawing on the right and a 14px accent bar along the bottom, on the page
@@ -334,7 +334,7 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   most) takes three, with room for a fourth. The no-text
   rule above is about the drawing: here the text sits next to it, not in it.
 - **The site image** is the post image's sibling, the link preview of every
-  page without one of its own (`src/lib/site-image.ts`, served at
+  page without one of its own (`src/lib/link-previews/site-image.ts`, served at
   `/site.png`): `kalinichenko.dev` in mono, the name (68px bold) and the
   role, the site drawing (`src/assets/images/site.png`, made with the
   skill) on the right, and every channel from `CONTACT_LINKS` with its icon
@@ -353,10 +353,11 @@ Every post has a cover illustration, made with the `illustrate-post` skill.
   tagline, the numbers from GitHub (stars, open issues, forks, main language),
   `kalinichenko.dev` and a 14px accent bar along the bottom, inside the same
   10% margin as the post social image. Rendered on every build
-  (`src/lib/project-image.ts`), so the numbers are always that build's (in
-  dev, the YAML stars only). A number at zero is left out, and a count is
-  written in compact form ("1.2K stars"). The text cards and the project
-  page write their star count through `starLabel()`, so one project never
+  (`src/lib/projects/project-image.ts`), so the numbers are always that
+  build's (in dev, the YAML stars only). A number at zero is left out, and a
+  count is written in compact form ("1.2K stars"). The text cards and the
+  project page write their star count through `starLabel()`
+  (`src/lib/projects/project-stats.ts`), so one project never
   shows two numbers. It uses the theme tokens (fills `accent`, small
   text `accent-text`), and the language dot is the accent, not GitHub's
   language colour, so the one-accent rule holds. Its background is the card

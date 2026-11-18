@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-import { githubRepo } from '../src/lib/github-repo.ts';
+import { githubRepo } from '../src/lib/projects/github-repo.ts';
 
 const REPO = 'https://github.com/kalinichenko88/obsidian-budget-planner-plugin';
 // Recorded from the GitHub API. It also nests `template_repository` with its own

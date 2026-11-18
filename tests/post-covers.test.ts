@@ -33,7 +33,7 @@ test('every cover went through prepare.mjs', async () => {
     }
     const id = file.replace(/\.mdx?$/, '');
     const relative = lines[0].slice('cover: '.length).trim();
-    // The post image (src/lib/post-image.ts) finds the cover by this name.
+    // The post image (src/lib/posts/post-image.ts) finds the cover by this name.
     assert.equal(relative, `../../src/assets/images/covers/${id}.png`, `${file}: cover path`);
     const path = fileURLToPath(new URL(relative, new URL(file, postsDir)));
 
@@ -43,7 +43,7 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// The site image (src/lib/site-image.ts) draws it next to the name and the
+// The site image (src/lib/link-previews/site-image.ts) draws it next to the name and the
 // channels, as a post image draws its cover.
 test('the site drawing went through prepare.mjs', async () => {
   const path = fileURLToPath(new URL('../src/assets/images/site.png', import.meta.url));

@@ -4,10 +4,10 @@ import { Image } from 'astro:assets';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
-import { getPosts } from '../../lib/posts';
-import { readingTime } from '../../lib/reading-time';
-import { formatDate } from '../../lib/format-date';
-import { postImageSrc, toImagePost } from '../../lib/post-image';
+import { getPosts } from '../../lib/posts/posts';
+import { readingTime } from '../../lib/posts/reading-time';
+import { formatDate } from '../../lib/posts/format-date';
+import { postImageSrc, toImagePost } from '../../lib/posts/post-image';
 
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import ClockIcon from '../../assets/icons/clock.svg';

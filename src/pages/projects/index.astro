@@ -2,7 +2,7 @@
 import Layout from '../../components/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import ExternalLinkIcon from '../../assets/icons/external-link.svg';
-import { getProjects } from '../../lib/projects';
+import { getProjects } from '../../lib/projects/projects';
 import { GITHUB_PROFILE_LINK } from '../../consts';
 
 const projects = await getProjects();

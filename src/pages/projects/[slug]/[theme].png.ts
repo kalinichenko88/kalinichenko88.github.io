@@ -1,8 +1,8 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 
-import { renderOgImage } from '../../../lib/og-image';
-import { IMAGE_THEMES, projectImage, type ImageTheme } from '../../../lib/project-image';
-import { getProjects, type Project } from '../../../lib/projects';
+import { renderOgImage } from '../../../lib/link-previews/og-image';
+import { IMAGE_THEMES, projectImage, type ImageTheme } from '../../../lib/projects/project-image';
+import { getProjects, type Project } from '../../../lib/projects/projects';
 
 // /projects/<slug>/light.png and /projects/<slug>/dark.png, rendered on every
 // build with that build's numbers from GitHub (and on request in dev, with the

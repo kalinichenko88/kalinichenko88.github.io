@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
-import { readingTime } from '../lib/reading-time';
-import { formatDate } from '../lib/format-date';
+import { readingTime } from '../lib/posts/reading-time';
+import { formatDate } from '../lib/posts/format-date';
 
 type Props = {
   post: CollectionEntry<'posts'>;

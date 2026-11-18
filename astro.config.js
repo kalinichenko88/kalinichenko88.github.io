@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeExternalLinks from 'rehype-external-links';
 
-import { checkMetaTags } from './src/lib/check-meta-tags.ts';
+import { checkMetaTags } from './src/lib/link-previews/check-meta-tags.ts';
 
 export default defineConfig({
   site: 'https://kalinichenko.dev',
@@ -64,7 +64,7 @@ export default defineConfig({
   },
 });
 
-/** Fails the build when a page's link-preview tags break a rule (src/lib/check-meta-tags.ts). */
+/** Fails the build when a page's link-preview tags break a rule (src/lib/link-previews/check-meta-tags.ts). */
 function metaTags() {
   // The site the build resolves: CI passes its own --site. A user site on
   // GitHub Pages has no base path, and the site's links assume none.

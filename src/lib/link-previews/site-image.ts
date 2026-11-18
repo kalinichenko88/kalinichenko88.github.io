@@ -1,4 +1,4 @@
-import { AUTHOR_NAME, ROLE, SITE_NAME } from '../consts.ts';
+import { AUTHOR_NAME, ROLE, SITE_NAME } from '../../consts.ts';
 import {
   accentBar,
   drawingBox,
@@ -119,13 +119,13 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
   // query keeps Astro's image pipeline off the drawing, which would otherwise
   // ship a copy that no page links. Inside the function, as the tests import
   // this file outside Vite.
-  const icons = import.meta.glob<string>('../assets/icons/*.svg', {
+  const icons = import.meta.glob<string>('../../assets/icons/*.svg', {
     query: '?raw',
     import: 'default',
     eager: true,
   });
   const [src] = Object.values(
-    import.meta.glob<string>('../assets/images/site.png', {
+    import.meta.glob<string>('../../assets/images/site.png', {
       query: '?inline',
       import: 'default',
       eager: true,
@@ -139,7 +139,7 @@ export function toImageSite(contacts: { label: string; handle: string }[]): Imag
     contacts: contacts.map(({ label, handle }) => {
       // The footer finds its icon through an import; this one goes by label.
       const file = `${label.toLowerCase()}.svg`;
-      const svg = icons[`../assets/icons/${file}`];
+      const svg = icons[`../../assets/icons/${file}`];
       if (!svg) {
         throw new Error(`${label}: no icon at src/assets/icons/${file}`);
       }
