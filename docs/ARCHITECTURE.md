@@ -124,10 +124,10 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `projects.ts`).
 - **Browser code splits by testability.** DOM wiring stays in the component's
   `<script>` (`ThemeSwitcher`, `MobileMenu`, `CardRow`, `VideoPlayer`,
-  `PixelSpotlight`, the TOC observer in the post page). The part that a node test can run without a DOM
-  goes to `src/lib/shell/` (`opaque-color.ts`). `motion-controller.ts` is the
-  exception: it holds the reveal's DOM wiring too, and only its `onScreen()`
-  is DOM-free.
+  `PixelSpotlight`, the TOC observer in the post page). The part that a node
+  test can run without a DOM goes to `src/lib/shell/` (`opaque-color.ts`).
+  `motion-controller.ts` is the exception: it holds the reveal's DOM wiring
+  too, and only its `onScreen()` is DOM-free.
 - **Every browser script survives a page swap.** A module `<script>` runs
   once, so it runs its init again on `astro:after-swap`. A custom element
   (`card-row`, `video-player`) carries its listeners with the element instead.

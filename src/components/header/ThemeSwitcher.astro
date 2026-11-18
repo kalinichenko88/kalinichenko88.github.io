@@ -55,10 +55,10 @@ const themeIcons: Record<string, typeof SunIcon> = {
 <script>
   import { THEME_OPTIONS, resolveTheme } from '../../config/themes';
 
-  const OPTION_IDS = THEME_OPTIONS.map((t) => {
+  const optionIds = THEME_OPTIONS.map((t) => {
     return t.id;
   });
-  const ICON_BY_ID = Object.fromEntries(
+  const iconById = Object.fromEntries(
     THEME_OPTIONS.map((t) => {
       return [t.id, t.iconId];
     })
@@ -67,11 +67,11 @@ const themeIcons: Record<string, typeof SunIcon> = {
   function storedPreference(): string {
     const pref = localStorage.getItem('theme');
 
-    return pref && OPTION_IDS.includes(pref) ? pref : 'auto';
+    return pref && optionIds.includes(pref) ? pref : 'auto';
   }
 
   function updateThemeUI(preference: string) {
-    const iconId = ICON_BY_ID[preference];
+    const iconId = iconById[preference];
     document.querySelectorAll('.theme-icon').forEach((icon) => {
       icon.classList.toggle('hidden', (icon as HTMLElement).dataset.icon !== iconId);
     });
@@ -92,8 +92,8 @@ const themeIcons: Record<string, typeof SunIcon> = {
   }
 
   function cycleTheme() {
-    const next = (OPTION_IDS.indexOf(storedPreference()) + 1) % OPTION_IDS.length;
-    applyTheme(OPTION_IDS[next]);
+    const next = (optionIds.indexOf(storedPreference()) + 1) % optionIds.length;
+    applyTheme(optionIds[next]);
   }
 
   // Keep `auto` in sync when the OS preference flips

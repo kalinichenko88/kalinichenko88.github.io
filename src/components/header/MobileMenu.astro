@@ -5,7 +5,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <!-- Its toggle, #mobile-menu-toggle, sits in the bar in Header.astro -->
-<div
+<nav
   id="mobile-menu"
   class="md:hidden hidden border-t border-line bg-background"
   aria-label="Mobile navigation"
@@ -27,16 +27,12 @@ const currentPath = Astro.url.pathname;
       );
     })}
   </div>
-</div>
+</nav>
 
 <script>
-  const $ = (id: string) => {
-    return document.getElementById(id);
-  };
-
   function setMobileMenu(open: boolean, returnFocus = true) {
-    const menu = $('mobile-menu');
-    const toggle = $('mobile-menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const toggle = document.getElementById('mobile-menu-toggle');
     if (!menu || !toggle) {
       return;
     }
@@ -53,7 +49,7 @@ const currentPath = Astro.url.pathname;
   }
 
   const isMobileMenuOpen = () => {
-    return $('mobile-menu')?.classList.contains('hidden') === false;
+    return document.getElementById('mobile-menu')?.classList.contains('hidden') === false;
   };
 
   document.addEventListener('click', (e) => {
@@ -74,8 +70,8 @@ const currentPath = Astro.url.pathname;
 
     // Focus trap for the open mobile menu
     if (e.key === 'Tab' && isMobileMenuOpen()) {
-      const menu = $('mobile-menu');
-      const toggle = $('mobile-menu-toggle');
+      const menu = document.getElementById('mobile-menu');
+      const toggle = document.getElementById('mobile-menu-toggle');
       if (!menu || !toggle) {
         return;
       }
