@@ -101,8 +101,9 @@ Dependencies point down: `src/pages/` to `src/components/` to `src/lib/` to
 config and consts. Lib imports lib and consts. Config imports consts and
 icons. Nothing imports upward; I-2 checks it for lib, config and the two root
 files. Between the module folders of `src/lib/`, `posts/` and `projects/`
-import `link-previews/`, and nothing goes the other way (I-14). `tests/` imports `src/lib/`, `src/config/`, `src/consts.ts`
-and the skills' `.mjs` files, and reads `.astro` and `.css` files as text.
+import `link-previews/`, and nothing goes the other way (I-14). `tests/`
+imports `src/lib/`, `src/config/`, `src/consts.ts` and the skills' `.mjs`
+files, and reads `.astro` and `.css` files as text.
 
 ## Patterns
 
@@ -111,9 +112,9 @@ Only the ones that the code keeps everywhere and that are not obvious.
 - **A build-time image is a pair.** The layout is a function in
   `<kind>-image.ts`, in the `src/lib/` folder of its module, that returns an
   element tree. The route is a `.png.ts` file in `src/pages/`, which calls
-  `renderOgImage()` on that tree. A page links the image only through the same lib file's
-  `<kind>ImageSrc()`, which adds `?v=<hash>`. The detail is in `CLAUDE.md`,
-  under Project images and Post covers.
+  `renderOgImage()` on that tree. A page links the image only through the
+  same lib file's `<kind>ImageSrc()`, which adds `?v=<hash>`. The detail is
+  in `CLAUDE.md`, under Project images and Post covers.
 - **`src/lib/` runs under plain node.** `npm test` loads it with
   `--experimental-strip-types` and no bundler. So a file there writes `.ts`
   on each local import it needs at run time, and imports from `astro:*` only

@@ -39,7 +39,7 @@ The move made the import of `og-image.ts` in `project-image.ts` longer, and
 Prettier wrapped it, so the file grew from 221 to 227 lines while it was on
 the `debt` list of I-8. With the folder decided, the split that #87 asks for
 only moves code, so it goes into the same change: the numbers row
-(`projectStats()`, `starLabel()` and the icons) moves to
+(`projectStats()`, `starLabel()`, `stat()` and the icons) moves to
 `projects/project-stats.ts`, and `project-image.ts` drops to 136 lines.
 
 ## Consequences
