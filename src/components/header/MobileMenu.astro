@@ -1,0 +1,98 @@
+---
+import { NAV_LINKS, isActive } from '../../config/navigation';
+
+const currentPath = Astro.url.pathname;
+---
+
+<!-- Its toggle, #mobile-menu-toggle, sits in the bar in Header.astro -->
+<div
+  id="mobile-menu"
+  class="md:hidden hidden border-t border-line bg-background"
+  aria-label="Mobile navigation"
+>
+  <div class="container py-4 space-y-1">
+    {NAV_LINKS.map((link) => {
+      return (
+        <a
+          href={link.href}
+          class:list={[
+            'block px-4 py-2.5 text-sm font-medium rounded-md transition-colors duration-150',
+            isActive(link.href, currentPath)
+              ? 'text-foreground bg-background-subtle'
+              : 'text-foreground-secondary hover:text-foreground hover:bg-background-subtle',
+          ]}
+        >
+          {link.label}
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  const $ = (id: string) => {
+    return document.getElementById(id);
+  };
+
+  function setMobileMenu(open: boolean, returnFocus = true) {
+    const menu = $('mobile-menu');
+    const toggle = $('mobile-menu-toggle');
+    if (!menu || !toggle) {
+      return;
+    }
+
+    menu.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+
+    if (open) {
+      menu.querySelector('a')?.focus();
+    } else if (returnFocus) {
+      toggle.focus();
+    }
+  }
+
+  const isMobileMenuOpen = () => {
+    return $('mobile-menu')?.classList.contains('hidden') === false;
+  };
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+
+    if (target.closest('#mobile-menu-toggle')) {
+      setMobileMenu(!isMobileMenuOpen());
+    }
+    if (target.closest('#mobile-menu a')) {
+      setMobileMenu(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMobileMenuOpen()) {
+      setMobileMenu(false);
+    }
+
+    // Focus trap for the open mobile menu
+    if (e.key === 'Tab' && isMobileMenuOpen()) {
+      const menu = $('mobile-menu');
+      const toggle = $('mobile-menu-toggle');
+      if (!menu || !toggle) {
+        return;
+      }
+
+      const focusable = [toggle, ...menu.querySelectorAll<HTMLElement>('a, button')];
+      const edge = e.shiftKey ? focusable[0] : focusable[focusable.length - 1];
+      if (document.activeElement === edge) {
+        e.preventDefault();
+        (e.shiftKey ? focusable[focusable.length - 1] : focusable[0]).focus();
+      }
+    }
+  });
+
+  function init() {
+    setMobileMenu(false, false);
+  }
+
+  init();
+  document.addEventListener('astro:after-swap', init);
+</script>

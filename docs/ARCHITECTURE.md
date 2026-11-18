@@ -37,7 +37,7 @@ numbers stay fresh.
 content/              Markdown: posts/ and projects/, one file per entry
 src/
   pages/              one file per route: .astro renders HTML, .ts is an endpoint (PNG, RSS)
-  components/         UI; home/ holds the homepage sections
+  components/         UI; home/ holds the homepage sections, header/ the site header and its parts
   lib/                logic for the build and the browser, one folder per module; loads under plain node
   config/             typed lists: navigation, contacts, themes, resume
   consts.ts           site-wide constants
@@ -63,7 +63,7 @@ the exports of the files in its folder, and a page imports them by file.
 | Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `posts/`: `posts`, `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getPosts()`                      |
 | Projects      | `projects/`; `ProjectCard`                                                              | `projects/`: `projects`, `project-image`, `project-stats`      | `content/projects/`, `projects/github-repo` (the GitHub API)           | `getProjects()`                   |
 | Link previews | `Head`, `site.png.ts`                                                                   | `link-previews/`: `og-image`, `site-image`, `check-meta-tags`  | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()` |
-| Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
+| Shell         | `Layout`, `header/`, `Footer`, `PixelSpotlight`, `MotionController`                     | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
 | Home          | `index.astro`; `components/home/`                                                       |                                                                |                                                                        |                                   |
 | Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                                                | `src/config/resume.ts`, `contacts.ts`                                  |                                   |
 | Authoring     | `.claude/skills/*/`, `tests/`                                                           |                                                                |                                                                        | each skill's `SKILL.md`           |
@@ -123,8 +123,8 @@ Only the ones that the code keeps everywhere and that are not obvious.
   collection, and only pages call them (`ProjectCard` imports a type from
   `projects.ts`).
 - **Browser code splits by testability.** DOM wiring stays in the component's
-  `<script>` (`Header`, `CardRow`, `VideoPlayer`, `PixelSpotlight`, the TOC
-  observer in the post page). The part that a node test can run without a DOM
+  `<script>` (`ThemeSwitcher`, `MobileMenu`, `CardRow`, `VideoPlayer`,
+  `PixelSpotlight`, the TOC observer in the post page). The part that a node test can run without a DOM
   goes to `src/lib/shell/` (`opaque-color.ts`). `motion-controller.ts` is the
   exception: it holds the reveal's DOM wiring too, and only its `onScreen()`
   is DOM-free.
@@ -189,11 +189,10 @@ no `Check:` line names the test that keeps it.
   Check: lines 180 in `src/` `tests/` `.claude/` `astro.config.js` `eslint.config.js` except `src/styles/global.css`.
   debt `src/lib/link-previews/check-meta-tags.ts`
   debt `src/pages/blog/[...id].astro`
-  debt `src/components/Header.astro`
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
   code files of its own.
-  Check: files 10 in `src/` `tests/` `.claude/` debt `src/components/` `tests/`.
+  Check: files 10 in `src/` `tests/` `.claude/` debt `tests/`.
 - **I-10.** Running text on the open field sits on `.reading-veil`.
   `tests/reading-veil.test.ts` holds the list of surfaces and fails without
   the class.
@@ -238,6 +237,10 @@ post and four projects) count in the numbers below, and no check reads them.
 - `getPosts()` (ADR 0002) added `posts.ts`, a twelfth file in `src/lib/`.
   ADR 0003 then split the folder into one folder per module, the largest
   with 4 files, and `src/lib/` left the `debt` list.
+- #94 split `Header.astro` (309 lines) into the bar, the theme switcher
+  and the mobile menu, in `src/components/header/`. The file left the
+  `debt` list of I-8, and `src/components/`, down to 10 files, left the
+  list of I-9.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The
