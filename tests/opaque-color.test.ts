@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { isOpaque, onOpaqueFill } from '../src/lib/opaque-color.ts';
+import { isOpaque, onOpaqueFill } from '../src/lib/shell/opaque-color.ts';
 
 // Computed backgroundColor values recorded in Chrome on the built site.
 test('counts translucent fills as translucent and solid ones as opaque', () => {

@@ -4,14 +4,18 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 import * as consts from '../src/consts.ts';
-import { IMAGE_PALETTES, renderOgImage, type OgElement } from '../src/lib/og-image.ts';
+import {
+  IMAGE_PALETTES,
+  renderOgImage,
+  type OgElement,
+} from '../src/lib/link-previews/og-image.ts';
 import {
   inlinedDrawing,
   siteImage,
   siteImageAlt,
   siteImageSrc,
   type ImageSite,
-} from '../src/lib/site-image.ts';
+} from '../src/lib/link-previews/site-image.ts';
 
 // The site image, rendered at build time by src/pages/site.png.ts: the
 // og:image of every page without one of its own.

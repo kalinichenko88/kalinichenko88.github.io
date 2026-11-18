@@ -1,6 +1,12 @@
-import { SITE_NAME } from '../consts.ts';
+import { SITE_NAME } from '../../consts.ts';
 import type { RepoNumbers } from './github-repo';
-import { accentBar, el, IMAGE_PALETTES, ogImageSrc, type OgElement } from './og-image.ts';
+import {
+  accentBar,
+  el,
+  IMAGE_PALETTES,
+  ogImageSrc,
+  type OgElement,
+} from '../link-previews/og-image.ts';
 
 type ImageProject = RepoNumbers & { name: string; tagline: string; url: string };
 

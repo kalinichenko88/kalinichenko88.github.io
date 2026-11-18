@@ -34,7 +34,7 @@ test('never pairs the animation shorthand with animation-timeline', () => {
 
 test('does not add a JavaScript scroll listener', async () => {
   const controller = await readFile(
-    new URL('../src/lib/motion-controller.ts', import.meta.url),
+    new URL('../src/lib/shell/motion-controller.ts', import.meta.url),
     'utf8'
   );
   assert.doesNotMatch(controller, /addEventListener\(['"]scroll/);

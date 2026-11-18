@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 
-import { GITHUB_PROFILE_LINK } from '../consts';
+import { GITHUB_PROFILE_LINK } from '../../consts';
 import { githubRepo, offlineNumbers } from './github-repo';
 
 /** Every project in `order`, with its repo URL and its numbers from GitHub. */

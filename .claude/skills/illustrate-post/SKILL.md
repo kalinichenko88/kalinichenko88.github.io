@@ -80,7 +80,7 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
 
     The cover is trimmed to its drawing, so it has the drawing's own
     proportions. The post's social image is rendered on every build from the
-    cover, the title and the description (`src/lib/post-image.ts`), and it
+    cover, the title and the description (`src/lib/posts/post-image.ts`), and it
     finds the cover by this name. Set
     `cover: ../../src/assets/images/covers/<post-id>.png` in the post's
     frontmatter, after `tags:`. If a `cover:` line exists, replace it; a post
@@ -90,14 +90,14 @@ bright halo. Look only at the `*.light.png` / `*.dark.png` / `sheet.png` files
 
 A page with no image of its own shares `/site.png` as its link preview:
 `src/components/Head.astro` falls back to it whenever `Layout` gets no
-`image`. It is rendered on every build (`src/lib/site-image.ts`): the name,
+`image`. It is rendered on every build (`src/lib/link-previews/site-image.ts`): the name,
 the role and every channel in `src/config/contacts.ts` next to the site
 drawing, `src/assets/images/site.png`. To redo the drawing, run the workflow
 with `site` in place of a post id: the metaphors stand for the whole site, and
 `Asset type:` in the prompt is `website cover illustration`, as the drawing
 sits next to text, like a post cover. Save only
 `cp "$RUN/variant-N.cover.png" src/assets/images/site.png`, update
-`DRAWING_ALT` in `src/lib/site-image.ts` to describe the new drawing, and run
+`DRAWING_ALT` in `src/lib/link-previews/site-image.ts` to describe the new drawing, and run
 `npm test`. Nothing goes into `covers/`, which holds post covers only. A
 project page (`/projects/<slug>`) has its own image, rendered at build time,
 not by this skill.

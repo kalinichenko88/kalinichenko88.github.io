@@ -4,8 +4,8 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 import { DARK_THEME, LIGHT_THEME } from '../src/config/themes.ts';
-import { offlineNumbers } from '../src/lib/github-repo.ts';
-import { IMAGE_PALETTES, renderOgImage } from '../src/lib/og-image.ts';
+import { offlineNumbers } from '../src/lib/projects/github-repo.ts';
+import { IMAGE_PALETTES, renderOgImage } from '../src/lib/link-previews/og-image.ts';
 import {
   IMAGE_THEMES,
   projectImage,
@@ -13,7 +13,7 @@ import {
   projectStats,
   starLabel,
   type ImageTheme,
-} from '../src/lib/project-image.ts';
+} from '../src/lib/projects/project-image.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and

@@ -3,12 +3,20 @@
 - Status: accepted
 - Date: 2026-10-27
 
+## Updates
+
+- 2026-11-18 #98: Context, Options considered, Decision and Invariants. Was:
+  "`src/lib/projects.ts`" and "`src/lib/posts.ts`".
+- 2026-11-18 #98: Consequences. Was: "`src/lib/` grows to 12 code files,
+  past the limit of I-9 (10); it is already on the `debt` list, and #98
+  plans its split."
+
 ## Context
 
 Eight routes read the posts with `getCollection('posts')`. Five of them
 sorted the posts newest first, each with its own copy of the comparator.
-Projects have one entry point, `getProjects()` in `src/lib/projects.ts`
-(I-3). Posts had none, so a new page that lists posts wrote the sort again,
+Projects have one entry point, `getProjects()` in
+`src/lib/projects/projects.ts` (I-3). Posts had none, so a new page that lists posts wrote the sort again,
 and a change to which posts show (a draft, a pinned post) needed an edit in
 every route.
 
@@ -22,8 +30,8 @@ and the shared code goes to a lower layer.
 
 ## Options considered
 
-- `getPosts()` in `src/lib/posts.ts`, called by every route that reads posts;
-  I-5 lets the two collection readers import from `astro:content`: one new
+- `getPosts()` in `src/lib/posts/posts.ts`, called by every route that reads
+  posts; I-5 lets the two collection readers import from `astro:content`: one new
   file, the same shape as `getProjects()`.
 - Keep the copies in each page: no new file, but each new list repeats the
   sort, and a draft filter needs eight edits.
@@ -32,8 +40,8 @@ and the shared code goes to a lower layer.
 
 ## Decision
 
-We will read posts only through `getPosts()` in `src/lib/posts.ts`, which
-returns every post newest first. A page that needs another order or a subset
+We will read posts only through `getPosts()` in `src/lib/posts/posts.ts`,
+which returns every post newest first. A page that needs another order or a subset
 filters or sorts that list. `posts.ts` joins `projects.ts` as a file in
 `src/lib/` that may import a value from `astro:*`.
 
@@ -43,13 +51,13 @@ Good: the order and any later filter of the posts are in one function. Posts
 and projects have the same kind of entry point.
 
 Bad: `src/lib/` holds a second file that plain node cannot load, so
-`getPosts()` has no unit test; the build is its test. `src/lib/` grows to 12
-code files, past the limit of I-9 (10); it is already on the `debt` list,
-and #98 plans its split.
+`getPosts()` has no unit test; the build is its test. `src/lib/` grew to 12
+code files, past the limit of I-9 (10), until ADR 0003 split it into one
+folder per module.
 
 ## Invariants
 
-I-5, amended: `src/lib/posts.ts` joins its `except` list. I-13, added.
+I-5, amended: `src/lib/posts/posts.ts` joins its `except` list. I-13, added.
 
 ## Confirmation
 

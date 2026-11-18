@@ -1,8 +1,8 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 
-import { renderOgImage } from '../../lib/og-image';
-import { getPosts } from '../../lib/posts';
-import { postImage, toImagePost, type ImagePost } from '../../lib/post-image';
+import { renderOgImage } from '../../lib/link-previews/og-image';
+import { getPosts } from '../../lib/posts/posts';
+import { postImage, toImagePost, type ImagePost } from '../../lib/posts/post-image';
 
 // /blog/<id>.png, each post's link preview, rendered on every build from its
 // frontmatter and cover, so a changed title shows in the next build. A draft

@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
 
 import { CONTACT_LINKS } from '../config/contacts';
-import { renderOgImage } from '../lib/og-image';
-import { siteImage, toImageSite } from '../lib/site-image';
+import { renderOgImage } from '../lib/link-previews/og-image';
+import { siteImage, toImageSite } from '../lib/link-previews/site-image';
 
 // /site.png, the link preview of every page without one of its own, rendered
 // on every build, so it always shows the channels the footer lists.

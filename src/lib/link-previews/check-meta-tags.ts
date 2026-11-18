@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import sharp from 'sharp';
 
-import { AUTHOR_NAME, MAX_DESCRIPTION, MAX_TITLE, SITE_NAME } from '../consts.ts';
+import { AUTHOR_NAME, MAX_DESCRIPTION, MAX_TITLE, SITE_NAME } from '../../consts.ts';
 
 /**
  * Checks the tags a link preview reads on every HTML page that a build in

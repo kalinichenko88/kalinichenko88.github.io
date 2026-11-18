@@ -3,6 +3,11 @@
 - Status: accepted
 - Date: 2026-10-27
 
+## Updates
+
+- 2026-11-18 #98: Context. Was: "a module's API is the exports of its
+  `src/lib/` files", and "`src/lib/<file>.ts`" in each of the six paths.
+
 ## Context
 
 The `craft:typescript-conventions` skill puts a type that two files
@@ -12,21 +17,22 @@ it.
 
 This project does not. Each shared type sits in the file that produces its
 values, and the files that use it import it from there. This follows the
-Modules rule in `docs/ARCHITECTURE.md`: a module's API is the exports of its
-`src/lib/` files. The six shared types:
+Modules rule in `docs/ARCHITECTURE.md`: a module's API is the exports of the
+files in its `src/lib/` folder. The six shared types:
 
-- `Project` in `src/lib/projects.ts`, inferred from `getProjects()`. Used by
-  `ProjectCard.astro` and the project image route.
-- `RepoNumbers` in `src/lib/github-repo.ts`. Used by `project-image.ts`.
-- `OgElement` in `src/lib/og-image.ts`. Used by the three image layouts
-  (`post-image.ts`, `project-image.ts`, `site-image.ts`) and
+- `Project` in `src/lib/projects/projects.ts`, inferred from
+  `getProjects()`. Used by `ProjectCard.astro` and the project image route.
+- `RepoNumbers` in `src/lib/projects/github-repo.ts`. Used by
+  `project-image.ts`.
+- `OgElement` in `src/lib/link-previews/og-image.ts`. Used by the three
+  image layouts (`post-image.ts`, `project-image.ts`, `site-image.ts`) and
   `tests/site-image.test.ts`.
-- `OgDrawing` in `src/lib/og-image.ts`. Used by `post-image.ts` and
-  `site-image.ts`.
-- `ImagePost` in `src/lib/post-image.ts`. Used by the post image route and
-  `tests/post-images.test.ts`.
-- `ImageTheme` in `src/lib/project-image.ts`, beside `IMAGE_THEMES`, the list
-  of its values. Used by the project image route and
+- `OgDrawing` in `src/lib/link-previews/og-image.ts`. Used by
+  `post-image.ts` and `site-image.ts`.
+- `ImagePost` in `src/lib/posts/post-image.ts`. Used by the post image route
+  and `tests/post-images.test.ts`.
+- `ImageTheme` in `src/lib/projects/project-image.ts`, beside
+  `IMAGE_THEMES`, the list of its values. Used by the project image route and
   `tests/project-images.test.ts`.
 
 A type that one file uses, as `Job` in `src/config/resume.ts`, stays in that

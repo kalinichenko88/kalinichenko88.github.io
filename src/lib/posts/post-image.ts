@@ -1,6 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 
-import { SITE_NAME } from '../consts.ts';
+import { SITE_NAME } from '../../consts.ts';
 import { formatDate } from './format-date.ts';
 import {
   accentBar,
@@ -10,7 +10,7 @@ import {
   ogImageSrc,
   type OgDrawing,
   type OgElement,
-} from './og-image.ts';
+} from '../link-previews/og-image.ts';
 import { readingTime } from './reading-time.ts';
 
 /** What a post's image draws: its text, and its cover as a data: URL. */
@@ -118,12 +118,12 @@ export function toImagePost(post: CollectionEntry<'posts'>): ImagePost | undefin
   // Astro's image pipeline off these imports. Inside the function, as the
   // tests import this file outside Vite. tests/post-covers.test.ts keeps every
   // cover at covers/<post-id>.png.
-  const covers = import.meta.glob<string>('../assets/images/covers/*.png', {
+  const covers = import.meta.glob<string>('../../assets/images/covers/*.png', {
     query: '?inline',
     import: 'default',
     eager: true,
   });
-  const src = covers[`../assets/images/covers/${post.id}.png`];
+  const src = covers[`../../assets/images/covers/${post.id}.png`];
   // Satori's own error names no post: "Image source is not provided".
   if (!src) {
     throw new Error(`${post.id}: no cover at src/assets/images/covers/${post.id}.png`);

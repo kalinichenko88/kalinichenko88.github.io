@@ -7,7 +7,7 @@ import test from 'node:test';
 import sharp from 'sharp';
 
 import { SITE_TITLE } from '../src/consts.ts';
-import { checkMetaTags } from '../src/lib/check-meta-tags.ts';
+import { checkMetaTags } from '../src/lib/link-previews/check-meta-tags.ts';
 
 // astro.config.js runs checkMetaTags() on every build, so the real pages pass
 // through it there. These tests show that it fails a page for each rule.

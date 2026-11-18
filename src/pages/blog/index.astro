@@ -2,7 +2,7 @@
 import Layout from '../../components/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import RssIcon from '../../assets/icons/rss.svg';
-import { getPosts } from '../../lib/posts';
+import { getPosts } from '../../lib/posts/posts';
 
 const posts = await getPosts();
 ---
