@@ -6,7 +6,9 @@
 ## Updates
 
 - 2026-11-18 #98: Context. Was: "a module's API is the exports of its
-  `src/lib/` files", and "`src/lib/<file>.ts`" in each of the six paths.
+  `src/lib/` files", "`src/lib/projects.ts`", "`src/lib/github-repo.ts`.
+  Used by `project-image.ts`.", "`src/lib/og-image.ts`" (twice),
+  "`src/lib/post-image.ts`" and "`src/lib/project-image.ts`".
 
 ## Context
 
@@ -23,7 +25,7 @@ files in its `src/lib/` folder. The six shared types:
 - `Project` in `src/lib/projects/projects.ts`, inferred from
   `getProjects()`. Used by `ProjectCard.astro` and the project image route.
 - `RepoNumbers` in `src/lib/projects/github-repo.ts`. Used by
-  `project-image.ts`.
+  `project-image.ts` and `project-stats.ts`.
 - `OgElement` in `src/lib/link-previews/og-image.ts`. Used by the three
   image layouts (`post-image.ts`, `project-image.ts`, `site-image.ts`) and
   `tests/site-image.test.ts`.

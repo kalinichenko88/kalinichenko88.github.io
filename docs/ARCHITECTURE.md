@@ -61,7 +61,7 @@ the exports of the files in its folder, and a page imports them by file.
 | Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                                             | Data                                                                   | Entry point                       |
 | ------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
 | Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `posts/`: `posts`, `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getPosts()`                      |
-| Projects      | `projects/`; `ProjectCard`                                                              | `projects/`: `projects`, `project-image`                       | `content/projects/`, `projects/github-repo` (the GitHub API)           | `getProjects()`                   |
+| Projects      | `projects/`; `ProjectCard`                                                              | `projects/`: `projects`, `project-image`, `project-stats`      | `content/projects/`, `projects/github-repo` (the GitHub API)           | `getProjects()`                   |
 | Link previews | `Head`, `site.png.ts`                                                                   | `link-previews/`: `og-image`, `site-image`, `check-meta-tags`  | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()` |
 | Shell         | `Layout`, `Header`, `Footer`, `PixelSpotlight`, `MotionController`                      | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
 | Home          | `index.astro`; `components/home/`                                                       |                                                                |                                                                        |                                   |
@@ -92,14 +92,16 @@ By role, as the architecture skill defines them:
   (I-2), and each one loads under plain node (I-5).
 - **Data:** `content/` (Markdown, through `astro:content`); `src/config/` and
   `src/consts.ts` (static data as typed TypeScript);
-  `src/lib/projects/github-repo.ts` (the one network client, I-1); `src/assets/` (through Astro's image
-  pipeline) and `public/` (served as is).
+  `src/lib/projects/github-repo.ts` (the one network client, I-1);
+  `src/assets/` (through Astro's image pipeline) and `public/` (served as
+  is).
 
 Dependencies point down: `src/pages/` to `src/components/` to `src/lib/` to
 `src/config/` and `src/consts.ts`. Components import components, lib,
 config and consts. Lib imports lib and consts. Config imports consts and
 icons. Nothing imports upward; I-2 checks it for lib, config and the two root
-files. `tests/` imports `src/lib/`, `src/config/`, `src/consts.ts`
+files. Between the module folders of `src/lib/`, `posts/` and `projects/`
+import `link-previews/`, and nothing goes the other way (I-14). `tests/` imports `src/lib/`, `src/config/`, `src/consts.ts`
 and the skills' `.mjs` files, and reads `.astro` and `.css` files as text.
 
 ## Patterns
@@ -108,9 +110,8 @@ Only the ones that the code keeps everywhere and that are not obvious.
 
 - **A build-time image is a pair.** The layout is a function in
   `<kind>-image.ts`, in the `src/lib/` folder of its module, that returns an
-  element tree. The route is a
-  `.png.ts` file in `src/pages/`, which calls `renderOgImage()` on that
-  tree. A page links the image only through the same lib file's
+  element tree. The route is a `.png.ts` file in `src/pages/`, which calls
+  `renderOgImage()` on that tree. A page links the image only through the same lib file's
   `<kind>ImageSrc()`, which adds `?v=<hash>`. The detail is in `CLAUDE.md`,
   under Project images and Post covers.
 - **`src/lib/` runs under plain node.** `npm test` loads it with
@@ -122,7 +123,7 @@ Only the ones that the code keeps everywhere and that are not obvious.
 - **Browser code splits by testability.** DOM wiring stays in the component's
   `<script>` (`Header`, `CardRow`, `VideoPlayer`, `PixelSpotlight`, the TOC
   observer in the post page). The part that a node test can run without a DOM
-  goes to `src/lib/` (`opaque-color.ts`). `motion-controller.ts` is the
+  goes to `src/lib/shell/` (`opaque-color.ts`). `motion-controller.ts` is the
   exception: it holds the reveal's DOM wiring too, and only its `onScreen()`
   is DOM-free.
 - **Every browser script survives a page swap.** A module `<script>` runs
@@ -188,7 +189,6 @@ no `Check:` line names the test that keeps it.
   debt `src/pages/blog/[...id].astro`
   debt `src/components/Header.astro`
   debt `.claude/skills/design-check/check-design.mjs`
-  debt `src/lib/projects/project-image.ts`
   debt `tests/project-images.test.ts`
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
@@ -208,6 +208,12 @@ no `Check:` line names the test that keeps it.
   feed and image sees the same posts in the same order.
   Check: grep `get(Collection|Entry|Entries)\(['"]posts` in `src/` except `src/lib/posts/posts.ts`.
   ADR: 0002.
+- **I-14.** Between the module folders of `src/lib/`, imports go one way:
+  `posts/` and `projects/` may import `link-previews/`, and `link-previews/`
+  and `shell/` import no other module folder. A `../` import from those two
+  folders names a sibling folder; `../../` reaches `src/` and is not matched.
+  Check: grep `from '\.\./[a-z-]+/` in `src/lib/link-previews/` `src/lib/shell/`.
+  ADR: 0003.
 
 ## Limits
 

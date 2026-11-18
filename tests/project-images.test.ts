@@ -10,10 +10,9 @@ import {
   IMAGE_THEMES,
   projectImage,
   projectImageSrc,
-  projectStats,
-  starLabel,
   type ImageTheme,
 } from '../src/lib/projects/project-image.ts';
+import { projectStats, starLabel } from '../src/lib/projects/project-stats.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and

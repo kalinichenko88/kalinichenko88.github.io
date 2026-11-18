@@ -6,7 +6,8 @@ import PostCard from '../../components/PostCard.astro';
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
 import { getPosts } from '../../lib/posts/posts';
 import { getProjects } from '../../lib/projects/projects';
-import { projectImageAlt, projectImageSrc, starLabel } from '../../lib/projects/project-image';
+import { projectImageAlt, projectImageSrc } from '../../lib/projects/project-image';
+import { starLabel } from '../../lib/projects/project-stats';
 
 export async function getStaticPaths() {
   const posts = await getPosts();

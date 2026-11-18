@@ -35,6 +35,13 @@ still no `index.ts`. A new module that has logic gets a folder and a row in
 the table. `posts/` and `projects/` import `link-previews/og-image.ts`; no
 import goes the other way.
 
+The move made the import of `og-image.ts` in `project-image.ts` longer, and
+Prettier wrapped it, so the file grew from 221 to 227 lines while it was on
+the `debt` list of I-8. With the folder decided, the split that #87 asks for
+only moves code, so it goes into the same change: the numbers row
+(`projectStats()`, `starLabel()` and the icons) moves to
+`projects/project-stats.ts`, and `project-image.ts` drops to 136 lines.
+
 ## Consequences
 
 Good: what changes together sits together. `src/lib/` leaves the `debt`
@@ -48,10 +55,11 @@ one.
 
 ## Invariants
 
-I-2, amended: its pattern takes any number of `../`. I-1, I-3, I-4, I-5,
-I-8 and I-13 name the new paths. I-9: `src/lib/` leaves the `debt` list.
+I-2, amended: its pattern takes any number of `../`. I-14, added: the
+direction between the module folders. I-1, I-3, I-4, I-5, I-8 and I-13 name
+the new paths. I-8: `project-image.ts` leaves the `debt` list. I-9:
+`src/lib/` leaves the `debt` list.
 
 ## Confirmation
 
-The `Check:` lines of I-2 and I-9. The direction between the module folders:
-review only.
+The `Check:` lines of I-2, I-9 and I-14.
