@@ -25,15 +25,13 @@ read it if a check is unclear.
 # mechanical audit (contrast + forbidden patterns + theme ids + em-dash advisory)
 node .claude/skills/design-check/check-design.mjs
 
-# prove the contrast math is trustworthy
-node .claude/skills/design-check/check-design.mjs --selftest
-
 # the project gate, everything CI runs
 npm run verify
 ```
 
 Exit code 1 = a hard rule failed (fix before shipping). `npm test` runs the same
-hard rules through `tests/design-check.test.ts`, so they fail CI too. Advisory items (em-dash
+hard rules through `tests/design-check.test.ts`, so they fail CI too. The same test
+checks the contrast math in `colors.mjs` against known values. Advisory items (em-dash
 in `.astro`/`.ts` files) are printed for you to review, not auto-failed — some
 may be in code, not visible copy.
 
