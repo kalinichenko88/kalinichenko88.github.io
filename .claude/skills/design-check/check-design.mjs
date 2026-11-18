@@ -7,8 +7,8 @@
 // Rules come from DESIGN.md; the authoritative values live in src/styles/global.css.
 //
 // Usage:
-//   node .claude/skills/design-check/check-design.mjs            # audit the repo
-//   node .claude/skills/design-check/check-design.mjs --selftest # verify the contrast math
+//   node .claude/skills/design-check/check-design.mjs
+// The colour helpers are in colors.mjs; tests/design-check.test.ts checks their math.
 //
 // Exit code 1 if any HARD check fails (contrast, forbidden patterns, theme ids).
 // Advisory findings (em-dash in UI copy) are printed but do not fail the run.
@@ -16,77 +16,11 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { AA, contrast, mix, themeBlock } from './colors.mjs';
+
 const ROOT = process.cwd();
 const CSS = join(ROOT, 'src/styles/global.css');
 const THEMES = join(ROOT, 'src/config/themes.ts');
-
-// ---------- WCAG contrast ----------
-function toRgb(hex) {
-  const h = hex.replace('#', '').trim();
-  const n =
-    h.length === 3
-      ? h
-          .split('')
-          .map((c) => {
-            return c + c;
-          })
-          .join('')
-      : h;
-
-  return [0, 2, 4].map((i) => {
-    return parseInt(n.slice(i, i + 2), 16) / 255;
-  });
-}
-function relLum(hex) {
-  const [r, g, b] = toRgb(hex).map((c) => {
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  });
-
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-function contrast(a, b) {
-  const [l1, l2] = [relLum(a), relLum(b)].sort((x, y) => {
-    return y - x;
-  });
-
-  return (l1 + 0.05) / (l2 + 0.05);
-}
-// `color-mix(in srgb, top weight, under)`; with `transparent` as `under` it is
-// also `top` at that alpha painted over `under`.
-function mix(top, weight, under) {
-  if (!top || !under) {
-    return undefined;
-  }
-  const [a, b] = [toRgb(top), toRgb(under)];
-
-  return (
-    '#' +
-    a
-      .map((c, i) => {
-        return Math.round((c * weight + b[i] * (1 - weight)) * 255)
-          .toString(16)
-          .padStart(2, '0');
-      })
-      .join('')
-  );
-}
-
-// ---------- token parsing ----------
-function themeBlock(css, selector) {
-  const start = css.indexOf(selector);
-  if (start === -1) {
-    return {};
-  }
-  const open = css.indexOf('{', start);
-  const close = css.indexOf('}', open);
-  const body = css.slice(open + 1, close);
-  const tokens = {};
-  for (const m of body.matchAll(/--color-([\w-]+):\s*(#[0-9a-fA-F]+)/g)) {
-    tokens[m[1]] = m[2];
-  }
-
-  return tokens;
-}
 
 // ---------- file walk ----------
 function walk(dir, exts) {
@@ -107,43 +41,10 @@ function walk(dir, exts) {
   return out;
 }
 
-const AA = 4.5;
 let hardFail = 0;
 const line = (ok, msg) => {
   console.log(`  ${ok ? '✓' : '✗'} ${msg}`);
 };
-
-// ---------- self-test ----------
-if (process.argv.includes('--selftest')) {
-  console.log('Self-test (contrast math):');
-  const cases = [
-    ['#000000', '#ffffff', 21, true],
-    ['#ffffff', '#c25a34', AA, false], // old bright accent button -> must FAIL AA
-    ['#ffffff', '#a94a29', AA, true], // AA-safe accent-text -> must PASS
-    ['#a94a29', '#f4f2ee', AA, true], // accent-text on light bg -> PASS
-  ];
-  let bad = 0;
-  for (const [a, b, thr, shouldPass] of cases) {
-    const c = contrast(a, b);
-    const pass = c >= thr;
-    const ok = pass === shouldPass;
-    if (!ok) {
-      bad++;
-    }
-    line(
-      ok,
-      `contrast(${a}, ${b}) = ${c.toFixed(2)} -> ${pass ? 'AA' : 'fail'} (expected ${shouldPass ? 'AA' : 'fail'})`
-    );
-  }
-  // The weight belongs to the first color; swapped, this gives #bfbfbf.
-  const m = mix('#ffffff', 0.25, '#000000');
-  if (m !== '#404040') {
-    bad++;
-  }
-  line(m === '#404040', `mix(#ffffff, 0.25, #000000) = ${m} (expected #404040)`);
-  console.log(bad ? `\nSELF-TEST FAILED (${bad})` : '\nSelf-test OK');
-  process.exit(bad ? 1 : 0);
-}
 
 const css = readFileSync(CSS, 'utf8');
 const light = themeBlock(css, "[data-theme='cloud']");

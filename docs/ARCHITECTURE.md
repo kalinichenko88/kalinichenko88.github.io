@@ -78,7 +78,8 @@ By role, as the architecture skill defines them:
 
 - **Edge:** `src/pages/` (one file per route), `src/components/` (markup, and
   the browser code in each `<script>`), `astro.config.js` (the build hooks)
-  and the `.mjs` scripts in `.claude/skills/` (command-line tools). A page
+  and the `.mjs` scripts in `.claude/skills/` (command-line tools, and the
+  helpers they import, as `design-check/colors.mjs`). A page
   loads data, derives what it shows, and hands it to components.
 - **Check at the edge:** `src/content.config.ts`. The zod schema of each
   collection validates the frontmatter once, when Astro loads it, so every
@@ -189,7 +190,6 @@ no `Check:` line names the test that keeps it.
   debt `src/lib/link-previews/check-meta-tags.ts`
   debt `src/pages/blog/[...id].astro`
   debt `src/components/Header.astro`
-  debt `.claude/skills/design-check/check-design.mjs`
   debt `tests/project-images.test.ts`
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
