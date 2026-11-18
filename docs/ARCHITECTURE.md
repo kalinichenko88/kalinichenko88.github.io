@@ -100,8 +100,8 @@ Dependencies point down: `src/pages/` to `src/components/` to `src/lib/` to
 `src/config/` and `src/consts.ts`. Components import components, lib,
 config and consts. Lib imports lib and consts. Config imports consts and
 icons. Nothing imports upward; I-2 checks it for lib, config and the two root
-files. Between the module folders of `src/lib/`, `posts/` and `projects/`
-import `link-previews/`, and nothing goes the other way (I-14). `tests/`
+files. Between the module folders of `src/lib/`, the only import goes to
+`link-previews/`, the shared renderer (I-14). `tests/`
 imports `src/lib/`, `src/config/`, `src/consts.ts` and the skills' `.mjs`
 files, and reads `.astro` and `.css` files as text.
 
@@ -209,11 +209,12 @@ no `Check:` line names the test that keeps it.
   feed and image sees the same posts in the same order.
   Check: grep `get(Collection|Entry|Entries)\(['"]posts` in `src/` except `src/lib/posts/posts.ts`.
   ADR: 0002.
-- **I-14.** Between the module folders of `src/lib/`, imports go one way:
-  `posts/` and `projects/` may import `link-previews/`, and `link-previews/`
-  and `shell/` import no other module folder. A `../` import from those two
-  folders names a sibling folder; `../../` reaches `src/` and is not matched.
-  Check: grep `from '\.\./[a-z-]+/` in `src/lib/link-previews/` `src/lib/shell/`.
+- **I-14.** Between the module folders of `src/lib/`, the only import goes
+  to `link-previews/`, the shared renderer: no file imports `posts/`,
+  `projects/` or `shell/` from another folder. A file imports its own folder
+  with `./`, so each `../<folder>/` import crosses folders. A new module
+  folder joins the pattern.
+  Check: grep `from '\.\./(posts|projects|shell)/` in `src/lib/`.
   ADR: 0003.
 
 ## Limits

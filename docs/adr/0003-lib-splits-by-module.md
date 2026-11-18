@@ -32,8 +32,9 @@ the Logic column of the Modules table: `posts/`, `projects/`,
 `link-previews/` and `shell/`. `src/lib/` holds no file of its own. A file
 keeps its name, so `posts/posts.ts` and `projects/projects.ts`; there is
 still no `index.ts`. A new module that has logic gets a folder and a row in
-the table. `posts/` and `projects/` import `link-previews/og-image.ts`; no
-import goes the other way.
+the table. `posts/` and `projects/` import `link-previews/og-image.ts`, and
+that is the only kind of import between the folders: no folder imports
+`posts/`, `projects/` or `shell/`.
 
 The move made the import of `og-image.ts` in `project-image.ts` longer, and
 Prettier wrapped it, so the file grew from 221 to 227 lines while it was on
@@ -45,8 +46,8 @@ only moves code, so it goes into the same change: the numbers row
 ## Consequences
 
 Good: what changes together sits together. `src/lib/` leaves the `debt`
-list of I-9, the largest folder holds 4 files, and each module has room to
-grow.
+list of I-9. `posts/` and `projects/` hold 4 files each, `link-previews/` 3
+and `shell/` 2, so each module has room to grow.
 
 Bad: imports are one level deeper (`../../consts.ts`), and two module names
 repeat in their file names. An upward import from a lib file now starts with
