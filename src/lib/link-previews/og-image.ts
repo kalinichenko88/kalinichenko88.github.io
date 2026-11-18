@@ -121,7 +121,7 @@ export const ACCENT_BAR_HEIGHT = 14;
 /**
  * The margin every image keeps clear inside its edges, as its root's padding:
  * platforms crop the edges of a link preview. 120px is 10% of the width.
- * tests/safe-area.ts checks it from the pixels.
+ * tests/safe-area.ts checks its right and bottom sides, where text spills.
  */
 export const SAFE_MARGIN = { x: 120, y: 72 };
 
