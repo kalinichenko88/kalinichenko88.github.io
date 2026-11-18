@@ -119,11 +119,10 @@ const themeIcons: Record<string, typeof SunIcon> = {
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
 
-    if (target.closest('#theme-toggle')) {
+    const toggle = target.closest('#theme-toggle');
+    if (toggle) {
       e.preventDefault();
-      toggleDropdown(
-        document.getElementById('theme-toggle')?.getAttribute('aria-expanded') !== 'true'
-      );
+      toggleDropdown(toggle.getAttribute('aria-expanded') !== 'true');
 
       return;
     }
