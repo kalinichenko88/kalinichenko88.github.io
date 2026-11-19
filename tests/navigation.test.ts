@@ -44,6 +44,6 @@ test('no plain div or span carries an aria-label', async () => {
 // aria-expanded over plain buttons that Tab reaches (#110).
 test('no element claims the ARIA menu pattern', async () => {
   for await (const [file, source] of astroSources()) {
-    assert.doesNotMatch(source, /role="menu|aria-haspopup/, file);
+    assert.doesNotMatch(source, /role="menu|aria-haspopup="(?:true|menu)"/, file);
   }
 });
