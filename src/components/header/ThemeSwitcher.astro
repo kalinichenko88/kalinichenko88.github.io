@@ -13,13 +13,14 @@ const themeIcons: Record<string, typeof SunIcon> = {
 };
 ---
 
-<div class="relative">
+<div id="theme-switcher" class="relative">
   <button
     id="theme-toggle"
     type="button"
     class="p-2 text-foreground-tertiary hover:text-foreground rounded-md transition-colors duration-150 cursor-pointer hover:bg-background-subtle"
     aria-label="Change theme"
     aria-expanded="false"
+    aria-controls="theme-dropdown"
   >
     <MonitorIcon class="w-5 h-5 theme-icon" data-icon="monitor" />
     <SunIcon class="w-5 h-5 theme-icon hidden" data-icon="sun" />
@@ -103,7 +104,7 @@ const themeIcons: Record<string, typeof SunIcon> = {
     }
   });
 
-  function toggleDropdown(show: boolean) {
+  function toggleDropdown(show: boolean, returnFocus = true) {
     const dropdown = document.getElementById('theme-dropdown');
     const toggle = document.getElementById('theme-toggle');
     if (!dropdown || !toggle) {
@@ -116,10 +117,20 @@ const themeIcons: Record<string, typeof SunIcon> = {
     toggle.setAttribute('aria-expanded', String(show));
 
     // Hiding the dropdown hides its focused option too: give focus back to the button
-    if (!show && dropdown.contains(document.activeElement)) {
+    if (!show && returnFocus && dropdown.contains(document.activeElement)) {
       toggle.focus();
     }
   }
+
+  // Tab out of the switcher closes the dropdown and leaves focus where Tab put it.
+  // Focus that goes to no element, as to another window, keeps it open.
+  document.addEventListener('focusout', (e) => {
+    const switcher = (e.target as HTMLElement).closest('#theme-switcher');
+    const next = e.relatedTarget as Node | null;
+    if (switcher && next && !switcher.contains(next)) {
+      toggleDropdown(false, false);
+    }
+  });
 
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
