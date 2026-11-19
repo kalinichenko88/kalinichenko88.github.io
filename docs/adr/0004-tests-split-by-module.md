@@ -6,8 +6,9 @@
 ## Context
 
 `tests/` held 17 code files. I-9 allows 10 in one folder, so the folder was
-on the `debt` list from the start, with 14 files. #87 added the sixteenth
-and the seventeenth, and each new test added to the debt (#108).
+on the `debt` list from the start, with 14 files. #109, the work on #87,
+added the sixteenth and the seventeenth, and each new test added to the
+debt (#108).
 
 ADR 0003 split `src/lib/` into one folder per module of the Modules table in
 `docs/ARCHITECTURE.md`. Each test checks the code of one module, so the
@@ -21,7 +22,7 @@ same names fit `tests/`.
   no new concept. A new test goes where the code it tests is.
 - One folder by kind: the text tests, which read `.astro` and `.css` files,
   apart from the tests that import `src/lib/`. Many tests do both, as
-  `project-images`, `site-image` and `navigation`, so they have no one
+  `project-images`, `site-image` and `post-images`, so they have no one
   place.
 - Move only enough files to get under the limit: `tests/` holds 10, and the
   next test puts it back on the `debt` list.
@@ -30,24 +31,26 @@ same names fit `tests/`.
 
 We will keep each test in `tests/<folder>/`, where `<folder>` is the Logic
 folder of the module whose code it tests: `posts/`, `projects/`,
-`link-previews/` or `shell/`. The tests of the skills' scripts go into
-`authoring/`. `tests/` holds no code file of its own.
+`link-previews/` or `shell/`. A module with no Logic folder takes its name
+in kebab-case, as `home/` or `profile/`. The tests of the skills' scripts go
+into `authoring/`. `tests/` holds no code file of its own.
 
 A test that reads the markup of several modules goes to the module whose
 rule it keeps. `reading-veil` and `motion-page-coverage` keep rules of the
 pixel field and the reveal, so they go to `shell/`. `post-covers` checks the
 covers that the posts declare and the surfaces that show them, so it goes to
-`posts/`, not to `authoring/`, though the skill makes the files.
+`posts/`, not to `authoring/`, though the skill makes the files. Its check of
+the site drawing moves to `site-image`, in `link-previews/`.
 
 `safe-area.ts`, the shared pixel check, goes to `link-previews/`, with the
 renderer whose margin it checks. The image tests in `posts/` and `projects/`
-import it from there, as their lib files import `og-image.ts` (I-14).
+import it from there, as their lib files import `og-image.ts`.
 `tests/fixtures/` keeps its place: fixtures are not code, and I-9 does not
 count them.
 
 The `test` script quotes its glob, `'tests/**/*.test.ts'`, so that node
-expands it and reaches every folder. Without the quotes, `sh` expands it and
-reads `**` as `*`.
+expands it and reaches a folder at any depth. Without the quotes, `sh`
+expands it and reads `**` as `*`, which reaches one level only.
 
 ## Consequences
 

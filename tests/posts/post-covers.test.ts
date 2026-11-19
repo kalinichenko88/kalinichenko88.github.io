@@ -43,14 +43,6 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// The site image (src/lib/link-previews/site-image.ts) draws it next to the name and the
-// channels, as a post image draws its cover.
-test('the site drawing went through prepare.mjs', async () => {
-  const path = fileURLToPath(new URL('../../src/assets/images/site.png', import.meta.url));
-  assert.ok((await sharp(path).metadata()).isPalette, 'not palette-compressed; run prepare.mjs');
-  assert.equal((await sharp(path).stats()).isOpaque, false, 'the site drawing is opaque');
-});
-
 // /blog, /tags and the homepage Writing row all render covers through PostCard.
 const surfaces = ['src/components/PostCard.astro', 'src/pages/blog/[...id].astro'];
 

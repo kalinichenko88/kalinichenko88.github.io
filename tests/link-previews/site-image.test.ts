@@ -77,6 +77,13 @@ test('the drawing size read from the inlined PNG is the file size', async () => 
   assert.deepEqual([value.width, value.height], [width, height]);
 });
 
+// The illustrate-post skill makes the drawing, as it makes a post cover.
+test('the drawing went through prepare.mjs', async () => {
+  const png = await readFile(drawingFile);
+  assert.ok((await sharp(png).metadata()).isPalette, 'not palette-compressed; run prepare.mjs');
+  assert.equal((await sharp(png).stats()).isOpaque, false, 'the site drawing is opaque');
+});
+
 // A handle does not wrap, so one too long for its column runs into the right
 // margin, and a channel too many pushes the bottom row down.
 test('the name, the role and every channel stay inside the safe area', async () => {

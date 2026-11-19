@@ -57,8 +57,9 @@ The folders are Astro's, by technology. The modules are by area, and each
 one spans the folders. A module's logic is one folder in `src/lib/`, named in
 the Logic column below (ADR 0003). There is no `index.ts`: a module's API is
 the exports of the files in its folder, and a page imports them by file.
-A test goes into the folder of `tests/` with the name of the Logic folder of
-the module whose code it tests, and the tests of the skills' scripts go into
+A test goes into a subfolder of `tests/` named after the module whose code it
+tests: the name of its Logic folder, or for a module with none, its name in
+kebab-case (`home/`, `profile/`). The tests of the skills' scripts go into
 `tests/authoring/` (ADR 0004).
 
 | Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                                             | Data                                                                   | Entry point                       |
@@ -245,7 +246,7 @@ post and four projects) count in the numbers below, and no check reads them.
   and the mobile menu, in `src/components/header/`. The file left the
   `debt` list of I-8, and `src/components/`, down to 10 files, left the
   list of I-9.
-- `tests/` grew to 17 files with #87. ADR 0004 then split it into one
+- `tests/` grew to 17 files with #109. ADR 0004 then split it into one
   folder per module, the largest with 6 files, and `tests/` left the `debt`
   list of I-9.
 
