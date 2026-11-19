@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
+const css = await readFile(new URL('../../src/styles/global.css', import.meta.url), 'utf8');
 
 test('defines motion tokens and progressive enhancement guards', () => {
   assert.match(css, /--motion-reveal-distance:/);
@@ -34,7 +34,7 @@ test('never pairs the animation shorthand with animation-timeline', () => {
 
 test('does not add a JavaScript scroll listener', async () => {
   const controller = await readFile(
-    new URL('../src/lib/shell/motion-controller.ts', import.meta.url),
+    new URL('../../src/lib/shell/motion-controller.ts', import.meta.url),
     'utf8'
   );
   assert.doesNotMatch(controller, /addEventListener\(['"]scroll/);
@@ -55,7 +55,7 @@ test('cards stay put on hover', async () => {
   for (const [hover] of css.matchAll(/\.card[\w-]*:hover\s*{[^}]*}/g)) {
     assert.doesNotMatch(hover, /transform|translate/, `card moves on hover: ${hover}`);
   }
-  const components = new URL('../src/components/', import.meta.url);
+  const components = new URL('../../src/components/', import.meta.url);
   for (const file of await readdir(components, { recursive: true })) {
     if (!file.endsWith('.astro')) {
       continue;
@@ -74,7 +74,10 @@ test('staggers reveal properties without delaying card interaction', () => {
 });
 
 test('gates the hidden state before first paint and drops it if the bundle dies', async () => {
-  const layout = await readFile(new URL('../src/components/Layout.astro', import.meta.url), 'utf8');
+  const layout = await readFile(
+    new URL('../../src/components/Layout.astro', import.meta.url),
+    'utf8'
+  );
   const head = layout.slice(0, layout.indexOf('</head>'));
   assert.match(head, /dataset\.motionReady = ''/, 'gate must be set in <head>');
   assert.match(head, /delete document\.documentElement\.dataset\.motionReady/, 'needs a fallback');
@@ -90,7 +93,7 @@ test('gates the hidden state before first paint and drops it if the bundle dies'
 // initPage() leaves every reveal hidden when initPage() throws.
 test('flags the motion bundle as started only after initPage() runs', async () => {
   const script = await readFile(
-    new URL('../src/components/MotionController.astro', import.meta.url),
+    new URL('../../src/components/MotionController.astro', import.meta.url),
     'utf8'
   );
   assert.ok(

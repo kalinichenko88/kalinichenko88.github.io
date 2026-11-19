@@ -6,8 +6,8 @@ import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import sharp from 'sharp';
 
-import { SITE_TITLE } from '../src/consts.ts';
-import { checkMetaTags } from '../src/lib/link-previews/check-meta-tags.ts';
+import { SITE_TITLE } from '../../src/consts.ts';
+import { checkMetaTags } from '../../src/lib/link-previews/check-meta-tags.ts';
 
 // astro.config.js runs checkMetaTags() on every build, so the real pages pass
 // through it there. These tests show that it fails a page for each rule.
@@ -15,7 +15,7 @@ import { checkMetaTags } from '../src/lib/link-previews/check-meta-tags.ts';
 const SITE = 'https://kalinichenko.dev';
 const POST = 'blog/claude-code-commit-attribution';
 // The <head> of that post as the build wrote it.
-const head = await readFile(new URL('./fixtures/post-head.html', import.meta.url), 'utf8');
+const head = await readFile(new URL('../fixtures/post-head.html', import.meta.url), 'utf8');
 
 test('the recorded post page passes', async () => {
   assert.deepEqual(await check({ [POST]: head }), []);

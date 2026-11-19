@@ -3,21 +3,21 @@ import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import sharp from 'sharp';
 
-import { DARK_THEME, LIGHT_THEME } from '../src/config/themes.ts';
-import { offlineNumbers } from '../src/lib/projects/github-repo.ts';
-import { IMAGE_PALETTES, renderOgImage } from '../src/lib/link-previews/og-image.ts';
+import { DARK_THEME, LIGHT_THEME } from '../../src/config/themes.ts';
+import { offlineNumbers } from '../../src/lib/projects/github-repo.ts';
+import { IMAGE_PALETTES, renderOgImage } from '../../src/lib/link-previews/og-image.ts';
 import {
   IMAGE_THEMES,
   projectImage,
   projectImageSrc,
   type ImageTheme,
-} from '../src/lib/projects/project-image.ts';
-import { assertSafeArea } from './safe-area.ts';
+} from '../../src/lib/projects/project-image.ts';
+import { assertSafeArea } from '../link-previews/safe-area.ts';
 
 // Every project gets a 1200x630 image per theme, rendered at build time by
 // src/pages/projects/[slug]/[theme].png.ts: the light one is its og:image, and
 // /projects shows the one that matches the theme.
-const projectsDir = new URL('../content/projects/', import.meta.url);
+const projectsDir = new URL('../../content/projects/', import.meta.url);
 
 async function projects() {
   const found = [];
@@ -115,7 +115,7 @@ test('every project renders a 1200x630 PNG in both themes, with or without GitHu
 // Satori cannot read CSS variables, so the image carries its own copy of the
 // theme tokens. This keeps the copy in step with global.css.
 test('the image palettes match the theme tokens', async () => {
-  const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../../src/styles/global.css', import.meta.url), 'utf8');
   const block = (id: string) => {
     return css.split(`[data-theme='${id}'] {`)[1]?.split('}')[0] ?? '';
   };
@@ -151,7 +151,7 @@ test('a failed render is tried again', async () => {
 
 test('a project page passes its light image to og:image', async () => {
   const page = await readFile(
-    new URL('../src/pages/projects/[slug].astro', import.meta.url),
+    new URL('../../src/pages/projects/[slug].astro', import.meta.url),
     'utf8'
   );
   assert.match(page, /image=\{/);
@@ -161,7 +161,7 @@ test('a project page passes its light image to og:image', async () => {
 // A card that linked the bare path would keep a browser's cached old image.
 test('the /projects card links each image by its versioned URL', async () => {
   const card = await readFile(
-    new URL('../src/components/ProjectCard.astro', import.meta.url),
+    new URL('../../src/components/ProjectCard.astro', import.meta.url),
     'utf8'
   );
   assert.match(card, /projectImageSrc\(project, theme\)/);

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { isActive } from '../src/config/navigation.ts';
+import { isActive } from '../../src/config/navigation.ts';
 
 // Paths as the static build hands them to the header: with a trailing slash.
 test('a nav item is active on its page and the pages under it', () => {
@@ -19,7 +19,7 @@ test('a nav item is not active elsewhere', () => {
 });
 
 async function* astroSources() {
-  const src = new URL('../src/', import.meta.url);
+  const src = new URL('../../src/', import.meta.url);
   for (const file of await readdir(src, { recursive: true })) {
     if (file.endsWith('.astro')) {
       yield [file, await readFile(new URL(file, src), 'utf8')] as const;

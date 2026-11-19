@@ -3,15 +3,15 @@ import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import sharp from 'sharp';
 
-import { IMAGE_PALETTES, renderOgImage } from '../src/lib/link-previews/og-image.ts';
-import { postImage, postImageSrc, type ImagePost } from '../src/lib/posts/post-image.ts';
-import { readingTime } from '../src/lib/posts/reading-time.ts';
-import { assertSafeArea } from './safe-area.ts';
+import { IMAGE_PALETTES, renderOgImage } from '../../src/lib/link-previews/og-image.ts';
+import { postImage, postImageSrc, type ImagePost } from '../../src/lib/posts/post-image.ts';
+import { readingTime } from '../../src/lib/posts/reading-time.ts';
+import { assertSafeArea } from '../link-previews/safe-area.ts';
 
 // Every post with a cover gets a 1200x630 image, rendered at build time by
 // src/pages/blog/[id].png.ts: its og:image and its JSON-LD image.
-const postsDir = new URL('../content/posts/', import.meta.url);
-const coversDir = new URL('../src/assets/images/covers/', import.meta.url);
+const postsDir = new URL('../../content/posts/', import.meta.url);
+const coversDir = new URL('../../src/assets/images/covers/', import.meta.url);
 
 async function posts() {
   const found: (ImagePost & { file: string; id: string })[] = [];
@@ -116,7 +116,10 @@ test('the image URL changes with the text', async () => {
 });
 
 test('a post page passes its rendered image to og:image and JSON-LD', async () => {
-  const page = await readFile(new URL('../src/pages/blog/[...id].astro', import.meta.url), 'utf8');
+  const page = await readFile(
+    new URL('../../src/pages/blog/[...id].astro', import.meta.url),
+    'utf8'
+  );
   assert.match(page, /postImageSrc\(post\.id, imagePost\)/);
   assert.match(page, /image=\{socialImage\}/);
   assert.match(page, /image: socialImage\.src/);

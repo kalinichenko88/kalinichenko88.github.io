@@ -8,7 +8,7 @@ import sharp from 'sharp';
 // cover to its drawing and palette-compresses it. This catches a file that
 // skipped it, such as a hand download from ChatGPT (truecolor), and a re-run
 // that added a second line.
-const postsDir = new URL('../content/posts/', import.meta.url);
+const postsDir = new URL('../../content/posts/', import.meta.url);
 
 async function coverLines() {
   const posts: { file: string; lines: string[] }[] = [];
@@ -43,20 +43,12 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// The site image (src/lib/link-previews/site-image.ts) draws it next to the name and the
-// channels, as a post image draws its cover.
-test('the site drawing went through prepare.mjs', async () => {
-  const path = fileURLToPath(new URL('../src/assets/images/site.png', import.meta.url));
-  assert.ok((await sharp(path).metadata()).isPalette, 'not palette-compressed; run prepare.mjs');
-  assert.equal((await sharp(path).stats()).isOpaque, false, 'the site drawing is opaque');
-});
-
 // /blog, /tags and the homepage Writing row all render covers through PostCard.
 const surfaces = ['src/components/PostCard.astro', 'src/pages/blog/[...id].astro'];
 
 test('every cover surface renders it without a build-time crop', async () => {
   for (const file of surfaces) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const source = await readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
     const tags = source.match(/<Image\b[^>]*\.data\.cover\b[^>]*>/g) ?? [];
     assert.ok(tags.length > 0, `${file} does not render the cover`);
     for (const tag of tags) {

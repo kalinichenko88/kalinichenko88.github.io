@@ -7,8 +7,8 @@ import test from 'node:test';
 const TOOL_TAGS = ['obsidian', 'neovim', 'claude-code'];
 const TOPIC_TAGS = ['ai', 'git', 'personal-finance', 'meta', 'code-review'];
 
-const postsDir = new URL('../content/posts/', import.meta.url);
-const projectsDir = new URL('../content/projects/', import.meta.url);
+const postsDir = new URL('../../content/posts/', import.meta.url);
+const projectsDir = new URL('../../content/projects/', import.meta.url);
 
 test('every post follows the tag policy', async () => {
   for (const file of await readdir(postsDir)) {

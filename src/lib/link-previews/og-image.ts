@@ -121,13 +121,13 @@ export const ACCENT_BAR_HEIGHT = 14;
 /**
  * The margin every image keeps clear inside its edges, as its root's padding:
  * platforms crop the edges of a link preview. 120px is 10% of the width.
- * tests/safe-area.ts checks its right and bottom sides, where text spills.
+ * tests/link-previews/safe-area.ts checks its right and bottom sides, where text spills.
  */
 export const SAFE_MARGIN = { x: 120, y: 72 };
 
 /**
  * The theme tokens the images use, copied from global.css because Satori cannot
- * read CSS variables. tests/project-images.test.ts keeps the copies in step.
+ * read CSS variables. tests/projects/project-images.test.ts keeps the copies in step.
  */
 export const IMAGE_PALETTES = {
   light: {
@@ -159,7 +159,7 @@ const require = createRequire(import.meta.url);
 // variable font only at its default weight, so every heading would be 400.
 //
 // ponytail: the latin subset only, so a glyph outside it (an arrow, Cyrillic,
-// an emoji) draws as nothing. tests/project-images.test.ts holds the project
+// an emoji) draws as nothing. tests/projects/project-images.test.ts holds the project
 // names and taglines, as the frontmatter writes them, to ASCII, Latin-1 and the
 // usual dashes and quotes; the GitHub language is not checked. Load another
 // subset, or pass Satori a loadAdditionalAsset, before the text needs more.

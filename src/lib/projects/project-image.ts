@@ -71,7 +71,7 @@ export function projectImage(project: ImageProject, theme: ImageTheme): OgElemen
     // Sized so every count at its widest compact form ("988K") fits. The
     // language is the one value of any length, so it gives way, cut with an
     // ellipsis, and the site name keeps its place inside the margin.
-    // tests/project-images.test.ts checks the margin's pixels.
+    // tests/projects/project-images.test.ts checks the margin's pixels.
     el(
       'div',
       {

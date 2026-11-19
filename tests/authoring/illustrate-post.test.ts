@@ -7,7 +7,7 @@ import {
   contactSheet,
   normalize,
   subjectBox,
-} from '../.claude/skills/illustrate-post/prepare.mjs';
+} from '../../.claude/skills/illustrate-post/prepare.mjs';
 
 // image_gen answers a 3:2 request with 1536x1024.
 const WIDTH = 1536;

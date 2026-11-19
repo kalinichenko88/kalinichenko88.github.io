@@ -116,7 +116,7 @@ export function toImagePost(post: CollectionEntry<'posts'>): ImagePost | undefin
 
   // Each cover as a data: URL for Satori, inlined by Vite. The query keeps
   // Astro's image pipeline off these imports. Inside the function, as the
-  // tests import this file outside Vite. tests/post-covers.test.ts keeps every
+  // tests import this file outside Vite. tests/posts/post-covers.test.ts keeps every
   // cover at covers/<post-id>.png.
   const covers = import.meta.glob<string>('../../assets/images/covers/*.png', {
     query: '?inline',

@@ -29,7 +29,7 @@ export function siteImage(site: ImageSite): OgElement {
   // ponytail: split by position, as the first two in CONTACT_LINKS are the
   // profiles. A new order there moves a channel to the other column, and no
   // test sees that. A channel more makes the second column a row taller and
-  // pushes the bottom row into the margin, which tests/site-image.test.ts
+  // pushes the bottom row into the margin, which tests/link-previews/site-image.test.ts
   // sees. Give each channel a kind when the list stops fitting this split.
   const columns = [site.contacts.slice(0, 2), site.contacts.slice(2)];
 

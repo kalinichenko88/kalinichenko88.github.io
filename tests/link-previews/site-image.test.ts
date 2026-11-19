@@ -3,19 +3,19 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import sharp from 'sharp';
 
-import * as consts from '../src/consts.ts';
+import * as consts from '../../src/consts.ts';
 import {
   IMAGE_PALETTES,
   renderOgImage,
   type OgElement,
-} from '../src/lib/link-previews/og-image.ts';
+} from '../../src/lib/link-previews/og-image.ts';
 import {
   inlinedDrawing,
   siteImage,
   siteImageAlt,
   siteImageSrc,
   type ImageSite,
-} from '../src/lib/link-previews/site-image.ts';
+} from '../../src/lib/link-previews/site-image.ts';
 import { assertSafeArea } from './safe-area.ts';
 
 // The site image, rendered at build time by src/pages/site.png.ts: the
@@ -28,7 +28,7 @@ async function site(): Promise<ImageSite> {
 // its icon file. That file imports the SVGs, which only Vite reads, so its
 // text is read here instead.
 async function contacts(): Promise<ImageSite['contacts']> {
-  const source = await readFile(new URL('../src/config/contacts.ts', import.meta.url), 'utf8');
+  const source = await readFile(new URL('../../src/config/contacts.ts', import.meta.url), 'utf8');
   // A handle is a quoted string or a constant from consts.ts, and nothing after
   // it: `CONST.trim()` is no match, as the value drawn is not the constant's.
   const entries = [
@@ -44,14 +44,14 @@ async function contacts(): Promise<ImageSite['contacts']> {
     entries.map(async ([, label, quoted, constant]) => {
       const handle = quoted ?? consts[constant as keyof typeof consts];
       assert.equal(typeof handle, 'string', `${label}: ${constant} is not a string in consts.ts`);
-      const icon = new URL(`../src/assets/icons/${label.toLowerCase()}.svg`, import.meta.url);
+      const icon = new URL(`../../src/assets/icons/${label.toLowerCase()}.svg`, import.meta.url);
 
       return { label, handle: String(handle), svg: await readFile(icon, 'utf8') };
     })
   );
 }
 
-const drawingFile = new URL('../src/assets/images/site.png', import.meta.url);
+const drawingFile = new URL('../../src/assets/images/site.png', import.meta.url);
 
 // The drawing through inlinedDrawing(), as toImageSite() makes it, from the
 // file as Vite inlines it.
@@ -75,6 +75,13 @@ test('the drawing size read from the inlined PNG is the file size', async () => 
   const { width, height } = await sharp(await readFile(drawingFile)).metadata();
   const value = await drawing();
   assert.deepEqual([value.width, value.height], [width, height]);
+});
+
+// The illustrate-post skill makes the drawing, as it makes a post cover.
+test('the drawing went through prepare.mjs', async () => {
+  const png = await readFile(drawingFile);
+  assert.ok((await sharp(png).metadata()).isPalette, 'not palette-compressed; run prepare.mjs');
+  assert.equal((await sharp(png).stats()).isOpaque, false, 'the site drawing is opaque');
 });
 
 // A handle does not wrap, so one too long for its column runs into the right
@@ -147,7 +154,7 @@ test('the alt text names every channel the image shows', async () => {
 });
 
 test('a page without an image of its own falls back to the rendered site image', async () => {
-  const head = await readFile(new URL('../src/components/Head.astro', import.meta.url), 'utf8');
+  const head = await readFile(new URL('../../src/components/Head.astro', import.meta.url), 'utf8');
   assert.match(head, /siteImageSrc\(/);
   assert.match(head, /siteImageAlt\(/);
   assert.doesNotMatch(head, /\.og\.jpg/, 'Head still reads a social image file');

@@ -18,7 +18,7 @@ const surfaces = [
 
 test('running text on the open field sits on the reading veil', async () => {
   for (const file of surfaces) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const source = await readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
     assert.match(source, /\breading-veil\b/, `${file} has no reading veil`);
   }
 });
@@ -26,6 +26,9 @@ test('running text on the open field sits on the reading veil', async () => {
 // The veil reaches 72px past its text, so on a narrow window it passes the
 // viewport; without the clip the page scrolls sideways.
 test('the page clips what the veil pushes past the viewport', async () => {
-  const layout = await readFile(new URL('../src/components/Layout.astro', import.meta.url), 'utf8');
+  const layout = await readFile(
+    new URL('../../src/components/Layout.astro', import.meta.url),
+    'utf8'
+  );
   assert.match(layout, /<main class="[^"]*\boverflow-x-clip\b/);
 });

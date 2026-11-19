@@ -1,6 +1,6 @@
 // Colour helpers of the design-check script: read a theme's colour tokens from
 // global.css, mix two colours, and measure WCAG contrast.
-// tests/design-check.test.ts checks the math against known values.
+// tests/authoring/design-check.test.ts checks the math against known values.
 
 // WCAG AA for small text and CTAs.
 export const AA = 4.5;

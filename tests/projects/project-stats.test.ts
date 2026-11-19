@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { projectStats, starLabel } from '../src/lib/projects/project-stats.ts';
+import { projectStats, starLabel } from '../../src/lib/projects/project-stats.ts';
 
 // Short enough that a growing count cannot push the site name off the image,
 // and the same words on the text cards as on the image.
@@ -33,7 +33,7 @@ test('the image shows only the numbers above zero', () => {
 // only through starLabel(): any other use of project.stars fails here.
 test('every text surface reads the star count only through starLabel()', async () => {
   for (const file of ['src/components/ProjectCard.astro', 'src/pages/projects/[slug].astro']) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const source = await readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
     const reads = source.match(/project\.stars\b/g) ?? [];
     const throughLabel = source.match(/starLabel\(project\.stars\)/g) ?? [];
     assert.ok(throughLabel.length > 0, `${file}: no starLabel(project.stars)`);
