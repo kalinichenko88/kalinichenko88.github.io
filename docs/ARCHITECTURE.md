@@ -139,7 +139,11 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `document`, and it writes only to `<html>`.
   The `is:inline` scripts in `Layout` set root attributes again on
   `astro:before-swap`. An `is:inline` script cannot import, so it reads its
-  constants from `data-*` attributes.
+  constants from `data-*` attributes. Astro runs an `is:inline` script once
+  per visit too, as it keeps the text of each one it ran. A script that it
+  adds to the page goes in on `astro:page-load`, as the giscus loader in
+  `components/blog/Comments.astro` does: on `astro:after-swap`, Astro runs
+  it a second time with the new page's scripts.
 - **A rule about markup or CSS is a text test.** A test in `tests/` reads an
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
   `motion-css`, `motion-page-coverage`, `post-covers`). A new

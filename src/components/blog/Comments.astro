@@ -52,14 +52,29 @@ const giscusConfig = JSON.stringify({
         container.appendChild(script);
       }
 
-      // Prevent duplicate listeners across View Transitions
-      if (!window.__giscusInitialized) {
-        window.__giscusInitialized = true;
-        window.addEventListener('theme-changed', loadGiscus);
-        document.addEventListener('astro:after-swap', loadGiscus);
+      function setGiscusTheme() {
+        const frame = document.querySelector('iframe.giscus-frame');
+        // A frame that has not loaded yet drops the message and loads in the theme of its URL.
+        if (!frame || frame.classList.contains('giscus-frame--loading')) {
+          loadGiscus();
+
+          return;
+        }
+        frame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: getGiscusTheme() } } },
+          'https://giscus.app'
+        );
       }
 
-      loadGiscus();
+      // Astro runs this script once per visit, on the first post, so giscus loads
+      // on astro:page-load: it fires on the first load and after each swap. It
+      // fires after Astro runs the new page's scripts, which would run a client.js
+      // added before that, as on astro:after-swap, a second time.
+      if (!window.__giscusInitialized) {
+        window.__giscusInitialized = true;
+        window.addEventListener('theme-changed', setGiscusTheme);
+        document.addEventListener('astro:page-load', loadGiscus);
+      }
     })();
   </script>
 </section>

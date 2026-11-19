@@ -88,7 +88,7 @@ const themeIcons: Record<string, typeof SunIcon> = {
     document.documentElement.setAttribute('data-theme', resolveTheme(preference));
     localStorage.setItem('theme', preference);
     updateThemeUI(preference);
-    // Giscus (blog posts) re-renders itself on this
+    // Giscus (blog posts) changes its theme on this
     window.dispatchEvent(new Event('theme-changed'));
   }
 
