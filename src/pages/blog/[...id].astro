@@ -1,33 +1,18 @@
 ---
 import { render } from 'astro:content';
-import { Image } from 'astro:assets';
 
 import Layout from '../../components/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import Comments from '../../components/blog/Comments.astro';
+import PostHeader from '../../components/blog/PostHeader.astro';
 import { getPosts } from '../../lib/posts/posts';
-import { readingTime } from '../../lib/posts/reading-time';
-import { formatDate } from '../../lib/posts/format-date';
 import { postImageSrc, toImagePost } from '../../lib/posts/post-image';
 
 import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
-import ClockIcon from '../../assets/icons/clock.svg';
 import TwitterIcon from '../../assets/icons/twitter.svg';
 import LinkedInIcon from '../../assets/icons/linkedin.svg';
 
-import {
-  AUTHOR_NAME,
-  GISCUS_REPO,
-  GISCUS_REPO_ID,
-  GISCUS_CATEGORY,
-  GISCUS_CATEGORY_ID,
-} from '../../consts';
-
-const giscusConfig = JSON.stringify({
-  repo: GISCUS_REPO,
-  repoId: GISCUS_REPO_ID,
-  category: GISCUS_CATEGORY,
-  categoryId: GISCUS_CATEGORY_ID,
-});
+import { AUTHOR_NAME } from '../../consts';
 
 export async function getStaticPaths() {
   return (await getPosts()).map((post) => {
@@ -43,8 +28,6 @@ const { Content, headings } = await render(post);
 const tocHeadings = headings.filter((h) => {
   return h.depth >= 2 && h.depth <= 3;
 });
-
-const minutesRead = readingTime(post.body ?? '');
 
 // Rendered by ./[id].png.ts from the frontmatter and the cover, so it always
 // carries the current title and description.
@@ -89,56 +72,7 @@ const blogPostSchema = {
   <script type="application/ld+json" is:inline set:html={JSON.stringify(blogPostSchema)} />
   <article class="py-12 md:py-16">
     <div class="container">
-      <!-- Article Header -->
-      <header class="mb-8" data-reveal="heading">
-        <!-- Back Link -->
-        <a
-          href="/blog"
-          class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeftIcon class="w-4 h-4" />
-          Back to all posts
-        </a>
-
-        <div class="flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
-          {post.data.cover && (
-            <Image
-              src={post.data.cover}
-              alt=""
-              widths={[480, 960]}
-              sizes="(min-width: 768px) 480px, 100vw"
-              priority
-              class="h-48 w-full object-contain md:order-last md:h-80 md:w-auto md:max-w-[45%] md:shrink-0"
-            />
-          )}
-          <div class="min-w-0 flex-1">
-            <!-- Tags -->
-            <div class="flex flex-wrap gap-2 mb-4">
-              {post.data.tags.map((tag: string) => {
-                return (
-                  <a href={`/tags/${tag}`} class="tag">
-                    {tag}
-                  </a>
-                );
-              })}
-            </div>
-
-            <!-- Title -->
-            <h1 class="text-foreground mb-4">{post.data.title}</h1>
-
-            <!-- Meta -->
-            <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {formatDate(post.data.pubDate, { month: 'long' })}
-              </time>
-              <span class="flex items-center gap-2">
-                <ClockIcon class="w-4 h-4" />
-                {minutesRead} min read
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PostHeader post={post} />
 
       <div class="reading-veil">
         {tocHeadings.length > 0 && (
@@ -152,61 +86,7 @@ const blogPostSchema = {
         </div>
       </div>
 
-      <!-- Comments -->
-      <section class="mt-12 pt-8 border-t border-line" data-reveal="content">
-        <h2 class="text-xl font-display font-semibold text-foreground mb-6">Comments</h2>
-        <div class="giscus"></div>
-        <script is:inline data-giscus-config={giscusConfig}>
-          (function () {
-            const config = JSON.parse(document.currentScript.dataset.giscusConfig);
-            const giscusThemes = {
-              cloud: 'light',
-              'cloud-dark': 'transparent_dark',
-            };
-
-            function getGiscusTheme() {
-              const theme = document.documentElement.getAttribute('data-theme') || 'cloud';
-
-              return giscusThemes[theme] || 'light';
-            }
-
-            function loadGiscus() {
-              const container = document.querySelector('.giscus');
-              if (!container) {
-                return;
-              }
-              container.innerHTML = '';
-
-              const script = document.createElement('script');
-              script.src = 'https://giscus.app/client.js';
-              script.setAttribute('data-repo', config.repo);
-              script.setAttribute('data-repo-id', config.repoId);
-              script.setAttribute('data-category', config.category);
-              script.setAttribute('data-category-id', config.categoryId);
-              script.setAttribute('data-mapping', 'pathname');
-              script.setAttribute('data-strict', '0');
-              script.setAttribute('data-reactions-enabled', '1');
-              script.setAttribute('data-emit-metadata', '0');
-              script.setAttribute('data-input-position', 'top');
-              script.setAttribute('data-theme', getGiscusTheme());
-              script.setAttribute('data-lang', 'en');
-              script.setAttribute('data-loading', 'lazy');
-              script.crossOrigin = 'anonymous';
-              script.async = true;
-              container.appendChild(script);
-            }
-
-            // Prevent duplicate listeners across View Transitions
-            if (!window.__giscusInitialized) {
-              window.__giscusInitialized = true;
-              window.addEventListener('theme-changed', loadGiscus);
-              document.addEventListener('astro:after-swap', loadGiscus);
-            }
-
-            loadGiscus();
-          })();
-        </script>
-      </section>
+      <Comments />
 
       <!-- Article Footer -->
       <footer class="mt-10 pt-6 border-t border-line" data-reveal="content">

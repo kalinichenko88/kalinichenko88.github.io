@@ -5,8 +5,8 @@ type Theme = {
 };
 
 /**
- * The two `data-theme` values. Load-bearing: also the localStorage payload and
- * the giscus theme mapping keys. Everything else derives from these.
+ * The two `data-theme` values. Load-bearing: also the localStorage payload.
+ * Everything else derives from these.
  */
 export const LIGHT_THEME = 'cloud';
 export const DARK_THEME = 'cloud-dark';

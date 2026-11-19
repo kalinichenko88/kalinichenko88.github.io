@@ -125,7 +125,7 @@ for (const [label, re] of forbidden) {
 }
 
 // ---------- 3. theme-id integrity (hard) ----------
-console.log('\nTheme ids (must stay cloud / cloud-dark for giscus + localStorage):');
+console.log('\nTheme ids (must stay cloud / cloud-dark for localStorage):');
 const themes = readFileSync(THEMES, 'utf8');
 for (const id of ['cloud', 'cloud-dark']) {
   // Matches the quoted literal anywhere in themes.ts: the ids live on the
