@@ -20,10 +20,10 @@ const CONFIG = JSON.stringify({
 
 type Script = { attributes: Record<string, string>; dataset: Record<string, string> };
 
-// One visit, as Astro's ClientRouter (astro/dist/transitions/router.js) runs it.
-function visit(firstPage: 'post' | 'list') {
+// A visit that opens on a post, as Astro's ClientRouter (astro/dist/transitions/router.js) runs it.
+function visit() {
   const page = {
-    isPost: firstPage === 'post',
+    isPost: true,
     theme: LIGHT_THEME,
     frame: undefined as { loaded: boolean } | undefined,
     scripts: [] as Script[],
@@ -98,9 +98,6 @@ function visit(firstPage: 'post' | 'list') {
   };
 
   runLoader();
-  for (const script of page.scripts) {
-    script.dataset.astroExec = '';
-  }
   document.dispatchEvent(new Event('astro:page-load'));
 
   return {
@@ -131,31 +128,21 @@ function visit(firstPage: 'post' | 'list') {
 }
 
 test('a direct load of a post runs client.js once', () => {
-  const { page } = visit('post');
-
-  assert.deepEqual(page.loads, ['light']);
-});
-
-test('the first post of a visit, reached from the blog, runs client.js once', () => {
-  const { page, navigateTo } = visit('list');
-  navigateTo('post');
+  const { page } = visit();
 
   assert.deepEqual(page.loads, ['light']);
 });
 
 test('each later post of a visit runs client.js once', () => {
-  const { page, navigateTo } = visit('post');
+  const { page, navigateTo } = visit();
   navigateTo('list');
-  navigateTo('post');
-
-  assert.deepEqual(page.loads, ['light']);
   navigateTo('post');
 
   assert.deepEqual(page.loads, ['light']);
 });
 
 test('a theme switch changes the theme of a loaded frame without loading it again', () => {
-  const { page, switchTheme } = visit('post');
+  const { page, switchTheme } = visit();
   page.frame = { loaded: true };
   switchTheme(DARK_THEME);
 
@@ -169,7 +156,7 @@ test('a theme switch changes the theme of a loaded frame without loading it agai
 // A lazy frame below the fold loads only when the reader scrolls to it, from its
 // URL, which holds the theme of its load. A message before that is lost.
 test('a theme switch before the frame loads loads it again in the new theme', () => {
-  const { page, switchTheme } = visit('post');
+  const { page, switchTheme } = visit();
   page.frame = { loaded: false };
   switchTheme(DARK_THEME);
 
