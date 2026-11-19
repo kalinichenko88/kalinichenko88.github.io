@@ -31,7 +31,6 @@ const giscusConfig = JSON.stringify({
         if (!container) {
           return;
         }
-        container.innerHTML = '';
 
         const script = document.createElement('script');
         script.src = 'https://giscus.app/client.js';
@@ -52,29 +51,34 @@ const giscusConfig = JSON.stringify({
         container.appendChild(script);
       }
 
+      // A theme switch keeps the frame, and the comment that the reader types in it.
       function setGiscusTheme() {
+        const theme = getGiscusTheme();
+        const script = document.querySelector('.giscus > script');
         const frame = document.querySelector('iframe.giscus-frame');
-        // A frame that has not loaded yet drops the message and loads in the theme of its URL.
-        if (!frame || frame.classList.contains('giscus-frame--loading')) {
-          loadGiscus();
-
-          return;
+        if (script) {
+          // client.js has not run yet: it reads the theme when it runs.
+          script.setAttribute('data-theme', theme);
+        } else if (frame?.classList.contains('giscus-frame--loading')) {
+          // A lazy frame that has not loaded yet drops a message: it loads its URL.
+          const url = new URL(frame.src);
+          url.searchParams.set('theme', theme);
+          frame.src = url.href;
+        } else if (frame) {
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+          );
         }
-        frame.contentWindow.postMessage(
-          { giscus: { setConfig: { theme: getGiscusTheme() } } },
-          'https://giscus.app'
-        );
+        // With neither, giscus has not started: astro:page-load starts it in this theme.
       }
 
-      // Astro runs this script once per visit, on the first post, so giscus loads
-      // on astro:page-load: it fires on the first load and after each swap. It
-      // fires after Astro runs the new page's scripts, which would run a client.js
-      // added before that, as on astro:after-swap, a second time.
-      if (!window.__giscusInitialized) {
-        window.__giscusInitialized = true;
-        window.addEventListener('theme-changed', setGiscusTheme);
-        document.addEventListener('astro:page-load', loadGiscus);
-      }
+      // Astro runs this script once per visit, on the first post, so the listeners go
+      // on once. giscus loads on astro:page-load: it fires on the first load and after
+      // each swap, after Astro runs the new page's scripts. A client.js added before
+      // that, as on astro:after-swap, would run a second time.
+      window.addEventListener('theme-changed', setGiscusTheme);
+      document.addEventListener('astro:page-load', loadGiscus);
     })();
   </script>
 </section>

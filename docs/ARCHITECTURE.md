@@ -131,7 +131,10 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `PixelSpotlight`, the TOC observer in the post page). The part that a node
   test can run without a DOM goes to `src/lib/shell/` (`opaque-color.ts`).
   `motion-controller.ts` is the exception: it holds the reveal's DOM wiring
-  too, and only its `onScreen()` is DOM-free.
+  too, and only its `onScreen()` is DOM-free. An `is:inline` script cannot
+  import from `src/lib/`, so `tests/posts/comments.test.ts` runs the giscus
+  loader's text with `node:vm` in a fake page. The fake page copies how
+  Astro's router runs scripts, so an Astro upgrade can make that copy wrong.
 - **Every browser script survives a page swap.** A module `<script>` runs
   once, so it runs its init again on `astro:after-swap`. A custom element
   (`card-row`, `video-player`) carries its listeners with the element instead.
