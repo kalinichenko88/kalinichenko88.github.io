@@ -165,4 +165,4 @@ show the author the three `$RUN/prompt-N.txt` files to generate in ChatGPT by
 hand (without the first paragraph, which is addressed to Codex),
 wait for them to save the files as `$RUN/variant-1.png` to `variant-3.png`,
 then continue from step 6. `prepare.mjs` rejects a file with an opaque
-background, and `tests/post-covers.test.ts` rejects one that skipped it.
+background, and `tests/posts/post-covers.test.ts` rejects one that skipped it.

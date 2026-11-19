@@ -16,7 +16,7 @@ const files = [
 
 test('every content page opts major blocks into motion', async () => {
   for (const file of files) {
-    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    const source = await readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
     assert.match(source, /data-reveal=/, `${file} has no reveal annotation`);
   }
 });
@@ -28,7 +28,7 @@ test('every content page opts major blocks into motion', async () => {
 test('a post masonry reveals as one block, never card by card', async () => {
   const card = await read('src/components/PostCard.astro');
   assert.doesNotMatch(card, /data-reveal/, 'a card in the masonry reveals on its own');
-  const src = new URL('../src/', import.meta.url);
+  const src = new URL('../../src/', import.meta.url);
   for (const file of await readdir(src, { recursive: true })) {
     if (!file.endsWith('.astro')) {
       continue;
@@ -64,5 +64,5 @@ test('rendered prose is not annotated for reveal', async () => {
 });
 
 function read(file: string) {
-  return readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+  return readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
 }

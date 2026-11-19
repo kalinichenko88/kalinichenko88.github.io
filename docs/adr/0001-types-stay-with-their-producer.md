@@ -10,6 +10,8 @@
   Used by `project-image.ts`.", "`src/lib/og-image.ts`" (twice),
   "(`post-image.ts`, `project-image.ts`, `site-image.ts`) and",
   "`src/lib/post-image.ts`" and "`src/lib/project-image.ts`".
+- 2026-11-19 #108: Context. Was: "`tests/site-image.test.ts`",
+  "`tests/post-images.test.ts`" and "`tests/project-images.test.ts`".
 
 ## Context
 
@@ -29,14 +31,14 @@ files in its `src/lib/` folder. The six shared types:
   `project-image.ts` and `project-stats.ts`.
 - `OgElement` in `src/lib/link-previews/og-image.ts`. Used by the three
   image layouts (`post-image.ts`, `project-image.ts`, `site-image.ts`), by
-  `project-stats.ts`, and by `tests/site-image.test.ts`.
+  `project-stats.ts`, and by `tests/link-previews/site-image.test.ts`.
 - `OgDrawing` in `src/lib/link-previews/og-image.ts`. Used by
   `post-image.ts` and `site-image.ts`.
 - `ImagePost` in `src/lib/posts/post-image.ts`. Used by the post image route
-  and `tests/post-images.test.ts`.
+  and `tests/posts/post-images.test.ts`.
 - `ImageTheme` in `src/lib/projects/project-image.ts`, beside
   `IMAGE_THEMES`, the list of its values. Used by the project image route and
-  `tests/project-images.test.ts`.
+  `tests/projects/project-images.test.ts`.
 
 A type that one file uses, as `Job` in `src/config/resume.ts`, stays in that
 file by both rules.

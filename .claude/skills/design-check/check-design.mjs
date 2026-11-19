@@ -8,7 +8,7 @@
 //
 // Usage:
 //   node .claude/skills/design-check/check-design.mjs
-// The colour helpers are in colors.mjs; tests/design-check.test.ts checks their math.
+// The colour helpers are in colors.mjs; tests/authoring/design-check.test.ts checks their math.
 //
 // Exit code 1 if any HARD check fails (contrast, forbidden patterns, theme ids).
 // Advisory findings (em-dash in UI copy) are printed but do not fail the run.

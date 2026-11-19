@@ -45,7 +45,7 @@ src/
   styles/global.css   tokens, the two themes, the component classes
   assets/             icons and images, through Astro's pipeline
 public/               served as is
-tests/                node:test; several tests read source files as text
+tests/                node:test, one folder per module; several tests read source files as text
 .claude/skills/       author tools: design-check, illustrate-post
 .github/workflows/    CI: quality, build, deploy
 astro.config.js       Astro config and the meta-tags build gate
@@ -57,6 +57,9 @@ The folders are Astro's, by technology. The modules are by area, and each
 one spans the folders. A module's logic is one folder in `src/lib/`, named in
 the Logic column below (ADR 0003). There is no `index.ts`: a module's API is
 the exports of the files in its folder, and a page imports them by file.
+A test goes into the folder of `tests/` with the name of the Logic folder of
+the module whose code it tests, and the tests of the skills' scripts go into
+`tests/authoring/` (ADR 0004).
 
 | Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                                             | Data                                                                   | Entry point                       |
 | ------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
@@ -66,7 +69,7 @@ the exports of the files in its folder, and a page imports them by file.
 | Shell         | `Layout`, `header/`, `Footer`, `PixelSpotlight`, `MotionController`                     | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
 | Home          | `index.astro`; `components/home/`                                                       |                                                                |                                                                        |                                   |
 | Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                                                | `src/config/resume.ts`, `contacts.ts`                                  |                                   |
-| Authoring     | `.claude/skills/*/`, `tests/`                                                           |                                                                |                                                                        | each skill's `SKILL.md`           |
+| Authoring     | `.claude/skills/*/`, `tests/authoring/`                                                 |                                                                |                                                                        | each skill's `SKILL.md`           |
 
 Each collection has one entry point. Pages read posts through `getPosts()`,
 which sorts them newest first (I-13), and projects through `getProjects()`,
@@ -140,7 +143,8 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
   `motion-css`, `motion-page-coverage`, `post-covers`). A new
   rule of that kind goes there, not into a lint plugin or a browser test.
-  `tests/design-check.test.ts` runs the design-check script the same way.
+  `tests/authoring/design-check.test.ts` runs the design-check script the
+  same way.
 - **One list, every surface.** A list that the site renders is a typed array
   in `src/config/` (`NAV_LINKS`, `CONTACT_LINKS`, `THEME_OPTIONS`,
   `WORK_HISTORY`), and each surface that shows it renders it from there. See
@@ -192,13 +196,13 @@ no `Check:` line names the test that keeps it.
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
   code files of its own.
-  Check: files 10 in `src/` `tests/` `.claude/` debt `tests/`.
+  Check: files 10 in `src/` `tests/` `.claude/`.
 - **I-10.** Running text on the open field sits on `.reading-veil`.
-  `tests/reading-veil.test.ts` holds the list of surfaces and fails without
-  the class.
+  `tests/shell/reading-veil.test.ts` holds the list of surfaces and fails
+  without the class.
 - **I-11.** Every content page opts its major blocks into reveal with
   `data-reveal`, and rendered prose never carries it.
-  `tests/motion-page-coverage.test.ts` keeps both.
+  `tests/shell/motion-page-coverage.test.ts` keeps both.
 - **I-12.** No code imports from a `models/` or a `schemas/` folder: a shared
   type stays in the file that exports its values.
   Check: grep `from '[^']*/(models|schemas)/` in `src/` `tests/`.
@@ -241,6 +245,9 @@ post and four projects) count in the numbers below, and no check reads them.
   and the mobile menu, in `src/components/header/`. The file left the
   `debt` list of I-8, and `src/components/`, down to 10 files, left the
   list of I-9.
+- `tests/` grew to 17 files with #87. ADR 0004 then split it into one
+  folder per module, the largest with 6 files, and `tests/` left the `debt`
+  list of I-9.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The
@@ -250,8 +257,9 @@ rules for a split are in the architecture skill, under Decomposition.
 
 - **Theme.** `data-theme` on `<html>`, set before the first paint by the
   inline script in `Layout`. The tokens are in `global.css`; the images carry
-  a copy in `IMAGE_PALETTES`, kept in step by `tests/project-images.test.ts`.
-  See `CLAUDE.md`, Theme System and Key Patterns.
+  a copy in `IMAGE_PALETTES`, kept in step by
+  `tests/projects/project-images.test.ts`. See `CLAUDE.md`, Theme System and
+  Key Patterns.
 - **Meta tags.** `Head.astro` writes them; `check-meta-tags.ts` checks the
   built pages. The rules are listed in `CLAUDE.md`, Key Patterns, Meta tags.
 - **Motion and the pixel field.** `data-reveal` and `.reading-veil`.
@@ -280,3 +288,5 @@ accepted one gets a line here.
   `src/lib/`.
 - [0003](adr/0003-lib-splits-by-module.md) The logic in `src/lib/` goes into
   one folder per module, named in the Modules table.
+- [0004](adr/0004-tests-split-by-module.md) The tests in `tests/` go into
+  the folder of the module whose code they test.

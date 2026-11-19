@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
 
-import { ACCENT_BAR_HEIGHT, SAFE_MARGIN } from '../src/lib/link-previews/og-image.ts';
+import { ACCENT_BAR_HEIGHT, SAFE_MARGIN } from '../../src/lib/link-previews/og-image.ts';
 
 /**
  * Fails when a link-preview image draws past its safe area. Platforms crop the

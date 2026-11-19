@@ -15,7 +15,7 @@ const posts = defineCollection({
       pubDate: z.date(),
       tags: z.array(z.string()),
       // Written by the illustrate-post skill. Optional so a post being written
-      // still renders; tests/post-covers.test.ts makes it mandatory in CI.
+      // still renders; tests/posts/post-covers.test.ts makes it mandatory in CI.
       cover: image().optional(),
     });
   },
@@ -33,7 +33,7 @@ const projects = defineCollection({
     // It is the project page's description too.
     tagline: z.string().max(MAX_DESCRIPTION),
     tech: z.array(z.string()).default([]),
-    // Post tags (tests/post-tags.test.ts holds the vocabulary). /projects lists
+    // Post tags (tests/posts/post-tags.test.ts holds the vocabulary). /projects lists
     // every post sharing one of them as the project's related posts.
     tags: z.array(z.string()).default([]),
     // Live site, when the project has one. Falls back to the repo URL.
