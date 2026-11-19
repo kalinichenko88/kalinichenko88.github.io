@@ -48,7 +48,7 @@ import it from there, as their lib files import `og-image.ts`.
 `tests/fixtures/` keeps its place: fixtures are not code, and I-9 does not
 count them.
 
-The `test` script quotes its glob, `'tests/**/*.test.ts'`, so that node
+The `test` script quotes its glob, `"tests/**/*.test.ts"`, so that node
 expands it and reaches a folder at any depth. Without the quotes, `sh`
 expands it and reads `**` as `*`, which reaches one level only.
 
@@ -67,5 +67,8 @@ I-9: `tests/` leaves the `debt` list. I-10 and I-11 name the new paths.
 
 ## Confirmation
 
-The `Check:` line of I-9, and `npm test`, which runs 79 tests, the same
-count as before the move.
+The `Check:` line of I-9 keeps each folder at 10 code files at most. Which
+folder a test goes into, and that `tests/` holds no code file of its own,
+are review only: I-9 and the glob both accept a file at the top of
+`tests/`. After the move, `npm test` runs 79 tests, the same count as
+before it.
