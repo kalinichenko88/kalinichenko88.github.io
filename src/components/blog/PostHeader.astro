@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import { readingTime } from '../../lib/posts/reading-time';
+import { formatDate } from '../../lib/posts/format-date';
+
+import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
+import ClockIcon from '../../assets/icons/clock.svg';
+
+type Props = {
+  post: CollectionEntry<'posts'>;
+};
+
+const { post } = Astro.props;
+const minutesRead = readingTime(post.body ?? '');
+---
+
+<header class="mb-8" data-reveal="heading">
+  <!-- Back Link -->
+  <a
+    href="/blog"
+    class="inline-flex items-center gap-2 text-sm text-foreground-tertiary hover:text-foreground transition-colors mb-6"
+  >
+    <ArrowLeftIcon class="w-4 h-4" />
+    Back to all posts
+  </a>
+
+  <div class="flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
+    {post.data.cover && (
+      <Image
+        src={post.data.cover}
+        alt=""
+        widths={[480, 960]}
+        sizes="(min-width: 768px) 480px, 100vw"
+        priority
+        class="h-48 w-full object-contain md:order-last md:h-80 md:w-auto md:max-w-[45%] md:shrink-0"
+      />
+    )}
+    <div class="min-w-0 flex-1">
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2 mb-4">
+        {post.data.tags.map((tag: string) => {
+          return (
+            <a href={`/tags/${tag}`} class="tag">
+              {tag}
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-foreground mb-4">{post.data.title}</h1>
+
+      <!-- Meta -->
+      <div class="flex flex-wrap items-center gap-6 text-sm text-foreground-tertiary font-mono">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate, { month: 'long' })}
+        </time>
+        <span class="flex items-center gap-2">
+          <ClockIcon class="w-4 h-4" />
+          {minutesRead} min read
+        </span>
+      </div>
+    </div>
+  </div>
+</header>

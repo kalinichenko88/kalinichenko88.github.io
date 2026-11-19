@@ -43,8 +43,9 @@ test('every cover went through prepare.mjs', async () => {
   }
 });
 
-// /blog, /tags and the homepage Writing row all render covers through PostCard.
-const surfaces = ['src/components/PostCard.astro', 'src/pages/blog/[...id].astro'];
+// /blog, /tags and the homepage Writing row render covers through PostCard, a
+// post page through PostHeader.
+const surfaces = ['src/components/PostCard.astro', 'src/components/blog/PostHeader.astro'];
 
 test('every cover surface renders it without a build-time crop', async () => {
   for (const file of surfaces) {

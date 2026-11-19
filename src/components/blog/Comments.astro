@@ -1,0 +1,65 @@
+---
+import { DARK_THEME, LIGHT_THEME } from '../../config/themes';
+import { GISCUS_REPO, GISCUS_REPO_ID, GISCUS_CATEGORY, GISCUS_CATEGORY_ID } from '../../consts';
+
+// An is:inline script cannot import, so it reads the theme ids from here.
+const giscusConfig = JSON.stringify({
+  repo: GISCUS_REPO,
+  repoId: GISCUS_REPO_ID,
+  category: GISCUS_CATEGORY,
+  categoryId: GISCUS_CATEGORY_ID,
+  themes: {
+    [LIGHT_THEME]: 'light',
+    [DARK_THEME]: 'transparent_dark',
+  },
+});
+---
+
+<section class="mt-12 pt-8 border-t border-line" data-reveal="content">
+  <h2 class="text-xl font-display font-semibold text-foreground mb-6">Comments</h2>
+  <div class="giscus"></div>
+  <script is:inline data-giscus-config={giscusConfig}>
+    (function () {
+      const config = JSON.parse(document.currentScript.dataset.giscusConfig);
+
+      function getGiscusTheme() {
+        return config.themes[document.documentElement.getAttribute('data-theme')] || 'light';
+      }
+
+      function loadGiscus() {
+        const container = document.querySelector('.giscus');
+        if (!container) {
+          return;
+        }
+        container.innerHTML = '';
+
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', config.repo);
+        script.setAttribute('data-repo-id', config.repoId);
+        script.setAttribute('data-category', config.category);
+        script.setAttribute('data-category-id', config.categoryId);
+        script.setAttribute('data-mapping', 'pathname');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'top');
+        script.setAttribute('data-theme', getGiscusTheme());
+        script.setAttribute('data-lang', 'en');
+        script.setAttribute('data-loading', 'lazy');
+        script.crossOrigin = 'anonymous';
+        script.async = true;
+        container.appendChild(script);
+      }
+
+      // Prevent duplicate listeners across View Transitions
+      if (!window.__giscusInitialized) {
+        window.__giscusInitialized = true;
+        window.addEventListener('theme-changed', loadGiscus);
+        document.addEventListener('astro:after-swap', loadGiscus);
+      }
+
+      loadGiscus();
+    })();
+  </script>
+</section>

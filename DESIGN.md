@@ -127,8 +127,8 @@ gets out of its way without going invisible.
   separate by size, weight and tracking rather than by a second face.
 - **Two themes:** light (`data-theme="cloud"`) and dark
   (`data-theme="cloud-dark"`), plus `auto` (follows system). **Do not rename
-  these ids** — the Giscus comment theme map and stored `localStorage`
-  preferences depend on `cloud` / `cloud-dark`.
+  these ids** — stored `localStorage` preferences depend on `cloud` /
+  `cloud-dark`.
 - **Two width tracks:** a tight reading column (`.container-prose`, ~680px) and
   a wide track (`.container`, ~1100px) used by everything else, including blog
   posts.

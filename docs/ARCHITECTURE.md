@@ -37,7 +37,7 @@ numbers stay fresh.
 content/              Markdown: posts/ and projects/, one file per entry
 src/
   pages/              one file per route: .astro renders HTML, .ts is an endpoint (PNG, RSS)
-  components/         UI; home/ holds the homepage sections, header/ the site header and its parts
+  components/         UI; home/ holds the homepage sections, header/ the site header and its parts, blog/ the parts of a post page
   lib/                logic for the build and the browser, one folder per module; loads under plain node
   config/             typed lists: navigation, contacts, themes, resume
   consts.ts           site-wide constants
@@ -62,15 +62,15 @@ tests: the name of its Logic folder, or for a module with none, its name in
 kebab-case (`home/`, `profile/`). The tests of the skills' scripts go into
 `tests/authoring/` (ADR 0004).
 
-| Module        | Edge (`src/pages/`, `src/components/`)                                                  | Logic (`src/lib/`)                                             | Data                                                                   | Entry point                       |
-| ------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
-| Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer` | `posts/`: `posts`, `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getPosts()`                      |
-| Projects      | `projects/`; `ProjectCard`                                                              | `projects/`: `projects`, `project-image`, `project-stats`      | `content/projects/`, `projects/github-repo` (the GitHub API)           | `getProjects()`                   |
-| Link previews | `Head`, `site.png.ts`                                                                   | `link-previews/`: `og-image`, `site-image`, `check-meta-tags`  | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()` |
-| Shell         | `Layout`, `header/`, `Footer`, `PixelSpotlight`, `MotionController`                     | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
-| Home          | `index.astro`; `components/home/`                                                       |                                                                |                                                                        |                                   |
-| Profile       | `about.astro`, `contact.astro`, `404.astro`                                             |                                                                | `src/config/resume.ts`, `contacts.ts`                                  |                                   |
-| Authoring     | `.claude/skills/*/`, `tests/authoring/`                                                 |                                                                |                                                                        | each skill's `SKILL.md`           |
+| Module        | Edge (`src/pages/`, `src/components/`)                                                                      | Logic (`src/lib/`)                                             | Data                                                                   | Entry point                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| Posts         | `blog/`, `tags/`, `rss.xml.ts`; `PostCard`, `TableOfContents`, `YouTube`, `VideoPlayer`, `components/blog/` | `posts/`: `posts`, `post-image`, `reading-time`, `format-date` | `content/posts/`                                                       | `getPosts()`                      |
+| Projects      | `projects/`; `ProjectCard`                                                                                  | `projects/`: `projects`, `project-image`, `project-stats`      | `content/projects/`, `projects/github-repo` (the GitHub API)           | `getProjects()`                   |
+| Link previews | `Head`, `site.png.ts`                                                                                       | `link-previews/`: `og-image`, `site-image`, `check-meta-tags`  | the `@fontsource` files, the drawing `src/assets/images/site.png`      | `renderOgImage()`, `ogImageSrc()` |
+| Shell         | `Layout`, `header/`, `Footer`, `PixelSpotlight`, `MotionController`                                         | `shell/`: `motion-controller`, `opaque-color`                  | `src/config/themes.ts`, `navigation.ts`, `src/consts.ts`, `global.css` | `Layout`                          |
+| Home          | `index.astro`; `components/home/`                                                                           |                                                                |                                                                        |                                   |
+| Profile       | `about.astro`, `contact.astro`, `404.astro`                                                                 |                                                                | `src/config/resume.ts`, `contacts.ts`                                  |                                   |
+| Authoring     | `.claude/skills/*/`, `tests/authoring/`                                                                     |                                                                |                                                                        | each skill's `SKILL.md`           |
 
 Each collection has one entry point. Pages read posts through `getPosts()`,
 which sorts them newest first (I-13), and projects through `getProjects()`,
@@ -185,15 +185,13 @@ no `Check:` line names the test that keeps it.
   Check: grep `^ {0,2}(export )?interface ` in `src/` `tests/` `.claude/`.
 - **I-7.** The theme ids are written once, in `src/config/themes.ts`. The
   selectors in `global.css` and the design-check script, which verifies that
-  the ids stay, are the only other literals. The giscus script in the post
-  page still holds them and is known debt.
-  Check: grep `['"]cloud(-dark)?['"]` in `src/` `tests/` `.claude/` except `src/config/themes.ts` `src/styles/global.css` `.claude/skills/design-check/check-design.mjs` debt `src/pages/blog/[...id].astro`.
+  the ids stay, are the only other literals.
+  Check: grep `['"]cloud(-dark)?['"]` in `src/` `tests/` `.claude/` except `src/config/themes.ts` `src/styles/global.css` `.claude/skills/design-check/check-design.mjs`.
 - **I-8.** No code file in `src/`, `tests/`, `.claude/` or the two root
   config files has more than 180 lines. `global.css` is out: tokens and
   component classes do not split like code.
   Check: lines 180 in `src/` `tests/` `.claude/` `astro.config.js` `eslint.config.js` except `src/styles/global.css`.
   debt `src/lib/link-previews/check-meta-tags.ts`
-  debt `src/pages/blog/[...id].astro`
   debt `src/lib/link-previews/site-image.ts`
 - **I-9.** No folder in `src/`, `tests/` or `.claude/` holds more than 10
   code files of its own.
@@ -249,6 +247,9 @@ post and four projects) count in the numbers below, and no check reads them.
 - `tests/` grew to 17 files with #109. ADR 0004 then split it into one
   folder per module, the largest with 6 files, and `tests/` left the `debt`
   list of I-9.
+- #95 moved the comments and the post header out of the post page
+  into `src/components/blog/`, from 288 lines to 168. The page left the
+  `debt` lists of I-7 and I-8.
 
 A path leaves the list when it drops under the limit. A path joins it only
 in a pull request that files its debt issue. A new number needs an ADR. The
