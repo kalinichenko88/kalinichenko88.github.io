@@ -131,7 +131,11 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `PixelSpotlight`, the TOC observer in the post page). The part that a node
   test can run without a DOM goes to `src/lib/shell/` (`opaque-color.ts`).
   `motion-controller.ts` is the exception: it holds the reveal's DOM wiring
-  too, and only its `onScreen()` is DOM-free.
+  too, and only its `onScreen()` is DOM-free. An `is:inline` script cannot
+  import from `src/lib/`, so `tests/posts/comments.test.ts` runs the giscus
+  loader's text with `node:vm` in the fake page of `comments-page.ts`. The
+  fake page copies how Astro's router runs scripts, so an Astro upgrade can
+  make that copy wrong.
 - **Every browser script survives a page swap.** A module `<script>` runs
   once, so it runs its init again on `astro:after-swap`. A custom element
   (`card-row`, `video-player`) carries its listeners with the element instead.
@@ -139,7 +143,16 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `document`, and it writes only to `<html>`.
   The `is:inline` scripts in `Layout` set root attributes again on
   `astro:before-swap`. An `is:inline` script cannot import, so it reads its
-  constants from `data-*` attributes.
+  constants from `data-*` attributes. Astro runs an `is:inline` script once
+  per visit too, as it keeps the text of each one it ran. After a swap, a
+  script that it adds to the page goes in on `astro:page-load`, as the
+  giscus loader in `components/blog/Comments.astro` does: on
+  `astro:after-swap`, Astro runs it a second time with the new page's
+  scripts. On a direct load, the loader adds giscus while the page parses,
+  as the first `astro:page-load` waits for the window load. That event then
+  finds giscus in place, and it comes twice for one page when a navigation
+  comes before the window load. So the loader adds giscus only to an empty
+  box.
 - **A rule about markup or CSS is a text test.** A test in `tests/` reads an
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
   `motion-css`, `motion-page-coverage`, `post-covers`). A new

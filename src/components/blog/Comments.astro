@@ -28,10 +28,12 @@ const giscusConfig = JSON.stringify({
 
       function loadGiscus() {
         const container = document.querySelector('.giscus');
-        if (!container) {
+        // A box that holds client.js or its frame has giscus already. Each direct load
+        // calls this twice, while the page parses and on astro:page-load at the window
+        // load, and so does a navigation made before that window load.
+        if (!container || container.childElementCount) {
           return;
         }
-        container.innerHTML = '';
 
         const script = document.createElement('script');
         script.src = 'https://giscus.app/client.js';
@@ -52,14 +54,43 @@ const giscusConfig = JSON.stringify({
         container.appendChild(script);
       }
 
-      // Prevent duplicate listeners across View Transitions
-      if (!window.__giscusInitialized) {
-        window.__giscusInitialized = true;
-        window.addEventListener('theme-changed', loadGiscus);
-        document.addEventListener('astro:after-swap', loadGiscus);
+      // A theme switch keeps the frame, and the comment that the reader types in it.
+      function setGiscusTheme() {
+        const theme = getGiscusTheme();
+        const script = document.querySelector('.giscus > script');
+        const frame = document.querySelector('iframe.giscus-frame');
+        if (script) {
+          // client.js has not run yet: it reads the theme when it runs.
+          script.setAttribute('data-theme', theme);
+        } else if (frame?.classList.contains('giscus-frame--loading')) {
+          // A lazy frame that has not loaded yet drops a message: it loads its URL.
+          const url = new URL(frame.src);
+          url.searchParams.set('theme', theme);
+          frame.src = url.href;
+        } else if (frame) {
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+          );
+        }
+        // With neither, the page has no comments, or giscus has not started: it starts in this theme.
       }
 
-      loadGiscus();
+      // After a swap, giscus loads on astro:page-load, which fires after Astro runs the
+      // new page's scripts. A client.js added before that, as on astro:after-swap,
+      // would run a second time. Astro 7 runs this script once per visit; the guard
+      // keeps one set of listeners if a router runs it again.
+      if (!window.__giscusInitialized) {
+        window.__giscusInitialized = true;
+        window.addEventListener('theme-changed', setGiscusTheme);
+        document.addEventListener('astro:page-load', loadGiscus);
+      }
+
+      // On a direct load, giscus starts while the page parses: the first astro:page-load
+      // waits for the window load, so for every image.
+      if (document.readyState === 'loading') {
+        loadGiscus();
+      }
     })();
   </script>
 </section>
