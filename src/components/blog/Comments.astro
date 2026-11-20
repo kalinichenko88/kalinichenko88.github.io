@@ -28,8 +28,9 @@ const giscusConfig = JSON.stringify({
 
       function loadGiscus() {
         const container = document.querySelector('.giscus');
-        // A box that holds client.js or its frame has giscus already: a navigation made
-        // before the first page's window load gets astro:page-load twice.
+        // A box that holds client.js or its frame has giscus already. Each direct load
+        // calls this twice, while the page parses and on astro:page-load at the window
+        // load, and so does a navigation made before that window load.
         if (!container || container.childElementCount) {
           return;
         }

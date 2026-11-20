@@ -68,8 +68,10 @@ test('the theme switcher sends theme-changed on window after it sets data-theme'
     new URL('../../src/components/header/ThemeSwitcher.astro', import.meta.url),
     'utf8'
   );
-  const setsTheme = switcher.indexOf("document.documentElement.setAttribute('data-theme'");
-  const sendsEvent = switcher.indexOf("window.dispatchEvent(new Event('theme-changed'))");
+  const applyTheme = switcher.match(/function applyTheme\([\s\S]*?\n {2}\}/)?.[0] ?? '';
 
-  assert.ok(setsTheme !== -1 && sendsEvent > setsTheme);
+  assert.match(
+    applyTheme,
+    /documentElement\.setAttribute\('data-theme'[\s\S]*window\.dispatchEvent\(new Event\('theme-changed'\)\)/
+  );
 });

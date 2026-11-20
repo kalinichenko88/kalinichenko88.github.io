@@ -144,12 +144,15 @@ Only the ones that the code keeps everywhere and that are not obvious.
   The `is:inline` scripts in `Layout` set root attributes again on
   `astro:before-swap`. An `is:inline` script cannot import, so it reads its
   constants from `data-*` attributes. Astro runs an `is:inline` script once
-  per visit too, as it keeps the text of each one it ran. A script that it
-  adds to the page goes in on `astro:page-load`, as the giscus loader in
-  `components/blog/Comments.astro` does: on `astro:after-swap`, Astro runs
-  it a second time with the new page's scripts. `astro:page-load` comes
-  twice for one page when a navigation comes before the first page's window
-  load, so the loader adds giscus only to an empty box.
+  per visit too, as it keeps the text of each one it ran. After a swap, a
+  script that it adds to the page goes in on `astro:page-load`, as the
+  giscus loader in `components/blog/Comments.astro` does: on
+  `astro:after-swap`, Astro runs it a second time with the new page's
+  scripts. On a direct load, the loader adds giscus while the page parses,
+  as the first `astro:page-load` waits for the window load. That event then
+  finds giscus in place, and it comes twice for one page when a navigation
+  comes before the window load. So the loader adds giscus only to an empty
+  box.
 - **A rule about markup or CSS is a text test.** A test in `tests/` reads an
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
   `motion-css`, `motion-page-coverage`, `post-covers`). A new
