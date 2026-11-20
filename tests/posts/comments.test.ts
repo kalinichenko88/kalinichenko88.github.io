@@ -26,7 +26,7 @@ function visit() {
   const page = {
     isPost: true,
     theme: LIGHT_THEME,
-    frame: undefined as { loaded: boolean; src: string } | undefined,
+    frame: undefined as { src: string } | undefined,
     // The client.js scripts in the comments box that have not run yet.
     scripts: [] as Script[],
     // The data-theme of each client.js script, when it is added and when Astro runs it again.
@@ -61,28 +61,12 @@ function visit() {
       const elements: Record<string, unknown> = {
         '.giscus': container,
         '.giscus > script': page.scripts.at(-1),
-        'iframe.giscus-frame': page.frame && frameElement(page.frame),
+        'iframe.giscus-frame': page.frame,
       };
 
       return (page.isPost && elements[selector]) || null;
     },
   });
-  // The frame element is the frame itself, so a new src lands in page.frame.
-  const frameElement = (frame: { loaded: boolean; src: string }) => {
-    return Object.assign(frame, {
-      classList: {
-        contains: (name: string) => {
-          return name === 'giscus-frame--loading' && !frame.loaded;
-        },
-      },
-      contentWindow: {
-        // postMessage hands the frame a structured clone, in this realm.
-        postMessage: (data: unknown, origin: string) => {
-          page.messages.push([structuredClone(data), origin]);
-        },
-      },
-    });
-  };
   const window = new EventTarget();
   const context = vm.createContext({ window, document, URL });
   // Astro runs an inline script once per visit: it keeps the text of each one it ran.
@@ -90,7 +74,7 @@ function visit() {
   const runLoader = () => {
     if (page.isPost && !loaderRan) {
       loaderRan = true;
-      vm.runInContext(loader ?? '', context);
+      vm.runInContext(loader, context);
     }
   };
 
@@ -119,9 +103,22 @@ function visit() {
     },
     // client.js replaces its script with a frame whose URL holds the script's theme.
     runClientJs: (frameLoaded: boolean) => {
-      const theme = page.scripts.at(-1)?.attributes['data-theme'];
+      const frame = {
+        src: widgetUrl(page.scripts.at(-1)?.attributes['data-theme'] ?? ''),
+        classList: {
+          contains: (name: string) => {
+            return name === 'giscus-frame--loading' && !frameLoaded;
+          },
+        },
+        contentWindow: {
+          // postMessage hands the frame a structured clone, in this realm.
+          postMessage: (data: unknown, origin: string) => {
+            page.messages.push([structuredClone(data), origin]);
+          },
+        },
+      };
       page.scripts = [];
-      page.frame = { loaded: frameLoaded, src: `https://giscus.app/en/widget?theme=${theme}` };
+      page.frame = frame;
     },
     switchTheme: (theme: string) => {
       page.theme = theme;
@@ -130,18 +127,16 @@ function visit() {
   };
 }
 
-test('a direct load of a post runs client.js once', () => {
-  const { page } = visit();
+// The theme switch on the list page finds no comments and must not throw.
+test('a direct load and each later post of a visit run client.js once', () => {
+  const { page, navigateTo, switchTheme } = visit();
 
   assert.deepEqual(page.loads, ['light']);
-});
-
-test('each later post of a visit runs client.js once', () => {
-  const { page, navigateTo } = visit();
   navigateTo('list');
+  switchTheme(DARK_THEME);
   navigateTo('post');
 
-  assert.deepEqual(page.loads, ['light']);
+  assert.deepEqual(page.loads, ['transparent_dark']);
 });
 
 test('a theme switch before client.js runs gives it the new theme, with no second client.js', () => {
@@ -161,7 +156,7 @@ test('a theme switch changes the theme of a loaded frame without loading it agai
   assert.deepEqual(page.messages, [
     [{ giscus: { setConfig: { theme: 'transparent_dark' } } }, 'https://giscus.app'],
   ]);
-  assert.equal(page.frame?.src, 'https://giscus.app/en/widget?theme=light');
+  assert.equal(page.frame?.src, widgetUrl('light'));
 });
 
 // A lazy frame below the fold loads only when the reader scrolls to it, from its
@@ -173,5 +168,13 @@ test('a theme switch before the frame loads puts the new theme in its URL', () =
 
   assert.deepEqual(page.loads, ['light']);
   assert.deepEqual(page.messages, []);
-  assert.equal(page.frame?.src, 'https://giscus.app/en/widget?theme=transparent_dark');
+  assert.equal(page.frame?.src, widgetUrl('transparent_dark'));
 });
+
+// client.js builds the frame URL from the page and its script, the theme among
+// the other parameters, which a theme switch must keep.
+function widgetUrl(theme: string) {
+  const params = { origin: 'https://kalinichenko.dev/blog/a/', session: '', theme, term: 'blog/a' };
+
+  return `https://giscus.app/en/widget?${new URLSearchParams(params)}`;
+}

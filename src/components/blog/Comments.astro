@@ -70,15 +70,18 @@ const giscusConfig = JSON.stringify({
             'https://giscus.app'
           );
         }
-        // With neither, giscus has not started: astro:page-load starts it in this theme.
+        // With neither, the page has no comments, or astro:page-load starts them in this theme.
       }
 
-      // Astro runs this script once per visit, on the first post, so the listeners go
-      // on once. giscus loads on astro:page-load: it fires on the first load and after
-      // each swap, after Astro runs the new page's scripts. A client.js added before
-      // that, as on astro:after-swap, would run a second time.
-      window.addEventListener('theme-changed', setGiscusTheme);
-      document.addEventListener('astro:page-load', loadGiscus);
+      // giscus loads on astro:page-load: it fires on the first load and after each
+      // swap, after Astro runs the new page's scripts. A client.js added before that,
+      // as on astro:after-swap, would run a second time. Astro 7 runs this script
+      // once per visit; the guard keeps one set of listeners if a router runs it again.
+      if (!window.__giscusInitialized) {
+        window.__giscusInitialized = true;
+        window.addEventListener('theme-changed', setGiscusTheme);
+        document.addEventListener('astro:page-load', loadGiscus);
+      }
     })();
   </script>
 </section>
