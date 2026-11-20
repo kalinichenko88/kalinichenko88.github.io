@@ -133,8 +133,9 @@ Only the ones that the code keeps everywhere and that are not obvious.
   `motion-controller.ts` is the exception: it holds the reveal's DOM wiring
   too, and only its `onScreen()` is DOM-free. An `is:inline` script cannot
   import from `src/lib/`, so `tests/posts/comments.test.ts` runs the giscus
-  loader's text with `node:vm` in a fake page. The fake page copies how
-  Astro's router runs scripts, so an Astro upgrade can make that copy wrong.
+  loader's text with `node:vm` in the fake page of `comments-page.ts`. The
+  fake page copies how Astro's router runs scripts, so an Astro upgrade can
+  make that copy wrong.
 - **Every browser script survives a page swap.** A module `<script>` runs
   once, so it runs its init again on `astro:after-swap`. A custom element
   (`card-row`, `video-player`) carries its listeners with the element instead.
@@ -146,7 +147,9 @@ Only the ones that the code keeps everywhere and that are not obvious.
   per visit too, as it keeps the text of each one it ran. A script that it
   adds to the page goes in on `astro:page-load`, as the giscus loader in
   `components/blog/Comments.astro` does: on `astro:after-swap`, Astro runs
-  it a second time with the new page's scripts.
+  it a second time with the new page's scripts. `astro:page-load` comes
+  twice for one page when a navigation comes before the first page's window
+  load, so the loader adds giscus only to an empty box.
 - **A rule about markup or CSS is a text test.** A test in `tests/` reads an
   `.astro` or `.css` file as a string and asserts on it (`reading-veil`,
   `motion-css`, `motion-page-coverage`, `post-covers`). A new
